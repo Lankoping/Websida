@@ -27,8 +27,8 @@ export type OGMetaTags = {
 
 export const defaultCustomOGConfig: OGImageConfig = {
   isCustom: true,
-  title: 'Imagine App',
-  description: 'Build something real',
+  title: 'Lankoping.se',
+  description: 'Kommer Snart',
   width: 1200,
   height: 630,
   backgroundColor: '#ffffff',

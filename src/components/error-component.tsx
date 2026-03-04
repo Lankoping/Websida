@@ -1,4 +1,3 @@
-import { useTheme } from 'next-themes'
 import { useLocation } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 
@@ -13,7 +12,6 @@ export function ErrorComponent({
   const randomErrorId = useRef<string>(
     Math.random().toString(36).substring(2, 15),
   )
-  const { theme } = useTheme()
   const location = useLocation()
 
   const message = {
@@ -39,16 +37,6 @@ export function ErrorComponent({
 
   return (
     <div className="flex-grow flex flex-col justify-center items-center gap-6 text-center my-20">
-      <img
-        src={
-          theme === 'dark'
-            ? '/imagine-logo-dark.svg'
-            : '/imagine-logo-light.svg'
-        }
-        alt="Imagine Logo"
-        className="size-14"
-      />
-
       <h1 className="text-2xl font-medium">Oops! Something went wrong.</h1>
 
       <div>

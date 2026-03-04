@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Install dependencies in a separate stage for caching
 FROM base AS install
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 # Build the application

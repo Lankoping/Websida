@@ -1,5 +1,5 @@
-# Use the official Bun image
-FROM oven/bun:1.1 AS base
+# Use the official Bun image — 1.2+ ships Node.js 22.12+ which Vite requires
+FROM oven/bun:1 AS base
 WORKDIR /app
 
 # Install dependencies in a separate stage for caching
@@ -11,12 +11,10 @@ RUN bun install
 FROM base AS build
 COPY --from=install /app/node_modules ./node_modules
 COPY . .
-# Explicitly disable TSR and Nitro build-time complexities by using simple vite build
-ENV TSR_AUTOGENERATE=false
 ENV FOR_SITES=true
-# Remove any stale generated route tree to prevent tsr generate from looping,
-# then generate routes and build everything into .output
-RUN rm -f src/routeTree.gen.ts && bun run tsr generate && bun vite build
+# Remove any pre-existing generated route tree — tanstackStart() plugin
+# will auto-generate it synchronously during vite build
+RUN rm -f src/routeTree.gen.ts && bun vite build
 
 # Production image
 FROM base AS release

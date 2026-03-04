@@ -5,8 +5,8 @@ Welcome to your new TanStack app!
 To run this application in development mode:
 
 ```bash
-bun install
-bun run dev
+npm install
+npm run dev
 ```
 
 The development server will start on `http://localhost:3000`.
@@ -22,13 +22,13 @@ Copy `.env.example` to `.env` before running the app and provide values for the 
 To build this application for production:
 
 ```bash
-bun run build
+npm run build
 ```
 
 After building, you can run the production server:
 
 ```bash
-bun run start
+npm start
 ```
 
 The production server will start on `http://localhost:3000` (or the port specified in the `PORT` environment variable).
@@ -38,7 +38,7 @@ The production server will start on `http://localhost:3000` (or the port specifi
 This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
 
 ```bash
-bun run test
+npm test
 ```
 
 ## Styling
@@ -50,9 +50,9 @@ This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
 
 ```bash
-bun run lint
-bun run format
-bun run format:check
+npm run lint
+npm run format
+npm run format:check
 ```
 
 ## Shadcn
@@ -60,7 +60,7 @@ bun run format:check
 Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
 
 ```bash
-pnpx shadcn@latest add button
+npx shadcn@latest add button
 ```
 
 ## Routing

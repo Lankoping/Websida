@@ -1,11 +1,11 @@
-# Use the official Bun image — 1.2+ ships Node.js 22.12+ which Vite requires
-FROM oven/bun:1 AS base
+# Use official Node.js LTS image
+FROM node:22-slim AS base
 WORKDIR /app
 
 # Install dependencies in a separate stage for caching
 FROM base AS install
-COPY package.json bun.lock ./
-RUN bun install
+COPY package.json package-lock.json ./
+RUN npm ci
 
 # Build the application
 FROM base AS build
@@ -14,7 +14,7 @@ COPY . .
 ENV FOR_SITES=true
 # Remove any pre-existing generated route tree — tanstackStart() plugin
 # will auto-generate it synchronously during vite build
-RUN rm -f src/routeTree.gen.ts && bun vite build
+RUN rm -f src/routeTree.gen.ts && npx vite build
 
 # Production image
 FROM base AS release
@@ -25,4 +25,4 @@ COPY --from=build /app/.output ./.output
 EXPOSE 3000
 
 # Start the application
-CMD ["bun", ".output/server/index.mjs"]
+CMD ["node", ".output/server/index.mjs"]

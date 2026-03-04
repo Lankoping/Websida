@@ -15,33 +15,7 @@ The development server will start on `http://localhost:3000`.
 
 Copy `.env.example` to `.env` before running the app and provide values for the required secrets:
 
-- `APPWRITE_ENDPOINT` – Base URL of your Appwrite instance.
-- `APPWRITE_API_KEY` – API key with permissions for the configured project.
-- `APPWRITE_BUCKET_ID` – Identifier of the storage bucket used by the app.
-- `APPWRITE_PROJECT_ID` – Appwrite project ID exposed to the client build.
 - `VITE_INSTRUMENTATION_SCRIPT_SRC` – Script URL injected for analytics/instrumentation.
-
-The app will fail to authenticate or access storage until these values are set.
-
-**Note:** The password recovery feature automatically detects the application's URL from the incoming request headers, so no additional configuration is needed for it to work across different environments.
-
-## Authentication Features
-
-This template includes a complete authentication system with the following features:
-
-- **Sign Up** (`/sign-up`) – Create a new user account
-- **Sign In** (`/sign-in`) – Authenticate existing users
-- **Sign Out** (`/sign-out`) – Log out and clear session
-- **Password Recovery** (`/forgot-password`) – Request a password reset email
-- **Reset Password** (`/reset-password`) – Set a new password using the recovery link
-
-The password recovery flow works as follows:
-
-1. User visits `/forgot-password` and enters their email
-2. User receives an email with a recovery link
-3. User clicks the link, which redirects to `/reset-password?userId=...&secret=...`
-4. User enters and confirms their new password
-5. User is redirected to sign in with their new credentials
 
 # Building For Production
 

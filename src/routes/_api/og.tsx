@@ -1,8 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ImageResponse } from '@vercel/og'
-import { getBaseUrl } from '@/server/functions/request'
 import { defaultCustomOGConfig } from '@/lib/og-config'
-import { getScreenshot } from '@/server/lib/avatars'
 
 async function loadGoogleFont(font: string, text: string) {
   const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`
@@ -27,7 +25,10 @@ export const Route = createFileRoute('/_api/og')({
       GET: async ({ request }) => {
         const { searchParams } = new URL(request.url)
 
-        const baseUrl = await getBaseUrl()
+        const baseUrl =
+          request.headers.get('x-forwarded-host')
+            ? `${request.headers.get('x-forwarded-proto') || 'https'}://${request.headers.get('x-forwarded-host')}`
+            : new URL(request.url).origin
 
         if (!searchParams.toString()) {
           const assetUrl = new URL('/default-og-image.png', baseUrl)
@@ -39,20 +40,6 @@ export const Route = createFileRoute('/_api/og')({
             })
           }
 
-          let screenshotArrayBuffer: ArrayBuffer | null = null
-          try {
-            screenshotArrayBuffer = await getScreenshot(
-              baseUrl,
-              870,
-              543,
-              1, // seconds to wait before taking screenshot
-            )
-          } catch (error) {
-            console.error('Failed to generate screenshot:', error)
-            // Continue without screenshot overlay
-          }
-
-          // Create a composite image with screenshot overlay
           return new ImageResponse(
             <div
               style={{
@@ -62,7 +49,6 @@ export const Route = createFileRoute('/_api/og')({
                 position: 'relative',
               }}
             >
-              {/* Background image */}
               <img
                 src={assetUrl.toString()}
                 style={{
@@ -71,20 +57,6 @@ export const Route = createFileRoute('/_api/og')({
                   height: '100%',
                 }}
               />
-              {/* Screenshot overlay - only render if screenshot was successful */}
-              {screenshotArrayBuffer && (
-                <img
-                  src={`data:image/png;base64,${Buffer.from(screenshotArrayBuffer).toString('base64')}`}
-                  style={{
-                    position: 'absolute',
-                    left: '510px',
-                    top: '44px',
-                    width: '870px',
-                    height: '543px',
-                    borderRadius: '14.48px',
-                  }}
-                />
-              )}
             </div>,
             {
               width: 1200,

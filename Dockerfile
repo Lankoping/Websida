@@ -14,9 +14,9 @@ COPY . .
 # Explicitly disable TSR and Nitro build-time complexities by using simple vite build
 ENV TSR_AUTOGENERATE=false
 ENV FOR_SITES=true
-# Run tsr generate BEFORE vite build to ensure types are ready, 
-# then build everything into .output
-RUN bun run tsr generate && bun vite build
+# Remove any stale generated route tree to prevent tsr generate from looping,
+# then generate routes and build everything into .output
+RUN rm -f src/routeTree.gen.ts && bun run tsr generate && bun vite build
 
 # Production image
 FROM base AS release

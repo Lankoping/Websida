@@ -8,5 +8,6 @@ node_modules
 .idea
 Dockerfile
 docker-compose.yml
+src/routeTree.gen.ts
 .github
 .git

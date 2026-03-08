@@ -1,17 +1,20 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { createUserFn, getUsersFn, changePasswordFn } from '../../server/functions/auth'
+import { createUserFn, getUsersFn, changePasswordFn, deleteUserFn, getSessionFn } from '../../server/functions/auth'
 
 export const Route = createFileRoute('/admin/users')({
   loader: async () => {
-    return { users: await getUsersFn() }
+    return { 
+      users: await getUsersFn(),
+      currentUser: await getSessionFn()
+    }
   },
   component: AdminUsers,
 })
 
 function AdminUsers() {
   const router = useRouter()
-  const { users } = Route.useLoaderData()
+  const { users, currentUser } = Route.useLoaderData()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -24,6 +27,8 @@ function AdminUsers() {
   const [newPassword, setNewPassword] = useState('')
   const [changePasswordError, setChangePasswordError] = useState('')
   const [isChangingPassword, setIsChangingPassword] = useState(false)
+  
+  const [isDeletingId, setIsDeletingId] = useState<number | null>(null)
 
   const handleChangePassword = async (userId: number, e: React.FormEvent) => {
     e.preventDefault()
@@ -44,6 +49,19 @@ function AdminUsers() {
       setChangePasswordError(err?.message || 'Could not change password')
     } finally {
       setIsChangingPassword(false)
+    }
+  }
+
+  const handleDeleteUser = async (userId: number) => {
+    if (!window.confirm('Är du säker på att du vill ta bort den här användaren?')) return;
+    setIsDeletingId(userId)
+    try {
+      await deleteUserFn({ data: { userId } })
+      await router.invalidate()
+    } catch (err: any) {
+      alert(err?.message || 'Could not delete user')
+    } finally {
+      setIsDeletingId(null)
     }
   }
 
@@ -171,16 +189,27 @@ function AdminUsers() {
                 <p className="text-xs text-[#F0E8D8]/40 font-mono tracking-tight">{user.email}</p>
               </div>
               <div className="flex items-center gap-3">
-                <button
-                  onClick={() => {
-                    setChangingPasswordId(user.id)
-                    setNewPassword('')
-                    setChangePasswordError('')
-                  }}
-                  className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium border border-[#F0E8D8]/20 text-[#F0E8D8]/60 hover:text-[#C04A2A] hover:border-[#C04A2A]/50 transition-colors"
-                >
-                  Byt lösenord
-                </button>
+                {(user.role !== 'admin' || user.id === currentUser?.id) && (
+                  <button
+                    onClick={() => {
+                      setChangingPasswordId(user.id)
+                      setNewPassword('')
+                      setChangePasswordError('')
+                    }}
+                    className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium border border-[#F0E8D8]/20 text-[#F0E8D8]/60 hover:text-[#C04A2A] hover:border-[#C04A2A]/50 transition-colors"
+                  >
+                    Byt lösenord
+                  </button>
+                )}
+                {user.id !== currentUser?.id && (
+                  <button
+                    onClick={() => handleDeleteUser(user.id)}
+                    disabled={isDeletingId === user.id}
+                    className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium border border-red-900/40 text-red-500/70 hover:text-red-500 hover:border-red-500/50 transition-colors disabled:opacity-50"
+                  >
+                    {isDeletingId === user.id ? 'Tar bort...' : 'Ta bort'}
+                  </button>
+                )}
                 <span className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium border border-[#C04A2A]/30 text-[#C04A2A] bg-[#C04A2A]/10">
                   {user.role}
                 </span>

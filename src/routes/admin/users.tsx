@@ -100,16 +100,16 @@ function AdminUsers() {
   });
 
   return (
-    <div className="bg-[#141210]/80 border border-[#C04A2A]/20 p-8 lg:p-10 rounded-sm text-[#F0E8D8] relative overflow-hidden">
+    <div className="bg-[#141210]/80 border border-[#C04A2A]/20 p-5 sm:p-8 lg:p-10 rounded-sm text-[#F0E8D8] relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C04A2A]/50 to-transparent opacity-50" />
       
       <div className="mb-8">
         <p className="text-[10px] uppercase tracking-[0.28em] text-[#C04A2A] font-medium mb-2">Hantera</p>
-        <h2 className="font-display text-3xl tracking-wide mb-2">Användare</h2>
+        <h2 className="font-display text-2xl sm:text-3xl tracking-wide mb-2">Användare</h2>
         <p className="text-xs text-[#F0E8D8]/50">Nya användare tilldelas rollen <span className="text-[#C04A2A] uppercase tracking-wider text-[10px] ml-1">admin</span>.</p>
       </div>
 
-      <form onSubmit={handleCreateUser} className="mb-12 grid gap-4 md:grid-cols-2 p-6 bg-[#1A1816]/50 border border-[#C04A2A]/20 rounded-sm relative group">
+      <form onSubmit={handleCreateUser} className="mb-12 grid gap-4 lg:grid-cols-2 p-5 sm:p-6 bg-[#1A1816]/50 border border-[#C04A2A]/20 rounded-sm relative group">
         <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-[#C04A2A]/50 to-transparent" />
         
         <div className="relative">
@@ -154,11 +154,11 @@ function AdminUsers() {
           </div>
         </div>
         
-        <div className="md:col-span-2 flex items-center justify-between mt-2 pt-4 border-t border-[#C04A2A]/10">
+        <div className="lg:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between mt-2 pt-4 border-t border-[#C04A2A]/10 gap-3">
           <button
             type="submit"
             disabled={isSaving}
-            className="px-6 py-3 bg-[#C04A2A] text-white text-[11px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#A03A1A] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(192,74,42,0.3)] disabled:opacity-50 disabled:hover:scale-100"
+            className="px-6 py-3 bg-[#C04A2A] text-white text-[11px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#A03A1A] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(192,74,42,0.3)] disabled:opacity-50 disabled:hover:scale-100 w-full sm:w-auto"
           >
             {isSaving ? 'Skapar...' : 'Skapa Användare'}
           </button>
@@ -181,14 +181,14 @@ function AdminUsers() {
 
       <div className="space-y-4">
         {filteredUsers.map((user) => (
-          <div key={user.id} className="relative group p-6 bg-[#1A1816]/50 border border-[#C04A2A]/20 hover:border-[#C04A2A]/50 rounded-sm transition-all hover:bg-[#1C1A18]">
+          <div key={user.id} className="relative group p-4 sm:p-6 bg-[#1A1816]/50 border border-[#C04A2A]/20 hover:border-[#C04A2A]/50 rounded-sm transition-all hover:bg-[#1C1A18]">
             <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-[#C04A2A] opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <p className="font-display text-xl tracking-wide text-[#F0E8D8] mb-1">{user.name || 'Unnamed user'}</p>
                 <p className="text-xs text-[#F0E8D8]/40 font-mono tracking-tight">{user.email}</p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 {(user.role !== 'admin' || user.id === currentUser?.id) && (
                   <button
                     onClick={() => {
@@ -218,9 +218,9 @@ function AdminUsers() {
             
             {changingPasswordId === user.id && (
               <form onSubmit={(e) => handleChangePassword(user.id, e)} className="mt-4 pt-4 border-t border-[#C04A2A]/10">
-                <div className="flex gap-3 items-end">
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
                   <div className="flex-1">
-                    <label className="block text-[10px] uppercase tracking-[0.2em] text-[#C04A2A] mb-2">Nytt lösenord</label>
+                    <label className="block text-[10px] uppercase tracking-[0.2em] text-[#C04A2A] mb-2 sm:mb-2 mt-1 sm:mt-0">Nytt lösenord</label>
                     <input
                       type="password"
                       value={newPassword}
@@ -231,20 +231,22 @@ function AdminUsers() {
                       autoFocus
                     />
                   </div>
-                  <button
-                    type="submit"
-                    disabled={isChangingPassword}
-                    className="px-4 py-2 bg-[#C04A2A] text-white text-[10px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#A03A1A] transition-all disabled:opacity-50"
-                  >
-                    {isChangingPassword ? 'Sparar...' : 'Spara'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setChangingPasswordId(null)}
-                    className="px-4 py-2 bg-transparent text-[#F0E8D8]/60 text-[10px] uppercase tracking-[0.15em] font-medium rounded-sm border border-[#F0E8D8]/20 hover:text-[#F0E8D8] hover:border-[#F0E8D8]/40 transition-all"
-                  >
-                    Avbryt
-                  </button>
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <button
+                      type="submit"
+                      disabled={isChangingPassword}
+                      className="flex-1 sm:flex-none px-4 py-2 bg-[#C04A2A] text-white text-[10px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#A03A1A] transition-all disabled:opacity-50 text-center"
+                    >
+                      {isChangingPassword ? 'Sparar...' : 'Spara'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setChangingPasswordId(null)}
+                      className="flex-1 sm:flex-none px-4 py-2 bg-transparent text-[#F0E8D8]/60 text-[10px] uppercase tracking-[0.15em] font-medium rounded-sm border border-[#F0E8D8]/20 hover:text-[#F0E8D8] hover:border-[#F0E8D8]/40 transition-all text-center"
+                    >
+                      Avbryt
+                    </button>
+                  </div>
                 </div>
                 {changePasswordError && <p className="text-red-400/80 text-[10px] tracking-wide uppercase font-medium mt-2">{changePasswordError}</p>}
               </form>

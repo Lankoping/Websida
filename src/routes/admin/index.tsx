@@ -47,12 +47,12 @@ function AdminDashboard() {
   });
 
   return (
-    <div className="bg-[#141210]/80 border border-[#C04A2A]/20 p-8 lg:p-10 rounded-sm text-[#F0E8D8] relative overflow-hidden group">
+    <div className="bg-[#141210]/80 border border-[#C04A2A]/20 p-5 sm:p-8 lg:p-10 rounded-sm text-[#F0E8D8] relative overflow-hidden group">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C04A2A]/50 to-transparent opacity-50" />
       
       <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-8 gap-4">
         <div>
-          <h2 className="font-display text-3xl tracking-wide mb-2">Översikt</h2>
+          <h2 className="font-display text-2xl sm:text-3xl tracking-wide mb-2">Översikt</h2>
           <p className="text-[#F0E8D8]/60 text-sm">Hantera innehåll och blogginlägg.</p>
         </div>
         <a href="/admin/new" className="px-6 py-3 bg-[#C04A2A] text-white text-[11px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#A03A1A] hover:scale-[1.02] active:scale-[0.98] transition-all inline-flex justify-center shadow-[0_0_15px_rgba(192,74,42,0.3)] whitespace-nowrap">

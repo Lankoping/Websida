@@ -47,12 +47,12 @@ function NewPost() {
   }
 
   return (
-    <div className="bg-[#141210]/80 border border-[#C04A2A]/20 p-8 lg:p-10 rounded-sm text-[#F0E8D8] relative overflow-hidden group">
+    <div className="bg-[#141210]/80 border border-[#C04A2A]/20 p-5 sm:p-8 lg:p-10 rounded-sm text-[#F0E8D8] relative overflow-hidden group">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C04A2A]/50 to-transparent opacity-50" />
       
       <div className="mb-8 border-b border-[#C04A2A]/20 pb-6">
         <p className="text-[10px] uppercase tracking-[0.28em] text-[#C04A2A] font-medium mb-2">Hantera</p>
-        <h1 className="font-display text-3xl tracking-wide">Nytt Inlägg</h1>
+        <h1 className="font-display text-2xl sm:text-3xl tracking-wide">Nytt Inlägg</h1>
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -103,11 +103,11 @@ function NewPost() {
           />
         </div>
 
-        <div className="flex justify-end gap-6 pt-6 border-t border-[#C04A2A]/20 items-center">
-          <a href="/admin" className="text-[11px] uppercase tracking-[0.15em] font-medium text-[#F0E8D8]/50 hover:text-[#F0E8D8] transition-colors">Avbryt</a>
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-4 sm:gap-6 pt-6 border-t border-[#C04A2A]/20 sm:items-center">
+          <a href="/admin" className="text-[11px] uppercase tracking-[0.15em] font-medium text-[#F0E8D8]/50 hover:text-[#F0E8D8] transition-colors text-center py-3 sm:py-0 w-full sm:w-auto border border-[#F0E8D8]/10 sm:border-none rounded-sm">Avbryt</a>
           <button
             type="submit"
-            className="px-6 py-3 bg-[#C04A2A] text-white text-[11px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#A03A1A] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(192,74,42,0.3)]"
+            className="px-6 py-3 bg-[#C04A2A] text-white text-[11px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#A03A1A] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(192,74,42,0.3)] w-full sm:w-auto"
           >
             Publicera Innehåll
           </button>

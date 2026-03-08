@@ -9,16 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as ProtectedRouteImport } from './routes/_protected'
+import { Route as NyheterIndexRouteImport } from './routes/nyheter/index'
+import { Route as BlogsIndexRouteImport } from './routes/blogs/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as NyheterSlugRouteImport } from './routes/nyheter/$slug'
+import { Route as BlogsSlugRouteImport } from './routes/blogs/$slug'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminPostsRouteImport } from './routes/admin/posts'
+import { Route as AdminNewRouteImport } from './routes/admin/new'
 import { Route as PublicTeamRouteImport } from './routes/_public/team'
 import { Route as PublicRulesRouteImport } from './routes/_public/rules'
 import { Route as PublicPrivacyRouteImport } from './routes/_public/privacy'
 import { Route as ProtectedExampleProtectedRouteRouteImport } from './routes/_protected/example-protected-route'
 import { Route as ApiOgRouteImport } from './routes/_api/og'
 import { Route as ApiHelloRouteImport } from './routes/_api/hello'
+import { Route as AdminEditIdRouteImport } from './routes/admin/edit/$id'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
@@ -27,10 +48,50 @@ const ProtectedRoute = ProtectedRouteImport.update({
   id: '/_protected',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NyheterIndexRoute = NyheterIndexRouteImport.update({
+  id: '/nyheter/',
+  path: '/nyheter/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogsIndexRoute = BlogsIndexRouteImport.update({
+  id: '/blogs/',
+  path: '/blogs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicRoute,
+} as any)
+const NyheterSlugRoute = NyheterSlugRouteImport.update({
+  id: '/nyheter/$slug',
+  path: '/nyheter/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogsSlugRoute = BlogsSlugRouteImport.update({
+  id: '/blogs/$slug',
+  path: '/blogs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPostsRoute = AdminPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNewRoute = AdminNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminRoute,
 } as any)
 const PublicTeamRoute = PublicTeamRouteImport.update({
   id: '/team',
@@ -63,78 +124,167 @@ const ApiHelloRoute = ApiHelloRouteImport.update({
   path: '/hello',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminEditIdRoute = AdminEditIdRouteImport.update({
+  id: '/edit/$id',
+  path: '/edit/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/login': typeof LoginRoute
   '/hello': typeof ApiHelloRoute
   '/og': typeof ApiOgRoute
   '/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/privacy': typeof PublicPrivacyRoute
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
+  '/admin/new': typeof AdminNewRoute
+  '/admin/posts': typeof AdminPostsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/nyheter/$slug': typeof NyheterSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/blogs/': typeof BlogsIndexRoute
+  '/nyheter/': typeof NyheterIndexRoute
+  '/admin/edit/$id': typeof AdminEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
+  '/login': typeof LoginRoute
   '/hello': typeof ApiHelloRoute
   '/og': typeof ApiOgRoute
   '/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/privacy': typeof PublicPrivacyRoute
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
+  '/admin/new': typeof AdminNewRoute
+  '/admin/posts': typeof AdminPostsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/nyheter/$slug': typeof NyheterSlugRoute
+  '/admin': typeof AdminIndexRoute
+  '/blogs': typeof BlogsIndexRoute
+  '/nyheter': typeof NyheterIndexRoute
+  '/admin/edit/$id': typeof AdminEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_protected': typeof ProtectedRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/login': typeof LoginRoute
   '/_api/hello': typeof ApiHelloRoute
   '/_api/og': typeof ApiOgRoute
   '/_protected/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/_public/privacy': typeof PublicPrivacyRoute
   '/_public/rules': typeof PublicRulesRoute
   '/_public/team': typeof PublicTeamRoute
+  '/admin/new': typeof AdminNewRoute
+  '/admin/posts': typeof AdminPostsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/nyheter/$slug': typeof NyheterSlugRoute
   '/_public/': typeof PublicIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/blogs/': typeof BlogsIndexRoute
+  '/nyheter/': typeof NyheterIndexRoute
+  '/admin/edit/$id': typeof AdminEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
+    | '/login'
     | '/hello'
     | '/og'
     | '/example-protected-route'
     | '/privacy'
     | '/rules'
     | '/team'
+    | '/admin/new'
+    | '/admin/posts'
+    | '/admin/users'
+    | '/blogs/$slug'
+    | '/nyheter/$slug'
+    | '/admin/'
+    | '/blogs/'
+    | '/nyheter/'
+    | '/admin/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
     | '/hello'
     | '/og'
     | '/example-protected-route'
     | '/privacy'
     | '/rules'
     | '/team'
+    | '/admin/new'
+    | '/admin/posts'
+    | '/admin/users'
+    | '/blogs/$slug'
+    | '/nyheter/$slug'
+    | '/admin'
+    | '/blogs'
+    | '/nyheter'
+    | '/admin/edit/$id'
   id:
     | '__root__'
     | '/_protected'
     | '/_public'
+    | '/admin'
+    | '/login'
     | '/_api/hello'
     | '/_api/og'
     | '/_protected/example-protected-route'
     | '/_public/privacy'
     | '/_public/rules'
     | '/_public/team'
+    | '/admin/new'
+    | '/admin/posts'
+    | '/admin/users'
+    | '/blogs/$slug'
+    | '/nyheter/$slug'
     | '/_public/'
+    | '/admin/'
+    | '/blogs/'
+    | '/nyheter/'
+    | '/admin/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   ProtectedRoute: typeof ProtectedRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
+  LoginRoute: typeof LoginRoute
   ApiHelloRoute: typeof ApiHelloRoute
   ApiOgRoute: typeof ApiOgRoute
+  BlogsSlugRoute: typeof BlogsSlugRoute
+  NyheterSlugRoute: typeof NyheterSlugRoute
+  BlogsIndexRoute: typeof BlogsIndexRoute
+  NyheterIndexRoute: typeof NyheterIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public': {
       id: '/_public'
       path: ''
@@ -149,12 +299,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/nyheter/': {
+      id: '/nyheter/'
+      path: '/nyheter'
+      fullPath: '/nyheter/'
+      preLoaderRoute: typeof NyheterIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blogs/': {
+      id: '/blogs/'
+      path: '/blogs'
+      fullPath: '/blogs/'
+      preLoaderRoute: typeof BlogsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_public/': {
       id: '/_public/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRoute
+    }
+    '/nyheter/$slug': {
+      id: '/nyheter/$slug'
+      path: '/nyheter/$slug'
+      fullPath: '/nyheter/$slug'
+      preLoaderRoute: typeof NyheterSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blogs/$slug': {
+      id: '/blogs/$slug'
+      path: '/blogs/$slug'
+      fullPath: '/blogs/$slug'
+      preLoaderRoute: typeof BlogsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/posts': {
+      id: '/admin/posts'
+      path: '/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AdminPostsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/new': {
+      id: '/admin/new'
+      path: '/new'
+      fullPath: '/admin/new'
+      preLoaderRoute: typeof AdminNewRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_public/team': {
       id: '/_public/team'
@@ -198,6 +404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHelloRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/edit/$id': {
+      id: '/admin/edit/$id'
+      path: '/edit/$id'
+      fullPath: '/admin/edit/$id'
+      preLoaderRoute: typeof AdminEditIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
@@ -230,11 +443,35 @@ const PublicRouteChildren: PublicRouteChildren = {
 const PublicRouteWithChildren =
   PublicRoute._addFileChildren(PublicRouteChildren)
 
+interface AdminRouteChildren {
+  AdminNewRoute: typeof AdminNewRoute
+  AdminPostsRoute: typeof AdminPostsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminEditIdRoute: typeof AdminEditIdRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminNewRoute: AdminNewRoute,
+  AdminPostsRoute: AdminPostsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminEditIdRoute: AdminEditIdRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   ProtectedRoute: ProtectedRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
+  LoginRoute: LoginRoute,
   ApiHelloRoute: ApiHelloRoute,
   ApiOgRoute: ApiOgRoute,
+  BlogsSlugRoute: BlogsSlugRoute,
+  NyheterSlugRoute: NyheterSlugRoute,
+  BlogsIndexRoute: BlogsIndexRoute,
+  NyheterIndexRoute: NyheterIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

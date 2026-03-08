@@ -11,8 +11,13 @@ services:
       - PORT=3000
       - NITRO_HOST=0.0.0.0
       - NODE_ENV=production
-      # DATABASE_URL should be provided externally (e.g., via Dockploy environment variables)
       - DATABASE_URL=${DATABASE_URL}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lankoping-web.rule=Host(`lankoping.se`) || Host(`www.lankoping.se`)"
+      - "traefik.http.routers.lankoping-web.entrypoints=web,websecure"
+      - "traefik.http.routers.lankoping-web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.lankoping-web.loadbalancer.server.port=3000"
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3000/').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
       interval: 30s

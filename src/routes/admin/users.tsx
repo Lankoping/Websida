@@ -1,6 +1,6 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { createUserFn, getUsersFn } from '../../server/functions/auth'
+import { createUserFn, getUsersFn, changePasswordFn } from '../../server/functions/auth'
 
 export const Route = createFileRoute('/admin/users')({
   loader: async () => {
@@ -19,6 +19,33 @@ function AdminUsers() {
   const [isSaving, setIsSaving] = useState(false)
 
   const [searchQuery, setSearchQuery] = useState('')
+  
+  const [changingPasswordId, setChangingPasswordId] = useState<number | null>(null)
+  const [newPassword, setNewPassword] = useState('')
+  const [changePasswordError, setChangePasswordError] = useState('')
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
+
+  const handleChangePassword = async (userId: number, e: React.FormEvent) => {
+    e.preventDefault()
+    setChangePasswordError('')
+    setIsChangingPassword(true)
+
+    try {
+      await changePasswordFn({
+        data: {
+          userId,
+          newPassword,
+        },
+      })
+      setChangingPasswordId(null)
+      setNewPassword('')
+      await router.invalidate()
+    } catch (err: any) {
+      setChangePasswordError(err?.message || 'Could not change password')
+    } finally {
+      setIsChangingPassword(false)
+    }
+  }
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -143,10 +170,56 @@ function AdminUsers() {
                 <p className="font-display text-xl tracking-wide text-[#F0E8D8] mb-1">{user.name || 'Unnamed user'}</p>
                 <p className="text-xs text-[#F0E8D8]/40 font-mono tracking-tight">{user.email}</p>
               </div>
-              <span className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium border border-[#C04A2A]/30 text-[#C04A2A] bg-[#C04A2A]/10">
-                {user.role}
-              </span>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => {
+                    setChangingPasswordId(user.id)
+                    setNewPassword('')
+                    setChangePasswordError('')
+                  }}
+                  className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium border border-[#F0E8D8]/20 text-[#F0E8D8]/60 hover:text-[#C04A2A] hover:border-[#C04A2A]/50 transition-colors"
+                >
+                  Byt lösenord
+                </button>
+                <span className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium border border-[#C04A2A]/30 text-[#C04A2A] bg-[#C04A2A]/10">
+                  {user.role}
+                </span>
+              </div>
             </div>
+            
+            {changingPasswordId === user.id && (
+              <form onSubmit={(e) => handleChangePassword(user.id, e)} className="mt-4 pt-4 border-t border-[#C04A2A]/10">
+                <div className="flex gap-3 items-end">
+                  <div className="flex-1">
+                    <label className="block text-[10px] uppercase tracking-[0.2em] text-[#C04A2A] mb-2">Nytt lösenord</label>
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Nytt lösenord"
+                      className="w-full p-2 bg-[#100E0C] border border-[#C04A2A]/20 focus:border-[#C04A2A]/60 outline-none rounded-sm text-[#F0E8D8] text-sm transition-all font-mono"
+                      required
+                      autoFocus
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isChangingPassword}
+                    className="px-4 py-2 bg-[#C04A2A] text-white text-[10px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#A03A1A] transition-all disabled:opacity-50"
+                  >
+                    {isChangingPassword ? 'Sparar...' : 'Spara'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setChangingPasswordId(null)}
+                    className="px-4 py-2 bg-transparent text-[#F0E8D8]/60 text-[10px] uppercase tracking-[0.15em] font-medium rounded-sm border border-[#F0E8D8]/20 hover:text-[#F0E8D8] hover:border-[#F0E8D8]/40 transition-all"
+                  >
+                    Avbryt
+                  </button>
+                </div>
+                {changePasswordError && <p className="text-red-400/80 text-[10px] tracking-wide uppercase font-medium mt-2">{changePasswordError}</p>}
+              </form>
+            )}
           </div>
         ))}
         {filteredUsers.length === 0 && (

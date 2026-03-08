@@ -113,3 +113,34 @@ export const createUserFn = createServerFn({ method: "POST" })
 
     return created[0]
   })
+
+export const changePasswordFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({
+      userId: z.number(),
+      newPassword: z.string().min(1),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const currentUserId = getCookie('session')
+    if (!currentUserId) {
+      throw new Error('Unauthorized')
+    }
+
+    const currentUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, parseInt(currentUserId)))
+      .limit(1)
+
+    if (!currentUser[0] || currentUser[0].role !== 'admin') {
+      throw new Error('Forbidden')
+    }
+
+    await db
+      .update(users)
+      .set({ passwordHash: data.newPassword })
+      .where(eq(users.id, data.userId))
+
+    return { success: true }
+  })

@@ -27,6 +27,20 @@ function PublicTicketView() {
       }
     }
     load()
+
+    // Add polling to update status automatically
+    const interval = setInterval(async () => {
+      try {
+        const res = await verifyTicketByCodeFn({ data: { code, markAsUsed: false } })
+        if (res.success && res.ticket) {
+          setData((prev: any) => ({ ...prev, ticket: res.ticket }))
+        }
+      } catch (err) {
+        console.error('Polling error:', err)
+      }
+    }, 3000)
+
+    return () => clearInterval(interval)
   }, [code])
 
   if (loading) {

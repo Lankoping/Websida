@@ -75,10 +75,27 @@ export const deleteTicketTypeFn = createServerFn({ method: "POST" })
     return { success: true }
   })
 
-export const getTicketsFn = createServerFn({ method: 'GET' })
+export const getTicketsFn = createServerFn({ method: "GET" })
   .handler(async () => {
     await checkAdmin()
-    return await db.select().from(tickets)
+    return await db.select({
+      id: tickets.id,
+      eventId: tickets.eventId,
+      participantName: tickets.participantName,
+      participantEmail: tickets.participantEmail,
+      ticketType: tickets.ticketType,
+      pricePaid: tickets.pricePaid,
+      ticketCode: tickets.ticketCode,
+      status: tickets.status,
+      scannedAt: tickets.scannedAt,
+      scannedBy: tickets.scannedBy,
+      scannedByName: users.name,
+      issuedBy: tickets.issuedBy,
+      createdAt: tickets.createdAt,
+      updatedAt: tickets.updatedAt,
+    })
+    .from(tickets)
+    .leftJoin(users, eq(tickets.scannedBy, users.id))
   })
 
 export const getTicketFn = createServerFn({ method: 'GET' })
@@ -117,7 +134,7 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
     return newTicket[0]
   })
 
-export const updateTicketStatusFn = createServerFn({ method: 'POST' })
+export const updateTicketStatusFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) =>
     z.object({
       ticketId: z.number(),
@@ -125,9 +142,15 @@ export const updateTicketStatusFn = createServerFn({ method: 'POST' })
     }).parse(data)
   )
   .handler(async ({ data }) => {
-    await checkAdmin()
+    const adminId = await checkAdmin()
+    const scanDate = data.status === 'used' ? new Date() : null
     const updated = await db.update(tickets)
-      .set({ status: data.status, updatedAt: new Date() })
+      .set({ 
+        status: data.status, 
+        scannedAt: scanDate,
+        scannedBy: data.status === 'used' ? adminId : null,
+        updatedAt: new Date() 
+      })
       .where(eq(tickets.id, data.ticketId))
       .returning()
     return updated[0]
@@ -144,15 +167,43 @@ export const deleteTicketFn = createServerFn({ method: 'POST' })
 export const verifyTicketByCodeFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.string().parse(data))
   .handler(async ({ data: code }) => {
+    // Try to get adminId if they're logged in
+    let adminId: number | null = null
+    try {
+      adminId = await checkAdmin()
+    } catch (e) {
+      // Not logged in or not admin, that's fine for public verification
+    }
+
     const result = await db.select().from(tickets).where(eq(tickets.ticketCode, code)).limit(1)
     if (result.length === 0) return { success: false, message: 'Ogiltig biljettkod' }
     
+    const ticket = result[0]
+    
+    // If ticket is valid, mark it as used and record scan time
+    if (ticket.status === 'valid') {
+      const scanDate = new Date()
+      await db.update(tickets)
+        .set({ 
+          status: 'used', 
+          scannedAt: scanDate, 
+          scannedBy: adminId,
+          updatedAt: scanDate 
+        })
+        .where(eq(tickets.id, ticket.id))
+      
+      // Update local object for response
+      ticket.status = 'used'
+      ticket.scannedAt = scanDate
+      ticket.scannedBy = adminId
+    }
+
     // Also get event details from the events table
-    const event = await db.select().from(events).where(eq(events.id, result[0].eventId)).limit(1)
+    const event = await db.select().from(events).where(eq(events.id, ticket.eventId)).limit(1)
     
     return { 
       success: true, 
-      ticket: result[0], 
+      ticket, 
       event: event[0] || null 
     }
   })

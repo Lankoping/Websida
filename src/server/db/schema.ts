@@ -53,6 +53,8 @@ export const tickets = pgTable('tickets', {
   pricePaid: integer('price_paid').default(0).notNull(),
   ticketCode: text('ticket_code').notNull().unique(),
   status: text('status', { enum: ['valid', 'used', 'cancelled'] }).default('valid').notNull(),
+  scannedAt: timestamp('scanned_at'),
+  scannedBy: integer('scanned_by').references(() => users.id),
   issuedBy: integer('issued_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),

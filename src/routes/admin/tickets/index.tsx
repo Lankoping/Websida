@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { getTicketsFn, deleteTicketFn, updateTicketStatusFn, getEventsForTicketsFn } from '../../../server/functions/tickets'
 import { useState } from 'react'
-import { Plus, Trash2, CheckCircle, XCircle, Search, Ticket, Mail, User, Calendar, QrCode, Scan, Settings } from 'lucide-react'
+import { Plus, Trash2, CheckCircle, XCircle, Search, Ticket, Mail, User, Calendar, QrCode, Scan, Settings, Copy, Check } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { QRCodeSVG } from 'qrcode.react'
 
@@ -22,6 +22,14 @@ function TicketsAdmin() {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTicket, setSelectedTicket] = useState<typeof tickets[0] | null>(null)
+  const [copiedId, setCopiedId] = useState<number | null>(null)
+
+  const handleCopyLink = (code: string, ticketId: number) => {
+    const url = `${window.location.origin}/verify/${code}`
+    navigator.clipboard.writeText(url)
+    setCopiedId(ticketId)
+    setTimeout(() => setCopiedId(null), 2000)
+  }
 
   const handleDelete = async (id: number) => {
     if (window.confirm('Är du säker på att du vill radera denna biljett?')) {
@@ -66,42 +74,42 @@ function TicketsAdmin() {
     <div className="bg-[#141210]/95 border border-[#C04A2A]/20 p-5 sm:p-8 lg:p-10 rounded-sm text-[#F0E8D8] relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C04A2A]/50 to-transparent opacity-50" />
       
-      <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-8 gap-4">
+      <div className="flex flex-col xl:flex-row justify-between xl:items-end mb-8 gap-4">
         <div>
-          <h2 className="font-display text-2xl sm:text-3xl tracking-wide mb-2 flex items-center gap-3">
-            <Ticket className="w-8 h-8 text-[#C04A2A]" />
+          <h2 className="font-display text-2xl sm:text-3xl tracking-wide mb-2 flex items-center gap-3 text-[#C04A2A]">
+            <Ticket className="w-8 h-8" />
             Biljetthantering
           </h2>
-          <p className="text-[#F0E8D8]/60 text-sm">Utfärda och hantera biljetter för dine event.</p>
+          <p className="text-[#F0E8D8]/60 text-sm">Utfärda och hantera biljetter för dina event.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <button 
             onClick={() => navigate({ to: '/admin/tickets/events' })}
-            className="px-6 py-3 border border-[#C04A2A]/40 text-[#F0E8D8] text-[11px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#C04A2A]/10 transition-all inline-flex items-center gap-2 justify-center whitespace-nowrap"
+            className="px-4 py-3 border border-[#C04A2A]/40 text-[#F0E8D8] text-[10px] uppercase tracking-[0.12em] font-medium rounded-sm hover:bg-[#C04A2A]/10 transition-all inline-flex items-center gap-2 justify-center whitespace-nowrap"
           >
-            <Calendar className="w-4 h-4" />
-            Hantera Events
+            <Calendar className="w-3.5 h-3.5" />
+            Events
           </button>
           <button 
             onClick={() => navigate({ to: '/admin/tickets/types' })}
-            className="px-6 py-3 border border-[#C04A2A]/40 text-[#F0E8D8] text-[11px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#C04A2A]/10 transition-all inline-flex items-center gap-2 justify-center whitespace-nowrap"
+            className="px-4 py-3 border border-[#C04A2A]/40 text-[#F0E8D8] text-[10px] uppercase tracking-[0.12em] font-medium rounded-sm hover:bg-[#C04A2A]/10 transition-all inline-flex items-center gap-2 justify-center whitespace-nowrap"
           >
-            <Settings className="w-4 h-4" />
-            Konfigurera Typer
+            <Settings className="w-3.5 h-3.5" />
+            Typer
           </button>
           <button 
             onClick={() => navigate({ to: '/admin/tickets/scan' })}
-            className="px-6 py-3 border border-[#C04A2A]/40 text-[#F0E8D8] text-[11px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#C04A2A]/10 transition-all inline-flex items-center gap-2 justify-center whitespace-nowrap"
+            className="px-4 py-3 border border-[#C04A2A]/40 text-[#F0E8D8] text-[10px] uppercase tracking-[0.12em] font-medium rounded-sm hover:bg-[#C04A2A]/10 transition-all inline-flex items-center gap-2 justify-center whitespace-nowrap"
           >
-            <Scan className="w-4 h-4" />
-            Skanna Biljett
+            <Scan className="w-3.5 h-3.5" />
+            Skanna
           </button>
           <button 
             onClick={() => navigate({ to: '/admin/tickets/new' })}
-            className="px-6 py-3 bg-[#C04A2A] text-white text-[11px] uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-[#A03A1A] hover:scale-[1.02] active:scale-[0.98] transition-all inline-flex items-center gap-2 justify-center shadow-[0_0_15px_rgba(192,74,42,0.3)] whitespace-nowrap"
+            className="px-4 py-3 bg-[#C04A2A] text-white text-[10px] uppercase tracking-[0.12em] font-medium rounded-sm hover:bg-[#A03A1A] hover:scale-[1.02] active:scale-[0.98] transition-all inline-flex items-center gap-2 justify-center shadow-[0_0_15px_rgba(192,74,42,0.3)] whitespace-nowrap"
           >
-            <Plus className="w-4 h-4" />
-            Utfärda Ny Biljett
+            <Plus className="w-3.5 h-3.5" />
+            Ny biljett
           </button>
         </div>
       </div>
@@ -123,87 +131,94 @@ function TicketsAdmin() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-[#C04A2A]/20 bg-[#C04A2A]/5">
-              <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80">Kod</th>
-              <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80">Deltagare</th>
-              <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80">Typ & Pris</th>
-              <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80">Status</th>
-              <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80 text-right">Åtgärder</th>
+              <th className="p-3 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80">Kod</th>
+              <th className="p-3 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80">Deltagare</th>
+              <th className="p-3 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80">Typ & Pris</th>
+              <th className="p-3 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80">Status</th>
+              <th className="p-3 text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80 text-right">Åtgärder</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#C04A2A]/5">
             {filteredTickets.map((ticket) => (
               <tr key={ticket.id} className="hover:bg-[#C04A2A]/5 transition-colors group">
-                <td className="p-4">
-                  <span className="font-mono text-xs bg-[#100E0C] px-2 py-1 border border-[#C04A2A]/20 rounded-sm group-hover:border-[#C04A2A]/40 text-[#F0E8D8]">
+                <td className="p-3 whitespace-nowrap">
+                  <span className="font-mono text-[11px] bg-[#100E0C] px-1.5 py-1 border border-[#C04A2A]/20 rounded-sm group-hover:border-[#C04A2A]/40 text-[#F0E8D8]">
                     {ticket.ticketCode}
                   </span>
                 </td>
-                <td className="p-4">
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium flex items-center gap-2">
+                <td className="p-3">
+                  <div className="flex flex-col min-w-[120px]">
+                    <span className="text-xs font-medium flex items-center gap-1.5 text-[#F0E8D8]">
                        <User className="w-3 h-3 text-[#C04A2A]/40" />
-                       {ticket.participantName}
+                       <span className="truncate">{ticket.participantName}</span>
                     </span>
-                    <span className="text-xs text-[#F0E8D8]/40 flex items-center gap-2">
+                    <span className="text-[10px] text-[#F0E8D8]/40 flex items-center gap-1.5 mt-0.5">
                        <Calendar className="w-3 h-3 text-[#C04A2A]/40" />
-                       {getEventTitle(ticket.eventId)}
+                       <span className="truncate">{getEventTitle(ticket.eventId)}</span>
                     </span>
                   </div>
                 </td>
-                <td className="p-4">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] uppercase tracking-wider font-bold text-[#C04A2A]/80">{ticket.ticketType}</span>
-                    <span className="text-xs font-mono">{ticket.pricePaid} SEK</span>
+                <td className="p-3">
+                  <div className="flex flex-col whitespace-nowrap">
+                    <span className="text-[9px] uppercase tracking-wider font-bold text-[#C04A2A]/80">{ticket.ticketType}</span>
+                    <span className="text-[11px] font-mono">{ticket.pricePaid} SEK</span>
                   </div>
                 </td>
-                <td className="p-4">
-                  <select 
-                    value={ticket.status}
-                    onChange={(e) => handleUpdateStatus(ticket.id, e.target.value as any)}
-                    className={`px-2 py-1 text-[9px] font-medium uppercase tracking-wider rounded-sm border bg-[#100E0C] outline-none cursor-pointer transition-all ${
+                <td className="p-3">
+                  <div className="flex flex-col min-w-[100px]">
+                    <div className={`px-2 py-0.5 text-[9px] font-medium uppercase tracking-wider rounded-sm border bg-[#100E0C] mb-1.5 flex items-center justify-between transition-all ${
                       ticket.status === 'valid' ? 'border-green-500/30 text-green-400' :
                       ticket.status === 'used' ? 'border-blue-500/30 text-blue-400' :
                       'border-red-500/30 text-red-400'
-                    }`}
-                  >
-                    <option value="valid">Giltig</option>
-                    <option value="used">Använd</option>
-                    <option value="cancelled">Annullerad</option>
-                  </select>
+                    }`}>
+                      <select 
+                        value={ticket.status}
+                        onChange={(e) => handleUpdateStatus(ticket.id, e.target.value as any)}
+                        className="bg-transparent outline-none cursor-pointer w-full py-0.5"
+                      >
+                        <option value="valid">Giltig</option>
+                        <option value="used">Använd</option>
+                        <option value="cancelled">Annullerad</option>
+                      </select>
+                    </div>
+                    {ticket.scannedAt && (
+                      <div className="flex flex-col mt-0.5">
+                        <span className="text-[8px] text-[#F0E8D8]/30 uppercase tracking-tighter">
+                          Skannad: {new Date(ticket.scannedAt).toLocaleString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        {ticket.scannedByName && (
+                          <span className="text-[8px] text-[#C04A2A]/40 font-bold uppercase tracking-widest mt-0.5 whitespace-nowrap">
+                            Av: {ticket.scannedByName}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </td>
-                <td className="p-4 text-right">
-                  <div className="flex justify-end gap-2">
+                <td className="p-3 text-right">
+                  <div className="flex justify-end gap-1.5">
+                    <button 
+                      onClick={() => handleCopyLink(ticket.ticketCode, ticket.id)}
+                      className={`p-1.5 transition-all rounded-sm flex items-center gap-1 border border-transparent ${
+                        copiedId === ticket.id ? 'text-green-400 bg-green-400/10 border-green-400/20' : 'text-[#F0E8D8]/40 hover:text-[#F0E8D8] hover:bg-[#F0E8D8]/5'
+                      }`}
+                      title="Kopiera länk"
+                    >
+                      {copiedId === ticket.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
                     <button 
                       onClick={() => setSelectedTicket(ticket)}
-                      className="p-1.5 text-[#C04A2A]/60 hover:text-[#C04A2A] hover:bg-[#C04A2A]/10 rounded-sm transition-all"
-                      title="Visa QR-kod"
+                      className="p-1.5 text-[#C04A2A]/60 hover:text-[#C04A2A] hover:bg-[#C04A2A]/10 rounded-sm transition-all border border-transparent"
+                      title="Visa QR"
                     >
-                      <QrCode className="w-4 h-4" />
+                      <QrCode className="w-3.5 h-3.5" />
                     </button>
-                    {ticket.status === 'valid' && (
-                      <button 
-                        onClick={() => handleUpdateStatus(ticket.id, 'used')}
-                        className="p-1.5 text-blue-400/60 hover:text-blue-400 hover:bg-blue-400/10 rounded-sm transition-all"
-                        title="Markera som använd"
-                      >
-                        <CheckCircle className="w-4 h-4" />
-                      </button>
-                    )}
-                    {ticket.status !== 'cancelled' && (
-                      <button 
-                        onClick={() => handleUpdateStatus(ticket.id, 'cancelled')}
-                        className="p-1.5 text-red-400/60 hover:text-red-400 hover:bg-red-400/10 rounded-sm transition-all"
-                        title="Annullera"
-                      >
-                        <XCircle className="w-4 h-4" />
-                      </button>
-                    )}
                     <button 
                       onClick={() => handleDelete(ticket.id)}
-                      className="p-1.5 text-gray-500/40 hover:text-red-500 hover:bg-red-500/10 rounded-sm transition-all"
+                      className="p-1.5 text-gray-500/40 hover:text-red-500 hover:bg-red-500/10 rounded-sm transition-all border border-transparent"
                       title="Radera"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </td>

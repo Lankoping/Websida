@@ -36,23 +36,6 @@ function buildValidatedFontUrl(fontUrl: string): string {
     throw new Error('Invalid URL')
   }
 }
-  try {
-    const url = new URL(fontUrl)
-    
-    const allowedDomains = ['fonts.gstatic.com']
-    if (!allowedDomains.includes(url.hostname)) {
-      throw new Error('Invalid host')
-    }
-    
-    if (!['https:'].includes(url.protocol)) {
-      throw new Error('Invalid protocol')
-    }
-    
-    return url.href
-  } catch {
-    throw new Error('Invalid URL')
-  }
-}
 
 async function loadGoogleFont(font: string, text: string) {
   const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`

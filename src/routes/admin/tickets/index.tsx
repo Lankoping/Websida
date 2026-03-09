@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { getTicketsFn, deleteTicketFn, updateTicketStatusFn, getEventsForTicketsFn } from '../../../server/functions/tickets'
 import { useState } from 'react'
-import { Plus, Trash2, CheckCircle, XCircle, Search, Ticket, Mail, User, Calendar, QrCode, Scan, Settings, Copy, Check } from 'lucide-react'
+import { Plus, Trash2, CheckCircle, XCircle, Search, Ticket, Mail, User, Calendar, QrCode, Scan, Settings, Copy, Check, ShieldCheck, AlertTriangle } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { QRCodeSVG } from 'qrcode.react'
 
@@ -23,6 +23,21 @@ function TicketsAdmin() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTicket, setSelectedTicket] = useState<typeof tickets[0] | null>(null)
   const [copiedId, setCopiedId] = useState<number | null>(null)
+  const [verificationResult, setVerificationResult] = useState<any>(null)
+
+  const handleManualVerification = async () => {
+    const code = window.prompt('Ange biljettkod (t.ex. TKT-ABC123XY):')
+    if (!code) return
+
+    try {
+      const res = await verifyTicketByCodeFn({ data: { code: code.trim().toUpperCase(), markAsUsed: true } })
+      setVerificationResult(res)
+      await router.invalidate()
+    } catch (err) {
+      console.error(err)
+      alert('Verifiering misslyckades')
+    }
+  }
 
   const handleCopyLink = (code: string, ticketId: number) => {
     const url = `${window.location.origin}/biljett/${code}`
@@ -103,6 +118,13 @@ function TicketsAdmin() {
           >
             <Scan className="w-3.5 h-3.5" />
             Skanna
+          </button>
+          <button 
+            onClick={handleManualVerification}
+            className="px-4 py-3 border border-[#C04A2A]/40 text-[#F0E8D8] text-[10px] uppercase tracking-[0.12em] font-medium rounded-sm hover:bg-[#C04A2A]/10 transition-all inline-flex items-center gap-2 justify-center whitespace-nowrap"
+          >
+            <Ticket className="w-3.5 h-3.5" />
+            Ange Kod
           </button>
           <button 
             onClick={() => navigate({ to: '/admin/tickets/new' })}
@@ -234,6 +256,76 @@ function TicketsAdmin() {
           </tbody>
         </table>
       </div>
+
+      {verificationResult && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" onClick={() => setVerificationResult(null)}>
+          <div className={`w-full max-w-sm p-8 border ${
+            !verificationResult.success || (verificationResult.ticket && verificationResult.ticket.status !== 'used')
+              ? 'border-red-500/30 bg-red-500/10 shadow-[0_0_50px_rgba(239,68,68,0.2)]'
+              : 'border-green-500/30 bg-green-500/10 shadow-[0_0_50px_rgba(34,197,94,0.2)]'
+          } rounded-sm relative overflow-hidden text-center`} onClick={e => e.stopPropagation()}>
+            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#C04A2A] to-transparent" />
+            
+            <button 
+              onClick={() => setVerificationResult(null)}
+              className="absolute top-4 right-4 text-[#F0E8D8]/40 hover:text-[#F0E8D8] transition-colors"
+            >
+              <XCircle className="w-6 h-6" />
+            </button>
+
+            <div className="mb-6 flex justify-center">
+              {verificationResult.success ? (
+                verificationResult.ticket.status === 'used' ? (
+                  <div className="p-4 bg-green-500/20 rounded-full border border-green-500/40">
+                    <ShieldCheck className="w-12 h-12 text-green-400" />
+                  </div>
+                ) : (
+                  <div className="p-4 bg-orange-500/20 rounded-full border border-orange-500/40">
+                    <AlertTriangle className="w-12 h-12 text-orange-400" />
+                  </div>
+                )
+              ) : (
+                <div className="p-4 bg-red-500/20 rounded-full border border-red-500/40">
+                  <XCircle className="w-12 h-12 text-red-400" />
+                </div>
+              )}
+            </div>
+
+            <h3 className="font-display text-2xl tracking-wide mb-1">
+              {verificationResult.success 
+                ? (verificationResult.ticket.status === 'used' ? 'Godkänd Incheckning' : 'Biljett Redan Använd') 
+                : 'Ogiltig Kod'}
+            </h3>
+            
+            {verificationResult.ticket && (
+              <div className="mt-6 text-left space-y-4 border-t border-[#C04A2A]/20 pt-6">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80">Deltagare</p>
+                  <p className="text-lg font-medium">{verificationResult.ticket.participantName}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C04A2A]/80">Event</p>
+                  <p className="text-sm">{verificationResult.event?.title || 'Okänt event'}</p>
+                </div>
+                <div className="bg-[#100E0C] p-2 rounded-sm border border-[#C04A2A]/10 text-center font-mono text-xs text-[#F0E8D8]/60">
+                  {verificationResult.ticket.ticketCode}
+                </div>
+              </div>
+            )}
+
+            {!verificationResult.success && (
+              <p className="text-sm text-red-400 mt-4">{verificationResult.message}</p>
+            )}
+
+            <button 
+              onClick={() => setVerificationResult(null)}
+              className="w-full mt-8 py-3 bg-[#C04A2A] text-white text-[11px] uppercase tracking-[0.2em] font-bold rounded-sm hover:bg-[#A03A1A] transition-all"
+            >
+              Stäng
+            </button>
+          </div>
+        </div>
+      )}
 
       {selectedTicket && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setSelectedTicket(null)}>

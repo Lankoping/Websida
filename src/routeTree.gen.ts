@@ -35,6 +35,7 @@ import { Route as AdminTicketsScanRouteImport } from './routes/admin/tickets/sca
 import { Route as AdminTicketsNewRouteImport } from './routes/admin/tickets/new'
 import { Route as AdminTicketsEventsRouteImport } from './routes/admin/tickets/events'
 import { Route as AdminEditIdRouteImport } from './routes/admin/edit/$id'
+import { Route as PublicBiljettCodeRouteImport } from './routes/_public/biljett/$code'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -165,6 +166,11 @@ const AdminEditIdRoute = AdminEditIdRouteImport.update({
   path: '/edit/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const PublicBiljettCodeRoute = PublicBiljettCodeRouteImport.update({
+  id: '/biljett/$code',
+  path: '/biljett/$code',
+  getParentRoute: () => PublicRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
@@ -185,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/nyheter/': typeof NyheterIndexRoute
+  '/biljett/$code': typeof PublicBiljettCodeRoute
   '/admin/edit/$id': typeof AdminEditIdRoute
   '/admin/tickets/events': typeof AdminTicketsEventsRoute
   '/admin/tickets/new': typeof AdminTicketsNewRoute
@@ -210,6 +217,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/blogs': typeof BlogsIndexRoute
   '/nyheter': typeof NyheterIndexRoute
+  '/biljett/$code': typeof PublicBiljettCodeRoute
   '/admin/edit/$id': typeof AdminEditIdRoute
   '/admin/tickets/events': typeof AdminTicketsEventsRoute
   '/admin/tickets/new': typeof AdminTicketsNewRoute
@@ -239,6 +247,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/nyheter/': typeof NyheterIndexRoute
+  '/_public/biljett/$code': typeof PublicBiljettCodeRoute
   '/admin/edit/$id': typeof AdminEditIdRoute
   '/admin/tickets/events': typeof AdminTicketsEventsRoute
   '/admin/tickets/new': typeof AdminTicketsNewRoute
@@ -267,6 +276,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/blogs/'
     | '/nyheter/'
+    | '/biljett/$code'
     | '/admin/edit/$id'
     | '/admin/tickets/events'
     | '/admin/tickets/new'
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blogs'
     | '/nyheter'
+    | '/biljett/$code'
     | '/admin/edit/$id'
     | '/admin/tickets/events'
     | '/admin/tickets/new'
@@ -320,6 +331,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/blogs/'
     | '/nyheter/'
+    | '/_public/biljett/$code'
     | '/admin/edit/$id'
     | '/admin/tickets/events'
     | '/admin/tickets/new'
@@ -526,6 +538,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEditIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_public/biljett/$code': {
+      id: '/_public/biljett/$code'
+      path: '/biljett/$code'
+      fullPath: '/biljett/$code'
+      preLoaderRoute: typeof PublicBiljettCodeRouteImport
+      parentRoute: typeof PublicRoute
+    }
   }
 }
 
@@ -546,6 +565,7 @@ interface PublicRouteChildren {
   PublicRulesRoute: typeof PublicRulesRoute
   PublicTeamRoute: typeof PublicTeamRoute
   PublicIndexRoute: typeof PublicIndexRoute
+  PublicBiljettCodeRoute: typeof PublicBiljettCodeRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
@@ -553,6 +573,7 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicRulesRoute: PublicRulesRoute,
   PublicTeamRoute: PublicTeamRoute,
   PublicIndexRoute: PublicIndexRoute,
+  PublicBiljettCodeRoute: PublicBiljettCodeRoute,
 }
 
 const PublicRouteWithChildren =
@@ -602,12 +623,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

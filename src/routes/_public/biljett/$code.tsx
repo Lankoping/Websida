@@ -98,8 +98,9 @@ function PublicTicketView() {
           </div>
           
           <div className="text-center">
-            <p className="font-mono text-lg tracking-widest text-[#F0E8D8] mb-1">{ticket.ticketCode}</p>
-            <div className={`inline-flex items-center px-3 py-1 rounded-sm border text-[10px] uppercase font-bold tracking-widest ${statusColors[ticket.status as keyof typeof statusColors]}`}>
+            <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-[#C04A2A] mb-4 font-black">Kod För Incheckning</p>
+            <p className="font-mono text-3xl tracking-[0.2em] text-[#F0E8D8] mb-4 font-black bg-black/40 py-3 px-6 rounded-sm border border-[#C04A2A]/20">{ticket.ticketCode}</p>
+            <div className={`inline-flex items-center px-4 py-2 rounded-sm border text-[11px] uppercase font-black tracking-[0.2em] ${statusColors[ticket.status as keyof typeof statusColors]}`}>
               {statusLabels[ticket.status as keyof typeof statusColors]}
             </div>
           </div>

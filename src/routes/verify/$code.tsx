@@ -74,7 +74,7 @@ function VerifyTicket() {
 
           <h1 className="font-display text-3xl tracking-wide mb-2">
             {success 
-              ? (ticket.status === 'valid' ? 'Giltig Biljett' : ticket.status === 'used' ? 'Biljett Redan Använd' : 'Biljett Ogiltig') 
+              ? (data.checkingIn ? 'Godkänd Incheckning' : (ticket.status === 'used' ? 'Biljett Redan Använd' : 'Biljett Ogiltig')) 
               : 'Ogiltig Kod'}
           </h1>
           <p className="text-[#F0E8D8]/50 text-xs font-mono uppercase tracking-[3px] mb-8">
@@ -83,6 +83,14 @@ function VerifyTicket() {
 
           {success && ticket && (
             <div className="space-y-6 text-left border-t border-[#C04A2A]/10 pt-6">
+              {data.scannedBy && (
+                <div className="flex items-center gap-2 mb-4 p-2 bg-[#C04A2A]/10 border border-[#C04A2A]/20 rounded-sm">
+                  <ShieldCheck className="w-4 h-4 text-[#C04A2A]" />
+                  <p className="text-[10px] uppercase tracking-widest text-[#F0E8D8]/60">
+                    Skannad av: <span className="text-[#F0E8D8] font-bold">{data.scannedBy.name}</span>
+                  </p>
+                </div>
+              )}
               <div className="flex items-start gap-4">
                 <Calendar className="w-5 h-5 text-[#C04A2A]/60 flex-shrink-0 mt-1" />
                 <div>

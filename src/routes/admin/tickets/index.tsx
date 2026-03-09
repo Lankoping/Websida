@@ -260,7 +260,7 @@ function TicketsAdmin() {
       {verificationResult && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" onClick={() => setVerificationResult(null)}>
           <div className={`w-full max-w-sm p-8 border ${
-            !verificationResult.success || (verificationResult.ticket && verificationResult.ticket.status !== 'used')
+            !verificationResult.success || !verificationResult.checkingIn
               ? 'border-red-500/30 bg-red-500/10 shadow-[0_0_50px_rgba(239,68,68,0.2)]'
               : 'border-green-500/30 bg-green-500/10 shadow-[0_0_50px_rgba(34,197,94,0.2)]'
           } rounded-sm relative overflow-hidden text-center`} onClick={e => e.stopPropagation()}>
@@ -275,7 +275,7 @@ function TicketsAdmin() {
 
             <div className="mb-6 flex justify-center">
               {verificationResult.success ? (
-                verificationResult.ticket.status === 'used' ? (
+                verificationResult.checkingIn ? (
                   <div className="p-4 bg-green-500/20 rounded-full border border-green-500/40">
                     <ShieldCheck className="w-12 h-12 text-green-400" />
                   </div>
@@ -293,7 +293,7 @@ function TicketsAdmin() {
 
             <h3 className="font-display text-2xl tracking-wide mb-1">
               {verificationResult.success 
-                ? (verificationResult.ticket.status === 'used' ? 'Godkänd Incheckning' : 'Biljett Redan Använd') 
+                ? (verificationResult.checkingIn ? 'Godkänd Incheckning' : (verificationResult.ticket.status === 'used' ? 'Biljett Redan Använd' : 'Biljett Ogiltig')) 
                 : 'Ogiltig Kod'}
             </h3>
             

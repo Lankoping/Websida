@@ -184,9 +184,11 @@ export const verifyTicketByCodeFn = createServerFn({ method: "POST" })
     if (result.length === 0) return { success: false, message: 'Ogiltig biljettkod' }
     
     const ticket = result[0]
+    let checkingIn = false
     
     // If ticket is valid, mark it as used and record scan time ONLY if markAsUsed is true
     if (ticket.status === 'valid' && markAsUsed) {
+      checkingIn = true
       const scanDate = new Date()
       await db.update(tickets)
         .set({ 
@@ -209,7 +211,8 @@ export const verifyTicketByCodeFn = createServerFn({ method: "POST" })
     return { 
       success: true, 
       ticket, 
-      event: event[0] || null 
+      event: event[0] || null,
+      checkingIn
     }
   })
 

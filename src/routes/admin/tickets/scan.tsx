@@ -107,14 +107,14 @@ function TicketScanner() {
 
         {scanResult && (
           <div className={`p-8 border ${
-            !scanResult.success || (scanResult.ticket && scanResult.ticket.status !== 'used')
-              ? 'border-red-500/30 bg-red-500/10 shadow-[0_0:50px_rgba(239,68,68,0.2)]'
+            !scanResult.success || !scanResult.checkingIn
+              ? 'border-red-500/30 bg-red-500/10 shadow-[0_0_50px_rgba(239,68,68,0.2)]'
               : 'border-green-500/30 bg-green-500/10 shadow-[0_0_50px_rgba(34,197,94,0.2)]'
           } rounded-sm text-center animate-in fade-in zoom-in duration-300`}>
             
             <div className="mb-6 flex justify-center">
               {scanResult.success ? (
-                scanResult.ticket.status === 'used' ? (
+                scanResult.checkingIn ? (
                   <div className="p-4 bg-green-500/20 rounded-full border border-green-500/40">
                     <ShieldCheck className="w-12 h-12 text-green-400" />
                   </div>
@@ -132,7 +132,7 @@ function TicketScanner() {
 
             <h3 className="font-display text-2xl tracking-wide mb-1 uppercase">
               {scanResult.success 
-                ? (scanResult.ticket.status === 'used' ? 'Godkänd Incheckning' : 'Biljett Redan Använd') 
+                ? (scanResult.checkingIn ? 'Godkänd Incheckning' : (scanResult.ticket.status === 'used' ? 'Biljett Redan Använd' : 'Biljett Ogiltig')) 
                 : 'Ogiltig Kod'}
             </h3>
 

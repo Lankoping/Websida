@@ -15,7 +15,7 @@ function VerifyTicket() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await verifyTicketByCodeFn({ data: code })
+        const res = await verifyTicketByCodeFn({ data: { code, markAsUsed: true } })
         setData(res)
       } catch (err) {
         console.error(err)

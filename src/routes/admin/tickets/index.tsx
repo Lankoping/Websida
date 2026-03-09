@@ -25,7 +25,7 @@ function TicketsAdmin() {
   const [copiedId, setCopiedId] = useState<number | null>(null)
 
   const handleCopyLink = (code: string, ticketId: number) => {
-    const url = `${window.location.origin}/verify/${code}`
+    const url = `${window.location.origin}/biljett/${code}`
     navigator.clipboard.writeText(url)
     setCopiedId(ticketId)
     setTimeout(() => setCopiedId(null), 2000)

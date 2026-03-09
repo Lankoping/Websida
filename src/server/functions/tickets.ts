@@ -165,8 +165,13 @@ export const deleteTicketFn = createServerFn({ method: 'POST' })
   })
 
 export const verifyTicketByCodeFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => z.string().parse(data))
-  .handler(async ({ data: code }) => {
+  .inputValidator((data: unknown) =>
+    z.object({
+      code: z.string(),
+      markAsUsed: z.boolean().default(true),
+    }).parse(data)
+  )
+  .handler(async ({ data: { code, markAsUsed } }) => {
     // Try to get adminId if they're logged in
     let adminId: number | null = null
     try {
@@ -180,8 +185,8 @@ export const verifyTicketByCodeFn = createServerFn({ method: "POST" })
     
     const ticket = result[0]
     
-    // If ticket is valid, mark it as used and record scan time
-    if (ticket.status === 'valid') {
+    // If ticket is valid, mark it as used and record scan time ONLY if markAsUsed is true
+    if (ticket.status === 'valid' && markAsUsed) {
       const scanDate = new Date()
       await db.update(tickets)
         .set({ 

@@ -4,7 +4,11 @@ import { useState } from 'react'
 
 export const Route = createFileRoute('/admin/performance')({
   loader: async () => {
-    const tests = await getPerformanceTestHistory(30)
+    const testsRaw = await getPerformanceTestHistory(30)
+    const tests = testsRaw.map((test) => ({
+      ...test,
+      results: (test.results ?? {}) as unknown as { [x: string]: {} },
+    }))
     return { tests }
   },
   component: PerformanceDashboard,
@@ -244,7 +248,7 @@ function PerformanceDashboard() {
         <div className="bg-[#141210]/80 border border-[#C04A2A]/20 p-6 rounded-sm">
           <h2 className="text-xl font-display text-[#F0E8D8] mb-4">Performance Trend</h2>
           <div className="h-64 flex items-end justify-between gap-2">
-            {tests.slice(-10).map((test, i) => {
+            {tests.slice(-10).map((test) => {
               const height = (test.successRate / 100) * 100
               return (
                 <div key={test.id} className="flex-1 flex flex-col items-center gap-2">

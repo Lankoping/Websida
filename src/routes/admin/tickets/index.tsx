@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { getTicketsFn, deleteTicketFn, updateTicketStatusFn, getEventsForTicketsFn } from '../../../server/functions/tickets'
+import { getTicketsFn, deleteTicketFn, updateTicketStatusFn, getEventsForTicketsFn, verifyTicketByCodeFn } from '../../../server/functions/tickets'
 import { useState } from 'react'
 import { Plus, Trash2, CheckCircle, XCircle, Search, Ticket, Mail, User, Calendar, QrCode, Scan, Settings, Copy, Check, ShieldCheck, AlertTriangle } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'

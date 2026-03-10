@@ -26,7 +26,7 @@ export function startPerformanceCron() {
 
       const result = await runDailyPerformanceTest()
 
-      if (result.success) {
+      if (result.success && result.summary) {
         console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
         console.log('✅ Performance test completed successfully!')
         console.log('📊 Test ID:', result.testId)
@@ -47,7 +47,6 @@ export function startPerformanceCron() {
       isRunning = false
     }
   }, {
-    scheduled: true,
     timezone: "Europe/Stockholm"
   })
 

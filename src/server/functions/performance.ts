@@ -1,6 +1,7 @@
 import webdriver from 'selenium-webdriver'
 import { db } from '../db/index.js'
 import { performanceTests, performanceTestResults } from '../db/schema.js'
+import { eq } from 'drizzle-orm'
 
 const LT_USERNAME = process.env.LT_USERNAME
 const LT_ACCESS_KEY = process.env.LT_ACCESS_KEY
@@ -238,7 +239,7 @@ export async function runDailyPerformanceTest() {
       status: 'completed',
       results: results,
     })
-    .where({ id: test.id })
+    .where(eq(performanceTests.id, test.id))
 
   console.log(`\nDaily performance test completed!`)
   console.log(`Total: ${results.length} | Success: ${successfulTests} | Failed: ${failedTests}`)
@@ -272,7 +273,7 @@ export async function getPerformanceTestDetails(testId: number) {
   const [test] = await db
     .select()
     .from(performanceTests)
-    .where({ id: testId })
+    .where(eq(performanceTests.id, testId))
 
   if (!test) {
     return null
@@ -281,7 +282,7 @@ export async function getPerformanceTestDetails(testId: number) {
   const results = await db
     .select()
     .from(performanceTestResults)
-    .where({ testId })
+    .where(eq(performanceTestResults.testId, testId))
 
   return {
     ...test,

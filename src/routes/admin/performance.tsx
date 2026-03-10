@@ -1,14 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { getPerformanceTestHistory } from '../../server/functions/performance'
+import {
+  getPerformanceTestHistoryFn,
+  type SerializablePerformanceHistoryEntry,
+} from '../../server/functions/performance'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/admin/performance')({
   loader: async () => {
-    const testsRaw = await getPerformanceTestHistory(30)
-    const tests = testsRaw.map((test) => ({
-      ...test,
-      results: (test.results ?? {}) as unknown as { [x: string]: {} },
-    }))
+    const tests = (await getPerformanceTestHistoryFn({
+      data: 30,
+    })) as SerializablePerformanceHistoryEntry[]
+
     return { tests }
   },
   component: PerformanceDashboard,

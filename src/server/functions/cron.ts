@@ -1,5 +1,5 @@
 import cron from 'node-cron'
-import { runDailyPerformanceTest } from './performance.js'
+import { runDailyPerformanceTest } from '../lib/performance-core.js'
 
 let isRunning = false
 

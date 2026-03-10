@@ -4,7 +4,7 @@ import { runPerformanceTestManually } from '../../server/functions/cron'
 export const Route = createFileRoute('/_api/performance-run')({
   server: {
     handlers: {
-      GET: async ({ request }) => {
+      GET: async () => {
         const result = await runPerformanceTestManually()
         
         return Response.json(result, {

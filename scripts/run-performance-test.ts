@@ -1,4 +1,4 @@
-import { runDailyPerformanceTest } from './src/server/functions/performance.js'
+import { runDailyPerformanceTest } from '../src/server/lib/performance-core.js'
 
 console.log('Starting scheduled performance test...')
 console.log('Time:', new Date().toISOString())

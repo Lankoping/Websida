@@ -1,7 +1,8 @@
 // Nitro plugin for server initialization
 // This runs when the Nitro server starts
 
-import { initializeServer } from '../server/init'
+import { defineNitroPlugin } from 'nitropack/runtime'
+import { initializeServer } from '../../src/server/init'
 
 export default defineNitroPlugin(() => {
   console.log('🔌 Nitro plugin: Initializing server...')

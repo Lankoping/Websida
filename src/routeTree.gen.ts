@@ -29,7 +29,6 @@ import { Route as PublicRulesRouteImport } from './routes/_public/rules'
 import { Route as PublicPrivacyRouteImport } from './routes/_public/privacy'
 import { Route as ProtectedExampleProtectedRouteRouteImport } from './routes/_protected/example-protected-route'
 import { Route as ApiPerformanceRunRouteImport } from './routes/_api/performance-run'
-import { Route as ApiOgRouteImport } from './routes/_api/og'
 import { Route as ApiHelloRouteImport } from './routes/_api/hello'
 import { Route as AdminTicketsIndexRouteImport } from './routes/admin/tickets/index'
 import { Route as AdminTicketsTypesRouteImport } from './routes/admin/tickets/types'
@@ -138,11 +137,6 @@ const ApiPerformanceRunRoute = ApiPerformanceRunRouteImport.update({
   path: '/performance-run',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiOgRoute = ApiOgRouteImport.update({
-  id: '/_api/og',
-  path: '/og',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiHelloRoute = ApiHelloRouteImport.update({
   id: '/_api/hello',
   path: '/hello',
@@ -189,7 +183,6 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/hello': typeof ApiHelloRoute
-  '/og': typeof ApiOgRoute
   '/performance-run': typeof ApiPerformanceRunRoute
   '/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/privacy': typeof PublicPrivacyRoute
@@ -217,7 +210,6 @@ export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
   '/login': typeof LoginRoute
   '/hello': typeof ApiHelloRoute
-  '/og': typeof ApiOgRoute
   '/performance-run': typeof ApiPerformanceRunRoute
   '/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/privacy': typeof PublicPrivacyRoute
@@ -248,7 +240,6 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/_api/hello': typeof ApiHelloRoute
-  '/_api/og': typeof ApiOgRoute
   '/_api/performance-run': typeof ApiPerformanceRunRoute
   '/_protected/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/_public/privacy': typeof PublicPrivacyRoute
@@ -280,7 +271,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/login'
     | '/hello'
-    | '/og'
     | '/performance-run'
     | '/example-protected-route'
     | '/privacy'
@@ -308,7 +298,6 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/hello'
-    | '/og'
     | '/performance-run'
     | '/example-protected-route'
     | '/privacy'
@@ -338,7 +327,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/login'
     | '/_api/hello'
-    | '/_api/og'
     | '/_api/performance-run'
     | '/_protected/example-protected-route'
     | '/_public/privacy'
@@ -370,7 +358,6 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   LoginRoute: typeof LoginRoute
   ApiHelloRoute: typeof ApiHelloRoute
-  ApiOgRoute: typeof ApiOgRoute
   ApiPerformanceRunRoute: typeof ApiPerformanceRunRoute
   BlogsSlugRoute: typeof BlogsSlugRoute
   NyheterSlugRoute: typeof NyheterSlugRoute
@@ -521,13 +508,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPerformanceRunRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_api/og': {
-      id: '/_api/og'
-      path: '/og'
-      fullPath: '/og'
-      preLoaderRoute: typeof ApiOgRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_api/hello': {
       id: '/_api/hello'
       path: '/hello'
@@ -654,7 +634,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
   ApiHelloRoute: ApiHelloRoute,
-  ApiOgRoute: ApiOgRoute,
   ApiPerformanceRunRoute: ApiPerformanceRunRoute,
   BlogsSlugRoute: BlogsSlugRoute,
   NyheterSlugRoute: NyheterSlugRoute,
@@ -665,3 +644,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

@@ -1,6 +1,5 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState, useEffect, useRef } from 'react'
-import { Html5QrcodeScanner } from 'html5-qrcode'
 import { ArrowLeft, Scan, CheckCircle, XCircle, AlertTriangle, ShieldCheck, User, Calendar, Loader2 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { verifyTicketByCodeFn } from '../../../server/functions/tickets'
@@ -18,14 +17,10 @@ function TicketScanner() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isScanning) return
+    if (!isScanning || typeof window === 'undefined') return
 
-    // Initialisera skannern
-    const scanner = new Html5QrcodeScanner(
-      "reader",
-      { fps: 10, qrbox: { width: 250, height: 250 } },
-      /* verbose= */ false
-    );
+    let scanner: { clear: () => Promise<void>; render: (onScanSuccess: (text: string) => void, onScanFailure: (_error: unknown) => void) => void } | null = null
+    let isDisposed = false
     
     async function onScanSuccess(result: string) {
       if (processing) return
@@ -40,7 +35,9 @@ function TicketScanner() {
       }
       
       try {
-        await scanner.clear()
+        if (scanner) {
+          await scanner.clear()
+        }
         setIsScanning(false)
         const res = await verifyTicketByCodeFn({ data: { code: code.trim().toUpperCase(), markAsUsed: true } })
         setScanResult(res)
@@ -53,14 +50,33 @@ function TicketScanner() {
       }
     }
 
-    function onScanFailure(error: any) {
+    function onScanFailure(_error: any) {
       // Tysta felmeddelanden under skanning
     }
 
-    scanner.render(onScanSuccess, onScanFailure)
+    async function initScanner() {
+      const { Html5QrcodeScanner } = await import('html5-qrcode')
+      if (isDisposed) return
+
+      // Initialisera skannern endast i browsern
+      scanner = new Html5QrcodeScanner(
+        'reader',
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        false,
+      )
+
+      scanner.render(onScanSuccess, onScanFailure)
+    }
+
+    initScanner().catch((err) => {
+      console.error(err)
+      setError('Kunde inte starta kameraskannern')
+      setIsScanning(false)
+    })
 
     return () => {
-      scanner.clear().catch(console.error)
+      isDisposed = true
+      scanner?.clear().catch(console.error)
     }
   }, [isScanning, processing])
 

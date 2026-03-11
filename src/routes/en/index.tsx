@@ -1,12 +1,41 @@
 import { ComingSoon } from '@/components/coming-soon'
 import { createFileRoute } from '@tanstack/react-router'
-import { getPostsFn } from '../../server/functions/posts'
+import { getPostsTranslatedToEnglishFn } from '../../server/functions/posts'
 
 export const Route = createFileRoute('/en/')({
+  head: () => ({
+    meta: [
+      {
+        title: 'Lankoping.se - Coming Soon',
+      },
+      {
+        name: 'description',
+        content:
+          'Lankoping.se is finishing the final details and will be launching soon.',
+      },
+      {
+        property: 'og:title',
+        content: 'Lankoping.se - Coming Soon',
+      },
+      {
+        property: 'og:description',
+        content:
+          'Lankoping.se is finishing the final details and will be launching soon.',
+      },
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        property: 'og:locale',
+        content: 'en_GB',
+      },
+    ],
+  }),
   loader: async () => {
     const [blogs, news] = await Promise.all([
-      getPostsFn({ data: 'blog' }),
-      getPostsFn({ data: 'news' }),
+      getPostsTranslatedToEnglishFn({ data: 'blog' }),
+      getPostsTranslatedToEnglishFn({ data: 'news' }),
     ])
 
     return {

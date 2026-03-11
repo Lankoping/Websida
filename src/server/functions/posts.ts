@@ -164,9 +164,15 @@ export const fixPostSpellingFn = createServerFn({ method: 'POST' })
       throw new Error('Forbidden')
     }
 
-    const apiKey = process.env.GEMINI_API_KEY
+    const apiKey =
+      process.env.GEMINI_API_KEY ??
+      process.env.GOOGLE_API_KEY ??
+      process.env.GOOGLE_GENERATIVE_AI_API_KEY
+
     if (!apiKey) {
-      throw new Error('Missing GEMINI_API_KEY in environment')
+      throw new Error(
+        'Missing Gemini API key in environment (set GEMINI_API_KEY, GOOGLE_API_KEY, or GOOGLE_GENERATIVE_AI_API_KEY)',
+      )
     }
 
     const ai = new GoogleGenAI({ apiKey })

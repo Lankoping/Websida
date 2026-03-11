@@ -12,6 +12,8 @@ services:
       - NITRO_HOST=0.0.0.0
       - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.lankoping-web.rule=Host(`lankoping.se`) || Host(`www.lankoping.se`)"

@@ -177,29 +177,26 @@ export const fixPostSpellingFn = createServerFn({ method: 'POST' })
 
     const ai = new GoogleGenAI({ apiKey })
 
-    const prompt = `You are a careful Swedish+English copy editor and markdown formatter.
+    // Check if content has any markdown syntax
+    const hasMarkdown = /[#*\[\]`~>-]/.test(data.content)
 
-TASK:
-1. Fix ONLY spelling and obvious grammar mistakes
-2. Preserve all existing markdown formatting if present
-3. If content is plain text with NO markdown, add basic markdown formatting:
-   - Use # for main sections
-   - Use ## for subsections
-   - Use - for bullet lists where appropriate
-   - Use **bold** for important terms
-   - Keep natural paragraph breaks
-4. NEVER change proper nouns or brand names (esp. "Lankoping", "Linköping" - use input exactly)
+    const prompt = `You are a Swedish+English copy editor and markdown formatter.
 
-CRITICAL RULES:
-- Preserve EXACT existing markdown: **bold**, *italic*, # headers, - lists, [links](url), \`code\`, etc.
-- Do NOT change proper nouns, company names, or brand names from the input
-- Do NOT remove any markdown formatting
-- Do NOT add new sections, just format plain text as markdown
-- Preserve original meaning, tone, and structure
-- Return valid JSON only: {"title":"...","content":"..."}
+INSTRUCTIONS:
+1. Fix ONLY spelling and grammar mistakes
+2. Preserve ALL existing markdown exactly: **bold**, *italic*, # headers, lists, links, code blocks, etc.
+3. DO NOT change proper nouns: "Lankoping", "Linköping" must stay EXACTLY as typed in input
+4. Brand names and company names stay UNCHANGED
+${!hasMarkdown ? `5. THIS CONTENT HAS NO MARKDOWN. Convert it to markdown:
+   - Use appropriate # headers for main topics
+   - Use ## or ### for subsections
+   - Use **bold** for important concepts
+   - Use - for lists
+   - Keep natural paragraph breaks` : `5. Content already has markdown - preserve it exactly while fixing typos`}
 
-TITLE:
-${data.title}
+Output must be valid JSON: {"title":"...","content":"..."}
+
+TITLE: ${data.title}
 
 CONTENT:
 ${data.content}`

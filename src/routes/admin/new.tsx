@@ -86,7 +86,6 @@ function NewPost() {
         setSlug(fixed.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''))
       }
     } catch (error) {
-      console.error(error)
       alert('Kunde inte fixa stavning just nu.')
     } finally {
       setIsFixingSpelling(false)

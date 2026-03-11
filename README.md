@@ -16,6 +16,7 @@ The development server will start on `http://localhost:3000`.
 Copy `.env.example` to `.env` before running the app and provide values for the required secrets:
 
 - `VITE_INSTRUMENTATION_SCRIPT_SRC` – Script URL injected for analytics/instrumentation.
+- `GEMINI_API_KEY` – Google Gemini API key used for one-click spelling correction in admin post editor.
 
 # Building For Production
 

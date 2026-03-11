@@ -1,7 +1,24 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { getPostByIdFn, updatePostFn } from '../../../server/functions/posts'
+import { fixPostSpellingFn, getPostByIdFn, updatePostFn } from '../../../server/functions/posts'
 import { getSessionFn } from '../../../server/functions/auth'
+
+function createExcerptFromMarkdown(markdown: string, maxLength = 120) {
+  const plain = markdown
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/[#>*_~\-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  if (plain.length <= maxLength) {
+    return plain
+  }
+
+  return `${plain.slice(0, maxLength).trim()}...`
+}
 
 export const Route = createFileRoute('/admin/edit/$id')({
   beforeLoad: async () => {
@@ -26,6 +43,7 @@ function EditPost() {
   const [type, setType] = useState<'blog' | 'news'>(post.type as 'blog' | 'news')
   const [slug, setSlug] = useState(post.slug)
   const [isSaving, setIsSaving] = useState(false)
+  const [isFixingSpelling, setIsFixingSpelling] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,7 +56,7 @@ function EditPost() {
           id: post.id,
           title,
           content,
-          excerpt: content.slice(0, 100) + '...',
+          excerpt: createExcerptFromMarkdown(content),
           type,
           slug: finalSlug,
         }
@@ -50,6 +68,35 @@ function EditPost() {
       alert('Failed to update post')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleFixSpelling = async () => {
+    if (!title.trim() || !content.trim()) {
+      alert('Fyll i titel och innehåll först.')
+      return
+    }
+
+    setIsFixingSpelling(true)
+    try {
+      const fixed = await fixPostSpellingFn({
+        data: {
+          title,
+          content,
+        },
+      })
+
+      setTitle(fixed.title)
+      setContent(fixed.content)
+
+      if (!slug.trim()) {
+        setSlug(fixed.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''))
+      }
+    } catch (error) {
+      console.error(error)
+      alert('Kunde inte fixa stavning just nu.')
+    } finally {
+      setIsFixingSpelling(false)
     }
   }
 
@@ -108,6 +155,16 @@ function EditPost() {
             required
             placeholder="Börja skriva ditt inlägg..."
           />
+          <div className="flex justify-end mt-3">
+            <button
+              type="button"
+              disabled={isFixingSpelling}
+              onClick={handleFixSpelling}
+              className="px-4 py-2 bg-[#1A1816] border border-[#C04A2A]/40 text-[#F0E8D8] text-[10px] uppercase tracking-[0.15em] font-medium rounded-sm hover:border-[#C04A2A]/80 hover:text-white transition-all disabled:opacity-50"
+            >
+              {isFixingSpelling ? 'Fixar text...' : 'Fixa stavning (Gemini Flash)'}
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-4 sm:gap-6 pt-6 border-t border-[#C04A2A]/20 sm:items-center">

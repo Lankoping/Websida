@@ -5,6 +5,7 @@ import { users, posts } from '../db/schema'
 import { eq, desc } from 'drizzle-orm'
 import { z } from 'zod'
 import { getCookie } from '@tanstack/react-start/server'
+import { GoogleGenAI } from '@google/genai'
 
 export const typeValidator = z.union([z.literal('blog'), z.literal('news')])
 
@@ -136,4 +137,76 @@ export const deletePostFn = createServerFn({ method: "POST" })
       .returning()
       
     return deletedPost[0]
+  })
+
+export const fixPostSpellingFn = createServerFn({ method: 'POST' })
+  .inputValidator((payload: unknown) => {
+    return z
+      .object({
+        title: z.string().min(1),
+        content: z.string().min(1),
+      })
+      .parse(payload)
+  })
+  .handler(async ({ data }) => {
+    const currentUserId = getCookie('session')
+    if (!currentUserId) {
+      throw new Error('Unauthorized')
+    }
+
+    const currentUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, parseInt(currentUserId)))
+      .limit(1)
+
+    if (!currentUser[0] || currentUser[0].role !== 'admin') {
+      throw new Error('Forbidden')
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY
+    if (!apiKey) {
+      throw new Error('Missing GEMINI_API_KEY in environment')
+    }
+
+    const ai = new GoogleGenAI({ apiKey })
+
+    const prompt = `You are a careful Swedish+English copy editor.
+Fix spelling and obvious grammar mistakes for the title and markdown body.
+Rules:
+- Preserve original meaning and tone.
+- Keep markdown structure and formatting intact.
+- Do not add new sections or remove content.
+- Return valid JSON only in this shape: {"title":"...","content":"..."}
+
+TITLE:
+${data.title}
+
+MARKDOWN_CONTENT:
+${data.content}`
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: prompt,
+    })
+
+    const text = response.text?.trim()
+    if (!text) {
+      throw new Error('Gemini returned an empty response')
+    }
+
+    const normalized = text
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/i, '')
+      .replace(/```$/i, '')
+      .trim()
+
+    const parsed = z
+      .object({
+        title: z.string().min(1),
+        content: z.string().min(1),
+      })
+      .parse(JSON.parse(normalized))
+
+    return parsed
   })

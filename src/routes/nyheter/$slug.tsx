@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getPostBySlugFn } from '../../server/functions/posts'
+import { MarkdownContent } from '../../components/markdown-content'
 
 export const Route = createFileRoute('/nyheter/$slug')({
   loader: async ({ params }) => {
@@ -24,11 +25,7 @@ function NewsPost() {
         <span className="mx-2">•</span>
         <span className="bg-[#C04A2A]/20 text-[#C04A2A] px-2 py-0.5 rounded text-xs uppercase tracking-wider">{post.type}</span>
       </div>
-      <div className="prose prose-invert prose-lg max-w-none">
-        {post.content.split('\n').map((paragraph, index) => (
-          <p key={index} className="mb-4">{paragraph}</p>
-        ))}
-      </div>
+      <MarkdownContent content={post.content} />
     </div>
   )
 }

@@ -10,38 +10,6 @@ CREATE TABLE "events" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "performance_test_results" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"test_id" integer NOT NULL,
-	"device_name" text NOT NULL,
-	"browser_name" text NOT NULL,
-	"platform" text NOT NULL,
-	"page" text NOT NULL,
-	"load_time" real NOT NULL,
-	"dom_content_loaded" real,
-	"first_paint" real,
-	"success" boolean NOT NULL,
-	"error" text,
-	"page_title" text,
-	"created_at" timestamp DEFAULT now()
-);
---> statement-breakpoint
-CREATE TABLE "performance_tests" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"test_date" timestamp DEFAULT now() NOT NULL,
-	"total_tests" integer NOT NULL,
-	"successful_tests" integer NOT NULL,
-	"failed_tests" integer NOT NULL,
-	"success_rate" real NOT NULL,
-	"avg_load_time" real NOT NULL,
-	"min_load_time" real,
-	"max_load_time" real,
-	"duration" real NOT NULL,
-	"status" text DEFAULT 'running' NOT NULL,
-	"results" jsonb,
-	"created_at" timestamp DEFAULT now()
-);
---> statement-breakpoint
 CREATE TABLE "posts" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
@@ -93,7 +61,6 @@ CREATE TABLE "users" (
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-ALTER TABLE "performance_test_results" ADD CONSTRAINT "performance_test_results_test_id_performance_tests_id_fk" FOREIGN KEY ("test_id") REFERENCES "public"."performance_tests"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "posts" ADD CONSTRAINT "posts_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tickets" ADD CONSTRAINT "tickets_event_id_events_id_fk" FOREIGN KEY ("event_id") REFERENCES "public"."events"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tickets" ADD CONSTRAINT "tickets_scanned_by_users_id_fk" FOREIGN KEY ("scanned_by") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

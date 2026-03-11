@@ -1,5 +1,4 @@
 // Server initialization - runs when the server starts
-import { startPerformanceCron } from './functions/cron.js'
 
 let initialized = false
 
@@ -12,14 +11,6 @@ export function initializeServer() {
   console.log('\n╔════════════════════════════════════════════════════════════╗')
   console.log('║          🚀 Lankoping.se Server Starting...              ║')
   console.log('╚════════════════════════════════════════════════════════════╝\n')
-
-  // Start performance testing cron job
-  if (process.env.LT_USERNAME && process.env.LT_ACCESS_KEY) {
-    startPerformanceCron()
-  } else {
-    console.log('⚠️  LambdaTest credentials not found - cron job disabled')
-    console.log('   Add LT_USERNAME and LT_ACCESS_KEY to .env to enable\n')
-  }
 
   initialized = true
   console.log('✅ Server initialization complete\n')

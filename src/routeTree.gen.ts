@@ -26,8 +26,10 @@ import { Route as EnRulesRouteImport } from './routes/en/rules'
 import { Route as EnPrivacyRouteImport } from './routes/en/privacy'
 import { Route as BlogsSlugRouteImport } from './routes/blogs/$slug'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminStadgarRouteImport } from './routes/admin/stadgar'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as AdminNewRouteImport } from './routes/admin/new'
+import { Route as AdminAvgangRouteImport } from './routes/admin/avgang'
 import { Route as PublicTeamRouteImport } from './routes/_public/team'
 import { Route as PublicRulesRouteImport } from './routes/_public/rules'
 import { Route as PublicPrivacyRouteImport } from './routes/_public/privacy'
@@ -128,6 +130,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminStadgarRoute = AdminStadgarRouteImport.update({
+  id: '/stadgar',
+  path: '/stadgar',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPostsRoute = AdminPostsRouteImport.update({
   id: '/posts',
   path: '/posts',
@@ -136,6 +143,11 @@ const AdminPostsRoute = AdminPostsRouteImport.update({
 const AdminNewRoute = AdminNewRouteImport.update({
   id: '/new',
   path: '/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAvgangRoute = AdminAvgangRouteImport.update({
+  id: '/avgang',
+  path: '/avgang',
   getParentRoute: () => AdminRoute,
 } as any)
 const PublicTeamRoute = PublicTeamRouteImport.update({
@@ -230,8 +242,10 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PublicPrivacyRoute
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
+  '/admin/avgang': typeof AdminAvgangRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
+  '/admin/stadgar': typeof AdminStadgarRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/en/privacy': typeof EnPrivacyRoute
@@ -263,8 +277,10 @@ export interface FileRoutesByTo {
   '/privacy': typeof PublicPrivacyRoute
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
+  '/admin/avgang': typeof AdminAvgangRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
+  '/admin/stadgar': typeof AdminStadgarRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/en/privacy': typeof EnPrivacyRoute
@@ -300,8 +316,10 @@ export interface FileRoutesById {
   '/_public/privacy': typeof PublicPrivacyRoute
   '/_public/rules': typeof PublicRulesRoute
   '/_public/team': typeof PublicTeamRoute
+  '/admin/avgang': typeof AdminAvgangRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
+  '/admin/stadgar': typeof AdminStadgarRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/en/privacy': typeof EnPrivacyRoute
@@ -338,8 +356,10 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/rules'
     | '/team'
+    | '/admin/avgang'
     | '/admin/new'
     | '/admin/posts'
+    | '/admin/stadgar'
     | '/admin/users'
     | '/blogs/$slug'
     | '/en/privacy'
@@ -371,8 +391,10 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/rules'
     | '/team'
+    | '/admin/avgang'
     | '/admin/new'
     | '/admin/posts'
+    | '/admin/stadgar'
     | '/admin/users'
     | '/blogs/$slug'
     | '/en/privacy'
@@ -407,8 +429,10 @@ export interface FileRouteTypes {
     | '/_public/privacy'
     | '/_public/rules'
     | '/_public/team'
+    | '/admin/avgang'
     | '/admin/new'
     | '/admin/posts'
+    | '/admin/stadgar'
     | '/admin/users'
     | '/blogs/$slug'
     | '/en/privacy'
@@ -569,6 +593,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/stadgar': {
+      id: '/admin/stadgar'
+      path: '/stadgar'
+      fullPath: '/admin/stadgar'
+      preLoaderRoute: typeof AdminStadgarRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/posts': {
       id: '/admin/posts'
       path: '/posts'
@@ -581,6 +612,13 @@ declare module '@tanstack/react-router' {
       path: '/new'
       fullPath: '/admin/new'
       preLoaderRoute: typeof AdminNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/avgang': {
+      id: '/admin/avgang'
+      path: '/avgang'
+      fullPath: '/admin/avgang'
+      preLoaderRoute: typeof AdminAvgangRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_public/team': {
@@ -730,8 +768,10 @@ const PublicRouteWithChildren =
   PublicRoute._addFileChildren(PublicRouteChildren)
 
 interface AdminRouteChildren {
+  AdminAvgangRoute: typeof AdminAvgangRoute
   AdminNewRoute: typeof AdminNewRoute
   AdminPostsRoute: typeof AdminPostsRoute
+  AdminStadgarRoute: typeof AdminStadgarRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminEditIdRoute: typeof AdminEditIdRoute
@@ -743,8 +783,10 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAvgangRoute: AdminAvgangRoute,
   AdminNewRoute: AdminNewRoute,
   AdminPostsRoute: AdminPostsRoute,
+  AdminStadgarRoute: AdminStadgarRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminEditIdRoute: AdminEditIdRoute,

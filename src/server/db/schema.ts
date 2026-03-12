@@ -59,3 +59,26 @@ export const tickets = pgTable('tickets', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })
+
+export const stadgar = pgTable('stadgar', {
+  id: serial('id').primaryKey(),
+  content: text('content').notNull(),
+  signatures: text('signatures').default('{}').notNull(), // JSON: { "Elias": true, "Victor": true, "Other": false }
+  updatedBy: integer('updated_by').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})
+
+export const avgangsRequests = pgTable('avgangs_requests', {
+  id: serial('id').primaryKey(),
+  namn: text('namn').notNull(),
+  pnr: text('pnr').notNull(),
+  roll: text('roll').notNull(),
+  orsak: text('orsak').notNull(),
+  datum: timestamp('datum').notNull(),
+  status: text('status', { enum: ['pending', 'approved', 'rejected', 'archived'] }).default('pending').notNull(),
+  pdfUrl: text('pdf_url'),
+  reviewedBy: integer('reviewed_by').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})

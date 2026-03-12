@@ -50,10 +50,38 @@ function AgreementsAdmin() {
   const [status, setStatus] = useState<'draft' | 'active'>('draft')
   const [isSaving, setIsSaving] = useState(false)
   const [isFixingSpelling, setIsFixingSpelling] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const [error, setError] = useState('')
 
   const isOrganizer = session?.role === 'organizer'
   const myId = session?.id
+  const normalizedQuery = searchQuery.trim().toLowerCase()
+
+  const matchesAgreement = (agreement: AgreementRow) => {
+    if (!normalizedQuery) return true
+
+    const searchableValues = [
+      agreement.title,
+      agreement.description || '',
+      agreement.body,
+      agreement.status,
+      agreement.createdByName || '',
+      agreement.generatedByName || '',
+      agreement.deleteRequestedByName || '',
+      String(agreement.id),
+      ...(agreement.requiredSigners || []).flatMap((signer) => [
+        signer.name || '',
+        signer.email || '',
+        signer.role || '',
+        signer.nameClarification || '',
+      ]),
+    ]
+
+    return searchableValues.some((value) => value.toLowerCase().includes(normalizedQuery))
+  }
+
+  const filteredAgreements = agreements.filter(matchesAgreement)
+  const filteredMyPending = myPending.filter(matchesAgreement)
 
   const buildPurchaseTemplateBody = () => `Anpassat avtal för köp
 
@@ -295,12 +323,12 @@ Parterna bekräftar att uppgifterna ovan är korrekta och att köpet godkänns e
         <p className="text-[#F0E8D8]/60 text-sm">Bygg anpassade signerbara avtal och skicka dem till valda konton.</p>
       </div>
 
-      {myPending.length > 0 && (
+      {filteredMyPending.length > 0 && (
         <div className="bg-[#C04A2A]/10 border border-[#C04A2A]/35 rounded-sm p-6">
           <h3 className="font-display text-lg tracking-wide text-[#C04A2A] mb-1">Avtal som väntar på din signatur</h3>
           <p className="text-sm text-[#F0E8D8]/60 mb-4">Du kan digitalt signera de avtal där ditt konto har valts som signatär.</p>
           <div className="space-y-3">
-            {myPending.map((agreement) => (
+            {filteredMyPending.map((agreement) => (
               <div key={agreement.id} className="flex items-center justify-between gap-4 p-4 rounded-sm border border-[#C04A2A]/25 bg-[#1A1816]/60">
                 <div className="min-w-0">
                   <p className="text-[#F0E8D8] font-medium truncate">{agreement.title}</p>
@@ -449,9 +477,28 @@ Parterna bekräftar att uppgifterna ovan är korrekta och att köpet godkänns e
       )}
 
       <div className="bg-[#141210]/80 border border-[#C04A2A]/20 p-6 rounded-sm">
-        <h3 className="font-display text-lg tracking-wide text-[#F0E8D8] mb-6">Avtalslista ({agreements.length})</h3>
+        <div className="flex flex-col gap-3 mb-6 md:flex-row md:items-end md:justify-between">
+          <h3 className="font-display text-lg tracking-wide text-[#F0E8D8]">
+            Avtalslista ({filteredAgreements.length}/{agreements.length})
+          </h3>
+          <div className="w-full md:w-[26rem]">
+            <label className="block text-[10px] uppercase tracking-[0.15em] text-[#F0E8D8]/55 mb-1.5">Sök i avtal</label>
+            <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Namn, titel, sak, motivering, signatär, status..."
+              className="w-full p-3 bg-[#100E0C] border border-[#C04A2A]/20 rounded-sm text-[#F0E8D8] text-sm outline-none focus:border-[#C04A2A]/60"
+            />
+          </div>
+        </div>
         <div className="space-y-3">
-          {agreements.map((agreement) => {
+          {filteredAgreements.length === 0 && (
+            <div className="p-4 rounded-sm border border-[#C04A2A]/20 bg-[#100E0C] text-sm text-[#F0E8D8]/60">
+              Inga avtal matchade din sökning.
+            </div>
+          )}
+
+          {filteredAgreements.map((agreement) => {
             const isExpanded = expandedId === agreement.id
             const mySignature = agreement.requiredSigners.find((signer) => signer.userId === myId)
             const canGeneratePdf = agreement.allSigned && agreement.status !== 'archived'

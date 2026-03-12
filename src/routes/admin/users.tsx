@@ -1,8 +1,14 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { createUserFn, getUsersFn, changePasswordFn, deleteUserFn, getSessionFn } from '../../server/functions/auth'
+import { createUserFn, getUsersFn, changePasswordFn, deleteUserFn, getSessionFn, updateUserFn } from '../../server/functions/auth'
 
 export const Route = createFileRoute('/admin/users')({
+  beforeLoad: async () => {
+    const user = await getSessionFn()
+    if (!user || user.role !== 'organizer') {
+      throw redirect({ to: '/admin' })
+    }
+  },
   loader: async () => {
     return { 
       users: await getUsersFn(),
@@ -18,6 +24,7 @@ function AdminUsers() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [role, setRole] = useState<'organizer' | 'volunteer'>('volunteer')
   const [error, setError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
 
@@ -29,6 +36,12 @@ function AdminUsers() {
   const [isChangingPassword, setIsChangingPassword] = useState(false)
   
   const [isDeletingId, setIsDeletingId] = useState<number | null>(null)
+  const [editingUserId, setEditingUserId] = useState<number | null>(null)
+  const [editingName, setEditingName] = useState('')
+  const [editingRole, setEditingRole] = useState<'organizer' | 'volunteer'>('volunteer')
+  const [editingActive, setEditingActive] = useState(true)
+  const [isUpdatingId, setIsUpdatingId] = useState<number | null>(null)
+  const [copiedId, setCopiedId] = useState<number | null>(null)
 
   const handleChangePassword = async (userId: number, e: React.FormEvent) => {
     e.preventDefault()
@@ -76,17 +89,52 @@ function AdminUsers() {
           email,
           password,
           name: name || undefined,
+          role,
         },
       })
 
       setEmail('')
       setPassword('')
       setName('')
+      setRole('volunteer')
       await router.invalidate()
     } catch (err: any) {
       setError(err?.message || 'Could not create user')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleCopyId = async (userId: number) => {
+    await navigator.clipboard.writeText(String(userId))
+    setCopiedId(userId)
+    window.setTimeout(() => setCopiedId(null), 1500)
+  }
+
+  const handleStartEdit = (user: (typeof users)[number]) => {
+    setEditingUserId(user.id)
+    setEditingName(user.name || '')
+    setEditingRole(user.role as 'organizer' | 'volunteer')
+    setEditingActive(user.active !== false)
+  }
+
+  const handleUpdateUser = async (userId: number) => {
+    setIsUpdatingId(userId)
+    try {
+      await updateUserFn({
+        data: {
+          userId,
+          name: editingName || 'Unnamed user',
+          role: editingRole,
+          active: editingActive,
+        },
+      })
+      setEditingUserId(null)
+      await router.invalidate()
+    } catch (err: any) {
+      alert(err?.message || 'Kunde inte uppdatera användaren')
+    } finally {
+      setIsUpdatingId(null)
     }
   }
 
@@ -106,7 +154,7 @@ function AdminUsers() {
       <div className="mb-8">
         <p className="text-[10px] uppercase tracking-[0.28em] text-[#C04A2A] font-medium mb-2">Hantera</p>
         <h2 className="font-display text-2xl sm:text-3xl tracking-wide mb-2">Användare</h2>
-        <p className="text-xs text-[#F0E8D8]/50">Nya användare tilldelas rollen <span className="text-[#C04A2A] uppercase tracking-wider text-[10px] ml-1">admin</span>.</p>
+        <p className="text-xs text-[#F0E8D8]/50">Skapa organisatörer och volontärer, byt namn och kopiera ID för digital signering.</p>
       </div>
 
       <form onSubmit={handleCreateUser} className="mb-12 grid gap-4 lg:grid-cols-2 p-5 sm:p-6 bg-[#1A1816]/50 border border-[#C04A2A]/20 rounded-sm relative group">
@@ -149,9 +197,14 @@ function AdminUsers() {
 
         <div className="relative">
           <label className="block text-[10px] uppercase tracking-[0.2em] text-[#C04A2A] mb-2">Behörighet</label>
-          <div className="w-full p-3 bg-[#100E0C]/50 border border-[#C04A2A]/10 rounded-sm text-[#C04A2A]/50 text-[11px] uppercase tracking-[0.2em] flex items-center">
-            Admin
-          </div>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value as 'organizer' | 'volunteer')}
+            className="w-full p-3 bg-[#100E0C] border border-[#C04A2A]/20 focus:border-[#C04A2A]/60 outline-none rounded-sm text-[#F0E8D8] text-[11px] uppercase tracking-[0.2em]"
+          >
+            <option value="volunteer">Volunteer</option>
+            <option value="organizer">Organizer</option>
+          </select>
         </div>
         
         <div className="lg:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between mt-2 pt-4 border-t border-[#C04A2A]/10 gap-3">
@@ -187,9 +240,22 @@ function AdminUsers() {
               <div>
                 <p className="font-display text-xl tracking-wide text-[#F0E8D8] mb-1">{user.name || 'Unnamed user'}</p>
                 <p className="text-xs text-[#F0E8D8]/40 font-mono tracking-tight">{user.email}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.15em] text-[#F0E8D8]/35">
+                  <span>ID {user.id}</span>
+                  <button onClick={() => handleCopyId(user.id)} className="text-[#C04A2A] hover:text-[#F0E8D8] transition-colors">
+                    {copiedId === user.id ? 'Kopierat' : 'Kopiera ID'}
+                  </button>
+                  {user.active === false && <span className="text-red-400">Last</span>}
+                </div>
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                {(user.role !== 'admin' || user.id === currentUser?.id) && (
+                <button
+                  onClick={() => handleStartEdit(user)}
+                  className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium border border-[#C04A2A]/30 text-[#C04A2A] hover:border-[#C04A2A]/60 transition-colors"
+                >
+                  Redigera
+                </button>
+                {(user.role !== 'organizer' || user.id === currentUser?.id) && (
                   <button
                     onClick={() => {
                       setChangingPasswordId(user.id)
@@ -215,6 +281,56 @@ function AdminUsers() {
                 </span>
               </div>
             </div>
+
+            {editingUserId === user.id && (
+              <div className="mt-4 pt-4 border-t border-[#C04A2A]/10 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-[0.2em] text-[#C04A2A] mb-2">Namn</label>
+                    <input
+                      type="text"
+                      value={editingName}
+                      onChange={(e) => setEditingName(e.target.value)}
+                      className="w-full p-2 bg-[#100E0C] border border-[#C04A2A]/20 rounded-sm text-sm text-[#F0E8D8]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-[0.2em] text-[#C04A2A] mb-2">Roll</label>
+                    <select
+                      value={editingRole}
+                      onChange={(e) => setEditingRole(e.target.value as 'organizer' | 'volunteer')}
+                      disabled={user.id === currentUser?.id}
+                      className="w-full p-2 bg-[#100E0C] border border-[#C04A2A]/20 rounded-sm text-sm text-[#F0E8D8] disabled:opacity-50"
+                    >
+                      <option value="volunteer">Volunteer</option>
+                      <option value="organizer">Organizer</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-[0.2em] text-[#C04A2A] mb-2">Konto</label>
+                    <label className="flex items-center gap-2 p-2 border border-[#C04A2A]/20 rounded-sm text-sm text-[#F0E8D8]">
+                      <input type="checkbox" checked={editingActive} onChange={(e) => setEditingActive(e.target.checked)} disabled={user.id === currentUser?.id} className="accent-[#C04A2A]" />
+                      Aktivt konto
+                    </label>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleUpdateUser(user.id)}
+                    disabled={isUpdatingId === user.id}
+                    className="px-4 py-2 bg-[#C04A2A] text-white text-[10px] uppercase tracking-[0.15em] rounded-sm disabled:opacity-50"
+                  >
+                    {isUpdatingId === user.id ? 'Sparar...' : 'Spara anvandare'}
+                  </button>
+                  <button
+                    onClick={() => setEditingUserId(null)}
+                    className="px-4 py-2 border border-[#F0E8D8]/20 text-[#F0E8D8]/60 text-[10px] uppercase tracking-[0.15em] rounded-sm"
+                  >
+                    Avbryt
+                  </button>
+                </div>
+              </div>
+            )}
             
             {changingPasswordId === user.id && (
               <form onSubmit={(e) => handleChangePassword(user.id, e)} className="mt-4 pt-4 border-t border-[#C04A2A]/10">

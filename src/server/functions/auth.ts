@@ -5,6 +5,7 @@ import { users } from '../db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
+import { requireOrganizerUser, requireStaffUser } from '../lib/access'
 
 export const loginFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ email: z.string(), passwordHash: z.string() }).parse(data))
@@ -14,8 +15,12 @@ export const loginFn = createServerFn({ method: "POST" })
       throw new Error('User not found')
     }
 
-    if (user[0].role !== 'admin') {
+    if (user[0].role !== 'organizer' && user[0].role !== 'volunteer') {
       throw new Error('Account type not allowed')
+    }
+
+    if (user[0].active === false) {
+      throw new Error('Account is locked')
     }
 
     if (user[0].passwordHash !== data.passwordHash) {
@@ -45,26 +50,13 @@ export const getSessionFn = createServerFn({ method: "GET" })
     if (!userId) return null
 
     const user = await db.select().from(users).where(eq(users.id, parseInt(userId))).limit(1)
-    if (!user[0] || user[0].role !== 'admin') return null
+    if (!user[0] || (user[0].role !== 'organizer' && user[0].role !== 'volunteer') || user[0].active === false) return null
     return user[0]
   })
 
 export const getUsersFn = createServerFn({ method: "GET" })
   .handler(async () => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
-
-    const currentUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, parseInt(currentUserId)))
-      .limit(1)
-
-    if (!currentUser[0] || currentUser[0].role !== 'admin') {
-      throw new Error('Forbidden')
-    }
+    await requireOrganizerUser()
 
     return await db.select().from(users)
   })
@@ -76,24 +68,12 @@ export const createUserFn = createServerFn({ method: "POST" })
         email: z.string().email(),
         password: z.string().min(1),
         name: z.string().optional(),
+        role: z.enum(['organizer', 'volunteer']).default('volunteer'),
       })
       .parse(data),
   )
   .handler(async ({ data }) => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
-
-    const currentUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, parseInt(currentUserId)))
-      .limit(1)
-
-    if (!currentUser[0] || currentUser[0].role !== 'admin') {
-      throw new Error('Forbidden')
-    }
+    await requireOrganizerUser()
 
     const existing = await db.select().from(users).where(eq(users.email, data.email)).limit(1)
     if (existing.length > 0) {
@@ -106,7 +86,7 @@ export const createUserFn = createServerFn({ method: "POST" })
         email: data.email,
         passwordHash: data.password,
         name: data.name,
-        role: 'admin',
+        role: data.role,
         active: true,
       })
       .returning()
@@ -122,20 +102,7 @@ export const changePasswordFn = createServerFn({ method: "POST" })
     }).parse(data)
   )
   .handler(async ({ data }) => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
-
-    const currentUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, parseInt(currentUserId)))
-      .limit(1)
-
-    if (!currentUser[0] || currentUser[0].role !== 'admin') {
-      throw new Error('Forbidden')
-    }
+    const currentUser = await requireStaffUser()
 
     const targetUser = await db
       .select()
@@ -143,8 +110,12 @@ export const changePasswordFn = createServerFn({ method: "POST" })
       .where(eq(users.id, data.userId))
       .limit(1)
 
-    if (targetUser[0] && targetUser[0].role === 'admin' && currentUser[0].id !== targetUser[0].id) {
-      throw new Error('Forbidden: Cannot change other admin passwords')
+    if (!targetUser[0]) {
+      throw new Error('User not found')
+    }
+
+    if (currentUser.role !== 'organizer' && currentUser.id !== targetUser[0].id) {
+      throw new Error('Forbidden: Cannot change another account password')
     }
 
     await db
@@ -162,22 +133,9 @@ export const deleteUserFn = createServerFn({ method: "POST" })
     }).parse(data)
   )
   .handler(async ({ data }) => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
+    const currentUser = await requireOrganizerUser()
 
-    const currentUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, parseInt(currentUserId)))
-      .limit(1)
-
-    if (!currentUser[0] || currentUser[0].role !== 'admin') {
-      throw new Error('Forbidden')
-    }
-
-    if (currentUser[0].id === data.userId) {
+    if (currentUser.id === data.userId) {
       throw new Error('Forbidden: Cannot delete yourself')
     }
 
@@ -188,3 +146,61 @@ export const deleteUserFn = createServerFn({ method: "POST" })
     return { success: true }
   })
 
+export const lockUserFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({
+      userId: z.number(),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const currentUser = await requireOrganizerUser()
+    if (currentUser.id === data.userId) throw new Error('Forbidden: Cannot lock yourself')
+
+    await db.update(users).set({ active: false }).where(eq(users.id, data.userId))
+    return { success: true }
+  })
+
+export const updateProfileFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z.object({
+      name: z.string().min(1).max(120),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const currentUser = await requireStaffUser()
+    const updated = await db
+      .update(users)
+      .set({ name: data.name })
+      .where(eq(users.id, currentUser.id))
+      .returning()
+
+    return updated[0]
+  })
+
+export const updateUserFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z.object({
+      userId: z.number(),
+      name: z.string().min(1).max(120),
+      role: z.enum(['organizer', 'volunteer']),
+      active: z.boolean(),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const currentUser = await requireOrganizerUser()
+    if (currentUser.id === data.userId && data.role !== 'organizer') {
+      throw new Error('You cannot remove your own organizer access')
+    }
+
+    const updated = await db
+      .update(users)
+      .set({
+        name: data.name,
+        role: data.role,
+        active: data.active,
+      })
+      .where(eq(users.id, data.userId))
+      .returning()
+
+    return updated[0]
+  })

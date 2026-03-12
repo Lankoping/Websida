@@ -6,6 +6,7 @@ import { eq, desc } from 'drizzle-orm'
 import { z } from 'zod'
 import { getCookie } from '@tanstack/react-start/server'
 import { GoogleGenAI } from '@google/genai'
+import { requireOrganizerUser } from '../lib/access'
 
 export const typeValidator = z.union([z.literal('blog'), z.literal('news')])
 
@@ -151,20 +152,7 @@ export const updatePostFn = createServerFn({ method: "POST" })
     }).parse(post)
   })
   .handler(async ({ data }) => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
-
-    const currentUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, parseInt(currentUserId)))
-      .limit(1)
-
-    if (!currentUser[0] || currentUser[0].role !== 'admin') {
-      throw new Error('Forbidden')
-    }
+    await requireOrganizerUser()
 
     const updatedPost = await db.update(posts).set({
       title: data.title,
@@ -189,24 +177,11 @@ export const createPostFn = createServerFn({ method: "POST" })
     }).parse(post)
   })
   .handler(async ({ data }) => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
-
-    const currentUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, parseInt(currentUserId)))
-      .limit(1)
-
-    if (!currentUser[0] || currentUser[0].role !== 'admin') {
-      throw new Error('Forbidden')
-    }
+    const currentUser = await requireOrganizerUser()
 
     const newPost = await db.insert(posts).values({
       ...data,
-      authorId: currentUser[0].id,
+      authorId: currentUser.id,
       published: true, // Auto publish for now
     }).returning()
     return newPost[0]
@@ -215,20 +190,7 @@ export const createPostFn = createServerFn({ method: "POST" })
 export const deletePostFn = createServerFn({ method: "POST" })
   .inputValidator((id: number) => z.number().parse(id))
   .handler(async ({ data: id }) => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
-
-    const currentUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, parseInt(currentUserId)))
-      .limit(1)
-
-    if (!currentUser[0] || currentUser[0].role !== 'admin') {
-      throw new Error('Forbidden')
-    }
+    await requireOrganizerUser()
 
     const deletedPost = await db.delete(posts)
       .where(eq(posts.id, id))
@@ -247,20 +209,7 @@ export const fixPostSpellingFn = createServerFn({ method: 'POST' })
       .parse(payload)
   })
   .handler(async ({ data }) => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
-
-    const currentUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, parseInt(currentUserId)))
-      .limit(1)
-
-    if (!currentUser[0] || currentUser[0].role !== 'admin') {
-      throw new Error('Forbidden')
-    }
+    await requireOrganizerUser()
 
     const apiKey =
       process.env.GEMINI_API_KEY ??

@@ -6,11 +6,11 @@ import { eq, and } from 'drizzle-orm'
 import { z } from 'zod'
 import { getCookie } from '@tanstack/react-start/server'
 import { nanoid } from 'nanoid'
+import { requireStaffUser } from '../lib/access'
 
 async function checkAdmin() {
-  const userId = getCookie('session')
-  if (!userId) throw new Error('Unauthorized')
-  return parseInt(userId)
+  const user = await requireStaffUser()
+  return user.id
 }
 
 export const getEventsFn = createServerFn({ method: 'GET' })

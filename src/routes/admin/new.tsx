@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { createPostFn, fixPostSpellingFn } from '../../server/functions/posts'
 import { getSessionFn } from '../../server/functions/auth'
@@ -23,6 +23,9 @@ function createExcerptFromMarkdown(markdown: string, maxLength = 120) {
 export const Route = createFileRoute('/admin/new')({
   beforeLoad: async () => {
     const user = await getSessionFn()
+    if (!user || user.role !== 'organizer') {
+      throw redirect({ to: '/admin' })
+    }
     return { user }
   },
   loader: async ({ context: { user } }) => {

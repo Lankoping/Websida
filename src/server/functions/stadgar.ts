@@ -1,34 +1,49 @@
 'use server'
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '../db/index'
-import { stadgar } from '../db/schema'
-import { getCookie } from '@tanstack/react-start/server'
+import { stadgar, users } from '../db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
+import { requireOrganizerUser, requireStaffUser } from '../lib/access'
 
 export const getStadgarFn = createServerFn({ method: "GET" })
   .handler(async () => {
+    await requireStaffUser()
     const data = await db.select().from(stadgar).limit(1)
-    return data[0] || {
-      id: 0,
-      content: `# Stadgar för Lanköpings Studentkår
+    if (!data[0]) {
+      return {
+        id: 0,
+        content: '',
+        signatures: '{}',
+        updatedAt: new Date(),
+        createdAt: new Date(),
+        signers: []
+      }
+    }
 
-## Preliminär version
+    // Get signer info
+    let signatures: Record<string, boolean> = {}
+    try {
+      signatures = JSON.parse(data[0].signatures || '{}')
+    } catch (e) {
+      signatures = {}
+    }
 
-[Stadgar-innehållet läggs till här]
+    const userIds = Object.keys(signatures).map(Number)
+    const signerUsers = userIds.length > 0 
+      ? await db.select({ id: users.id, name: users.name, email: users.email }).from(users)
+      : []
 
-Signering krävs från:
-- Elias (Ordförande)
-- Victor (Sekreterare)
-- Tredje representant
-`,
-      signatures: JSON.stringify({
-        "Elias": true,
-        "Victor": true,
-        "Tredje": false
-      }),
-      updatedAt: new Date(),
-      createdAt: new Date(),
+    return {
+      ...data[0],
+      signers: signerUsers
+        .filter(u => userIds.includes(u.id))
+        .map(u => ({
+          userId: u.id,
+          name: u.name,
+          email: u.email,
+          signed: signatures[u.id] || false
+        }))
     }
   })
 
@@ -41,29 +56,27 @@ export const updateStadgarFn = createServerFn({ method: "POST" })
       .parse(data),
   )
   .handler(async ({ data }) => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
+    const currentUser = await requireOrganizerUser()
 
     const existing = await db.select().from(stadgar).limit(1)
     
     if (existing.length > 0) {
-      await db
+      const result = await db
         .update(stadgar)
         .set({
           content: data.content,
-          updatedBy: parseInt(currentUserId),
+          updatedBy: currentUser.id,
           updatedAt: new Date(),
         })
         .where(eq(stadgar.id, existing[0].id))
-      return existing[0]
+        .returning()
+      return result[0]
     } else {
       const result = await db
         .insert(stadgar)
         .values({
           content: data.content,
-          updatedBy: parseInt(currentUserId),
+          updatedBy: currentUser.id,
           signatures: JSON.stringify({}),
         })
         .returning()
@@ -75,16 +88,13 @@ export const updateSignatureFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) =>
     z
       .object({
-        name: z.string(),
+        userId: z.number(),
         signed: z.boolean(),
       })
       .parse(data),
   )
   .handler(async ({ data }) => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
+    const currentUser = await requireStaffUser()
 
     const existing = await db.select().from(stadgar).limit(1)
     if (!existing[0]) {
@@ -92,34 +102,123 @@ export const updateSignatureFn = createServerFn({ method: "POST" })
     }
 
     const sigs = JSON.parse(existing[0].signatures || '{}')
-    sigs[data.name] = data.signed
+    const isListedSigner = Object.prototype.hasOwnProperty.call(sigs, data.userId.toString())
+    if (!isListedSigner) {
+      throw new Error('Signer not found')
+    }
 
-    await db
+    if (currentUser.role !== 'organizer') {
+      if (currentUser.id !== data.userId || data.signed !== true) {
+        throw new Error('Forbidden')
+      }
+    }
+
+    sigs[data.userId.toString()] = data.signed
+
+    const result = await db
       .update(stadgar)
       .set({
         signatures: JSON.stringify(sigs),
-        updatedBy: parseInt(currentUserId),
+        updatedBy: currentUser.id,
         updatedAt: new Date(),
       })
       .where(eq(stadgar.id, existing[0].id))
+      .returning()
 
-    return { ...existing[0], signatures: JSON.stringify(sigs) }
+    return result[0]
+  })
+
+export const addSignerFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        userId: z.number(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const currentUser = await requireOrganizerUser()
+
+    // Check user exists
+    const user = await db.select().from(users).where(eq(users.id, data.userId)).limit(1)
+    if (!user[0]) {
+      throw new Error('User not found')
+    }
+
+    const existing = await db.select().from(stadgar).limit(1)
+    let sigs: Record<string, boolean> = {}
+    
+    if (existing[0]) {
+      sigs = JSON.parse(existing[0].signatures || '{}')
+    }
+
+    sigs[data.userId.toString()] = false
+
+    if (existing[0]) {
+      const result = await db
+        .update(stadgar)
+        .set({
+          signatures: JSON.stringify(sigs),
+          updatedBy: currentUser.id,
+          updatedAt: new Date(),
+        })
+        .where(eq(stadgar.id, existing[0].id))
+        .returning()
+      return result[0]
+    } else {
+      const result = await db
+        .insert(stadgar)
+        .values({
+          content: '',
+          updatedBy: currentUser.id,
+          signatures: JSON.stringify(sigs),
+        })
+        .returning()
+      return result[0]
+    }
+  })
+
+export const removeSignerFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        userId: z.number(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const currentUser = await requireOrganizerUser()
+
+    const existing = await db.select().from(stadgar).limit(1)
+    if (!existing[0]) {
+      throw new Error('Stadgar not found')
+    }
+
+    const sigs = JSON.parse(existing[0].signatures || '{}')
+    delete sigs[data.userId.toString()]
+
+    const result = await db
+      .update(stadgar)
+      .set({
+        signatures: JSON.stringify(sigs),
+        updatedBy: currentUser.id,
+        updatedAt: new Date(),
+      })
+      .where(eq(stadgar.id, existing[0].id))
+      .returning()
+
+    return result[0]
   })
 
 export const exportStadgarPdfFn = createServerFn({ method: "POST" })
   .handler(async () => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
+    await requireStaffUser()
 
     const data = await db.select().from(stadgar).limit(1)
     if (!data[0]) {
       throw new Error('Stadgar not found')
     }
 
-    // För nu, returnera bara en export-prompt
-    // I produktion skulle detta generera en PDF och gå till Google Docs
     return {
       success: true,
       message: 'Stadgar exporterade',

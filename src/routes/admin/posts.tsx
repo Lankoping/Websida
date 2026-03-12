@@ -1,8 +1,15 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { getPostsFn, deletePostFn } from '../../server/functions/posts'
+import { getSessionFn } from '../../server/functions/auth'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/admin/posts')({
+  beforeLoad: async () => {
+    const user = await getSessionFn()
+    if (!user || user.role !== 'organizer') {
+      throw redirect({ to: '/admin' })
+    }
+  },
   loader: async () => {
     const [blogPosts, newsPosts] = await Promise.all([
       getPostsFn({ data: 'blog' }),

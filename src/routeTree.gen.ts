@@ -29,6 +29,7 @@ import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminStadgarRouteImport } from './routes/admin/stadgar'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as AdminNewRouteImport } from './routes/admin/new'
+import { Route as AdminAvtalRouteImport } from './routes/admin/avtal'
 import { Route as AdminAvgangRouteImport } from './routes/admin/avgang'
 import { Route as PublicTeamRouteImport } from './routes/_public/team'
 import { Route as PublicRulesRouteImport } from './routes/_public/rules'
@@ -145,6 +146,11 @@ const AdminNewRoute = AdminNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAvtalRoute = AdminAvtalRouteImport.update({
+  id: '/avtal',
+  path: '/avtal',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAvgangRoute = AdminAvgangRouteImport.update({
   id: '/avgang',
   path: '/avgang',
@@ -243,6 +249,7 @@ export interface FileRoutesByFullPath {
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
   '/admin/avgang': typeof AdminAvgangRoute
+  '/admin/avtal': typeof AdminAvtalRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/stadgar': typeof AdminStadgarRoute
@@ -278,6 +285,7 @@ export interface FileRoutesByTo {
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
   '/admin/avgang': typeof AdminAvgangRoute
+  '/admin/avtal': typeof AdminAvtalRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/stadgar': typeof AdminStadgarRoute
@@ -317,6 +325,7 @@ export interface FileRoutesById {
   '/_public/rules': typeof PublicRulesRoute
   '/_public/team': typeof PublicTeamRoute
   '/admin/avgang': typeof AdminAvgangRoute
+  '/admin/avtal': typeof AdminAvtalRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/stadgar': typeof AdminStadgarRoute
@@ -357,6 +366,7 @@ export interface FileRouteTypes {
     | '/rules'
     | '/team'
     | '/admin/avgang'
+    | '/admin/avtal'
     | '/admin/new'
     | '/admin/posts'
     | '/admin/stadgar'
@@ -392,6 +402,7 @@ export interface FileRouteTypes {
     | '/rules'
     | '/team'
     | '/admin/avgang'
+    | '/admin/avtal'
     | '/admin/new'
     | '/admin/posts'
     | '/admin/stadgar'
@@ -430,6 +441,7 @@ export interface FileRouteTypes {
     | '/_public/rules'
     | '/_public/team'
     | '/admin/avgang'
+    | '/admin/avtal'
     | '/admin/new'
     | '/admin/posts'
     | '/admin/stadgar'
@@ -614,6 +626,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/avtal': {
+      id: '/admin/avtal'
+      path: '/avtal'
+      fullPath: '/admin/avtal'
+      preLoaderRoute: typeof AdminAvtalRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/avgang': {
       id: '/admin/avgang'
       path: '/avgang'
@@ -769,6 +788,7 @@ const PublicRouteWithChildren =
 
 interface AdminRouteChildren {
   AdminAvgangRoute: typeof AdminAvgangRoute
+  AdminAvtalRoute: typeof AdminAvtalRoute
   AdminNewRoute: typeof AdminNewRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminStadgarRoute: typeof AdminStadgarRoute
@@ -784,6 +804,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAvgangRoute: AdminAvgangRoute,
+  AdminAvtalRoute: AdminAvtalRoute,
   AdminNewRoute: AdminNewRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminStadgarRoute: AdminStadgarRoute,

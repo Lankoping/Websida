@@ -1,111 +1,159 @@
 'use server'
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '../db/index'
-import { avgangsRequests } from '../db/schema'
-import { getCookie } from '@tanstack/react-start/server'
+import { avgangsRequests, users } from '../db/schema'
 import { eq, desc } from 'drizzle-orm'
 import { z } from 'zod'
+import { lockUserFn } from './auth'
+import { requireOrganizerUser, requireStaffUser } from '../lib/access'
 
-export const getAvgangRequestsFn = createServerFn({ method: "GET" })
+async function enrichRequest(req: typeof avgangsRequests.$inferSelect, allUsers: (typeof users.$inferSelect)[]) {
+  const signerIds: number[] = JSON.parse(req.requiredSigners || '[]')
+  const digSigs: Record<string, boolean> = JSON.parse(req.digitalSignatures || '{}')
+
+  const requiredSigners = signerIds.map(id => {
+    const u = allUsers.find(u => u.id === id)
+    return { userId: id, name: u?.name || 'Okänd', email: u?.email || '', signed: digSigs[id] === true }
+  })
+
+  const createdByUser = req.createdByUserId ? allUsers.find(u => u.id === req.createdByUserId) : null
+  const targetUser = req.targetUserId ? allUsers.find(u => u.id === req.targetUserId) : null
+  const generatedByUser = req.generatedBy ? allUsers.find(u => u.id === req.generatedBy) : null
+
+  return {
+    ...req,
+    requiredSigners,
+    createdByName: createdByUser?.name || null,
+    targetName: targetUser?.name || null,
+    generatedByName: generatedByUser?.name || null,
+    allSigned: signerIds.length > 0 && signerIds.every(id => digSigs[id] === true),
+  }
+}
+
+export const getAvgangRequestsFn = createServerFn({ method: 'GET' })
   .handler(async () => {
-    const requests = await db
-      .select()
-      .from(avgangsRequests)
-      .orderBy(desc(avgangsRequests.createdAt))
-    return requests
+    const requests = await db.select().from(avgangsRequests).orderBy(desc(avgangsRequests.createdAt))
+    const allUsers = await db.select().from(users)
+    return Promise.all(requests.map(r => enrichRequest(r, allUsers)))
   })
 
-export const createAvgangRequestFn = createServerFn({ method: "POST" })
+export const getMyPendingSignaturesFn = createServerFn({ method: 'GET' })
+  .handler(async () => {
+    const admin = await requireStaffUser()
+    const requests = await db.select().from(avgangsRequests).orderBy(desc(avgangsRequests.createdAt))
+    const allUsers = await db.select().from(users)
+    const enriched = await Promise.all(requests.map(r => enrichRequest(r, allUsers)))
+    return enriched.filter(r =>
+      r.status !== 'archived' &&
+      r.requiredSigners.some(s => s.userId === admin.id && !s.signed)
+    )
+  })
+
+export const createAvgangRequestFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
-    z
-      .object({
-        namn: z.string(),
-        pnr: z.string(),
-        roll: z.string(),
-        orsak: z.string(),
-        datum: z.string(),
-      })
-      .parse(data),
+    z.object({
+      namn: z.string(),
+      pnr: z.string(),
+      roll: z.string(),
+      orsak: z.string(),
+      datum: z.string(),
+      targetUserId: z.number().nullable().optional(),
+      requiredSignerIds: z.array(z.number()).default([]),
+    }).parse(data)
   )
   .handler(async ({ data }) => {
-    const request = await db
-      .insert(avgangsRequests)
-      .values({
-        namn: data.namn,
-        pnr: data.pnr,
-        roll: data.roll,
-        orsak: data.orsak,
-        datum: new Date(data.datum),
-        status: 'pending',
-      })
+    const admin = await requireOrganizerUser()
+    const req = await db.insert(avgangsRequests).values({
+      namn: data.namn,
+      pnr: data.pnr,
+      roll: data.roll,
+      orsak: data.orsak,
+      datum: new Date(data.datum),
+      status: 'pending',
+      createdByUserId: admin.id,
+      targetUserId: data.targetUserId ?? null,
+      requiredSigners: JSON.stringify(data.requiredSignerIds),
+      digitalSignatures: '{}',
+    }).returning()
+    const allUsers = await db.select().from(users)
+    return enrichRequest(req[0], allUsers)
+  })
+
+export const addDigitalSignatureFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z.object({ requestId: z.number() }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const admin = await requireStaffUser()
+    const req = await db.select().from(avgangsRequests).where(eq(avgangsRequests.id, data.requestId)).limit(1)
+    if (!req[0]) throw new Error('Not found')
+
+    const signerIds: number[] = JSON.parse(req[0].requiredSigners || '[]')
+    if (!signerIds.includes(admin.id)) throw new Error('You are not a required signer')
+
+    const digSigs: Record<string, boolean> = JSON.parse(req[0].digitalSignatures || '{}')
+    digSigs[admin.id] = true
+
+    const updated = await db.update(avgangsRequests)
+      .set({ digitalSignatures: JSON.stringify(digSigs), updatedAt: new Date() })
+      .where(eq(avgangsRequests.id, data.requestId))
       .returning()
 
-    return request[0]
+    const allUsers = await db.select().from(users)
+    return enrichRequest(updated[0], allUsers)
   })
 
-export const updateAvgangStatusFn = createServerFn({ method: "POST" })
+export const updateAvgangStatusFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
-    z
-      .object({
-        id: z.number(),
-        status: z.enum(['pending', 'approved', 'rejected', 'archived']),
-      })
-      .parse(data),
+    z.object({
+      id: z.number(),
+      status: z.enum(['pending', 'approved', 'rejected', 'archived']),
+    }).parse(data)
   )
   .handler(async ({ data }) => {
-    const currentUserId = getCookie('session')
-    if (!currentUserId) {
-      throw new Error('Unauthorized')
-    }
+    const admin = await requireOrganizerUser()
+    const updated = await db.update(avgangsRequests)
+      .set({ status: data.status, reviewedBy: admin.id, updatedAt: new Date() })
+      .where(eq(avgangsRequests.id, data.id))
+      .returning()
+    const allUsers = await db.select().from(users)
+    return enrichRequest(updated[0], allUsers)
+  })
 
-    const updated = await db
-      .update(avgangsRequests)
-      .set({
-        status: data.status,
-        reviewedBy: parseInt(currentUserId),
-        updatedAt: new Date(),
-      })
+export const markPhysicallySignedFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z.object({ id: z.number() }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    await requireOrganizerUser()
+    const req = await db.select().from(avgangsRequests).where(eq(avgangsRequests.id, data.id)).limit(1)
+    if (!req[0]) throw new Error('Not found')
+    if (req[0].status !== 'approved') throw new Error('Must be approved first')
+
+    const updated = await db.update(avgangsRequests)
+      .set({ physicalSigned: true, updatedAt: new Date() })
       .where(eq(avgangsRequests.id, data.id))
       .returning()
 
-    return updated[0]
+    // Lock target account if linked
+    if (req[0].targetUserId) {
+      await lockUserFn({ data: { userId: req[0].targetUserId } })
+    }
+
+    const allUsers = await db.select().from(users)
+    return enrichRequest(updated[0], allUsers)
   })
 
-export const generateAvgangPdfFn = createServerFn({ method: "POST" })
+export const recordPdfGenerationFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
-    z
-      .object({
-        id: z.number(),
-      })
-      .parse(data),
+    z.object({ id: z.number() }).parse(data)
   )
   .handler(async ({ data }) => {
-    const request = await db
-      .select()
-      .from(avgangsRequests)
+    const admin = await requireStaffUser()
+    const updated = await db.update(avgangsRequests)
+      .set({ generatedAt: new Date(), generatedBy: admin.id, updatedAt: new Date() })
       .where(eq(avgangsRequests.id, data.id))
-      .limit(1)
-
-    if (!request[0]) {
-      throw new Error('Request not found')
-    }
-
-    // I produktion skulle detta generera en PDF
-    const pdfContent = `
-AVGÅNGSBREV
-
-Namn: ${request[0].namn}
-Personnummer: ${request[0].pnr}
-Roll: ${request[0].roll}
-Avgångsdatum: ${request[0].datum?.toLocaleDateString('sv-SE')}
-Anledning: ${request[0].orsak}
-
-Signerat av: ${new Date().toLocaleDateString('sv-SE')}
-`
-
-    return {
-      success: true,
-      pdf: pdfContent,
-      requestId: request[0].id,
-    }
+      .returning()
+    const allUsers = await db.select().from(users)
+    return enrichRequest(updated[0], allUsers)
   })

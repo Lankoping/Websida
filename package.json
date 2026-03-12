@@ -13,8 +13,7 @@
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "generate:routes": "tsr generate",
-    "clean": "rm -rf .ouptut dist node_modules/.vite .nitro .tanstack",
-    "admin": "tsx scripts/create-admin.ts"
+    "clean": "rm -rf .ouptut dist node_modules/.vite .nitro .tanstack"
   },
   "dependencies": {
     "@better-auth/cli": "^1.4.21",

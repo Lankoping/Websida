@@ -6,7 +6,13 @@ import { eq, desc } from 'drizzle-orm'
 import { z } from 'zod'
 import { GoogleGenAI } from '@google/genai'
 import { lockUserFn } from './auth'
-import { requireOrganizerUser, requireStaffUser } from '../lib/access'
+import {
+  enforceDemoOwnUserScope,
+  isDemoTesterUser,
+  requireOrganizerUser,
+  requireStaffUser,
+  scopeSignerIdsForUser,
+} from '../lib/access'
 import { writeActivityLog } from './logs'
 
 async function enrichRequest(req: typeof avgangsRequests.$inferSelect, allUsers: (typeof users.$inferSelect)[]) {
@@ -34,17 +40,38 @@ async function enrichRequest(req: typeof avgangsRequests.$inferSelect, allUsers:
 
 export const getAvgangRequestsFn = createServerFn({ method: 'GET' })
   .handler(async () => {
+    const admin = await requireStaffUser()
+    const isDemo = isDemoTesterUser(admin)
     const requests = await db.select().from(avgangsRequests).orderBy(desc(avgangsRequests.createdAt))
-    const allUsers = await db.select().from(users)
-    return Promise.all(requests.map(r => enrichRequest(r, allUsers)))
+    const scopedRequests = isDemo
+      ? requests.filter((request) => request.createdByUserId === admin.id || request.targetUserId === admin.id)
+      : requests
+    const allUsers = isDemo ? [admin] : await db.select().from(users)
+    const enriched = await Promise.all(scopedRequests.map((request) => enrichRequest(request, allUsers)))
+
+    if (!isDemo) {
+      return enriched
+    }
+
+    return enriched.map((request) => ({
+      ...request,
+      requiredSigners: request.requiredSigners.filter((signer) => signer.userId === admin.id),
+      createdByName: request.createdByUserId === admin.id ? request.createdByName : null,
+      targetName: request.targetUserId === admin.id ? request.targetName : null,
+      generatedByName: request.generatedBy === admin.id ? request.generatedByName : null,
+    }))
   })
 
 export const getMyPendingSignaturesFn = createServerFn({ method: 'GET' })
   .handler(async () => {
     const admin = await requireStaffUser()
+    const isDemo = isDemoTesterUser(admin)
     const requests = await db.select().from(avgangsRequests).orderBy(desc(avgangsRequests.createdAt))
-    const allUsers = await db.select().from(users)
-    const enriched = await Promise.all(requests.map(r => enrichRequest(r, allUsers)))
+    const scopedRequests = isDemo
+      ? requests.filter((request) => request.createdByUserId === admin.id || request.targetUserId === admin.id)
+      : requests
+    const allUsers = isDemo ? [admin] : await db.select().from(users)
+    const enriched = await Promise.all(scopedRequests.map((request) => enrichRequest(request, allUsers)))
     return enriched.filter(r =>
       r.status !== 'archived' &&
       r.requiredSigners.some(s => s.userId === admin.id && !s.signed)
@@ -65,6 +92,11 @@ export const createAvgangRequestFn = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const admin = await requireOrganizerUser()
+    const targetUserId = isDemoTesterUser(admin) ? admin.id : (data.targetUserId ?? null)
+    const requiredSignerIds = scopeSignerIdsForUser(admin, data.requiredSignerIds)
+
+    enforceDemoOwnUserScope(admin, targetUserId)
+
     const req = await db.insert(avgangsRequests).values({
       namn: data.namn,
       pnr: data.pnr,
@@ -73,8 +105,8 @@ export const createAvgangRequestFn = createServerFn({ method: 'POST' })
       datum: new Date(data.datum),
       status: 'pending',
       createdByUserId: admin.id,
-      targetUserId: data.targetUserId ?? null,
-      requiredSigners: JSON.stringify(data.requiredSignerIds),
+      targetUserId,
+      requiredSigners: JSON.stringify(requiredSignerIds),
       digitalSignatures: '{}',
     }).returning()
 
@@ -102,6 +134,10 @@ export const addDigitalSignatureFn = createServerFn({ method: 'POST' })
     const admin = await requireStaffUser()
     const req = await db.select().from(avgangsRequests).where(eq(avgangsRequests.id, data.requestId)).limit(1)
     if (!req[0]) throw new Error('Not found')
+
+    if (isDemoTesterUser(admin) && req[0].createdByUserId !== admin.id && req[0].targetUserId !== admin.id) {
+      throw new Error('Forbidden in demo mode')
+    }
 
     const signerIds: number[] = JSON.parse(req[0].requiredSigners || '[]')
     if (!signerIds.includes(admin.id)) throw new Error('You are not a required signer')
@@ -135,6 +171,15 @@ export const updateAvgangStatusFn = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const admin = await requireOrganizerUser()
+    const request = await db.select().from(avgangsRequests).where(eq(avgangsRequests.id, data.id)).limit(1)
+    if (!request[0]) {
+      throw new Error('Not found')
+    }
+
+    if (isDemoTesterUser(admin) && request[0].createdByUserId !== admin.id && request[0].targetUserId !== admin.id) {
+      throw new Error('Forbidden in demo mode')
+    }
+
     const updated = await db.update(avgangsRequests)
       .set({ status: data.status, reviewedBy: admin.id, updatedAt: new Date() })
       .where(eq(avgangsRequests.id, data.id))
@@ -161,7 +206,14 @@ export const markPhysicallySignedFn = createServerFn({ method: 'POST' })
     const admin = await requireOrganizerUser()
     const req = await db.select().from(avgangsRequests).where(eq(avgangsRequests.id, data.id)).limit(1)
     if (!req[0]) throw new Error('Not found')
+
+    if (isDemoTesterUser(admin) && req[0].createdByUserId !== admin.id && req[0].targetUserId !== admin.id) {
+      throw new Error('Forbidden in demo mode')
+    }
+
     if (req[0].status !== 'approved') throw new Error('Must be approved first')
+
+    enforceDemoOwnUserScope(admin, req[0].targetUserId)
 
     const updated = await db.update(avgangsRequests)
       .set({ physicalSigned: true, updatedAt: new Date() })
@@ -194,6 +246,15 @@ export const recordPdfGenerationFn = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const admin = await requireStaffUser()
+    const existing = await db.select().from(avgangsRequests).where(eq(avgangsRequests.id, data.id)).limit(1)
+    if (!existing[0]) {
+      throw new Error('Not found')
+    }
+
+    if (isDemoTesterUser(admin) && existing[0].createdByUserId !== admin.id && existing[0].targetUserId !== admin.id) {
+      throw new Error('Forbidden in demo mode')
+    }
+
     const updated = await db.update(avgangsRequests)
       .set({ generatedAt: new Date(), generatedBy: admin.id, updatedAt: new Date() })
       .where(eq(avgangsRequests.id, data.id))

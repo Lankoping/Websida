@@ -5,7 +5,7 @@ import { sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '../db/index'
 import { activityLogs, users } from '../db/schema'
-import { requireOrganizerUser } from '../lib/access'
+import { isDemoTesterUser, requireOrganizerUser } from '../lib/access'
 
 export type ActivityLogInput = {
   actorUserId: number
@@ -43,17 +43,17 @@ export const getActivityLogsFn = createServerFn({ method: 'GET' })
       .parse(data ?? {}),
   )
   .handler(async ({ data }) => {
-    await requireOrganizerUser()
+    const currentUser = await requireOrganizerUser()
 
     try {
-      const rows = await queryActivityLogs(data.limit)
+      const rows = await queryActivityLogs(data.limit, isDemoTesterUser(currentUser) ? currentUser.id : null)
 
       return rows
     } catch (error) {
       if (isMissingActivityLogsTableError(error)) {
         try {
           await ensureActivityLogsTable()
-          return await queryActivityLogs(data.limit)
+          return await queryActivityLogs(data.limit, isDemoTesterUser(currentUser) ? currentUser.id : null)
         } catch (retryError) {
           if (isMissingActivityLogsTableError(retryError)) {
             return []
@@ -65,8 +65,8 @@ export const getActivityLogsFn = createServerFn({ method: 'GET' })
     }
   })
 
-async function queryActivityLogs(limit: number) {
-  return await db
+async function queryActivityLogs(limit: number, actorUserId: number | null) {
+  const baseQuery = db
     .select({
       id: activityLogs.id,
       action: activityLogs.action,
@@ -81,6 +81,15 @@ async function queryActivityLogs(limit: number) {
     })
     .from(activityLogs)
     .leftJoin(users, eq(activityLogs.actorUserId, users.id))
+
+  if (actorUserId != null) {
+    return await baseQuery
+      .where(eq(activityLogs.actorUserId, actorUserId))
+      .orderBy(desc(activityLogs.createdAt))
+      .limit(limit)
+  }
+
+  return await baseQuery
     .orderBy(desc(activityLogs.createdAt))
     .limit(limit)
 }

@@ -70,6 +70,68 @@ NITRO_HOST=0.0.0.0
 NODE_ENV=production
 ```
 
+Demo admin account defaults:
+
+```env
+DEMO_TESTER_EMAIL=tester@lankoping.se
+DEMO_TESTER_PASSWORD=TesterDemo2026!
+DEMO_TESTER_NAME=Tester
+```
+
+The server ensures this account exists on startup and applies demo scoping rules for it.
+
+## Demo Tester Account (Locked Admin)
+
+This project includes a built-in demo admin account intended for safe demonstrations.
+
+- Account name: `Tester`
+- Account role: `organizer`
+- Auto-provisioned on server start (created only if missing)
+
+### What Tester can do
+
+- Access admin routes and features
+- Use normal admin workflows for tickets, agreements, and departures
+- Update own profile and own password
+
+### What Tester cannot do
+
+- View other users or list full user data
+- Create, delete, lock, or update other user accounts
+- Change passwords for other users
+- Access or mutate records outside Tester-owned/demo-scoped data
+- View activity logs for other users
+
+### Disable/enable from normal admin UI
+
+You can manage demo account availability directly in the regular admin interface:
+
+1. Go to `/admin/users`
+2. Use the `Demo-konton` panel
+3. Click `Inaktivera demo` or `Aktivera demo`
+
+This updates account `active` state server-side for configured demo accounts.
+
+### Scope model used for Tester
+
+The restrictions are enforced server-side (not only in UI):
+
+- User listings are scoped to Tester only
+- Ticket operations are scoped to tickets issued by Tester
+- Agreements are scoped to agreements created by Tester
+- Departure (`avgang`) requests are scoped to records created by or targeting Tester
+- Logs are scoped to entries where Tester is the actor
+
+### Environment overrides
+
+You can override the demo account credentials with:
+
+- `DEMO_TESTER_EMAIL`
+- `DEMO_TESTER_PASSWORD`
+- `DEMO_TESTER_NAME`
+
+If you change `DEMO_TESTER_EMAIL`, the server will ensure that email exists as the demo user on startup.
+
 ## Available Scripts
 
 - `npm run dev`: Start local dev server on port 3000

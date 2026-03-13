@@ -5,12 +5,13 @@ import { stadgar, users } from '../db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { GoogleGenAI } from '@google/genai'
-import { requireOrganizerUser, requireStaffUser } from '../lib/access'
+import { isDemoTesterUser, requireOrganizerUser, requireStaffUser } from '../lib/access'
 import { writeActivityLog } from './logs'
 
 export const getStadgarFn = createServerFn({ method: "GET" })
   .handler(async () => {
-    await requireStaffUser()
+    const currentUser = await requireStaffUser()
+    const isDemo = isDemoTesterUser(currentUser)
     const data = await db.select().from(stadgar).limit(1)
     if (!data[0]) {
       return {
@@ -32,14 +33,17 @@ export const getStadgarFn = createServerFn({ method: "GET" })
     }
 
     const userIds = Object.keys(signatures).map(Number)
-    const signerUsers = userIds.length > 0 
-      ? await db.select({ id: users.id, name: users.name, email: users.email }).from(users)
+    const signerUsers = userIds.length > 0
+      ? await db
+          .select({ id: users.id, name: users.name, email: users.email })
+          .from(users)
+          .where(isDemo ? eq(users.id, currentUser.id) : undefined)
       : []
 
     return {
       ...data[0],
       signers: signerUsers
-        .filter(u => userIds.includes(u.id))
+        .filter((u) => userIds.includes(u.id) && (!isDemo || u.id === currentUser.id))
         .map(u => ({
           userId: u.id,
           name: u.name,
@@ -225,6 +229,10 @@ export const addSignerFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const currentUser = await requireOrganizerUser()
 
+    if (isDemoTesterUser(currentUser) && data.userId !== currentUser.id) {
+      throw new Error('Forbidden in demo mode')
+    }
+
     // Check user exists
     const user = await db.select().from(users).where(eq(users.id, data.userId)).limit(1)
     if (!user[0]) {
@@ -294,6 +302,10 @@ export const removeSignerFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser) && data.userId !== currentUser.id) {
+      throw new Error('Forbidden in demo mode')
+    }
 
     const existing = await db.select().from(stadgar).limit(1)
     if (!existing[0]) {

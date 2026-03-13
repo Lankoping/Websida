@@ -4,9 +4,79 @@ import { db } from '../db/index'
 import { users } from '../db/schema'
 
 export type StaffRole = 'organizer' | 'volunteer'
+export const DEMO_TESTER_EMAIL = (process.env.DEMO_TESTER_EMAIL ?? 'tester@lankoping.se').trim().toLowerCase()
+export const DEMO_TESTER_PASSWORD = process.env.DEMO_TESTER_PASSWORD ?? 'TesterDemo2026!'
+export const DEMO_TESTER_NAME = process.env.DEMO_TESTER_NAME ?? 'Tester'
+
+export function getDemoAccountEmails() {
+  const raw = process.env.DEMO_ACCOUNT_EMAILS
+  if (!raw || !raw.trim()) {
+    return [DEMO_TESTER_EMAIL]
+  }
+
+  const emails = raw
+    .split(',')
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean)
+
+  if (!emails.includes(DEMO_TESTER_EMAIL)) {
+    emails.push(DEMO_TESTER_EMAIL)
+  }
+
+  return Array.from(new Set(emails))
+}
 
 export function isOrganizer(role: string | null | undefined): role is 'organizer' {
   return role === 'organizer'
+}
+
+export function isDemoTesterUser(user: { id: number; email: string | null; role: string | null } | null | undefined) {
+  if (!user) return false
+  return user.role === 'organizer' && getDemoAccountEmails().includes((user.email ?? '').trim().toLowerCase())
+}
+
+export function enforceDemoOwnUserScope(
+  currentUser: { id: number; email: string | null; role: string | null },
+  targetUserId: number | null | undefined,
+) {
+  if (!isDemoTesterUser(currentUser)) {
+    return
+  }
+
+  if (targetUserId != null && targetUserId !== currentUser.id) {
+    throw new Error('Forbidden in demo mode')
+  }
+}
+
+export function scopeSignerIdsForUser(
+  currentUser: { id: number; email: string | null; role: string | null },
+  signerIds: number[],
+) {
+  if (isDemoTesterUser(currentUser)) {
+    return [currentUser.id]
+  }
+
+  return Array.from(new Set(signerIds))
+}
+
+export async function ensureDemoTesterUser() {
+  const existing = await db.select().from(users).where(eq(users.email, DEMO_TESTER_EMAIL)).limit(1)
+  if (existing[0]) {
+    return existing[0]
+  }
+
+  const inserted = await db
+    .insert(users)
+    .values({
+      email: DEMO_TESTER_EMAIL,
+      passwordHash: DEMO_TESTER_PASSWORD,
+      name: DEMO_TESTER_NAME,
+      role: 'organizer',
+      active: true,
+    })
+    .returning()
+
+  return inserted[0]
 }
 
 export async function requireStaffUser() {

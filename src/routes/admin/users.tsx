@@ -1,6 +1,15 @@
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
-import { createUserFn, getUsersFn, changePasswordFn, deleteUserFn, getSessionFn, updateUserFn } from '../../server/functions/auth'
+import {
+  createUserFn,
+  getUsersFn,
+  changePasswordFn,
+  deleteUserFn,
+  getSessionFn,
+  updateUserFn,
+  getDemoAccountsFn,
+  setDemoAccountsActiveFn,
+} from '../../server/functions/auth'
 
 export const Route = createFileRoute('/admin/users')({
   beforeLoad: async () => {
@@ -10,9 +19,10 @@ export const Route = createFileRoute('/admin/users')({
     }
   },
   loader: async () => {
-    return { 
+    return {
       users: await getUsersFn(),
-      currentUser: await getSessionFn()
+      currentUser: await getSessionFn(),
+      demoAccounts: await getDemoAccountsFn(),
     }
   },
   component: AdminUsers,
@@ -20,7 +30,7 @@ export const Route = createFileRoute('/admin/users')({
 
 function AdminUsers() {
   const router = useRouter()
-  const { users, currentUser } = Route.useLoaderData()
+  const { users, currentUser, demoAccounts } = Route.useLoaderData()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -42,6 +52,8 @@ function AdminUsers() {
   const [editingActive, setEditingActive] = useState(true)
   const [isUpdatingId, setIsUpdatingId] = useState<number | null>(null)
   const [copiedId, setCopiedId] = useState<number | null>(null)
+  const [isTogglingDemo, setIsTogglingDemo] = useState(false)
+  const [demoToggleError, setDemoToggleError] = useState('')
 
   const handleChangePassword = async (userId: number, e: React.FormEvent) => {
     e.preventDefault()
@@ -138,6 +150,19 @@ function AdminUsers() {
     }
   }
 
+  const handleSetDemoAccountsActive = async (active: boolean) => {
+    setDemoToggleError('')
+    setIsTogglingDemo(true)
+    try {
+      await setDemoAccountsActiveFn({ data: { active } })
+      await router.invalidate()
+    } catch (err: any) {
+      setDemoToggleError(err?.message || 'Could not update demo accounts')
+    } finally {
+      setIsTogglingDemo(false)
+    }
+  }
+
   const filteredUsers = users.filter(user => {
     const searchLower = searchQuery.toLowerCase();
     return (
@@ -147,6 +172,11 @@ function AdminUsers() {
     );
   });
 
+  const hasDemoAccounts = demoAccounts.length > 0
+  const activeDemoCount = demoAccounts.filter((account) => account.active !== false).length
+  const inactiveDemoCount = demoAccounts.length - activeDemoCount
+  const isAnyDemoActive = activeDemoCount > 0
+
   return (
     <div className="bg-[#141210]/80 border border-[#C04A2A]/20 p-5 sm:p-8 lg:p-10 rounded-sm text-[#F0E8D8] relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C04A2A]/50 to-transparent opacity-50" />
@@ -155,6 +185,57 @@ function AdminUsers() {
         <p className="text-[10px] uppercase tracking-[0.28em] text-[#C04A2A] font-medium mb-2">Hantera</p>
         <h2 className="font-display text-2xl sm:text-3xl tracking-wide mb-2">Användare</h2>
         <p className="text-xs text-[#F0E8D8]/50">Skapa organisatörer och volontärer, byt namn och kopiera ID för digital signering.</p>
+      </div>
+
+      <div className="mb-8 p-5 sm:p-6 bg-[#1A1816]/50 border border-[#C04A2A]/20 rounded-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#C04A2A] mb-2">Demo-konton</p>
+            <p className="text-xs text-[#F0E8D8]/60">
+              Aktiva: {activeDemoCount} · Inaktiva: {inactiveDemoCount}
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+            <button
+              type="button"
+              onClick={() => handleSetDemoAccountsActive(false)}
+              disabled={isTogglingDemo || !hasDemoAccounts || !isAnyDemoActive}
+              className="px-4 py-2 text-[10px] uppercase tracking-[0.15em] font-medium border border-red-900/40 text-red-400/80 hover:text-red-300 hover:border-red-400/60 rounded-sm transition-colors disabled:opacity-40"
+            >
+              {isTogglingDemo ? 'Arbetar...' : 'Inaktivera demo'}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSetDemoAccountsActive(true)}
+              disabled={isTogglingDemo || !hasDemoAccounts || isAnyDemoActive}
+              className="px-4 py-2 text-[10px] uppercase tracking-[0.15em] font-medium border border-emerald-900/40 text-emerald-300/90 hover:text-emerald-200 hover:border-emerald-300/60 rounded-sm transition-colors disabled:opacity-40"
+            >
+              {isTogglingDemo ? 'Arbetar...' : 'Aktivera demo'}
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-4 space-y-2">
+          {demoAccounts.map((account) => (
+            <div key={account.id} className="flex flex-wrap items-center justify-between gap-2 p-3 border border-[#C04A2A]/15 bg-[#100E0C]/70 rounded-sm">
+              <div>
+                <p className="text-xs text-[#F0E8D8] font-medium">{account.name || 'Demo-konto'}</p>
+                <p className="text-[11px] text-[#F0E8D8]/45 font-mono">{account.email}</p>
+              </div>
+              <span className={`px-2 py-1 text-[10px] uppercase tracking-[0.15em] border rounded-sm ${account.active === false ? 'border-red-400/30 text-red-300/80 bg-red-900/20' : 'border-emerald-400/30 text-emerald-200/90 bg-emerald-900/20'}`}>
+                {account.active === false ? 'Inaktivt' : 'Aktivt'}
+              </span>
+            </div>
+          ))}
+
+          {!hasDemoAccounts && (
+            <p className="text-xs text-[#F0E8D8]/50">Inga demo-konton hittades.</p>
+          )}
+
+          {demoToggleError && (
+            <p className="text-red-400/80 text-[11px] tracking-wide uppercase font-medium">{demoToggleError}</p>
+          )}
+        </div>
       </div>
 
       <form onSubmit={handleCreateUser} className="mb-12 grid gap-4 lg:grid-cols-2 p-5 sm:p-6 bg-[#1A1816]/50 border border-[#C04A2A]/20 rounded-sm relative group">

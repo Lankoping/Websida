@@ -2,15 +2,24 @@
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '../db/index'
 import { users } from '../db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
-import { requireOrganizerUser, requireStaffUser } from '../lib/access'
+import {
+  ensureDemoTesterUser,
+  enforceDemoOwnUserScope,
+  getDemoAccountEmails,
+  isDemoTesterUser,
+  requireOrganizerUser,
+  requireStaffUser,
+} from '../lib/access'
 import { writeActivityLog } from './logs'
 
 export const loginFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ email: z.string(), passwordHash: z.string() }).parse(data))
   .handler(async ({ data }) => {
+    await ensureDemoTesterUser()
+
     const user = await db.select().from(users).where(eq(users.email, data.email)).limit(1)
     if (!user || user.length === 0) {
       throw new Error('User not found')
@@ -78,7 +87,11 @@ export const getSessionFn = createServerFn({ method: "GET" })
 
 export const getUsersFn = createServerFn({ method: "GET" })
   .handler(async () => {
-    await requireOrganizerUser()
+    const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser)) {
+      return [currentUser]
+    }
 
     return await db.select().from(users)
   })
@@ -96,6 +109,10 @@ export const createUserFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser)) {
+      throw new Error('Forbidden in demo mode')
+    }
 
     const existing = await db.select().from(users).where(eq(users.email, data.email)).limit(1)
     if (existing.length > 0) {
@@ -137,6 +154,8 @@ export const changePasswordFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const currentUser = await requireStaffUser()
+
+    enforceDemoOwnUserScope(currentUser, data.userId)
 
     const targetUser = await db
       .select()
@@ -180,6 +199,10 @@ export const deleteUserFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const currentUser = await requireOrganizerUser()
 
+    if (isDemoTesterUser(currentUser)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
     if (currentUser.id === data.userId) {
       throw new Error('Forbidden: Cannot delete yourself')
     }
@@ -216,6 +239,11 @@ export const lockUserFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
     if (currentUser.id === data.userId) throw new Error('Forbidden: Cannot lock yourself')
 
     await db.update(users).set({ active: false }).where(eq(users.id, data.userId))
@@ -268,6 +296,12 @@ export const updateUserFn = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser)) {
+      enforceDemoOwnUserScope(currentUser, data.userId)
+      throw new Error('Forbidden in demo mode')
+    }
+
     if (currentUser.id === data.userId && data.role !== 'organizer') {
       throw new Error('You cannot remove your own organizer access')
     }
@@ -295,4 +329,60 @@ export const updateUserFn = createServerFn({ method: 'POST' })
     })
 
     return updated[0]
+  })
+
+export const getDemoAccountsFn = createServerFn({ method: 'GET' })
+  .handler(async () => {
+    await ensureDemoTesterUser()
+    const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser)) {
+      return [currentUser]
+    }
+
+    const demoEmails = getDemoAccountEmails()
+    if (demoEmails.length === 0) {
+      return []
+    }
+
+    return await db.select().from(users).where(inArray(users.email, demoEmails))
+  })
+
+export const setDemoAccountsActiveFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => z.object({ active: z.boolean() }).parse(data))
+  .handler(async ({ data }) => {
+    await ensureDemoTesterUser()
+    const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
+    const demoEmails = getDemoAccountEmails()
+    if (demoEmails.length === 0) {
+      return { success: true, updatedCount: 0 }
+    }
+
+    const updated = await db
+      .update(users)
+      .set({ active: data.active })
+      .where(inArray(users.email, demoEmails))
+      .returning()
+
+    await writeActivityLog({
+      actorUserId: currentUser.id,
+      actorRole: currentUser.role,
+      action: data.active ? 'demo_accounts.enable' : 'demo_accounts.disable',
+      entityType: 'user',
+      details: {
+        emails: demoEmails,
+        count: updated.length,
+      },
+    })
+
+    return {
+      success: true,
+      updatedCount: updated.length,
+      demoAccounts: updated,
+    }
   })

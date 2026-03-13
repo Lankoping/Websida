@@ -4,7 +4,7 @@
 import { defineNitroPlugin } from 'nitropack/runtime'
 import { initializeServer } from '../../src/server/init'
 
-export default defineNitroPlugin(() => {
+export default defineNitroPlugin(async () => {
   console.log('🔌 Nitro plugin: Initializing server...')
-  initializeServer()
+  await initializeServer()
 })

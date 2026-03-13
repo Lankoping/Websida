@@ -6,7 +6,7 @@ import { eq, and } from 'drizzle-orm'
 import { z } from 'zod'
 import { getCookie } from '@tanstack/react-start/server'
 import { nanoid } from 'nanoid'
-import { requireStaffUser } from '../lib/access'
+import { isDemoTesterUser, requireStaffUser } from '../lib/access'
 import { writeActivityLog } from './logs'
 
 async function checkAdmin() {
@@ -116,8 +116,8 @@ export const deleteTicketTypeFn = createServerFn({ method: "POST" })
 
 export const getTicketsFn = createServerFn({ method: "GET" })
   .handler(async () => {
-    await checkAdmin()
-    return await db.select({
+    const admin = await checkAdmin()
+    const baseQuery = db.select({
       id: tickets.id,
       eventId: tickets.eventId,
       participantName: tickets.participantName,
@@ -135,13 +135,22 @@ export const getTicketsFn = createServerFn({ method: "GET" })
     })
     .from(tickets)
     .leftJoin(users, eq(tickets.scannedBy, users.id))
+
+    if (isDemoTesterUser(admin)) {
+      return await baseQuery.where(eq(tickets.issuedBy, admin.id))
+    }
+
+    return await baseQuery
   })
 
 export const getTicketFn = createServerFn({ method: 'GET' })
   .inputValidator((data: unknown) => z.string().parse(data))
   .handler(async ({ data: ticketId }) => {
-    await checkAdmin()
+    const admin = await checkAdmin()
     const result = await db.select().from(tickets).where(eq(tickets.id, parseInt(ticketId))).limit(1)
+    if (isDemoTesterUser(admin) && result[0] && result[0].issuedBy !== admin.id) {
+      throw new Error('Forbidden in demo mode')
+    }
     return result[0]
   })
 
@@ -194,6 +203,14 @@ export const updateTicketStatusFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const admin = await checkAdmin()
+
+    if (isDemoTesterUser(admin)) {
+      const existing = await db.select().from(tickets).where(eq(tickets.id, data.ticketId)).limit(1)
+      if (!existing[0] || existing[0].issuedBy !== admin.id) {
+        throw new Error('Forbidden in demo mode')
+      }
+    }
+
     const scanDate = data.status === 'used' ? new Date() : null
     const updated = await db.update(tickets)
       .set({ 
@@ -221,6 +238,14 @@ export const deleteTicketFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => z.number().parse(data))
   .handler(async ({ data: ticketId }) => {
     const admin = await checkAdmin()
+
+    if (isDemoTesterUser(admin)) {
+      const existing = await db.select().from(tickets).where(eq(tickets.id, ticketId)).limit(1)
+      if (!existing[0] || existing[0].issuedBy !== admin.id) {
+        throw new Error('Forbidden in demo mode')
+      }
+    }
+
     await db.delete(tickets).where(eq(tickets.id, ticketId))
 
     await writeActivityLog({
@@ -245,10 +270,12 @@ export const verifyTicketByCodeFn = createServerFn({ method: "POST" })
     // Try to get adminId if they're logged in
     let adminId: number | null = null
     let adminRole: 'organizer' | 'volunteer' | null = null
+    let demoRestricted = false
     try {
       const admin = await checkAdmin()
       adminId = admin.id
       adminRole = admin.role
+      demoRestricted = isDemoTesterUser(admin)
     } catch (e) {
       // Not logged in or not admin, that's fine for public verification
     }
@@ -257,6 +284,11 @@ export const verifyTicketByCodeFn = createServerFn({ method: "POST" })
     if (result.length === 0) return { success: false, message: 'Ogiltig biljettkod' }
     
     const ticket = result[0]
+
+    if (demoRestricted && adminId && ticket.issuedBy !== adminId) {
+      throw new Error('Forbidden in demo mode')
+    }
+
     let checkingIn = false
     
     // If ticket is valid, mark it as used and record scan time ONLY if markAsUsed is true

@@ -11,8 +11,13 @@ export const Route = createFileRoute('/admin/logs')({
     }
   },
   loader: async () => {
-    const logs = await getActivityLogsFn({ data: { limit: 400 } })
-    return { logs }
+    try {
+      const logs = await getActivityLogsFn({ data: { limit: 400 } })
+      return { logs }
+    } catch (error) {
+      console.error('Failed to load activity logs', error)
+      return { logs: [] }
+    }
   },
   component: AdminLogs,
 })

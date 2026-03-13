@@ -42,13 +42,11 @@ function AgreementsAdmin() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [body, setBody] = useState('')
-  const [agreementTemplate, setAgreementTemplate] = useState<'none' | 'purchase' | 'confidentiality'>('none')
+  const [agreementTemplate, setAgreementTemplate] = useState<'none' | 'purchase'>('none')
   const [purchaseCost, setPurchaseCost] = useState('')
   const [purchaseItem, setPurchaseItem] = useState('')
   const [purchaseMotivation, setPurchaseMotivation] = useState('')
-  const [adminSignerId, setAdminSignerId] = useState<number | null>(null)
-  const [recipientSignerId, setRecipientSignerId] = useState<number | null>(null)
-  const [recipientIsUnder18, setRecipientIsUnder18] = useState(false)
+  const [requiredSignerIds, setRequiredSignerIds] = useState<number[]>([])
   const [status, setStatus] = useState<'draft' | 'active'>('draft')
   const [isSaving, setIsSaving] = useState(false)
   const [isFixingSpelling, setIsFixingSpelling] = useState(false)
@@ -85,46 +83,6 @@ function AgreementsAdmin() {
   const filteredAgreements = agreements.filter(matchesAgreement)
   const filteredMyPending = myPending.filter(matchesAgreement)
 
-  const guardianHeading = 'Särskilda villkor för mottagare under 18 år'
-  const guardianClause = `${guardianHeading}
-Mottagaren är under 18 år. Målsman ska därför närvara vid fysisk signering och fylla i namnförtydligande, underskrift och datum på den utskrivna kopian.`
-
-  const ensureGuardianClauseInBody = (inputBody: string) => {
-    if (!recipientIsUnder18) {
-      return inputBody
-    }
-
-    if (inputBody.toLowerCase().includes(guardianHeading.toLowerCase())) {
-      return inputBody
-    }
-
-    return `${inputBody.trim()}\n\n${guardianClause}`
-  }
-
-  const parsePhysicalSignatureMetadata = (agreement: AgreementRow) => {
-    const raw = (agreement as any).digitalSignatures
-    if (!raw || typeof raw !== 'string') {
-      return null
-    }
-
-    try {
-      const parsed = JSON.parse(raw) as Record<string, unknown>
-      return {
-        adminPhysicalNameClarification:
-          typeof parsed.__physicalSignedByAdminNameClarification === 'string'
-            ? parsed.__physicalSignedByAdminNameClarification
-            : null,
-        printedCopyConfirmed: parsed.__printedCopyConfirmed === true,
-        recipientIsUnder18: parsed.__recipientIsUnder18 === true,
-        guardianNameClarification:
-          typeof parsed.__guardianNameClarification === 'string' ? parsed.__guardianNameClarification : null,
-        guardianSignatureConfirmed: parsed.__guardianSignatureConfirmed === true,
-      }
-    } catch {
-      return null
-    }
-  }
-
   const buildPurchaseTemplateBody = () => `Anpassat avtal för köp
 
 Kostnad:
@@ -138,42 +96,6 @@ ${purchaseMotivation}
 
 Parterna bekräftar att uppgifterna ovan är korrekta och att köpet godkänns enligt organisationens rutiner.`
 
-  const buildConfidentialityTemplateBody = () => `Sekretessavtal (NDA) - Åtkomst till system med personuppgifter
-
-Bakgrund
-Om du har blivit ombedd att signera det här pappret är det för att du kommer att få åtkomst till ett system som innehåller personinformation som inte får delas.
-
-1. Vad som omfattas av sekretess
-- Personuppgifter (namn, e-post, telefon, interna ID-nummer, adressuppgifter och liknande)
-- Kontoinformation, inloggningsinformation, roller och behörighetsnivåer
-- Intern dokumentation, arbetsflöden, loggar, avtal och administrativ information
-- Säkerhetsrelaterad information och teknisk systeminformation
-
-2. Dina skyldigheter
-- Du får endast använda informationen för uppgifter kopplade till din roll i Lanköping
-- Du får inte kopiera, exportera, dela, publicera eller sprida information till obehöriga
-- Du får inte använda informationen för privata syften eller externa projekt
-- Du måste skydda ditt konto, lösenord och eventuell tvåfaktorsautentisering
-- Du ska omedelbart rapportera misstänkt läcka, obehörig åtkomst eller säkerhetsincident
-
-3. Åtkomstbegränsning
-- Åtkomst ges enligt principen "minsta möjliga behörighet"
-- Lanköping kan begränsa eller återkalla åtkomst när som helst vid säkerhetsbehov
-
-4. Loggning och spårbarhet
-- Åtgärder i systemet kan loggas för säkerhet, revision och incidenthantering
-- Loggning kan omfatta tidpunkt, konto, roll, åtgärd och teknisk metadata
-
-5. Brott mot avtalet
-- Brott mot detta avtal kan leda till omedelbart borttagen åtkomst
-- Brott kan medföra interna disciplinära åtgärder och rättsliga konsekvenser
-
-6. Giltighet
-- Detta sekretessåtagande gäller under hela tiden du har åtkomst till systemet
-- Sekretessåtagandet gäller även efter att uppdrag, roll eller konto avslutas
-
-Genom signering bekräftar du att du har läst, förstått och accepterat villkoren i detta sekretessavtal.`
-
   const resetForm = () => {
     setEditingId(null)
     setTitle('')
@@ -183,11 +105,15 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
     setPurchaseCost('')
     setPurchaseItem('')
     setPurchaseMotivation('')
-    setAdminSignerId(null)
-    setRecipientSignerId(null)
-    setRecipientIsUnder18(false)
+    setRequiredSignerIds([])
     setStatus('draft')
     setError('')
+  }
+
+  const toggleSigner = (userId: number) => {
+    setRequiredSignerIds((current) =>
+      current.includes(userId) ? current.filter((candidate) => candidate !== userId) : [...current, userId],
+    )
   }
 
   const startEdit = (agreement: AgreementRow) => {
@@ -199,13 +125,7 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
     setPurchaseCost('')
     setPurchaseItem('')
     setPurchaseMotivation('')
-    const adminSigner = agreement.requiredSigners.find((signer) => signer.role === 'organizer')
-    const recipientSigner = agreement.requiredSigners.find((signer) => signer.userId !== adminSigner?.userId)
-    const meta = parsePhysicalSignatureMetadata(agreement)
-
-    setAdminSignerId(adminSigner?.userId ?? null)
-    setRecipientSignerId(recipientSigner?.userId ?? null)
-    setRecipientIsUnder18(Boolean((agreement as any).recipientIsUnder18 ?? meta?.recipientIsUnder18))
+    setRequiredSignerIds(agreement.requiredSigners.map((signer) => signer.userId))
     setStatus(agreement.status === 'active' ? 'active' : 'draft')
     setExpandedId(agreement.id)
   }
@@ -220,47 +140,14 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
     setBody(buildPurchaseTemplateBody())
   }
 
-  const handleApplyConfidentialityTemplate = () => {
-    setError('')
-    if (!title.trim()) {
-      setTitle('Sekretessavtal - Åtkomst till personuppgiftssystem')
-    }
-    if (!description.trim()) {
-      setDescription('Måste signeras innan åtkomst till system med personuppgifter ges.')
-    }
-    setBody(buildConfidentialityTemplateBody())
-  }
-
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!adminSignerId || !recipientSignerId) {
-      setError('Välj både signerande administratör och signerande mottagare')
-      return
-    }
-
-    if (adminSignerId === recipientSignerId) {
-      setError('Signerande administratör och mottagare måste vara två olika personer')
-      return
-    }
-
-    const selectedAdmin = allUsers.find((user) => user.id === adminSignerId)
-    if (!selectedAdmin || selectedAdmin.role !== 'organizer') {
-      setError('Signerande administratör måste vara en användare med rollen organizer')
-      return
-    }
-
-    const requiredSignerIds = [adminSignerId, recipientSignerId]
-
-    const finalBodyBase = body.trim()
+    const finalBody = body.trim()
       ? body
       : agreementTemplate === 'purchase' && purchaseCost.trim() && purchaseItem.trim() && purchaseMotivation.trim()
         ? buildPurchaseTemplateBody()
-        : agreementTemplate === 'confidentiality'
-          ? buildConfidentialityTemplateBody()
-          : ''
-
-    const finalBody = ensureGuardianClauseInBody(finalBodyBase)
+        : ''
 
     if (!title.trim() || !finalBody.trim()) {
       setError('Titel och avtalstext krävs')
@@ -279,7 +166,6 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
               description,
               body: finalBody,
               requiredSignerIds,
-              recipientIsUnder18,
               status,
             },
           })
@@ -289,7 +175,6 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
               description,
               body: finalBody,
               requiredSignerIds,
-              recipientIsUnder18,
               status,
             },
           })
@@ -331,7 +216,6 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
     try {
       const updated = await recordAgreementPdfGenerationFn({ data: { id: agreement.id } })
       setAgreements((current) => current.map((row) => (row.id === agreement.id ? updated : row)))
-      const physicalMeta = parsePhysicalSignatureMetadata(updated)
       openAgreementPdf(
         {
           id: updated.id,
@@ -343,9 +227,6 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
           generatedByName: updated.generatedByName,
           requiredSigners: updated.requiredSigners,
           status: updated.status,
-          recipientIsUnder18: Boolean((updated as any).recipientIsUnder18 ?? physicalMeta?.recipientIsUnder18),
-          adminPhysicalNameClarification: physicalMeta?.adminPhysicalNameClarification || null,
-          guardianNameClarification: physicalMeta?.guardianNameClarification || null,
         },
         session?.name || 'System'
       )
@@ -381,61 +262,13 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
     }
   }
 
-  const handleMarkPhysical = async (agreement: AgreementRow) => {
-    if (!window.confirm('Bekräfta att en fysisk kopia skrivs ut nu och signeras med penna av parterna.')) {
+  const handleMarkPhysical = async (agreementId: number) => {
+    if (!window.confirm('Bekräfta att avtalet nu är fysiskt signerat.')) {
       return
     }
-
-    const adminDefaultName = session?.name?.trim() || ''
-    const adminPhysicalNameClarification = window.prompt(
-      'Ange namnförtydligande för den fysiskt signerande administratören:',
-      adminDefaultName,
-    )
-
-    if (!adminPhysicalNameClarification || adminPhysicalNameClarification.trim().length < 2) {
-      alert('Admin namnförtydligande krävs för fysisk signering')
-      return
-    }
-
-    const existingMeta = parsePhysicalSignatureMetadata(agreement)
-    const recipientIsUnder18 = Boolean((agreement as any).recipientIsUnder18 ?? existingMeta?.recipientIsUnder18)
-
-    let guardianNameClarification = ''
-    let guardianSignatureConfirmed = false
-
-    if (recipientIsUnder18) {
-      const guardianName = window.prompt('Mottagaren är under 18. Ange målsmans namnförtydligande:')
-      if (!guardianName || guardianName.trim().length < 2) {
-        alert('Målsmans namnförtydligande krävs när mottagaren är under 18 år')
-        return
-      }
-
-      const guardianSigned = window.confirm('Bekräfta att målsman har signerat den fysiska kopian.')
-      if (!guardianSigned) {
-        alert('Målsmans signatur måste vara bekräftad för mottagare under 18 år')
-        return
-      }
-
-      guardianNameClarification = guardianName.trim()
-      guardianSignatureConfirmed = true
-    }
-
-    if (!window.confirm('Slutlig bekräftelse: fysisk kopia är utskriven och signerad enligt kraven.')) {
-      return
-    }
-
     try {
-      const updated = await markAgreementPhysicalFn({
-        data: {
-          id: agreement.id,
-          printedCopyConfirmed: true,
-          adminPhysicalNameClarification: adminPhysicalNameClarification.trim(),
-          recipientIsUnder18,
-          guardianNameClarification: recipientIsUnder18 ? guardianNameClarification : undefined,
-          guardianSignatureConfirmed: recipientIsUnder18 ? guardianSignatureConfirmed : undefined,
-        },
-      })
-      setAgreements((current) => current.map((row) => (row.id === agreement.id ? updated : row)))
+      const updated = await markAgreementPhysicalFn({ data: { id: agreementId } })
+      setAgreements((current) => current.map((row) => (row.id === agreementId ? updated : row)))
       await router.invalidate()
     } catch (err: any) {
       alert(err?.message || 'Kunde inte markera avtalet som fysiskt signerat')
@@ -554,12 +387,11 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
               <label className="block text-[10px] uppercase tracking-[0.15em] text-[#F0E8D8]/60 mb-1.5">Template</label>
               <select
                 value={agreementTemplate}
-                onChange={(e) => setAgreementTemplate(e.target.value as 'none' | 'purchase' | 'confidentiality')}
+                onChange={(e) => setAgreementTemplate(e.target.value as 'none' | 'purchase')}
                 className="w-full p-3 bg-[#100E0C] border border-[#C04A2A]/20 rounded-sm text-[#F0E8D8] text-sm outline-none focus:border-[#C04A2A]/60"
               >
                 <option value="none">Ingen template</option>
                 <option value="purchase">Anpassat avtal: Köp</option>
-                <option value="confidentiality">Sekretessavtal (NDA): Systemåtkomst</option>
               </select>
             </div>
 
@@ -606,23 +438,6 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
                 </div>
               </div>
             )}
-
-            {agreementTemplate === 'confidentiality' && (
-              <div className="space-y-3">
-                <p className="text-xs text-[#F0E8D8]/55">
-                  Infogar en detaljerad sekretessavtal-template för system med personinformation.
-                </p>
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    onClick={handleApplyConfidentialityTemplate}
-                    className="px-4 py-2 border border-[#C04A2A]/40 text-[#C04A2A] text-[10px] uppercase tracking-[0.1em] rounded-sm hover:bg-[#C04A2A]/10"
-                  >
-                    Infoga sekretessavtal-template
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
 
           <div>
@@ -641,54 +456,18 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
           </div>
 
           <div>
-            <label className="block text-[10px] uppercase tracking-[0.15em] text-[#F0E8D8]/60 mb-2">Signerande parter</label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-[10px] uppercase tracking-[0.15em] text-[#F0E8D8]/60 mb-1.5">Signerande administratör</label>
-                <select
-                  value={adminSignerId ?? ''}
-                  onChange={(e) => setAdminSignerId(e.target.value ? Number(e.target.value) : null)}
-                  className="w-full p-3 bg-[#100E0C] border border-[#C04A2A]/20 rounded-sm text-[#F0E8D8] text-sm outline-none focus:border-[#C04A2A]/60"
-                >
-                  <option value="">Välj administratör</option>
-                  {allUsers
-                    .filter((user) => user.role === 'organizer')
-                    .map((user) => (
-                      <option key={user.id} value={user.id}>
-                        {user.name || user.email}
-                      </option>
-                    ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] uppercase tracking-[0.15em] text-[#F0E8D8]/60 mb-1.5">Signerande mottagare</label>
-                <select
-                  value={recipientSignerId ?? ''}
-                  onChange={(e) => setRecipientSignerId(e.target.value ? Number(e.target.value) : null)}
-                  className="w-full p-3 bg-[#100E0C] border border-[#C04A2A]/20 rounded-sm text-[#F0E8D8] text-sm outline-none focus:border-[#C04A2A]/60"
-                >
-                  <option value="">Välj mottagare</option>
-                  {allUsers.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {(user.name || user.email) + ' (' + user.role + ')'}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <label className="block text-[10px] uppercase tracking-[0.15em] text-[#F0E8D8]/60 mb-2">Valda digitala signatärer</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {allUsers.map((user) => (
+                <label key={user.id} className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer ${requiredSignerIds.includes(user.id) ? 'border-[#C04A2A]/50 bg-[#C04A2A]/10' : 'border-[#C04A2A]/20 bg-[#100E0C]'}`}>
+                  <input type="checkbox" checked={requiredSignerIds.includes(user.id)} onChange={() => toggleSigner(user.id)} className="accent-[#C04A2A]" />
+                  <div className="min-w-0">
+                    <p className="text-sm text-[#F0E8D8] truncate">{user.name || user.email}</p>
+                    <p className="text-[11px] text-[#F0E8D8]/45 uppercase tracking-[0.15em]">{user.role}</p>
+                  </div>
+                </label>
+              ))}
             </div>
-            <label className="mt-3 flex items-center gap-2 text-sm text-[#F0E8D8]/75">
-              <input
-                type="checkbox"
-                checked={recipientIsUnder18}
-                onChange={(e) => setRecipientIsUnder18(e.target.checked)}
-                className="accent-[#C04A2A]"
-              />
-              Mottagare är under 18 år (målsman måste signera på fysisk kopia)
-            </label>
-            <p className="mt-2 text-xs text-[#F0E8D8]/50">
-              Båda parter måste väljas och signera digitalt innan avtalet kan markeras som fysiskt signerat.
-            </p>
           </div>
 
           <button type="submit" disabled={isSaving} className="px-6 py-3 bg-[#C04A2A] text-white text-[11px] uppercase tracking-[0.15em] rounded-sm hover:bg-[#A03A1A] disabled:opacity-50 shadow-[0_0_15px_rgba(192,74,42,0.3)]">
@@ -722,8 +501,7 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
           {filteredAgreements.map((agreement) => {
             const isExpanded = expandedId === agreement.id
             const mySignature = agreement.requiredSigners.find((signer) => signer.userId === myId)
-            const canGeneratePdf = agreement.allSigned && agreement.status !== 'archived' && agreement.createdByUserId === myId
-            const physicalMeta = parsePhysicalSignatureMetadata(agreement)
+            const canGeneratePdf = agreement.allSigned && agreement.status !== 'archived'
             return (
               <div key={agreement.id} className="border border-[#C04A2A]/20 rounded-sm overflow-hidden">
                 <div className="p-4 flex items-center gap-3 cursor-pointer hover:bg-[#1A1816]/60" onClick={() => setExpandedId(isExpanded ? null : agreement.id)}>
@@ -747,27 +525,14 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
 
                     <div>
                       <p className="text-[10px] uppercase tracking-[0.15em] text-[#F0E8D8]/55 mb-2">Digitala signaturer</p>
-                      <p className="text-xs text-[#F0E8D8]/55 mb-2">
-                        Mottagare under 18 år: {Boolean((agreement as any).recipientIsUnder18 ?? physicalMeta?.recipientIsUnder18) ? 'Ja' : 'Nej'}
-                      </p>
                       <div className="space-y-2">
                         {agreement.requiredSigners.map((signer) => {
-                          const agreementAdminSigner = agreement.requiredSigners.find((candidate) => candidate.role === 'organizer')
-                          const agreementRecipientSigner = agreement.requiredSigners.find(
-                            (candidate) => candidate.userId !== agreementAdminSigner?.userId,
-                          )
-                          const signerRoleLabel = signer.userId === agreementAdminSigner?.userId
-                            ? 'Signerande administratör'
-                            : signer.userId === agreementRecipientSigner?.userId
-                              ? 'Signerande mottagare'
-                              : 'Signerande part'
                           const canISign = signer.userId === myId && !signer.signed
                           return (
                             <div key={signer.userId} className="flex items-center justify-between gap-3 p-3 rounded-sm bg-[#1A1816]/60">
                               <div>
                                 <p className="text-sm text-[#F0E8D8]">{signer.signed ? '[X]' : '[ ]'} {signer.name}</p>
                                 <p className="text-xs text-[#F0E8D8]/45">{signer.email}</p>
-                                <p className="text-xs text-[#F0E8D8]/55">{signerRoleLabel}</p>
                                 {signer.signed && signer.nameClarification && (
                                   <p className="text-xs text-[#F0E8D8]/55">Namnförtydligande: {signer.nameClarification}</p>
                                 )}
@@ -800,7 +565,7 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
                         </button>
                       )}
                       {isOrganizer && agreement.allSigned && !agreement.physicalSigned && (
-                        <button onClick={() => handleMarkPhysical(agreement)} className="px-4 py-2 border border-green-500/30 text-green-400 text-[10px] uppercase tracking-[0.1em] rounded-sm hover:bg-green-500/10">
+                        <button onClick={() => handleMarkPhysical(agreement.id)} className="px-4 py-2 border border-green-500/30 text-green-400 text-[10px] uppercase tracking-[0.1em] rounded-sm hover:bg-green-500/10">
                           Markera fysiskt signerat
                         </button>
                       )}
@@ -823,31 +588,6 @@ Genom signering bekräftar du att du har läst, förstått och accepterat villko
                         </button>
                       )}
                     </div>
-
-                    {agreement.physicalSigned && physicalMeta && (
-                      <div className="p-3 rounded-sm border border-green-500/25 bg-green-500/10 space-y-1">
-                        <p className="text-xs text-green-300/90 uppercase tracking-[0.12em]">Fysisk signeringsinformation</p>
-                        <p className="text-xs text-[#F0E8D8]/70">
-                          Utskriven kopia: {physicalMeta.printedCopyConfirmed ? 'Ja' : 'Nej'}
-                        </p>
-                        <p className="text-xs text-[#F0E8D8]/70">
-                          Signerande admin (namnförtydligande): {physicalMeta.adminPhysicalNameClarification || 'Ej angivet'}
-                        </p>
-                        <p className="text-xs text-[#F0E8D8]/70">
-                          Mottagare under 18: {physicalMeta.recipientIsUnder18 ? 'Ja' : 'Nej'}
-                        </p>
-                        {physicalMeta.recipientIsUnder18 && (
-                          <>
-                            <p className="text-xs text-[#F0E8D8]/70">
-                              Målsmans namnförtydligande: {physicalMeta.guardianNameClarification || 'Ej angivet'}
-                            </p>
-                            <p className="text-xs text-[#F0E8D8]/70">
-                              Målsmans signatur bekräftad: {physicalMeta.guardianSignatureConfirmed ? 'Ja' : 'Nej'}
-                            </p>
-                          </>
-                        )}
-                      </div>
-                    )}
 
                     {agreement.deletePending && agreement.deleteRequestedByName && (
                       <p className="text-xs text-yellow-300/80 border border-yellow-500/25 bg-yellow-500/10 rounded-sm p-2">

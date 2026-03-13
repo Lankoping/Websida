@@ -1,7 +1,7 @@
 import { getCookie } from '@tanstack/react-start/server'
 import { eq } from 'drizzle-orm'
 import { getDb } from '../db/runtime'
-import { agreements, users } from '../db/schema'
+import { users } from '../db/schema'
 
 export type StaffRole = 'organizer' | 'volunteer'
 export const DEMO_TESTER_EMAIL = (process.env.DEMO_TESTER_EMAIL ?? 'tester@lankoping.se').trim().toLowerCase()
@@ -59,39 +59,6 @@ export function scopeSignerIdsForUser(
   return Array.from(new Set(signerIds))
 }
 
-type AgreementSignatureValue =
-  | boolean
-  | {
-      signed?: boolean
-      nameClarification?: string
-      signedAt?: string
-    }
-
-function isConfidentialityAgreement(agreement: { title: string | null; body: string | null }) {
-  const haystack = `${agreement.title ?? ''}\n${agreement.body ?? ''}`.toLowerCase()
-  return haystack.includes('sekretessavtal') || haystack.includes('confidentiality')
-}
-
-export async function hasPendingConfidentialityAgreement(userId: number) {
-  const db = await getDb()
-  const rows = await db.select().from(agreements)
-
-  return rows.some((agreement) => {
-    if (agreement.status === 'archived' || !isConfidentialityAgreement(agreement)) {
-      return false
-    }
-
-    const signerIds: number[] = JSON.parse(agreement.requiredSigners || '[]')
-    if (!signerIds.includes(userId)) {
-      return false
-    }
-
-    // Digital signature is only a name clarification step.
-    // Account access remains locked until physical signing is completed and marked by admin.
-    return agreement.physicalSigned !== true
-  })
-}
-
 export async function ensureDemoTesterUser() {
   const db = await getDb()
   const existing = await db.select().from(users).where(eq(users.email, DEMO_TESTER_EMAIL)).limit(1)
@@ -113,7 +80,7 @@ export async function ensureDemoTesterUser() {
   return inserted[0]
 }
 
-export async function requireStaffUser(options?: { allowPendingConfidentiality?: boolean }) {
+export async function requireStaffUser() {
   const userId = getCookie('session')
   if (!userId) {
     throw new Error('Unauthorized')
@@ -124,13 +91,6 @@ export async function requireStaffUser(options?: { allowPendingConfidentiality?:
   const user = result[0]
   if (!user || user.active === false || (user.role !== 'organizer' && user.role !== 'volunteer')) {
     throw new Error('Forbidden')
-  }
-
-  if (!options?.allowPendingConfidentiality) {
-    const mustSignConfidentiality = await hasPendingConfidentialityAgreement(user.id)
-    if (mustSignConfidentiality) {
-      throw new Error('Confidentiality agreement must be physically signed and approved by admin before account access')
-    }
   }
 
   return user

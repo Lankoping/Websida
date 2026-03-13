@@ -10,6 +10,7 @@ function Login() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [acceptedPolicy, setAcceptedPolicy] = useState(false)
   const [error, setError] = useState('')
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -64,8 +65,25 @@ function Login() {
               className="w-full p-3 bg-[#1A1816]/50 border border-[#C04A2A]/20 focus:border-[#C04A2A]/60 outline-none rounded-sm text-[#F0E8D8] text-sm font-mono transition-all"
             />
           </div>
+
+          <label className="flex items-start gap-3 text-xs text-[#F0E8D8]/70 leading-relaxed">
+            <input
+              type="checkbox"
+              checked={acceptedPolicy}
+              onChange={(e) => setAcceptedPolicy(e.target.checked)}
+              className="mt-1"
+              required
+            />
+            <span>
+              By authenticating you accept our policy and how we store data. Läs mer i vår
+              {' '}
+              <a href="/datapolicy" className="text-[#C04A2A] hover:text-[#F0E8D8] transition-colors">datapolicy</a>.
+            </span>
+          </label>
+
           <button
             type="submit"
+            disabled={!acceptedPolicy}
             className="w-full mt-8 py-4 bg-[#C04A2A] text-white text-[11px] uppercase tracking-[0.2em] font-medium rounded-sm hover:bg-[#A03A1A] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(192,74,42,0.3)]"
           >
             Logga In

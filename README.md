@@ -4,6 +4,37 @@ Official web application for lankoping.se.
 
 Built with TanStack Start, React 19, TypeScript, and PostgreSQL.
 
+## Demo Access For Reviewers
+
+Flavortown reviewers should use the login page at `https://lankoping.se/login` to access the review environment.
+
+This URL is the intended entry point for sign-in. Reviewers should not try to access admin pages directly before logging in.
+
+Demo admin account defaults:
+
+```env
+DEMO_TESTER_EMAIL=tester@lankoping.se
+DEMO_TESTER_PASSWORD=TesterDemo2026!
+DEMO_TESTER_NAME=Tester
+```
+
+After logging in at `https://lankoping.se/login`, reviewers access a demo-scoped admin experience intended for safe access for submissions to the Flavortown hackathon.
+
+### What Flavortown reviewers can access after login
+
+- Admin UI panels and normal admin navigation
+- Demo-scoped workflows for tickets, agreements, departures, and content operations
+- Their own demo profile details
+- Their own demo-scoped records and activity
+
+### What Flavortown reviewers will not access
+
+- Full production admin access
+- Other users' private or personal data
+- Records outside the demo user's allowed scope
+- Full user administration for non-demo accounts
+- Full activity visibility across other users
+
 ## Features
 
 - Public and protected route structure
@@ -70,19 +101,11 @@ NITRO_HOST=0.0.0.0
 NODE_ENV=production
 ```
 
-Demo admin account defaults:
-
-```env
-DEMO_TESTER_EMAIL=tester@lankoping.se
-DEMO_TESTER_PASSWORD=TesterDemo2026!
-DEMO_TESTER_NAME=Tester
-```
-
-The server ensures this account exists on startup and applies demo scoping rules for it.
+The server ensures the configured demo reviewer account exists on startup and applies demo scoping rules for it.
 
 ## Demo Tester Account (Locked Admin)
 
-This project includes a built-in demo admin account intended for safe demonstrations.
+This project includes a built-in demo admin account intended for safe access for Flavortown hackathon submissions.
 
 - Account name: `Tester`
 - Account role: `organizer`
@@ -196,8 +219,11 @@ public/            Static assets
 
 ### Flavortown Reviewer Note
 
-Flavortown reviewers will not be granted access to the admin interfaces at https://lankoping.se/admin.
-This area contains personal data, and granting external access would be a major breach of Lankoping's data-sharing policies.
+Flavortown reviewers should sign in at `https://lankoping.se/login`.
+
+After signing in there, they can access the demo-scoped admin experience intended for safe access for Flavortown hackathon submissions.
+
+They are not granted unrestricted access to `https://lankoping.se/admin` or to production data. The live admin area contains personal data, and unrestricted external access would violate Lankoping's data-sharing policies.
 
 ## License
 

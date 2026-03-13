@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SeRouteImport } from './routes/se'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as EnRouteImport } from './routes/en'
+import { Route as DatapolicyRouteImport } from './routes/datapolicy'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as ProtectedRouteImport } from './routes/_protected'
@@ -48,6 +49,8 @@ import { Route as AdminTicketsScanRouteImport } from './routes/admin/tickets/sca
 import { Route as AdminTicketsNewRouteImport } from './routes/admin/tickets/new'
 import { Route as AdminTicketsEventsRouteImport } from './routes/admin/tickets/events'
 import { Route as AdminEditIdRouteImport } from './routes/admin/edit/$id'
+import { Route as PublicDatapolicySeRouteImport } from './routes/_public/datapolicy/se'
+import { Route as PublicDatapolicyEnRouteImport } from './routes/_public/datapolicy/en'
 import { Route as PublicBiljettCodeRouteImport } from './routes/_public/biljett/$code'
 
 const SeRoute = SeRouteImport.update({
@@ -63,6 +66,11 @@ const LoginRoute = LoginRouteImport.update({
 const EnRoute = EnRouteImport.update({
   id: '/en',
   path: '/en',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DatapolicyRoute = DatapolicyRouteImport.update({
+  id: '/datapolicy',
+  path: '/datapolicy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -244,6 +252,16 @@ const AdminEditIdRoute = AdminEditIdRouteImport.update({
   path: '/edit/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const PublicDatapolicySeRoute = PublicDatapolicySeRouteImport.update({
+  id: '/datapolicy/se',
+  path: '/datapolicy/se',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicDatapolicyEnRoute = PublicDatapolicyEnRouteImport.update({
+  id: '/datapolicy/en',
+  path: '/datapolicy/en',
+  getParentRoute: () => PublicRoute,
+} as any)
 const PublicBiljettCodeRoute = PublicBiljettCodeRouteImport.update({
   id: '/biljett/$code',
   path: '/biljett/$code',
@@ -253,6 +271,7 @@ const PublicBiljettCodeRoute = PublicBiljettCodeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/datapolicy': typeof DatapolicyRoute
   '/en': typeof EnRouteWithChildren
   '/login': typeof LoginRoute
   '/se': typeof SeRoute
@@ -279,6 +298,8 @@ export interface FileRoutesByFullPath {
   '/en/': typeof EnIndexRoute
   '/nyheter/': typeof NyheterIndexRoute
   '/biljett/$code': typeof PublicBiljettCodeRoute
+  '/datapolicy/en': typeof PublicDatapolicyEnRoute
+  '/datapolicy/se': typeof PublicDatapolicySeRoute
   '/admin/edit/$id': typeof AdminEditIdRoute
   '/admin/tickets/events': typeof AdminTicketsEventsRoute
   '/admin/tickets/new': typeof AdminTicketsNewRoute
@@ -292,6 +313,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
+  '/datapolicy': typeof DatapolicyRoute
   '/login': typeof LoginRoute
   '/se': typeof SeRoute
   '/hello': typeof ApiHelloRoute
@@ -317,6 +339,8 @@ export interface FileRoutesByTo {
   '/en': typeof EnIndexRoute
   '/nyheter': typeof NyheterIndexRoute
   '/biljett/$code': typeof PublicBiljettCodeRoute
+  '/datapolicy/en': typeof PublicDatapolicyEnRoute
+  '/datapolicy/se': typeof PublicDatapolicySeRoute
   '/admin/edit/$id': typeof AdminEditIdRoute
   '/admin/tickets/events': typeof AdminTicketsEventsRoute
   '/admin/tickets/new': typeof AdminTicketsNewRoute
@@ -333,6 +357,7 @@ export interface FileRoutesById {
   '/_protected': typeof ProtectedRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/datapolicy': typeof DatapolicyRoute
   '/en': typeof EnRouteWithChildren
   '/login': typeof LoginRoute
   '/se': typeof SeRoute
@@ -360,6 +385,8 @@ export interface FileRoutesById {
   '/en/': typeof EnIndexRoute
   '/nyheter/': typeof NyheterIndexRoute
   '/_public/biljett/$code': typeof PublicBiljettCodeRoute
+  '/_public/datapolicy/en': typeof PublicDatapolicyEnRoute
+  '/_public/datapolicy/se': typeof PublicDatapolicySeRoute
   '/admin/edit/$id': typeof AdminEditIdRoute
   '/admin/tickets/events': typeof AdminTicketsEventsRoute
   '/admin/tickets/new': typeof AdminTicketsNewRoute
@@ -376,6 +403,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/datapolicy'
     | '/en'
     | '/login'
     | '/se'
@@ -402,6 +430,8 @@ export interface FileRouteTypes {
     | '/en/'
     | '/nyheter/'
     | '/biljett/$code'
+    | '/datapolicy/en'
+    | '/datapolicy/se'
     | '/admin/edit/$id'
     | '/admin/tickets/events'
     | '/admin/tickets/new'
@@ -415,6 +445,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/datapolicy'
     | '/login'
     | '/se'
     | '/hello'
@@ -440,6 +471,8 @@ export interface FileRouteTypes {
     | '/en'
     | '/nyheter'
     | '/biljett/$code'
+    | '/datapolicy/en'
+    | '/datapolicy/se'
     | '/admin/edit/$id'
     | '/admin/tickets/events'
     | '/admin/tickets/new'
@@ -455,6 +488,7 @@ export interface FileRouteTypes {
     | '/_protected'
     | '/_public'
     | '/admin'
+    | '/datapolicy'
     | '/en'
     | '/login'
     | '/se'
@@ -482,6 +516,8 @@ export interface FileRouteTypes {
     | '/en/'
     | '/nyheter/'
     | '/_public/biljett/$code'
+    | '/_public/datapolicy/en'
+    | '/_public/datapolicy/se'
     | '/admin/edit/$id'
     | '/admin/tickets/events'
     | '/admin/tickets/new'
@@ -498,6 +534,7 @@ export interface RootRouteChildren {
   ProtectedRoute: typeof ProtectedRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
+  DatapolicyRoute: typeof DatapolicyRoute
   EnRoute: typeof EnRouteWithChildren
   LoginRoute: typeof LoginRoute
   SeRoute: typeof SeRoute
@@ -530,6 +567,13 @@ declare module '@tanstack/react-router' {
       path: '/en'
       fullPath: '/en'
       preLoaderRoute: typeof EnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/datapolicy': {
+      id: '/datapolicy'
+      path: '/datapolicy'
+      fullPath: '/datapolicy'
+      preLoaderRoute: typeof DatapolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -784,6 +828,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEditIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_public/datapolicy/se': {
+      id: '/_public/datapolicy/se'
+      path: '/datapolicy/se'
+      fullPath: '/datapolicy/se'
+      preLoaderRoute: typeof PublicDatapolicySeRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/datapolicy/en': {
+      id: '/_public/datapolicy/en'
+      path: '/datapolicy/en'
+      fullPath: '/datapolicy/en'
+      preLoaderRoute: typeof PublicDatapolicyEnRouteImport
+      parentRoute: typeof PublicRoute
+    }
     '/_public/biljett/$code': {
       id: '/_public/biljett/$code'
       path: '/biljett/$code'
@@ -812,6 +870,8 @@ interface PublicRouteChildren {
   PublicTeamRoute: typeof PublicTeamRoute
   PublicIndexRoute: typeof PublicIndexRoute
   PublicBiljettCodeRoute: typeof PublicBiljettCodeRoute
+  PublicDatapolicyEnRoute: typeof PublicDatapolicyEnRoute
+  PublicDatapolicySeRoute: typeof PublicDatapolicySeRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
@@ -820,6 +880,8 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicTeamRoute: PublicTeamRoute,
   PublicIndexRoute: PublicIndexRoute,
   PublicBiljettCodeRoute: PublicBiljettCodeRoute,
+  PublicDatapolicyEnRoute: PublicDatapolicyEnRoute,
+  PublicDatapolicySeRoute: PublicDatapolicySeRoute,
 }
 
 const PublicRouteWithChildren =
@@ -889,6 +951,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProtectedRoute: ProtectedRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
+  DatapolicyRoute: DatapolicyRoute,
   EnRoute: EnRouteWithChildren,
   LoginRoute: LoginRoute,
   SeRoute: SeRoute,

@@ -86,7 +86,10 @@ export const getSessionFn = createServerFn({ method: "GET" })
     const db = await getDb()
     const user = await db.select().from(users).where(eq(users.id, parseInt(userId))).limit(1)
     if (!user[0] || (user[0].role !== 'organizer' && user[0].role !== 'volunteer') || user[0].active === false) return null
-    return user[0]
+    return {
+      ...user[0],
+      isDemoTester: isDemoTesterUser(user[0]),
+    }
   })
 
 export const getUsersFn = createServerFn({ method: "GET" })

@@ -9,6 +9,10 @@ export const Route = createFileRoute('/admin/posts')({
     if (!user || user.role !== 'organizer') {
       throw redirect({ to: '/admin' })
     }
+
+    if ((user as { isDemoTester?: boolean }).isDemoTester) {
+      throw redirect({ to: '/admin/users' })
+    }
   },
   loader: async () => {
     const [blogPosts, newsPosts] = await Promise.all([

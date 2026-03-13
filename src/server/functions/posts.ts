@@ -6,7 +6,7 @@ import { eq, desc } from 'drizzle-orm'
 import { z } from 'zod'
 import { getCookie } from '@tanstack/react-start/server'
 import { GoogleGenAI } from '@google/genai'
-import { requireOrganizerUser } from '../lib/access'
+import { isDemoTesterUser, requireOrganizerUser } from '../lib/access'
 import { writeActivityLog } from './logs'
 
 export const typeValidator = z.union([z.literal('blog'), z.literal('news')])
@@ -159,7 +159,23 @@ export const updatePostFn = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser)) {
+      throw new Error('Forbidden in demo mode: tester cannot edit blog/news content')
+    }
+
     const db = await getDb()
+
+    const existing = await db.select()
+      .from(posts)
+      .where(eq(posts.id, data.id))
+      .limit(1)
+
+    if (!existing[0]) {
+      throw new Error('Post not found')
+    }
+
+    const previous = existing[0]
 
     const updatedPost = await db.update(posts).set({
       title: data.title,
@@ -176,8 +192,27 @@ export const updatePostFn = createServerFn({ method: "POST" })
       entityType: 'post',
       entityId: data.id,
       details: {
-        slug: data.slug,
-        type: data.type,
+        changedFields: {
+          title: previous.title !== data.title,
+          slug: previous.slug !== data.slug,
+          type: previous.type !== data.type,
+          excerpt: (previous.excerpt ?? null) !== (data.excerpt ?? null),
+          content: previous.content !== data.content,
+        },
+        before: {
+          title: previous.title,
+          slug: previous.slug,
+          type: previous.type,
+          excerpt: previous.excerpt,
+          content: previous.content,
+        },
+        after: {
+          title: data.title,
+          slug: data.slug,
+          type: data.type,
+          excerpt: data.excerpt,
+          content: data.content,
+        },
       },
     })
 
@@ -197,6 +232,11 @@ export const createPostFn = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser)) {
+      throw new Error('Forbidden in demo mode: tester cannot create blog/news content')
+    }
+
     const db = await getDb()
 
     const newPost = await db.insert(posts).values({
@@ -212,8 +252,13 @@ export const createPostFn = createServerFn({ method: "POST" })
       entityType: 'post',
       entityId: newPost[0].id,
       details: {
-        slug: newPost[0].slug,
-        type: newPost[0].type,
+        created: {
+          title: newPost[0].title,
+          slug: newPost[0].slug,
+          type: newPost[0].type,
+          excerpt: newPost[0].excerpt,
+          content: newPost[0].content,
+        },
       },
     })
 
@@ -224,6 +269,11 @@ export const deletePostFn = createServerFn({ method: "POST" })
   .inputValidator((id: number) => z.number().parse(id))
   .handler(async ({ data: id }) => {
     const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser)) {
+      throw new Error('Forbidden in demo mode: demo tester cannot delete posts')
+    }
+
     const db = await getDb()
 
     const deletedPost = await db.delete(posts)
@@ -238,8 +288,13 @@ export const deletePostFn = createServerFn({ method: "POST" })
         entityType: 'post',
         entityId: deletedPost[0].id,
         details: {
-          slug: deletedPost[0].slug,
-          type: deletedPost[0].type,
+          deleted: {
+            title: deletedPost[0].title,
+            slug: deletedPost[0].slug,
+            type: deletedPost[0].type,
+            excerpt: deletedPost[0].excerpt,
+            content: deletedPost[0].content,
+          },
         },
       })
     }
@@ -257,7 +312,11 @@ export const fixPostSpellingFn = createServerFn({ method: 'POST' })
       .parse(payload)
   })
   .handler(async ({ data }) => {
-    await requireOrganizerUser()
+    const currentUser = await requireOrganizerUser()
+
+    if (isDemoTesterUser(currentUser)) {
+      throw new Error('Forbidden in demo mode: tester cannot edit blog/news content')
+    }
 
     const apiKey =
       process.env.GEMINI_API_KEY ??

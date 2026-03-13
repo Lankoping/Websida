@@ -1,6 +1,6 @@
 'use server'
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq } from 'drizzle-orm'
+import { and, desc, eq, lt } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { getDb } from '../db/runtime'
@@ -20,6 +20,10 @@ export async function writeActivityLog(input: ActivityLogInput) {
   try {
     const db = await getDb()
     await ensureActivityLogsTable()
+    const requestMeta = await getRequestMeta()
+    const details = input.details
+      ? { ...input.details, _request: requestMeta }
+      : { _request: requestMeta }
 
     await db.insert(activityLogs).values({
       actorUserId: input.actorUserId,
@@ -27,10 +31,76 @@ export async function writeActivityLog(input: ActivityLogInput) {
       action: input.action,
       entityType: input.entityType,
       entityId: input.entityId ?? null,
-      details: input.details ? JSON.stringify(input.details) : null,
+      details: JSON.stringify(details),
     })
   } catch (error) {
     console.error('Failed to write activity log', error)
+  }
+}
+
+export async function deleteActivityLogsForUser(actorUserId: number) {
+  const db = await getDb()
+  const removed = await db
+    .delete(activityLogs)
+    .where(eq(activityLogs.actorUserId, actorUserId))
+    .returning({ id: activityLogs.id })
+
+  return removed.length
+}
+
+export async function purgeExpiredRequestMetadata(retentionDays = 7) {
+  const db = await getDb()
+  const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000)
+
+  const rows = await db
+    .select({ id: activityLogs.id, details: activityLogs.details })
+    .from(activityLogs)
+    .where(and(lt(activityLogs.createdAt, cutoff), sql`${activityLogs.details} IS NOT NULL`))
+
+  let updatedCount = 0
+
+  for (const row of rows) {
+    if (!row.details) continue
+
+    try {
+      const parsed = JSON.parse(row.details) as Record<string, unknown>
+      if (!parsed || typeof parsed !== 'object' || !('_request' in parsed)) {
+        continue
+      }
+
+      delete parsed._request
+
+      await db
+        .update(activityLogs)
+        .set({ details: JSON.stringify(parsed) })
+        .where(eq(activityLogs.id, row.id))
+
+      updatedCount += 1
+    } catch {
+      // Ignore malformed JSON payloads.
+    }
+  }
+
+  return updatedCount
+}
+
+async function getRequestMeta() {
+  try {
+    const { getRequestHeader, getRequestIP } = await import('@tanstack/start-server-core')
+
+    return {
+      ip: getRequestIP({ xForwardedFor: true }) || null,
+      forwardedFor: getRequestHeader('x-forwarded-for') || null,
+      realIp: getRequestHeader('x-real-ip') || null,
+      userAgent: getRequestHeader('user-agent') || null,
+    }
+  } catch {
+    return {
+      ip: null,
+      forwardedFor: null,
+      realIp: null,
+      userAgent: null,
+    }
   }
 }
 

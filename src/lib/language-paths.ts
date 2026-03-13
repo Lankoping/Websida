@@ -1,5 +1,5 @@
-const swedishStaticPaths = new Set(['/', '/rules', '/team', '/privacy', '/blogs', '/nyheter'])
-const englishStaticPaths = new Set(['/en', '/en/rules', '/en/team', '/en/privacy', '/en/blogs', '/en/nyheter'])
+const swedishStaticPaths = new Set(['/', '/rules', '/team', '/privacy', '/blogs', '/nyheter', '/datapolicy/se'])
+const englishStaticPaths = new Set(['/en', '/en/rules', '/en/team', '/en/privacy', '/en/blogs', '/en/nyheter', '/datapolicy/en'])
 
 function isSwedishContentPath(pathname: string): boolean {
   if (swedishStaticPaths.has(pathname)) return true
@@ -16,11 +16,13 @@ function isEnglishContentPath(pathname: string): boolean {
 }
 
 function toEnglishPath(pathname: string): string {
+  if (pathname === '/datapolicy/se') return '/datapolicy/en'
   if (pathname === '/') return '/en'
   return `/en${pathname}`
 }
 
 function toSwedishPath(pathname: string): string {
+  if (pathname === '/datapolicy/en') return '/datapolicy/se'
   if (pathname === '/en') return '/'
   return pathname.replace(/^\/en/, '') || '/'
 }

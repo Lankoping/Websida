@@ -13,7 +13,7 @@ import {
   requireStaffUser,
   scopeSignerIdsForUser,
 } from '../lib/access'
-import { writeActivityLog } from './logs'
+import { deleteActivityLogsForUser, writeActivityLog } from './logs'
 
 async function enrichRequest(req: typeof avgangsRequests.$inferSelect, allUsers: (typeof users.$inferSelect)[]) {
   const signerIds: number[] = JSON.parse(req.requiredSigners || '[]')
@@ -229,6 +229,7 @@ export const markPhysicallySignedFn = createServerFn({ method: 'POST' })
     // Lock target account if linked
     if (req[0].targetUserId) {
       await lockUserFn({ data: { userId: req[0].targetUserId } })
+      await deleteActivityLogsForUser(req[0].targetUserId)
     }
 
     await writeActivityLog({

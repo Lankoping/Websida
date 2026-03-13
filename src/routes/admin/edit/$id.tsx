@@ -26,6 +26,11 @@ export const Route = createFileRoute('/admin/edit/$id')({
     if (!user || user.role !== 'organizer') {
       throw redirect({ to: '/admin' })
     }
+
+    if ((user as { isDemoTester?: boolean }).isDemoTester) {
+      throw redirect({ to: '/admin/users' })
+    }
+
     return { user }
   },
   loader: async ({ params: { id } }) => {

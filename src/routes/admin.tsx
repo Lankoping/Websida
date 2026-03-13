@@ -24,6 +24,18 @@ export const Route = createFileRoute('/admin')({
       throw redirect({ to: '/admin/avgang' })
     }
 
+    const isDemoTester = Boolean((user as { isDemoTester?: boolean }).isDemoTester)
+    const isContentManagementPath =
+      location.pathname === '/admin' ||
+      location.pathname === '/admin/' ||
+      location.pathname === '/admin/posts' ||
+      location.pathname === '/admin/new' ||
+      location.pathname.startsWith('/admin/edit/')
+
+    if (isDemoTester && isContentManagementPath) {
+      throw redirect({ to: '/admin/users' })
+    }
+
     return { user }
   },
   loader: async ({ context: { user } }) => {
@@ -46,6 +58,7 @@ function AdminLayout() {
   const [loggingOut, setLoggingOut] = useState(false)
 
   const isOrganizer = user.role === 'organizer'
+  const isDemoTester = Boolean((user as { isDemoTester?: boolean }).isDemoTester)
 
   const handleLogout = async () => {
     if (loggingOut) return
@@ -87,8 +100,8 @@ function AdminLayout() {
         <h2 className="font-display tracking-widest text-xl md:text-3xl text-[#C04A2A] md:mb-12">Admin</h2>
         
         <nav className="flex md:flex-col space-x-6 md:space-x-0 md:space-y-6 md:flex-1 w-full md:w-full overflow-x-auto justify-end md:justify-start items-center md:items-start ml-4 md:ml-0 scrollbar-hide">
-          {isOrganizer && <a href="/admin" className="block text-[11px] uppercase tracking-[0.1em] text-[#F0E8D8]/70 hover:text-[#C04A2A] transition-colors whitespace-nowrap">Översikt</a>}
-          {isOrganizer && <a href="/admin/posts" className="block text-[11px] uppercase tracking-[0.1em] text-[#F0E8D8]/70 hover:text-[#C04A2A] transition-colors whitespace-nowrap">Inlägg</a>}
+          {isOrganizer && !isDemoTester && <a href="/admin" className="block text-[11px] uppercase tracking-[0.1em] text-[#F0E8D8]/70 hover:text-[#C04A2A] transition-colors whitespace-nowrap">Översikt</a>}
+          {isOrganizer && !isDemoTester && <a href="/admin/posts" className="block text-[11px] uppercase tracking-[0.1em] text-[#F0E8D8]/70 hover:text-[#C04A2A] transition-colors whitespace-nowrap">Inlägg</a>}
           {isOrganizer && <a href="/admin/users" className="block text-[11px] uppercase tracking-[0.1em] text-[#F0E8D8]/70 hover:text-[#C04A2A] transition-colors whitespace-nowrap">Användare</a>}
           {isOrganizer && <a href="/admin/stadgar" className="block text-[11px] uppercase tracking-[0.1em] text-[#F0E8D8]/70 hover:text-[#C04A2A] transition-colors whitespace-nowrap">Stadgar</a>}
           <a href="/admin/avgang" className="flex items-center gap-2 text-[11px] uppercase tracking-[0.1em] text-[#F0E8D8]/70 hover:text-[#C04A2A] transition-colors whitespace-nowrap">

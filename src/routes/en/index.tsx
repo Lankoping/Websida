@@ -82,7 +82,7 @@ function Index() {
                 Norrk&ouml;ping
               </h3>
               <p className="text-muted-foreground leading-relaxed">
-                Known as Sweden's Manchester, famous for its historic industrial landscape along the Motala str&ouml;m river.
+                We run all our lans in Norrköping when the area
               </p>
             </article>
           </div>
@@ -113,7 +113,7 @@ function Index() {
                     {latestBlog.createdAt ? new Date(latestBlog.createdAt).toLocaleDateString('en-GB') : ''}
                   </p>
                   <p className="text-muted-foreground leading-relaxed mb-6">
-                    {latestBlog.excerpt || 'Read our latest"blog post.'}
+                    {latestBlog.excerpt || 'Read our latest blog post.'}
                   </p>
                   <a 
                     className="inline-flex items-center text-sm font-medium text-primary hover:text-foreground transition-colors" 

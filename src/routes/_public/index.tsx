@@ -44,19 +44,19 @@ function Index() {
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="mb-12">
             <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Senaste</p>
-            <h2 className="font-display text-4xl md:text-5xl text-foreground">Blogg & Nyheter</h2>
+            <h2 className="font-bold text-3xl md:text-4xl text-foreground">Blogg & Nyheter</h2>
           </div>
 
           <div className="grid gap-8 md:grid-cols-2">
             {/* Blog Card */}
-            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/50">
+            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/20">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-2 h-2 bg-primary" />
+                <div className="w-12 h-1 bg-primary/20" />
                 <span className="text-xs font-medium tracking-widest text-primary uppercase">Blogg</span>
               </div>
               {latestBlog ? (
                 <>
-                  <h3 className="font-display text-2xl md:text-3xl text-foreground mb-3">
+                  <h3 className="font-bold text-xl md:text-2xl text-foreground mb-3">
                     {latestBlog.title}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4">
@@ -81,14 +81,14 @@ function Index() {
             </article>
 
             {/* News Card */}
-            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/50">
+            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/20">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-2 h-2 bg-primary" />
+                <div className="w-12 h-1 bg-primary/20" />
                 <span className="text-xs font-medium tracking-widest text-primary uppercase">Nyhet</span>
               </div>
               {latestNews ? (
                 <>
-                  <h3 className="font-display text-2xl md:text-3xl text-foreground mb-3">
+                  <h3 className="font-bold text-xl md:text-2xl text-foreground mb-3">
                     {latestNews.title}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4">

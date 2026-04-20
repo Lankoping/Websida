@@ -47,7 +47,7 @@ function PrivacyPage() {
         {/* Page Header */}
         <div className="mb-16">
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Datapolicy</p>
-          <h1 className="font-display text-5xl md:text-6xl text-foreground mb-4">Integritet</h1>
+          <h1 className="font-bold text-3xl md:text-5xl text-foreground mb-4">Integritet</h1>
           <p className="text-lg text-muted-foreground">
             Hur vi hanterar dina personuppgifter for Lanköping.se
           </p>
@@ -59,7 +59,7 @@ function PrivacyPage() {
             <div className="w-10 h-10 flex items-center justify-center bg-secondary">
               <ShieldCheck className="w-5 h-5 text-primary" />
             </div>
-            <h2 className="font-display text-2xl text-foreground">Insamling av personuppgifter</h2>
+            <h2 className="font-bold text-xl text-foreground">Insamling av personuppgifter</h2>
           </div>
 
           <p className="text-muted-foreground leading-relaxed mb-8">
@@ -70,7 +70,7 @@ function PrivacyPage() {
             {collectionItems.map((item, i) => (
               <div 
                 key={i} 
-                className="flex gap-4 p-4 border border-border bg-card hover:border-primary/30 transition-colors"
+                className="flex gap-4 p-4 border border-border bg-card hover:border-primary/20 transition-colors"
               >
                 <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-secondary">
                   <item.icon className="w-4 h-4 text-primary" />
@@ -110,7 +110,7 @@ function PrivacyPage() {
             </p>
             
             <div className="p-6 border border-primary/30 bg-primary/5">
-              <h3 className="font-display text-xl text-primary mb-3">Information som vi inte tar bort</h3>
+              <h3 className="font-bold text-lg text-primary mb-3">Information som vi inte tar bort</h3>
               <p className="text-foreground/80">
                 Vi tar bort all information sasom vi inte behover behalla den. Exempelvis om du har brutit mot eventets regler sa sparar vi den informationen.
                 Detta betyder att du kan bli portad fran framtida events.

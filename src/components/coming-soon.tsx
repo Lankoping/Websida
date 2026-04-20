@@ -82,7 +82,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center">
-            <span className="font-display text-2xl tracking-tight text-foreground">Lanköping</span>
+            <span className="font-bold text-xl tracking-tight text-foreground">Lanköping</span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
             <Link to={`${basePath}/rules`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -118,17 +118,17 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
             </p>
             
             {/* Main Headline */}
-            <h1 className="font-display text-7xl md:text-9xl tracking-tight text-foreground mb-4">
+            <h1 className="font-bold text-3xl md:text-5xl tracking-tight text-foreground mb-6">
               {content.headline}
             </h1>
             
             {/* Tagline */}
-            <p className="font-serif text-2xl md:text-3xl italic text-muted-foreground mb-8">
+            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
               {content.tagline}
             </p>
 
             {/* Divider */}
-            <div className="w-24 h-px bg-primary mx-auto mb-8" />
+            <div className="w-12 h-1 bg-primary/20 mx-auto mb-10" />
             
             {/* Description */}
             <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed mb-12">
@@ -179,7 +179,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
                           </svg>
                         )}
                       </div>
-                      <h3 className="font-display text-xl mb-2 text-foreground">{title.toUpperCase()}</h3>
+                      <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">{title.toUpperCase()}</h3>
                       <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
                     </div>
                   )
@@ -193,7 +193,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                     </div>
-                    <h3 className="font-display text-xl mb-2 text-foreground">
+                    <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
                       {locale === 'sv' ? 'NORRKOPING' : 'NORRKOPING'}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
@@ -208,7 +208,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                       </svg>
                     </div>
-                    <h3 className="font-display text-xl mb-2 text-foreground">
+                    <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
                       {locale === 'sv' ? 'GEMENSKAP' : 'COMMUNITY'}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
@@ -223,7 +223,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <h3 className="font-display text-xl mb-2 text-foreground">
+                    <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
                       {locale === 'sv' ? 'LAN-PARTY' : 'LAN PARTY'}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
@@ -244,7 +244,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
         <div className="max-w-6xl mx-auto px-6 py-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex items-center">
-              <span className="font-display text-lg text-foreground">Lanköping</span>
+              <span className="font-bold text-lg text-foreground">Lanköping</span>
               <span className="text-muted-foreground text-sm">.se</span>
             </div>
             <nav className="flex items-center gap-6 md:hidden">

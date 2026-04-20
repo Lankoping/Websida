@@ -59,7 +59,7 @@ function RulesPage() {
         {/* Page Header */}
         <div className="mb-16">
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Riktlinjer</p>
-          <h1 className="font-display text-5xl md:text-6xl text-foreground mb-4">Regler</h1>
+          <h1 className="font-bold text-3xl md:text-5xl text-foreground mb-4">Regler</h1>
           <p className="text-lg text-muted-foreground">
             For allas trivsel och sakerhet under Lanköping.se
           </p>
@@ -71,14 +71,14 @@ function RulesPage() {
             <div className="w-10 h-10 flex items-center justify-center bg-secondary">
               <ShieldAlert className="w-5 h-5 text-primary" />
             </div>
-            <h2 className="font-display text-2xl text-foreground">Event Regler</h2>
+            <h2 className="font-bold text-xl text-foreground">Event Regler</h2>
           </div>
           
           <div className="space-y-4">
             {fallbackEventRules.map((rule, i) => (
               <div 
                 key={i} 
-                className="flex gap-4 p-4 border border-border bg-card hover:border-primary/30 transition-colors"
+                className="flex gap-4 p-4 border border-border bg-card hover:border-primary/20 transition-colors"
               >
                 <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-primary text-primary-foreground text-sm font-medium">
                   {i + 1}
@@ -95,14 +95,14 @@ function RulesPage() {
             <div className="w-10 h-10 flex items-center justify-center bg-secondary">
               <MessageSquareText className="w-5 h-5 text-primary" />
             </div>
-            <h2 className="font-display text-2xl text-foreground">Discord Regler</h2>
+            <h2 className="font-bold text-xl text-foreground">Discord Regler</h2>
           </div>
           
           <div className="space-y-4">
             {fallbackDiscordRules.map((rule, i) => (
               <div 
                 key={i} 
-                className="flex gap-4 p-4 border border-border bg-card hover:border-primary/30 transition-colors"
+                className="flex gap-4 p-4 border border-border bg-card hover:border-primary/20 transition-colors"
               >
                 <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-primary text-primary-foreground text-sm font-medium">
                   {i + 1}

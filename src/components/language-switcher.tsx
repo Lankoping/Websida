@@ -1,23 +1,22 @@
-import { Link, useRouterState } from '@tanstack/react-router'
-import { Languages } from 'lucide-react'
-import { getLanguageToggle } from '@/lib/language-paths'
-
-export function LanguageSwitcher() {
-  const pathname = useRouterState({ select: (state) => state.location.pathname })
-  const toggle = getLanguageToggle(pathname)
-
-  if (!toggle) {
-    return <></> // Return an empty React fragment instead of null
-  }
-
-  return (
-    <Link
-      to={toggle.targetPath}
-      className="fixed right-4 top-4 z-[60] inline-flex items-center gap-2 rounded-full border border-[#C04A2A]/50 bg-[#100E0C]/85 px-3 py-2 text-[11px] font-medium tracking-[0.18em] text-[#F0E8D8] backdrop-blur transition-colors hover:border-[#C04A2A] hover:text-[#C04A2A]"
-      aria-label={`Switch language to ${toggle.label === 'EN' ? 'English' : 'Swedish'}`}
-    >
-      <Languages size={14} aria-hidden="true" />
-      <span>{toggle.label}</span>
-    </Link>
-  )
-}
+J3VzZSBjbGllbnQnCgppbXBvcnQgeyBMaW5rLCB1c2VSb3V0ZXJTdGF0ZSB9
+IGZyb20gJ0B0YW5zdGFjay9yZWFjdC1yb3V0ZXInCmltcG9ydCB7IExhbmd1
+YWdlcyB9IGZyb20gJ2x1Y2lkZS1yZWFjdCcKaW1wb3J0IHsgZ2V0TGFuZ3Vh
+Z2VUb2dnbGUgfSBmcm9tICdAL2xpYi9sYW5ndWFnZS1wYXRocykKCmV4cG9y
+dCBmdW5jdGlvbiBMYW5ndWFnZVN3aXRjaGVyKCkgewogIGNvbnN0IHBhdGhu
+YW1lID0gdXNlUm91dGVyU3RhdGUoeyBzZWxlY3Q6IChzdGF0ZSkgPT4gc3Rh
+dGUubG9jYXRpb24ucGF0aG5hbWUgfSkKICBjb25zdCB0b2dnbGUgPSBnZXRM
+YW5ndWFnZVRvZ2dsZShwYXRobmFtZSkKCiAgaWYgKCF0b2dnbGUpIHsKICAg
+IHJldHVybiA8PjwvPiAvLyBSZXR1cm4gYW4gZW1wdHkgUmVhY3QgZnJhZ21l
+bnQgaW5zdGVhZCBvZiBudWxsCiAgfQoKICByZXR1cm4gKAogICAgPExpbmsK
+ICAgICAgdG89e3RvZ2dsZS50YXJnZXRQYXRofQogICAgICBjbGFzc05hbWU9
+ImZpeGVkIHJpZ2h0LTQgdG9wLTQgei1bNjBdIGlubGluZS1mbGV4IGl0ZW1z
+LWNlbnRlciBnYXAtMiByb3VuZGVkLWZ1bGwgYm9yZGVyIGJvcmRlci1bI0Mw
+NEEyQV0vNTAgYmctWyMxMDBFMENdLzg1IHB4LTMgcHktMiB0ZXh0LVsxMXB4
+XSBmb250LW1lZGl1bSB0cmFja2luZy1bMC4xOGVtXSB0ZXh0LVsjRjBFOEQ4
+XSBiYWNrZHJvcC1ibHVyIHRyYW5zaXRpb24tY29sb3JzIGhvdmVyOmJvcmRl
+ci1bI0MwNEEyQV0gaG92ZXI6dGV4dC1bI0MwNEEyQV0iCiAgICAgIGFyaWEt
+bGFiZWw9e2BTd2l0Y2ggbGFuZ3VhZ2UgdG8gJHt0b2dnbGUubGFiZWwgPT09
+ICdFTicgPyAnRW5nbGlzaCcgOiAnU3dlZGlzaCd9YH0KICAgID4KICAgICAg
+PExhbmd1YWdlcyBzaXplPXsxNH0gYXJpYS1oaWRkZW49InRydWUiIC8+CiAg
+ICAgIDxzcGFuPnt0b2dnbGUubGFiZWx9PC9zcGFuPgogICAgPC9MaW5rPgog
+ICkKfQo=

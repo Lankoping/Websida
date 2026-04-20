@@ -122,11 +122,11 @@ function AdminLogs() {
 }
 
 function parseDetails(value: string | null) {
-  if (!value) return null
+  if (!value) return {} // Return an empty object instead of null
   try {
     const parsed = JSON.parse(value)
-    return typeof parsed === 'object' && parsed !== null ? parsed : null
+    return typeof parsed === 'object' && parsed !== null ? parsed : {}
   } catch {
-    return null
+    return {}
   }
 }

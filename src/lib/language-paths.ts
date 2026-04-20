@@ -27,7 +27,7 @@ function toSwedishPath(pathname: string): string {
   return pathname.replace(/^\/en/, '') || '/'
 }
 
-export function getLanguageToggle(pathname: string): { targetPath: string; label: 'EN' | 'SV' } | null {
+export function getLanguageToggle(pathname: string): { targetPath: string; label: 'EN' | 'SV' } {
   if (isSwedishContentPath(pathname)) {
     return {
       targetPath: toEnglishPath(pathname),
@@ -42,5 +42,5 @@ export function getLanguageToggle(pathname: string): { targetPath: string; label
     }
   }
 
-  return null
+  return {} // Return an empty object instead of null
 }

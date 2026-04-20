@@ -75,7 +75,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   )
 
   if (!colorConfig.length) {
-    return null
+    return <></> // Return an empty React fragment instead of null
   }
 
   return (

@@ -118,5 +118,5 @@ function HtmlLangSync() {
     document.documentElement.lang = pathname.startsWith('/en') ? 'en' : 'sv'
   }, [pathname])
 
-  return null
+  return <></> // Return an empty React fragment instead of null
 }

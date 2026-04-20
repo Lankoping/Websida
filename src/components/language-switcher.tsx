@@ -7,7 +7,7 @@ export function LanguageSwitcher() {
   const toggle = getLanguageToggle(pathname)
 
   if (!toggle) {
-    return null
+    return <></> // Return an empty React fragment instead of null
   }
 
   return (

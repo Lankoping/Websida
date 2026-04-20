@@ -67,9 +67,9 @@ function PrivacyPage() {
           </p>
           
           <div className="space-y-4">
-            {collectionItems.map((item, i) => (
+            {collectionItems.map((item) => (
               <div 
-                key={i} 
+                key={item.id || item.title} 
                 className="flex gap-4 p-4 border border-border bg-card hover:border-primary/20 transition-colors"
               >
                 <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-secondary">

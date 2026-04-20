@@ -1,70 +1,124 @@
-aW1wb3J0IHsKICBIZWFkQ29udGVudCwKICBTY3JpcHRzLAogIGNyZWF0ZVJv
-b3RSb3V0ZVdpdGhDb250ZXh0LAogIHVzZVJvdXRlclN0YXRlLAp9IGZyb20g
-J0B0YW5zdGFjay9yZWFjdC1yb3V0ZXInCmltcG9ydCB7IHVzZUVmZmVjdCB9
-IGZyb20gJ3JlYWN0JwppbXBvcnQgYXBwQ3NzIGZyb20gJy4uL3N0eWxlcy5j
-c3M/dXJsJwoKaW1wb3J0IHR5cGUgeyBRdWVyeUNsaWVudCB9IGZyb20gJ0B0
-YW5zdGFjay9yZWFjdC1xdWVyeScKaW1wb3J0IHsgVG9hc3RlciB9IGZyb20g
-J0AvY29tcG9uZW50cy91aS9zb25uZXInCmltcG9ydCB7IFRoZW1lUHJvdmlk
-ZXIgfSBmcm9tICduZXh0LXRoZW1lcycKaW1wb3J0IHsgTGFuZ3VhZ2VTd2l0
-Y2hlciB9IGZyb20gJ0AvY29tcG9uZW50cy9sYW5ndWFnZS1zd2l0Y2hlcicK
-CmludGVyZmFjZSBNeVJvdXRlckNvbnRleHQgewogIHF1ZXJ5Q2xpZW50OiBR
-dWVyeUNsaWVudAp9Cgpjb25zdCBzY3JpcHRzOiBSZWFjdC5EZXRhaWxlZEhU
-TUxQcm9wczwKICBSZWFjdC5TY3JpcHRIVE1MQXR0cmlidXRlczxIVE1MU2Ny
-aXB0RWxlbWVudD4sCiAgSFRNTFNjcmlwdEVsZW1lbnQKPltdID0gW10KCmlm
-IChpbXBvcnQubWV0YS5lbnYuVklURV9JTlNUUlVNRU5UQVRJT05fU0NSSVBU
-X1NSQykgewogIHNjcmlwdHMucHVzaCh7CiAgICBzcmM6IGltcG9ydC5tZXRh
-LmVudi5WSVRFX0lOU1RSVU1FTlRBVElPTl9TQ1JJUFRfU1JDLAogICAgdHlw
-ZTogJ21vZHVsZScsCiAgfSkKfQoKZXhwb3J0IGNvbnN0IFJvdXRlID0gY3Jl
-YXRlUm9vdFJvdXRlV2l0aENvbnRleHQ8TXlSb3V0ZXJDb250ZXh0PigpKHsK
-ICBoZWFkOiAoKSA9PiB7CiAgICByZXR1cm4gewogICAgICBtZXRhOiBbCiAg
-ICAgICAgewogICAgICAgICAgY2hhclNldDogJ3V0Zi04JywKICAgICAgICB9
-LAogICAgICAgIHsKICAgICAgICAgIG5hbWU6ICd2aWV3cG9ydCcsCiAgICAg
-ICAgICBjb250ZW50OiAnd2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNj
-YWxlPTEnLAogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgdGl0bGU6
-ICdMYW5rb3Bpbmcuc2Ug4oCTIEtvbW1lciBTbmFydCcsCiAgICAgICAgfSwK
-ICAgICAgICB7CiAgICAgICAgICBuYW1lOiAnZGVzY3JpcHRpb24nLAogICAg
-ICAgICAgY29udGVudDoKICAgICAgICAgICAgJ0xhbmtvcGluZy5zZSBow6Vs
-bGVyIHDDpSBtZWQgZGUgc2lzdGEgZGV0YWxqZXJuYSDigJMgc25hcnQgw6Ry
-IHZpIHJlZG8gYXR0IHbDpGxrb21uYSBkaWchJywKICAgICAgICB9LAogICAg
-ICAgIHsKICAgICAgICAgIHByb3BlcnR5OiAnb2c6dGl0bGUnLAogICAgICAg
-ICAgY29udGVudDogJ0xhbmtvcGluZy5zZSDigJMgS29tbWVyIFNuYXJ0JywK
-ICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgIHByb3BlcnR5OiAnb2c6
-ZGVzY3JpcHRpb24nLAogICAgICAgICAgY29udGVudDoKICAgICAgICAgICAg
-J0xhbmtvcGluZy5zZSBow6VsbGVyIHDDpSBtZWQgZGUgc2lzdGEgZGV0YWxq
-ZXJuYSDigJMgc25hcnQgw6RyIHZpIHJlZG8gYXR0IHbDpGxrb21uYSBkaWch
-JywKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgIHByb3BlcnR5OiAn
-b2c6dHlwZScsCiAgICAgICAgICBjb250ZW50OiAnd2Vic2l0ZScsCiAgICAg
-ICAgfSwKICAgICAgXSwKICAgICAgbGlua3M6IFsKICAgICAgICB7CiAgICAg
-ICAgICByZWw6ICdwcmVjb25uZWN0JywKICAgICAgICAgIGhyZWY6ICdodHRw
-czovL2ZvbnRzLmdvb2dsZWFwaXMuY29tJywKICAgICAgICB9LAogICAgICAg
-IHsKICAgICAgICAgIHJlbDogJ3ByZWNvbm5lY3QnLAogICAgICAgICAgaHJl
-ZjogJ2h0dHBzOi8vZm9udHMuZ3N0YXRpYy5jb20nLAogICAgICAgICAgY3Jv
-c3NPcmlnaW46ICdhbm9ueW1vdXMnLAogICAgICAgIH0sCiAgICAgICAgewog
-ICAgICAgICAgcmVsOiAnc3R5bGVzaGVldCcsCiAgICAgICAgICBocmVmOiAn
-aHR0cHM6Ly9mb250cy5nb29nbGVhcGlzLmNvbS9jc3MyP2ZhbWlseT1CZWJh
-cytOZXVlJmZhbWlseT1Db3Jtb3JhbnQrR2FyYW1vbmQ6aXRhbCx3Z2h0QDAs
-MzAwOzAsNDAwOzAsNjAwOzEsMzAwOzEsNDAwJmZhbWlseT1ETStTYW5zOndn
-aHRAMzAwOzQwMDs1MDAmZGlzcGxheT1zd2FwJywKICAgICAgICB9LAogICAg
-ICAgIHsKICAgICAgICAgIHJlbDogJ3N0eWxlc2hlZXQnLAogICAgICAgICAg
-aHJlZjogYXBwQ3NzLAogICAgICAgIH0sCiAgICAgIF0sCiAgICAgIHNjcmlw
-dHM6IFsuLi5zY3JpcHRzXSwKICAgIH0KICB9LAoKICBzaGVsbENvbXBvbmVu
-dDogUm9vdERvY3VtZW50LAp9KQoKZnVuY3Rpb24gUm9vdERvY3VtZW50KHsg
-Y2hpbGRyZW4gfTogeyBjaGlsZHJlbjogUmVhY3QuUmVhY3ROb2RlIH0pIHsK
-ICByZXR1cm4gKAogICAgPGh0bWwgbGFuZz0ic3YiIHN1cHByZXNzSHlkcmF0
-aW9uV2FybmluZz4KICAgICAgPGhlYWQ+CiAgICAgICAgPEhlYWRDb250ZW50
-IC8+CiAgICAgIDwvaGVhZD4KICAgICAgPGJvZHk+CiAgICAgICAgPFRoZW1l
-UHJvdmlkZXIKICAgICAgICAgIGF0dHJpYnV0ZT0iY2xhc3MiCiAgICAgICAg
-ICBkZWZhdWx0VGhlbWU9ImRhcmsiCiAgICAgICAgICBlbmFibGVTeXN0ZW09
-e2ZhbHNlfQogICAgICAgICAgZGlzYWJsZVRyYW5zaXRpb25PbkNoYW5nZQog
-ICAgICAgID4KICAgICAgICAgIDxIdG1sTGFuZ1N5bmMgLz4KICAgICAgICAg
-IDxMYW5ndWFnZVN3aXRjaGVyIC8+CiAgICAgICAgICB7Y2hpbGRyZW59CiAg
-ICAgICAgICA8VG9hc3RlciAvPgogICAgICAgIDwvVGhlbWVQcm92aWRlcj4K
-ICAgICAgICA8U2NyaXB0cyAvPgogICAgICA8L2JvZHk+CiAgICA8L2h0bWw+
-CiAgKQp9CgpmdW5jdGlvbiBIdG1sTGFuZ1N5bmMoKSB7CiAgY29uc3QgcGF0
-aG5hbWUgPSB1c2VSb3V0ZXJTdGF0ZSh7IHNlbGVjdDogKHN0YXRlKSA9PiBz
-dGF0ZS5sb2NhdGlvbi5wYXRobmFtZSB9KQoKICB1c2VFZmZlY3QoKCkgPT4g
-ewogICAgaWYgKHR5cGVvZiBkb2N1bWVudCAhPT0gJ3VuZGVmaW5lZCcpIHsK
-ICAgICAgZG9jdW1lbnQuZG9jdW1lbnRFbGVtZW50LmxhbmcgPSBwYXRobmFt
-ZS5zdGFydHNXaXRoKCcvZW4nKSA/ICdlbicgOiAnc3YnCiAgICB9CiAgfSwg
-W3BhdGhuYW1lXSkKCiAgcmV0dXJuIDw+PC8+IC8vIFJldHVybiBhbiBlbXB0
-eSBSZWFjdCBmcmFnbWVudCBpbnN0ZWFkIG9mIG51bGwKfQo=
+import {
+  HeadContent,
+  Scripts,
+  createRootRouteWithContext,
+  useRouterState,
+} from '@tanstack/react-router'
+import { useEffect } from 'react'
+import appCss from '../styles.css?url'
+
+import type { QueryClient } from '@tanstack/react-query'
+import { Toaster } from '@/components/ui/sonner'
+import { ThemeProvider } from 'next-themes'
+import { LanguageSwitcher } from '@/components/language-switcher'
+
+interface MyRouterContext {
+  queryClient: QueryClient
+}
+
+const scripts: React.DetailedHTMLProps<
+  React.ScriptHTMLAttributes<HTMLScriptElement>,
+  HTMLScriptElement
+>[] = []
+
+if (import.meta.env.VITE_INSTRUMENTATION_SCRIPT_SRC) {
+  scripts.push({
+    src: import.meta.env.VITE_INSTRUMENTATION_SCRIPT_SRC,
+    type: 'module',
+  })
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
+  head: () => {
+    return {
+      meta: [
+        {
+          charSet: 'utf-8',
+        },
+        {
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1',
+        },
+        {
+          title: 'Lankoping.se – Kommer Snart',
+        },
+        {
+          name: 'description',
+          content:
+            'Lankoping.se håller på med de sista detaljerna – snart är vi redo att välkomna dig!',
+        },
+        {
+          property: 'og:title',
+          content: 'Lankoping.se – Kommer Snart',
+        },
+        {
+          property: 'og:description',
+          content:
+            'Lankoping.se håller på med de sista detaljerna – snart är vi redo att välkomna dig!',
+        },
+        {
+          property: 'og:type',
+          content: 'website',
+        },
+      ],
+      links: [
+        {
+          rel: 'preconnect',
+          href: 'https://fonts.googleapis.com',
+        },
+        {
+          rel: 'preconnect',
+          href: 'https://fonts.gstatic.com',
+          crossOrigin: 'anonymous',
+        },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap',
+        },
+        {
+          rel: 'stylesheet',
+          href: appCss,
+        },
+      ],
+      scripts: [...scripts],
+    }
+  },
+
+  shellComponent: RootDocument,
+})
+
+function RootDocument({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="sv" suppressHydrationWarning>
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <HtmlLangSync />
+          <LanguageSwitcher />
+          {children}
+          <Toaster />
+        </ThemeProvider>
+        <Scripts />
+      </body>
+    </html>
+  )
+}
+
+function HtmlLangSync() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = pathname.startsWith('/en') ? 'en' : 'sv'
+    }
+  }, [pathname])
+
+  return <></> // Return an empty React fragment instead of null
+}

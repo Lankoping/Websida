@@ -10,7 +10,7 @@ function TeamPage() {
     {
       name: 'Nauticalis',
       role: 'Organizer',
-      desc: 'Leads the vision and coordinates the Lanköping work.',
+      desc: 'Leads the vision and coordinates the Lankoping work.',
       icon: Crown,
     },
     {
@@ -39,7 +39,7 @@ function TeamPage() {
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Who we are</p>
           <h1 className="font-display text-5xl md:text-6xl text-foreground mb-4">Team</h1>
           <p className="text-lg text-muted-foreground">
-            Who are we behind Lanköping?
+            Who are we behind Lankoping?
           </p>
         </div>
 
@@ -48,7 +48,7 @@ function TeamPage() {
           <div className="max-w-2xl">
             <h2 className="font-display text-2xl text-foreground mb-4">A two-person passion</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Lanköping is built by a small but dedicated team that loves creating digital experiences and building community for gamers in Ostergotland.
+              Lankoping is built by a small but dedicated team that loves creating digital experiences and building community for gamers in Ostergotland.
             </p>
           </div>
         </section>
@@ -75,7 +75,7 @@ function TeamPage() {
         {/* Footer */}
         <footer className="pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
-            © 2026 Lanköping.se — Built with love by el4s & nauticalis.
+            © 2026 Lankoping.se — Built with love by el4s & nauticalis.
           </p>
         </footer>
       </main>

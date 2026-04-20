@@ -48,7 +48,7 @@ function RulesPage() {
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Guidelines</p>
           <h1 className="font-display text-5xl md:text-6xl text-foreground mb-4">Rules</h1>
           <p className="text-lg text-muted-foreground">
-            {"For everyone's comfort and safety at Lanköping.se"}
+            {"For everyone's comfort and safety at Lankoping.se"}
           </p>
         </div>
 
@@ -103,7 +103,7 @@ function RulesPage() {
         {/* Footer */}
         <footer className="pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
-            © 2026 Lanköping.se — See you at the event!
+            © 2026 Lankoping.se — See you at the event!
           </p>
         </footer>
       </main>

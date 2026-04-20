@@ -22,7 +22,7 @@ export async function initializeServer() {
   }
 
   console.log('\n╔════════════════════════════════════════════════════════════╗')
-  console.log('║          🚀 Lanköping.se Server Starting...              ║')
+  console.log('║          🚀 Lankoping.se Server Starting...              ║')
   console.log('╚════════════════════════════════════════════════════════════╝\n')
 
   initialized = true

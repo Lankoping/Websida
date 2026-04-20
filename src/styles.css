@@ -57,7 +57,7 @@ code {
   --secondary: #E8E5E0;
   --secondary-foreground: #1A1815;
   --muted: #D0CCC7;
-  --muted-foreground: rgba(26, 24, 21, 0.6);
+  --muted-foreground: rgba(26, 24, 21, 0.75);
   --accent: #D64A35;
   --accent-foreground: #FFFFFF;
   --destructive: #A83D2D;
@@ -65,7 +65,7 @@ code {
   --border: rgba(26, 24, 21, 0.1);
   --input: rgba(26, 24, 21, 0.1);
   --ring: rgba(214, 74, 53, 0.5);
-  --radius: 0.25rem;
+  --radius: 0.5rem;
 }
 
 .dark {
@@ -80,7 +80,7 @@ code {
   --secondary: #E8E5E0;
   --secondary-foreground: #1A1815;
   --muted: #D0CCC7;
-  --muted-foreground: rgba(26, 24, 21, 0.6);
+  --muted-foreground: rgba(26, 24, 21, 0.75);
   --accent: #D64A35;
   --accent-foreground: #FFFFFF;
   --destructive: #A83D2D;

@@ -168,7 +168,7 @@ function PublicTicketView() {
 
         {/* Footer */}
         <div className="p-6 bg-[#C04A2A]/5 border-t border-[#C04A2A]/10 text-center">
-          <p className="text-[9px] uppercase tracking-[0.3em] text-[#F0E8D8]/30">Utfärdad av Lanköping</p>
+          <p className="text-[9px] uppercase tracking-[0.3em] text-[#F0E8D8]/30">Utfärdad av Lankoping</p>
         </div>
       </div>
       

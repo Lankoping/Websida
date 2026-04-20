@@ -35,7 +35,7 @@ interface ComingSoonProps {
 const fallbackContent = {
   sv: {
     eyebrow: 'LAN-Event i Norrkoping',
-    headline: 'Lanköping',
+    headline: 'Lankoping',
     tagline: 'Gaming Community',
     description: 'Vi bygger en gemenskap for gamers i Ostergotland. Snart oppnar vi dorrar till vart forsta event.',
     rulesLabel: 'Regler',
@@ -45,7 +45,7 @@ const fallbackContent = {
   },
   en: {
     eyebrow: 'LAN Event in Norrkoping',
-    headline: 'Lanköping',
+    headline: 'Lankoping',
     tagline: 'Gaming Community',
     description: 'We are building a community for gamers in Ostergotland. Soon we open doors to our first event.',
     rulesLabel: 'Rules',
@@ -82,7 +82,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center">
-            <span className="font-bold text-xl tracking-tight text-foreground">Lanköping</span>
+            <span className="font-bold text-xl tracking-tight text-foreground">Lankoping</span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
             <Link to={`${basePath}/rules`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -170,14 +170,11 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
                   
                   return (
                     <div key={section.id}>
-                      <div className="w-10 h-10 flex items-center justify-center bg-secondary mb-4">
-                        {IconComponent ? (
-                          <IconComponent className="w-5 h-5 text-primary" />
-                        ) : (
-                          <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-                          </svg>
-                        )}
+                      <div className="relative w-full h-48 overflow-hidden rounded-lg mb-4">
+                        <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                          <IconComponent className="w-8 h-8 text-white" />
+                        </div>
                       </div>
                       <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">{title.toUpperCase()}</h3>
                       <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
@@ -187,21 +184,19 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
               ) : (
                 <>
                   <div>
-                    <div className="w-10 h-10 flex items-center justify-center bg-secondary mb-4">
-                      <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
+                    <div className="relative w-full h-48 overflow-hidden rounded-lg mb-4">
+                      <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover" />
                     </div>
                     <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
-                      {locale === 'sv' ? 'NORRKOPING' : 'NORRKOPING'}
+                      {locale === 'sv' ? 'NORRKÖPING' : 'NORRKÖPING'}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
                       {locale === 'sv' 
-                        ? 'Vart forsta event kommer hallas i Norrkoping, Ostergotland.'
-                        : 'Our first event will be held in Norrkoping, Ostergotland.'}
+                        ? 'Vårt första event kommer hållas i Norrköping, Östergötland.'
+                        : 'Our first event will be held in Norrköping, Östergötland.'}
                     </p>
                   </div>
+
                   <div>
                     <div className="w-10 h-10 flex items-center justify-center bg-secondary mb-4">
                       <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -244,7 +239,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
         <div className="max-w-6xl mx-auto px-6 py-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex items-center">
-              <span className="font-bold text-lg text-foreground">Lanköping</span>
+              <span className="font-bold text-lg text-foreground">Lankoping</span>
               <span className="text-muted-foreground text-sm">.se</span>
             </div>
             <nav className="flex items-center gap-6 md:hidden">
@@ -259,7 +254,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
               </Link>
             </nav>
             <p className="text-sm text-muted-foreground text-center md:text-right">
-              © 2026 Lanköping.se — {content.rights}
+              © 2026 Lankoping.se — {content.rights}
             </p>
           </div>
         </div>

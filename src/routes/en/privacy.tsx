@@ -37,7 +37,7 @@ function PrivacyPage() {
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Data Policy</p>
           <h1 className="font-display text-5xl md:text-6xl text-foreground mb-4">Privacy</h1>
           <p className="text-lg text-muted-foreground">
-            How we handle your personal data for Lanköping.se
+            How we handle your personal data for Lankoping.se
           </p>
         </div>
 
@@ -110,7 +110,7 @@ function PrivacyPage() {
         {/* Footer */}
         <footer className="pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
-            © 2026 Lanköping.se — Your privacy matters to us.
+            © 2026 Lankoping.se — Your privacy matters to us.
           </p>
         </footer>
       </main>

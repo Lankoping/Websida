@@ -21,12 +21,12 @@ function PrivacyPage() {
   const collectionItems = [
     { 
       title: 'E-postadress', 
-      desc: 'For inloggning och utskick av viktig information.',
+      desc: 'För inloggning och utskick av viktig information.',
       icon: Info,
     },
     { 
       title: 'Manuella uppgifter', 
-      desc: 'Vid manuella biljettkop kan vi efterfraga namn och kontaktuppgifter for att verifiera din plats.',
+      desc: 'Vid manuella biljettköp kan vi efterfråga namn och kontaktuppgifter för att verifiera din plats.',
       icon: Info,
     },
   ]
@@ -49,7 +49,7 @@ function PrivacyPage() {
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Datapolicy</p>
           <h1 className="font-bold text-3xl md:text-5xl text-foreground mb-4">Integritet</h1>
           <p className="text-lg text-muted-foreground">
-            Hur vi hanterar dina personuppgifter for Lanköping.se
+            Hur vi hanterar dina personuppgifter för Länköping.se
           </p>
         </div>
 
@@ -63,7 +63,7 @@ function PrivacyPage() {
           </div>
 
           <p className="text-muted-foreground leading-relaxed mb-8">
-            For att vi ska kunna genomfora ett sakert och valorganiserat event samlar vi in och behandlar foljande uppgifter fran vara deltagare:
+            För att vi ska kunna genomföra ett säkert och välorganiserat event samlar vi in och behandlar följande uppgifter från våra deltagare:
           </p>
           
           <div className="space-y-4">
@@ -86,11 +86,11 @@ function PrivacyPage() {
 
         {/* Why We Collect Section */}
         <section className="mb-16">
-          <h2 className="font-display text-2xl text-foreground mb-6">Varfor samlar vi in detta?</h2>
+          <h2 className="font-display text-2xl text-foreground mb-6">Varför samlar vi in detta?</h2>
           <div className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>Uppgifterna anvands uteslutande for administration av eventet, sakerhetsatgarder och verifiering av din biljett.</p>
-            <p>Eftersom biljettkop hanteras manuellt lagras inga betalningsuppgifter pa denna webbplats.</p>
-            <p>Vi delar aldrig dina uppgifter med tredje part i vinstdrivande syfte. Information kan dock komma att delas med myndigheter (t.ex. polis eller sjukvard) om en nodsituation uppstar.</p>
+            <p>Uppgifterna används uteslutande för administration av eventet, säkerhetsåtgärder och verifiering av din biljett.</p>
+            <p>Eftersom biljettköp hanteras manuellt lagras inga betalningsuppgifter på denna webbplats.</p>
+            <p>Vi delar aldrig dina uppgifter med tredje part i vinstdrivande syfte. Information kan dock komma att delas med myndigheter (t.ex. polis eller sjukvård) om en nödsituation uppstår.</p>
           </div>
         </section>
 
@@ -100,20 +100,20 @@ function PrivacyPage() {
             <div className="w-10 h-10 flex items-center justify-center bg-secondary">
               <Clock className="w-5 h-5 text-primary" />
             </div>
-            <h2 className="font-display text-2xl text-foreground">Vad hander efter eventet?</h2>
+            <h2 className="font-display text-2xl text-foreground">Vad händer efter eventet?</h2>
           </div>
           
           <div className="space-y-6 text-muted-foreground leading-relaxed">
             <p>
-              Om allt ar gront (inga regelbrott) sa tas dina personuppgifter bort fran vara servrar.
-              Det innebar att de lagras <strong className="text-foreground">max 30 dagar</strong> efter avslutat event.
+              Om allt är grönt (inga regelbrott) så tas dina personuppgifter bort från våra servrar.
+              Det innebär att de lagras <strong className="text-foreground">max 30 dagar</strong> efter avslutat event.
             </p>
             
             <div className="p-6 border border-primary/30 bg-primary/5">
               <h3 className="font-bold text-lg text-primary mb-3">Information som vi inte tar bort</h3>
               <p className="text-foreground/80">
-                Vi tar bort all information sasom vi inte behover behalla den. Exempelvis om du har brutit mot eventets regler sa sparar vi den informationen.
-                Detta betyder att du kan bli portad fran framtida events.
+                Vi tar bort all information såsom vi inte behöver behålla den. Exempelvis om du har brutit mot eventets regler så sparar vi den informationen.
+                Detta betyder att du kan bli portad från framtida events.
               </p>
             </div>
           </div>
@@ -122,7 +122,7 @@ function PrivacyPage() {
         {/* Footer */}
         <footer className="pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
-            © 2026 Lanköping.se — Din integritet ar viktig for oss.
+            © 2026 Länköping.se — Din integritet är viktig för oss.
           </p>
         </footer>
       </main>

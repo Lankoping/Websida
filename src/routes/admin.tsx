@@ -198,7 +198,7 @@ function AdminLayout() {
                 <span className="text-primary-foreground font-display text-lg">L</span>
               </div>
               <div>
-                <span className="font-display text-xl tracking-wide text-foreground">Lanköping</span>
+                <span className="font-display text-xl tracking-wide text-foreground">Lankoping</span>
                 <span className="block text-[10px] text-muted-foreground uppercase tracking-widest">Admin</span>
               </div>
             </a>

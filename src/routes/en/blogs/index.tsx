@@ -36,7 +36,7 @@ function BlogList() {
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Content</p>
           <h1 className="font-display text-5xl md:text-6xl text-foreground mb-4">Blog</h1>
           <p className="text-lg text-muted-foreground">
-            Thoughts, updates and news from the Lanköping team.
+            Thoughts, updates and news from the Lankoping team.
           </p>
           <p className="text-xs text-muted-foreground mt-2 italic">
             * Translated from Swedish to English using Google Translate
@@ -84,7 +84,7 @@ function BlogList() {
         {/* Footer */}
         <footer className="pt-16 border-t border-border mt-16">
           <p className="text-sm text-muted-foreground text-center">
-            © 2026 Lanköping.se
+            © 2026 Lankoping.se
           </p>
         </footer>
       </main>

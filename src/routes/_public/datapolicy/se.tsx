@@ -30,8 +30,8 @@ function DataPolicySwedish() {
           <section>
             <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">Lagringstid för volontärer och organisatörer</h2>
             <p>
-              För volontärer och organisatörer i Lanköping lagras data tills vidare. Radering sker först när du lämnar
-              Lanköping och en signerad avgång/uppsägningshandling har registrerats.
+              För volontärer och organisatörer i Lankoping lagras data tills vidare. Radering sker först när du lämnar
+              Lankoping och en signerad avgång/uppsägningshandling har registrerats.
             </p>
           </section>
 

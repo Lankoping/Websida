@@ -40,21 +40,21 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           content: 'width=device-width, initial-scale=1',
         },
         {
-          title: 'Lanköping.se – Kommer Snart',
+          title: 'Lankoping.se – Kommer Snart',
         },
         {
           name: 'description',
           content:
-            'Lanköping.se håller på med de sista detaljerna – snart är vi redo att välkomna dig!',
+            'Lankoping.se håller på med de sista detaljerna – snart är vi redo att välkomna dig!',
         },
         {
           property: 'og:title',
-          content: 'Lanköping.se – Kommer Snart',
+          content: 'Lankoping.se – Kommer Snart',
         },
         {
           property: 'og:description',
           content:
-            'Lanköping.se håller på med de sista detaljerna – snart är vi redo att välkomna dig!',
+            'Lankoping.se håller på med de sista detaljerna – snart är vi redo att välkomna dig!',
         },
         {
           property: 'og:type',

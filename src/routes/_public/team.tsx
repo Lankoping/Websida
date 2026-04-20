@@ -55,7 +55,7 @@ function TeamPage() {
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Vilka ar vi</p>
           <h1 className="font-bold text-3xl md:text-5xl text-foreground mb-4">Teamet</h1>
           <p className="text-lg text-muted-foreground">
-            Vilka ar vi som bygger Lanköping?
+            Vilka ar vi som bygger Lankoping?
           </p>
         </div>
 
@@ -64,7 +64,7 @@ function TeamPage() {
           <div className="max-w-2xl">
             <h2 className="font-bold text-xl text-foreground mb-4">Tva personers passion</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Lanköping drivs av ett litet men dedikerat team som alskar att skapa digitala upplevelser och bygga community for gamers i Ostergotland.
+              Lankoping drivs av ett litet men dedikerat team som alskar att skapa digitala upplevelser och bygga community for gamers i Ostergotland.
             </p>
           </div>
         </section>
@@ -100,7 +100,7 @@ function TeamPage() {
         {/* Footer */}
         <footer className="pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
-            © 2026 Lanköping.se — Skapat av el4s & nauticalis.
+            © 2026 Lankoping.se — Skapat av el4s & nauticalis.
           </p>
         </footer>
       </main>

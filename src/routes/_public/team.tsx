@@ -81,7 +81,7 @@ function TeamPage() {
                     className="p-8 border border-border bg-card hover:border-primary/20 transition-colors"
                   >
                     <div className="w-12 h-12 flex items-center justify-center bg-secondary mb-6">
-                      <IconComponent className="w-6 h-6 text-primary" />
+                      {IconComponent ? <IconComponent className="w-6 h-6 text-primary" /> : null}
                     </div>
                     <h3 className="font-bold text-xl text-primary mb-1">{member.name}</h3>
                     <p className="text-sm text-muted-foreground uppercase tracking-wide mb-4">{member.role}</p>

@@ -1,287 +1,264 @@
-J3VzZSBjbGllbnQnCgppbXBvcnQgeyBMaW5rIH0gZnJvbSAnQHRhbnN0YWNr
-L3JlYWN0LXJvdXRlcicKaW1wb3J0IHsgdXNlUXVlcnkgfSBmcm9tICdAdGFu
-c3RhY2svcmVhY3QtcXVlcnknCmltcG9ydCB7IGdldEhlcm9Db250ZW50Rm4s
-IGdldEluZm9TZWN0aW9uc0ZuIH0gZnJvbSAnQC9zZXJ2ZXIvZnVuY3Rpb25z
-L2NtcycKaW1wb3J0ICogYXMgSWNvbnMgZnJvbSAnbHVjaWRlLXJlYWN0JwoK
-Ly8gTWFwIGljb24gbmFtZXMgdG8gbHVjaWRlLXJlYWN0IGNvbXBvbmVudHMK
-ZnVuY3Rpb24gZ2V0SWNvbkJ5TmFtZShpY29uTmFtZTogc3RyaW5nKSB7CiAg
-Y29uc3QgaWNvbk1hcDogUmVjb3JkPHN0cmluZywgUmVhY3QuQ29tcG9uZW50
-VHlwZTxhbnk+PiA9IHsKICAgIE1hcFBpbjogSWNvbnMuTWFwUGluLAogICAg
-VXNlcnM6IEljb25zLlVzZXJzLAogICAgR2FtZXBhZDI6IEljb25zLkdhbWVw
-YWQyLAogICAgQ3Jvd246IEljb25zLkNyb3duLAogICAgQ29kZTogSWNvbnMu
-Q29kZSwKICAgIEhlYXJ0OiBJY29ucy5IZWFydCwKICAgIFN0YXI6IEljb25z
-LlN0YXIsCiAgICBaYXA6IEljb25zLlphcCwKICAgIFNoaWVsZDogSWNvbnMu
-U2hpZWxkLAogICAgVGFyZ2V0OiBJY29ucy5UYXJnZXQsCiAgICBUcm9waHk6
-IEljb25zLlRyb3BoeSwKICAgIEZsYW1lOiBJY29ucy5GbGFtZSwKICB9CiAg
-cmV0dXJuIGljb25NYXBbaWNvbk5hbWVdIHx8IG51bGwKfQoKdHlwZSBMb2Nh
-bGUgPSAnc3YnIHwgJ2VuJwoKaW50ZXJmYWNlIENvbWluZ1Nvb25Qcm9wcyB7
-CiAgbG9jYWxlPzogTG9jYWxlCiAgaGVyb0RhdGE/OiBBd2FpdGVkPFJldHVy
-blR5cGU8dHlwZW9mIGdldEhlcm9Db250ZW50Rm4+PiB8IG51bGwKICBpbmZv
-U2VjdGlvbnNEYXRhPzogQXdhaXRlZDxSZXR1cm5UeXBlPHR5cGVvZiBnZXRJ
-bmZvU2VjdGlvbnNGbj4+IHwgbnVsbAp9Cgpjb25zdCBmYWxsYmFja0NvbnRl
-bnQgPSB7CiAgc3Y6IHsKICAgIGV5ZWJyb3c6ICdMQU4tRXZlbnQgaSBOb3Jy
-a29waW5nJywKICAgIGhlYWRsaW5lOiAnTGFua29waW5nJywKICAgIHRhZ2xp
-bmU6ICdHYW1pbmcgQ29tbXVuaXR5JywKICAgIGRlc2NyaXB0aW9uOiAnVmkg
-YnlnZ2VyIGVuIGdlbWVuc2thcCBmb3IgZ2FtZXJzIGkgT3N0ZXJnb3RsYW5k
-LiBTbmFydCBvcHBuYXIgdmkgZG9ycmFyIHRpbGwgdmFydCBmb3JzdGEgZXZl
-bnQuJywKICAgIHJ1bGVzTGFiZWw6ICdSZWdsZXInLAogICAgdGVhbUxhYmVs
-OiAnVGVhbScsCiAgICBwcml2YWN5TGFiZWw6ICdJbnRlZ3JpdGV0JywKICAg
-IHJpZ2h0czogJ0FsbGEgcsOkdHRpZ2hldGVyIGbDtnJiZWjDpWxsbmEnLAog
-IH0sCiAgZW46IHsKICAgIGV5ZWJyb3c6ICdMQU4gRXZlbnQgaW4gTm9ycmtv
-cGluZycsCiAgICBoZWFkbGluZTogJ0xhbmtvcGluZycsCiAgICB0YWdsaW5l
-OiAnR2FtaW5nIENvbW11bml0eScsCiAgICBkZXNjcmlwdGlvbjogJ1dlIGFy
-ZSBidWlsZGluZyBhIGNvbW11bml0eSBmb3IgZ2FtZXJzIGluIE9zdGVyZ290
-bGFuZC4gU29vbiB3ZSBvcGVuIGRvb3JzIHRvIG91ciBmaXJzdCBldmVudC4n
-LAogICAgcnVsZXNMYWJlbDogJ1J1bGVzJywKICAgIHRlYW1MYWJlbDogJ1Rl
-YW0nLAogICAgcHJpdmFjeUxhYmVsOiAnUHJpdmFjeScsCiAgICByaWdodHM6
-ICdBbGwgcmlnaHRzIHJlc2VydmVkJywKICB9LAp9IGFzIGNvbnN0CgpleHBv
-cnQgZnVuY3Rpb24gQ29taW5nU29vbih7IGxvY2FsZSA9ICdzdicsIGhlcm9E
-YXRhLCBpbmZvU2VjdGlvbnNEYXRhIH06IENvbWluZ1Nvb25Qcm9wcykgewog
-IGNvbnN0IGJhc2VQYXRoID0gbG9jYWxlID09PSAnZW4nID8gJy9lbicgOiAn
-JwogIAogIGNvbnN0IGNvbnRlbnQgPSB7CiAgICBleWVicm93OiBsb2NhbGUg
-PT09ICdlbicgPyAoaGVyb0RhdGE/LmV5ZWJyb3dFbiB8fCBoZXJvRGF0YT8u
-ZXllYnJvdyB8fCBmYWxsYmFja0NvbnRlbnQuZW4uZXllYnJvdykgOiAoaGVy
-b0RhdGE/LmV5ZWJyb3cgfHwgZmFsbGJhY2tDb250ZW50LnN2LmV5ZWJyb3cp
-LAogICAgaGVhZGxpbmU6IGxvY2FsZSA9PT0gJ2VuJyA/IChoZXJvRGF0YT8u
-aGVhZGxpbmVFbiB8fCBoZXJvRGF0YT8uaGVhZGxpbmUgfHwgZmFsbGJhY2tD
-b250ZW50LmVuLmhlYWRsaW5lKSA6IChoZXJvRGF0YT8uaGVhZGxpbmUgfHwg
-ZmFsbGJhY2tDb250ZW50LnN2LmhlYWRsaW5lKSwKICAgIHRhZ2xpbmU6IGxv
-Y2FsZSA9PT0gJ2VuJyA/IChoZXJvRGF0YT8udGFnbGluZUVuIHx8IGhlcm9E
-YXRhPy50YWdsaW5lIHx8IGZhbGxiYWNrQ29udGVudC5lbi50YWdsaW5lKSA6
-IChoZXJvRGF0YT8udGFnbGluZSB8fCBmYWxsYmFja0NvbnRlbnQuc3YudGFn
-bGluZSksCiAgICBkZXNjcmlwdGlvbjogbG9jYWxlID09PSAnZW4nID8gKGhl
-cm9EYXRhPy5kZXNjcmlwdGlvbkVuIHx8IGhlcm9EYXRhPy5kZXNjcmlwdGlv
-biB8fCBmYWxsYmFja0NvbnRlbnQuZW4uZGVzY3JpcHRpb24pIDogKGhlcm9E
-YXRhPy5kZXNjcmlwdGlvbiB8fCBmYWxsYmFja0NvbnRlbnQuc3YuZGVzY3Jp
-cHRpb24pLAogICAgcHJpbWFyeUJ1dHRvblRleHQ6IGxvY2FsZSA9PT0gJ2Vu
-JyA/IChoZXJvRGF0YT8ucHJpbWFyeUJ1dHRvblRleHRFbiB8fCBoZXJvRGF0
-YT8ucHJpbWFyeUJ1dHRvblRleHQgfHwgZmFsbGJhY2tDb250ZW50LmVuLnJ1
-bGVzTGFiZWwpIDogKGhlcm9EYXRhPy5wcmltYXJ5QnV0dG9uVGV4dCB8fCBm
-YWxsYmFja0NvbnRlbnQuc3YucnVsZXNMYWJlbCksCiAgICBwcmltYXJ5QnV0
-dG9uTGluazogaGVyb0RhdGE/LnByaW1hcnlCdXR0b25MaW5rIHx8ICdodHRw
-czovL2Rpc2NvcmQuZ2cvaDh3dWFxeUJ3VCcsCiAgICBzZWNvbmRhcnlCdXR0
-b25UZXh0OiBsb2NhbGUgPT09ICdlbicgPyBoZXJvRGF0YT8uc2Vjb25kYXJ5
-QnV0dG9uVGV4dEVuIDogaGVyb0RhdGE/LnNlY29uZGFyeUJ1dHRvblRleHQs
-CiAgICBzZWNvbmRhcnlCdXR0b25MaW5rOiBoZXJvRGF0YT8uc2Vjb25kYXJ5
-QnV0dG9uTGluayB8fCAnaHR0cHM6Ly93d3cueW91dHViZS5jb20vQExBTktQ
-TkcnLAogICAgcnVsZXNMYWJlbDogbG9jYWxlID09PSAnZW4nID8gZmFsbGJh
-Y2tDb250ZW50LmVuLnJ1bGVzTGFiZWwgOiBmYWxsYmFja0NvbnRlbnQuc3Yu
-cnVsZXNMYWJlbCwKICAgIHRlYW1MYWJlbDogbG9jYWxlID09PSAnZW4nID8g
-ZmFsbGJhY2tDb250ZW50LmVuLnRlYW1MYWJlbCA6IGZhbGxiYWNrQ29udGVu
-dC5zdi50ZWFtTGFiZWwsCiAgICBwcml2YWN5TGFiZWw6IGxvY2FsZSA9PT0g
-J2VuJyA/IGZhbGxiYWNrQ29udGVudC5lbi5wcml2YWN5TGFiZWwgOiBmYWxs
-YmFja0NvbnRlbnQuc3YucHJpdmFjeUxhYmVsLAogICAgcmlnaHRzOiBsb2Nh
-bGUgPT09ICdlbicgPyBmYWxsYmFja0NvbnRlbnQuZW4ucmlnaHRzIDogZmFs
-bGJhY2tDb250ZW50LnN2LnJpZ2h0cywKICB9CiAgCiAgY29uc3QgaW5mb1Nl
-Y3Rpb25zID0gaW5mb1NlY3Rpb25zRGF0YSB8fCBbXQoKICAKICByZXR1cm4g
-KAogICAgPGRpdiBjbGFzc05hbWU9ImZsZXggZmxleC1jb2wgbWluLWgtc2Ny
-ZWVuIGJnLWJhY2tncm91bmQgdGV4dC1mb3JlZ3JvdW5kIj4KICAgICAgey8q
-IEhlYWRlciAqL30KICAgICAgPGhlYWRlciBjbGFzc05hbWU9ImZpeGVkIHRv
-cC0wIGxlZnQtMCByaWdodC0wIHotNTAgYmctYmFja2dyb3VuZC84MCBiYWNr
-ZHJvcC1ibHVyLXNtIGJvcmRlci1iIGJvcmRlci1ib3JkZXIiPgogICAgICAg
-IDxkaXYgY2xhc3NOYW1lPSJtYXgtdy02eGwgbXgtYXV0byBweC02IHB5LTQg
-ZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIj4KICAgICAgICAg
-IDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciI+CiAgICAgICAg
-ICAgIDxzcGFuIGNsYXNzTmFtZT0iZm9udC1ib2xkIHRleHQteGwgdHJhY2tp
-bmctdGlnaHQgdGV4dC1mb3JlZ3JvdW5kIj5MYW5rb3Bpbmc8L3NwYW4+CiAg
-ICAgICAgICA8L2Rpdj4KICAgICAgICAgIDxuYXYgY2xhc3NOYW1lPSJoaWRk
-ZW4gbWQ6ZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTgiPgogICAgICAgICAgICA8
-TGluayB0bz17YCR7YmFzZVBhdGh9L3J1bGVzYH0gY2xhc3NOYW1lPSJ0ZXh0
-LXNtIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCBob3Zlcjp0ZXh0LWZvcmVncm91
-bmQgdHJhbnNpdGlvbi1jb2xvcnMiPgogICAgICAgICAgICAgIHtjb250ZW50
-LnJ1bGVzTGFiZWx9CiAgICAgICAgICAgIDwvTGluaz4KICAgICAgICAgICAg
-PExpbmsgdG89e2Ake2Jhc2VQYXRofS90ZWFtYH0gY2xhc3NOYW1lPSJ0ZXh0
-LXNtIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCBob3Zlcjp0ZXh0LWZvcmVncm91
-bmQgdHJhbnNpdGlvbi1jb2xvcnMiPgogICAgICAgICAgICAgIHtjb250ZW50
-LnRlYW1MYWJlbH0KICAgICAgICAgICAgPC9MaW5rPgogICAgICAgICAgICA8
-TGluayB0bz17YCR7YmFzZVBhdGh9L3ByaXZhY3lgfSBjbGFzc05hbWU9InRl
-eHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIGhvdmVyOnRleHQtZm9yZWdy
-b3VuZCB0cmFuc2l0aW9uLWNvbG9ycyI+CiAgICAgICAgICAgICAge2NvbnRl
-bnQucHJpdmFjeUxhYmVsfQogICAgICAgICAgICA8L0xpbms+CiAgICAgICAg
-ICA8L25hdj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1z
-LWNlbnRlciBnYXAtNCI+CiAgICAgICAgICAgIDxhIAogICAgICAgICAgICAg
-IGhyZWY9Imh0dHBzOi8vZGlzY29yZC5nZy9oOHd1YXF5QndUIiAKICAgICAg
-ICAgICAgICB0YXJnZXQ9Il9ibGFuayIgCiAgICAgICAgICAgICAgcmVsPSJu
-b29wZW5lciBub3JlZmVycmVyIiAKICAgICAgICAgICAgICBjbGFzc05hbWU9
-InRleHQtc20gcHgtNCBweS0yIGJnLXByaW1hcnkgdGV4dC1wcmltYXJ5LWZv
-cmVncm91bmQgaG92ZXI6YmctcHJpbWFyeS85MCB0cmFuc2l0aW9uLWNvbG9y
-cyIKICAgICAgICAgICAgPgogICAgICAgICAgICAgIERpc2NvcmQKICAgICAg
-ICAgICAgPC9hPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAg
-ICAgIDwvaGVhZGVyPgoKICAgICAgey8qIE1haW4gQ29udGVudCAtIGdyb3dz
-IHRvIGZpbGwgYXZhaWxhYmxlIHNwYWNlICovfQogICAgICA8bWFpbiBjbGFz
-c05hbWU9ImZsZXgtMSBwdC0yMCI+CiAgICAgICAgPHNlY3Rpb24gY2xhc3NO
-YW1lPSJtaW4taC1bODB2aF0gZmxleCBmbGV4LWNvbCBpdGVtcy1jZW50ZXIg
-anVzdGlmeS1jZW50ZXIgcHgtNiBweS0yNCI+CiAgICAgICAgICA8ZGl2IGNs
-YXNzTmFtZT0ibWF4LXctNHhsIG14LWF1dG8gdGV4dC1jZW50ZXIiPgogICAg
-ICAgICAgICB7LyogRXllYnJvdyAqL30KICAgICAgICAgICAgPHAgY2xhc3NO
-YW1lPSJ0ZXh0LXNtIGZvbnQtbWVkaXVtIHRyYWNraW5nLXdpZGVzdCB0ZXh0
-LXByaW1hcnkgdXBwZXJjYXNlIG1iLTYiPgogICAgICAgICAgICAgIHtjb250
-ZW50LmV5ZWJyb3d9CiAgICAgICAgICAgIDwvcD4KICAgICAgICAgICAgCiAg
-ICAgICAgICAgIHsvKiBNYWluIEhlYWRsaW5lICovfQogICAgICAgICAgICA8
-aDEgY2xhc3NOYW1lPSJmb250LWJvbGQgdGV4dC0zeGwgbWQ6dGV4dC01eGwg
-dHJhY2tpbmctdGlnaHQgdGV4dC1mb3JlZ3JvdW5kIG1iLTYiPgogICAgICAg
-ICAgICAgIHtjb250ZW50LmhlYWRsaW5lfQogICAgICAgICAgICA8L2gxPgog
-ICAgICAgICAgICAKICAgICAgICAgICAgey8qIFRhZ2xpbmUgKi99CiAgICAg
-ICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1sZyBtZDp0ZXh0LXhsIHRleHQt
-bXV0ZWQtZm9yZWdyb3VuZCBtYi0xMCBtYXgtdy0yeGwgbXgtYXV0byI+CiAg
-ICAgICAgICAgICAge2NvbnRlbnQudGFnbGluZX0KICAgICAgICAgICAgPC9w
-PgoKICAgICAgICAgICAgey8qIERpdmlkZXIgKi99CiAgICAgICAgICAgIDxk
-aXYgY2xhc3NOYW1lPSJ3LTEyIGgtMSBiZy1wcmltYXJ5LzIwIG14LWF1dG8g
-bWItMTAiIC8+CiAgICAgICAgICAgIAogICAgICAgICAgICB7LyogRGVzY3Jp
-cHRpb24gKi99CiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1sZyB0
-ZXh0LW11dGVkLWZvcmVncm91bmQgbWF4LXcteGwgbXgtYXV0byBsZWFkaW5n
-LXJlbGF4ZWQgbWItMTIiPgogICAgICAgICAgICAgIHtjb250ZW50LmRlc2Ny
-aXB0aW9ufQogICAgICAgICAgICA8L3A+CgogICAgICAgICAgICB7LyogUHJp
-bWFyeSBCdXR0b24gKi99CiAgICAgICAgICAgIDxhIAogICAgICAgICAgICAg
-IGhyZWY9e2NvbnRlbnQucHJpbWFyeUJ1dHRvbkxpbmt9IAogICAgICAgICAg
-ICAgIHRhcmdldD17Y29udGVudC5wcmltYXJ5QnV0dG9uTGluay5zdGFydHNX
-aXRoKCdodHRwJykgPyAnX2JsYW5rJyA6IHVuZGVmaW5lZH0KICAgICAgICAg
-ICAgICByZWw9e2NvbnRlbnQucHJpbWFyeUJ1dHRvbkxpbmsuc3RhcnRzV2l0
-aCgnaHR0cCcpID8gJ25vb3BlbmVyIG5vcmVmZXJyZXInIDogdW5kZWZpbmVk
-fQogICAgICAgICAgICAgIGNsYXNzTmFtZT0icHgtOCBweS0zIGJnLXByaW1h
-cnkgdGV4dC1wcmltYXJ5LWZvcmVncm91bmQgZm9udC1tZWRpdW0gaG92ZXI6
-YmctcHJpbWFyeS85MCB0cmFuc2l0aW9uLWNvbG9ycyIKICAgICAgICAgICAg
-PgogICAgICAgICAgICAgIHtjb250ZW50LnByaW1hcnlCdXR0b25UZXh0fQog
-ICAgICAgICAgICA8L2E+CiAgICAgICAgICAgIHsvKiBTZWNvbmRhcnkgQnV0
-dG9uICovfQogICAgICAgICAgICB7Y29udGVudC5zZWNvbmRhcnlCdXR0b25U
-ZXh0ICYmICgKICAgICAgICAgICAgICA8YSAKICAgICAgICAgICAgICAgIGhy
-ZWY9e2NvbnRlbnQuc2Vjb25kYXJ5QnV0dG9uTGlua30gCiAgICAgICAgICAg
-ICAgICB0YXJnZXQ9Il9ibGFuayIgCiAgICAgICAgICAgICAgICByZWw9Im5v
-b3BlbmVyIG5vcmVmZXJyZXIiCiAgICAgICAgICAgICAgICBjbGFzc05hbWU9
-InB4LTggcHktMyBib3JkZXIgYm9yZGVyLWJvcmRlciB0ZXh0LWZvcmVncm91
-bmQgZm9udC1tZWRpdW0gaG92ZXI6Ymctc2Vjb25kYXJ5IHRyYW5zaXRpb24t
-Y29sb3JzIgogICAgICAgICAgICAgID4KICAgICAgICAgICAgICAgIHtjb250
-ZW50LnNlY29uZGFyeUJ1dHRvblRleHR9CiAgICAgICAgICAgICAgPC9hPgog
-ICAgICAgICAgICApfQogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9zZWN0
-aW9uPgoKICAgICAgICB7LyogSW5mbyBTZWN0aW9uICovfQogICAgICAgIDxz
-ZWN0aW9uIGNsYXNzTmFtZT0iYm9yZGVyLXQgYm9yZGVyLWJvcmRlciI+CiAg
-ICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibWF4LXctNnhsIG14LWF1dG8gcHgt
-NiBweS0yNCI+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJncmlkIG1k
-OmdyaWQtY29scy0zIGdhcC0xMiI+CiAgICAgICAgICAgICAge2luZm9TZWN0
-aW9ucy5sZW5ndGggPiAwID8gKAogICAgICAgICAgICAgICAgaW5mb1NlY3Rp
-b25zLm1hcCgoc2VjdGlvbikgPT4gewogICAgICAgICAgICAgICAgICBjb25z
-dCBJY29uQ29tcG9uZW50ID0gZ2V0SWNvbkJ5TmFtZShzZWN0aW9uLmljb24p
-CiAgICAgICAgICAgICAgICAgIGNvbnN0IHRpdGxlID0gbG9jYWxlID09PSAn
-ZW4nID8gc2VjdGlvbi50aXRsZUVuIHx8IHNlY3Rpb24udGl0bGUgOiBzZWN0
-aW9uLnRpdGxlCiAgICAgICAgICAgICAgICAgIGNvbnN0IGRlc2MgPSBsb2Nh
-bGUgPT09ICdlbicgPyBzZWN0aW9uLmRlc2NyaXB0aW9uRW4gfHwgc2VjdGlv
-bi5kZXNjcmlwdGlvbiA6IHNlY3Rpb24uZGVzY3JpcHRpb24KICAgICAgICAg
-ICAgICAgICAgCiAgICAgICAgICAgICAgICAgIHJldHVybiAoCiAgICAgICAg
-ICAgICAgICAgICAgPGRpdiBrZXk9e3NlY3Rpb24uaWR9PgogICAgICAgICAg
-ICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InJlbGF0aXZlIHctZnVsbCBo
-LTQ4IG92ZXJmbG93LWhpZGRlbiByb3VuZGVkLWxnIG1iLTQiPgogICAgICAg
-ICAgICAgICAgICAgICAgICA8aW1nIHNyYz0iaHR0cHM6Ly9pbWFnZXMudW5z
-cGxhc2guY29tL3Bob3RvLTE1Nzc3MTc5MDMzMjMtYjY3ZTdjODU4NTlkP2F1
-dG89Zm9ybWF0JmZpdD1jcm9wJnE9ODAmdz04MDAiIGFsdD0iTm9ycmvDtnBp
-bmciIGNsYXNzTmFtZT0idy1mdWxsIGgtZnVsbCBvYmplY3QtY292ZXIiIC8+
-CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJhYnNv
-bHV0ZSBpbnNldC0wIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVy
-IGJnLWJsYWNrLzIwIj4KICAgICAgICAgICAgICAgICAgICAgICAgICB7SWNv
-bkNvbXBvbmVudCA/IDxJY29uQ29tcG9uZW50IGNsYXNzTmFtZT0idy04IGgt
-OCB0ZXh0LXdoaXRlIiAvPiA6IG51bGx9CiAgICAgICAgICAgICAgICAgICAg
-ICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAg
-ICAgICAgICAgICAgICAgICA8aDMgY2xhc3NOYW1lPSJmb250LWJvbGQgdGV4
-dC1sZyB0cmFja2luZy13aWRlciBtYi0yIHRleHQtZm9yZWdyb3VuZCI+e3Rp
-dGxlLnRvVXBwZXJDYXNlKCl9PC9oMz4KICAgICAgICAgICAgICAgICAgICAg
-IDxwIGNsYXNzTmFtZT0idGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHRleHQtc20g
-bGVhZGluZy1yZWxheGVkIj57ZGVzY308L3A+CiAgICAgICAgICAgICAgICAg
-ICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgICAg
-IH0pCiAgICAgICAgICAgICAgKSA6ICgKICAgICAgICAgICAgICAgIDw+CiAg
-ICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICAgICAgPGRp
-diBjbGFzc05hbWU9InJlbGF0aXZlIHctZnVsbCBoLTQ4IG92ZXJmbG93LWhp
-ZGRlbiByb3VuZGVkLWxnIG1iLTQiPgogICAgICAgICAgICAgICAgICAgICAg
-PGltZyBzcmM9Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0x
-NTc3NzE3OTAzMzIzLWI2N2U3Yzg1ODU5ZD9hdXRvPWZvcm1hdCZmaXQ9Y3Jv
-cCZxPTgwJnc9ODAwIiBhbHQ9Ik5vcnJrw7ZwaW5nIiBjbGFzc05hbWU9Inct
-ZnVsbCBoLWZ1bGwgb2JqZWN0LWNvdmVyIiAvPgogICAgICAgICAgICAgICAg
-ICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxoMyBjbGFzc05hbWU9
-ImZvbnQtYm9sZCB0ZXh0LWxnIHRyYWNraW5nLXdpZGVyIG1iLTIgdGV4dC1m
-b3JlZ3JvdW5kIj4KICAgICAgICAgICAgICAgICAgICAgIHtsb2NhbGUgPT09
-ICdzdicgPyAnTk9SUkvDllBJTkcnIDogJ05PUlJLw5ZQSU5HJ30KICAgICAg
-ICAgICAgICAgICAgICA8L2gzPgogICAgICAgICAgICAgICAgICAgIDxwIGNs
-YXNzTmFtZT0idGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHRleHQtc20gbGVhZGlu
-Zy1yZWxheGVkIj4KICAgICAgICAgICAgICAgICAgICAgIHtsb2NhbGUgPT09
-ICdzdicgCiAgICAgICAgICAgICAgICAgICAgICAgID8gJ1bDpXJ0IGbDtnJz
-dGEgZXZlbnQga29tbWVyIGjDpWxsYXMgaSBOb3Jya8O2cGluZywgw5ZzdGVy
-Z8O2dGxhbmQuJwogICAgICAgICAgICAgICAgICAgICAgICA6ICdPdXIgZmly
-c3QgZXZlbnQgd2lsbCBiZSBoZWxkIGluIE5vcnJrw7ZwaW5nLCDDlnN0ZXJn
-w7Z0bGFuZC4nfQogICAgICAgICAgICAgICAgICAgIDwvcD4KICAgICAgICAg
-ICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICA8ZGl2PgogICAg
-ICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ3LTEwIGgtMTAgZmxl
-eCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgYmctc2Vjb25kYXJ5IG1i
-LTQiPgogICAgICAgICAgICAgICAgICAgICAgPHN2ZyBjbGFzc05hbWU9Inct
-NSBoLTUgdGV4dC1wcmltYXJ5IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJl
-bnRDb2xvciIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgICAgICAgICAgICAg
-ICAgICAgICAgPHBhdGggc3Ryb2tlTGluZWNhcD0icm91bmQiIHN0cm9rZUxp
-bmVqb2k9InJvdW5kIiBzdHJva2VXaWR0aD17Mn0gZD0iTTEyIDQuMzU0YTQg
-NCAwIDExMCA1LjI5Mk0xNSAyMUgzdi0xYTYgNiAwIDAxMTIgMHYxem0wIDBo
-NnYtMWE2IDYgMCAwMC05LTUuMTk3bTEzLjUtOWEyLjUgMi41IDAgMTEtNSAw
-IDIuNSAyLjUgMCAwMTUgMHoiIC8+CiAgICAgICAgICAgICAgICAgICAgICA8
-L3N2Zz4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAg
-ICAgICAgICA8aDMgY2xhc3NOYW1lPSJmb250LWJvbGQgdGV4dC1sZyB0cmFj
-a2luZy13aWRlciBtYi0yIHRleHQtZm9yZWdyb3VuZCI+CiAgICAgICAgICAg
-ICAgICAgICAgICB7bG9jYWxlID09PSAnc3YnID8gJ0dFTUVOU0tBUCcgOiAn
-Q09NTVVOSVRZJ30KICAgICAgICAgICAgICAgICAgICA8L2gzPgogICAgICAg
-ICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1tdXRlZC1mb3JlZ3Jv
-dW5kIHRleHQtc20gbGVhZGluZy1yZWxheGVkIj4KICAgICAgICAgICAgICAg
-ICAgICAgIHtsb2NhbGUgPT09ICdzdicKICAgICAgICAgICAgICAgICAgICAg
-ICAgPyAnRW4gcGxhdHMgZm9yIGdhbWVycyBhdHQgdHJhZmZhcywgdGF2bGEg
-b2NoIGhhIGt1bCB0aWxsc2FtbWFucy4nCiAgICAgICAgICAgICAgICAgICAg
-ICAgIDogJ0EgcGxhY2UgZm9yIGdhbWVycyB0byBtZWV0LCBjb21wZXRlIGFu
-ZCBoYXZlIGZ1biB0b2dldGhlci4nfQogICAgICAgICAgICAgICAgICAgIDwv
-cD4KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAg
-IDxkaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9Inct
-MTAgaC0xMCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBiZy1z
-ZWNvbmRhcnkgbWItNCI+CiAgICAgICAgICAgICAgICAgICAgICA8c3ZnIGNs
-YXNzTmFtZT0idy01IGgtNSB0ZXh0LXByaW1hcnkiIGZpbGw9Im5vbmUiIHN0
-cm9rZT0iY3VycmVudENvbG9yIiB2aWV3Qm94PSIwIDAgMjQgMjQiPgogICAg
-ICAgICAgICAgICAgICAgICAgICA8cGF0aCBzdHJva2VMaW5lY2FwPSJyb3Vu
-ZCIgc3Ryb2tlTGluZWpvaW49InJvdW5kIiBzdHJva2VXaWR0aD17Mn0gZD0i
-TTkuNzUgMTdMOSAyMGwtMSAxaDhsLTEtMS0uNzUtM00zIDEzaDE4TTUgMTdo
-MTRhMiAyIDAgMDAyLTJWNWEyIDIgMCAwMC0yLTJINWEyIDIgMCAwMC0yIDJ2
-MTBhMiAyIDAgMDAyIDJ6IiAvPgogICAgICAgICAgICAgICAgICAgICAgPC9z
-dmc+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAg
-ICAgICAgPGgzIGNsYXNzTmFtZT0iZm9udC1ib2xkIHRleHQtbGcgdHJhY2tp
-bmctd2lkZXIgbWItMiB0ZXh0LWZvcmVncm91bmQiPgogICAgICAgICAgICAg
-ICAgICAgICAge2xvY2FsZSA9PT0gJ3N2JyA/ICdMQU4tUEFSVFknIDogJ0xB
-TiBQQVJUWSd9CiAgICAgICAgICAgICAgICAgICAgPC9oMz4KICAgICAgICAg
-ICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtbXV0ZWQtZm9yZWdyb3Vu
-ZCB0ZXh0LXNtIGxlYWRpbmctcmVsYXhlZCI+CiAgICAgICAgICAgICAgICAg
-ICAgICB7bG9jYWxlID09PSAnc3YnCiAgICAgICAgICAgICAgICAgICAgICAg
-ID8gJ1RhIG1lZCBkaW4gZGF0b3Igb2NoIG5qdXQgYXYgZW4gaGVsZyBmeWxs
-ZCBtZWQgZ2FtaW5nLicKICAgICAgICAgICAgICAgICAgICAgICAgOiAnQnJp
-bmcgeW91ciBjb21wdXRlciBhbmQgZW5qb3kgYSB3ZWVrZW5kIGZ1bGwgb2Yg
-Z2FtaW5nLid9CiAgICAgICAgICAgICAgICAgICAgPC9wPgogICAgICAgICAg
-ICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDwvPgogICAgICAgICAg
-ICAgICl9CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgPC9kaXY+CiAg
-ICAgICAgPC9zZWN0aW9uPgogICAgICA8L21haW4+CgogICAgICB7LyogRm9v
-dGVyIC0gc3RheXMgYXQgYm90dG9tICovfQogICAgICA8Zm9vdGVyIGNsYXNz
-TmFtZT0iYm9yZGVyLXQgYm9yZGVyLWJvcmRlciBtdC1hdXRvIj4KICAgICAg
-ICA8ZGl2IGNsYXNzTmFtZT0ibWF4LXctNnhsIG14LWF1dG8gcHgtNiBweS0x
-MiI+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBmbGV4LWNvbCBt
-ZDpmbGV4LXJvdyBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuIGdhcC00
-Ij4KICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2Vu
-dGVyIj4KICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImZvbnQtYm9s
-ZCB0ZXh0LWxnIHRleHQtZm9yZWdyb3VuZCI+TGFua29waW5nPC9zcGFuPgog
-ICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1tdXRlZC1mb3Jl
-Z3JvdW5kIHRleHQtc20iPi5zZTwvc3Bhbj4KICAgICAgICAgICAgPC9kaXY+
-CiAgICAgICAgICAgIDxuYXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRl
-ciBnYXAtNiBtZDpoaWRkZW4iPgogICAgICAgICAgICAgIDxMaW5rIHRvPXtg
-JHtiYXNlUGF0aH0vcnVsZXNgfSBjbGFzc05hbWU9InRleHQtc20gdGV4dC1t
-dXRlZC1mb3JlZ3JvdW5kIGhvdmVyOnRleHQtZm9yZWdyb3VuZCB0cmFuc2l0
-aW9uLWNvbG9ycyI+CiAgICAgICAgICAgICAgICB7Y29udGVudC5ydWxlc0xh
-YmVsfQogICAgICAgICAgICAgIDwvTGluaz4KICAgICAgICAgICAgICA8TGlu
-ayB0bz17YCR7YmFzZVBhdGh9L3RlYW1gfSBjbGFzc05hbWU9InRleHQtc20g
-dGV4dC1tdXRlZC1mb3JlZ3JvdW5kIGhvdmVyOnRleHQtZm9yZWdyb3VuZCB0
-cmFuc2l0aW9uLWNvbG9ycyI+CiAgICAgICAgICAgICAgICB7Y29udGVudC50
-ZWFtTGFiZWx9CiAgICAgICAgICAgICAgPC9MaW5rPgogICAgICAgICAgICAg
-IDxMaW5rIHRvPXtgJHtiYXNlUGF0aH0vcHJpdmFjeWB9IGNsYXNzTmFtZT0i
-dGV4dC1zbSB0ZXh0LW11dGVkLWZvcmVncm91bmQgaG92ZXI6dGV4dC1mb3Jl
-Z3JvdW5kIHRyYW5zaXRpb24tY29sb3JzIj4KICAgICAgICAgICAgICAgIHtj
-b250ZW50LnByaXZhY3lMYWJlbH0KICAgICAgICAgICAgICA8L0xpbms+CiAg
-ICAgICAgICAgIDwvbmF2PgogICAgICAgICAgICA8cCBjbGFzc05hbWU9InRl
-eHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHRleHQtY2VudGVyIG1kOnRl
-eHQtcmlnaHQiPgogICAgICAgICAgICAgIMKpIDIwMjYgTGFua29waW5nLnNl
-IOKAlCB7Y29udGVudC5yaWdodHN9CiAgICAgICAgICAgIDwvcD4KICAgICAg
-ICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgICA8L2Zvb3Rlcj4KICAg
-IDwvZGl2PgogICkKfQo=
+'use client'
+
+import { Link } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+import { getHeroContentFn, getInfoSectionsFn } from '@/server/functions/cms'
+import * as Icons from 'lucide-react'
+
+// Map icon names to lucide-react components
+function getIconByName(iconName: string) {
+  const iconMap: Record<string, React.ComponentType<any>> = {
+    MapPin: Icons.MapPin,
+    Users: Icons.Users,
+    Gamepad2: Icons.Gamepad2,
+    Crown: Icons.Crown,
+    Code: Icons.Code,
+    Heart: Icons.Heart,
+    Star: Icons.Star,
+    Zap: Icons.Zap,
+    Shield: Icons.Shield,
+    Target: Icons.Target,
+    Trophy: Icons.Trophy,
+    Flame: Icons.Flame,
+  }
+  return iconMap[iconName] || null
+}
+
+type Locale = 'sv' | 'en'
+
+interface ComingSoonProps {
+  locale?: Locale
+  heroData?: Awaited<ReturnType<typeof getHeroContentFn>> | null
+  infoSectionsData?: Awaited<ReturnType<typeof getInfoSectionsFn>> | null
+}
+
+const fallbackContent = {
+  sv: {
+    eyebrow: 'LAN-Event i Norrkoping',
+    headline: 'Lankoping',
+    tagline: 'Gaming Community',
+    description: 'Vi bygger en gemenskap for gamers i Ostergotland. Snart oppnar vi dorrar till vart forsta event.',
+    rulesLabel: 'Regler',
+    teamLabel: 'Team',
+    privacyLabel: 'Integritet',
+    rights: 'Alla rättigheter förbehållna',
+  },
+  en: {
+    eyebrow: 'LAN Event in Norrkoping',
+    headline: 'Lankoping',
+    tagline: 'Gaming Community',
+    description: 'We are building a community for gamers in Ostergotland. Soon we open doors to our first event.',
+    rulesLabel: 'Rules',
+    teamLabel: 'Team',
+    privacyLabel: 'Privacy',
+    rights: 'All rights reserved',
+  },
+} as const
+
+export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: ComingSoonProps) {
+  const basePath = locale === 'en' ? '/en' : ''
+  
+  const content = {
+    eyebrow: locale === 'en' ? (heroData?.eyebrowEn || heroData?.eyebrow || fallbackContent.en.eyebrow) : (heroData?.eyebrow || fallbackContent.sv.eyebrow),
+    headline: locale === 'en' ? (heroData?.headlineEn || heroData?.headline || fallbackContent.en.headline) : (heroData?.headline || fallbackContent.sv.headline),
+    tagline: locale === 'en' ? (heroData?.taglineEn || heroData?.tagline || fallbackContent.en.tagline) : (heroData?.tagline || fallbackContent.sv.tagline),
+    description: locale === 'en' ? (heroData?.descriptionEn || heroData?.description || fallbackContent.en.description) : (heroData?.description || fallbackContent.sv.description),
+    primaryButtonText: locale === 'en' ? (heroData?.primaryButtonTextEn || heroData?.primaryButtonText || fallbackContent.en.rulesLabel) : (heroData?.primaryButtonText || fallbackContent.sv.rulesLabel),
+    primaryButtonLink: heroData?.primaryButtonLink || 'https://discord.gg/h8wuaqyBwT',
+    secondaryButtonText: locale === 'en' ? heroData?.secondaryButtonTextEn : heroData?.secondaryButtonText,
+    secondaryButtonLink: heroData?.secondaryButtonLink || 'https://www.youtube.com/@LANKPNG',
+    rulesLabel: locale === 'en' ? fallbackContent.en.rulesLabel : fallbackContent.sv.rulesLabel,
+    teamLabel: locale === 'en' ? fallbackContent.en.teamLabel : fallbackContent.sv.teamLabel,
+    privacyLabel: locale === 'en' ? fallbackContent.en.privacyLabel : fallbackContent.sv.privacyLabel,
+    rights: locale === 'en' ? fallbackContent.en.rights : fallbackContent.sv.rights,
+  }
+  
+  const infoSections = infoSectionsData || []
+
+  
+  return (
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <span className="font-bold text-xl tracking-tight text-foreground">Lankoping</span>
+          </div>
+          <nav className="hidden md:flex items-center gap-8">
+            <Link to={`${basePath}/rules`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {content.rulesLabel}
+            </Link>
+            <Link to={`${basePath}/team`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {content.teamLabel}
+            </Link>
+            <Link to={`${basePath}/privacy`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {content.privacyLabel}
+            </Link>
+          </nav>
+          <div className="flex items-center gap-4">
+            <a 
+              href="https://discord.gg/h8wuaqyBwT" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-sm px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Discord
+            </a>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content - grows to fill available space */}
+      <main className="flex-1 pt-20">
+        <section className="min-h-[80vh] flex flex-col items-center justify-center px-6 py-24">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Eyebrow */}
+            <p className="text-sm font-medium tracking-widest text-primary uppercase mb-6">
+              {content.eyebrow}
+            </p>
+            
+            {/* Main Headline */}
+            <h1 className="font-bold text-3xl md:text-5xl tracking-tight text-foreground mb-6">
+              {content.headline}
+            </h1>
+            
+            {/* Tagline */}
+            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+              {content.tagline}
+            </p>
+
+            {/* Divider */}
+            <div className="w-12 h-1 bg-primary/20 mx-auto mb-10" />
+            
+            {/* Description */}
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed mb-12">
+              {content.description}
+            </p>
+
+            {/* Primary Button */}
+            <a 
+              href={content.primaryButtonLink} 
+              target={content.primaryButtonLink.startsWith('http') ? '_blank' : undefined}
+              rel={content.primaryButtonLink.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="px-8 py-3 bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+            >
+              {content.primaryButtonText}
+            </a>
+            {/* Secondary Button */}
+            {content.secondaryButtonText && (
+              <a 
+                href={content.secondaryButtonLink} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-8 py-3 border border-border text-foreground font-medium hover:bg-secondary transition-colors"
+              >
+                {content.secondaryButtonText}
+              </a>
+            )}
+          </div>
+        </section>
+
+        {/* Info Section */}
+        <section className="border-t border-border">
+          <div className="max-w-6xl mx-auto px-6 py-24">
+            <div className="grid md:grid-cols-3 gap-12">
+              {infoSections.length > 0 ? (
+                infoSections.map((section) => {
+                  const IconComponent = getIconByName(section.icon)
+                  const title = locale === 'en' ? section.titleEn || section.title : section.title
+                  const desc = locale === 'en' ? section.descriptionEn || section.description : section.description
+                  
+                  return (
+                    <div key={section.id}>
+                      <div className="relative w-full h-48 overflow-hidden rounded-lg mb-4">
+                        <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                          {IconComponent ? <IconComponent className="w-8 h-8 text-white" /> : null}
+                        </div>
+                      </div>
+                      <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">{title.toUpperCase()}</h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
+                    </div>
+                  )
+                })
+              ) : (
+                <>
+                  <div>
+                    <div className="relative w-full h-48 overflow-hidden rounded-lg mb-4">
+                      <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover" />
+                    </div>
+                    <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
+                      {locale === 'sv' ? 'NORRKÖPING' : 'NORRKÖPING'}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {locale === 'sv' 
+                        ? 'Vårt första event kommer hållas i Norrköping, Östergötland.'
+                        : 'Our first event will be held in Norrköping, Östergötland.'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="w-10 h-10 flex items-center justify-center bg-secondary mb-4">
+                      <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                      </svg>
+                    </div>
+                    <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
+                      {locale === 'sv' ? 'GEMENSKAP' : 'COMMUNITY'}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {locale === 'sv'
+                        ? 'En plats for gamers att traffas, tavla och ha kul tillsammans.'
+                        : 'A place for gamers to meet, compete and have fun together.'}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="w-10 h-10 flex items-center justify-center bg-secondary mb-4">
+                      <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
+                      {locale === 'sv' ? 'LAN-PARTY' : 'LAN PARTY'}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {locale === 'sv'
+                        ? 'Ta med din dator och njut av en helg fylld med gaming.'
+                        : 'Bring your computer and enjoy a weekend full of gaming.'}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer - stays at bottom */}
+      <footer className="border-t border-border mt-auto">
+        <div className="max-w-6xl mx-auto px-6 py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex items-center">
+              <span className="font-bold text-lg text-foreground">Lankoping</span>
+              <span className="text-muted-foreground text-sm">.se</span>
+            </div>
+            <nav className="flex items-center gap-6 md:hidden">
+              <Link to={`${basePath}/rules`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {content.rulesLabel}
+              </Link>
+              <Link to={`${basePath}/team`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {content.teamLabel}
+              </Link>
+              <Link to={`${basePath}/privacy`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {content.privacyLabel}
+              </Link>
+            </nav>
+            <p className="text-sm text-muted-foreground text-center md:text-right">
+              © 2026 Lankoping.se — {content.rights}
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}

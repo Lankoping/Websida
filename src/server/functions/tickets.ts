@@ -1,9 +1,9 @@
-import { createServerFn } from '@tanstack/start'
+import { createServerFn } from '@tanstack/react-start'
 import { db } from '../db'
 import { tickets, events, ticketTypes } from '../db/schema'
 import { eq, desc, and, ilike, or } from 'drizzle-orm'
-import { requireAuth } from './auth'
-import { logActivity } from './logs'
+import { requireOrganizerUser, requireStaffUser } from '../lib/access'
+import { writeActivityLog } from './logs'
 
 export const getTicketsFn = createServerFn({ method: 'GET' })
   .validator((data: unknown) => {
@@ -15,7 +15,7 @@ export const getTicketsFn = createServerFn({ method: 'GET' })
     }
   })
   .handler(async ({ data }) => {
-    await requireAuth()
+    await requireStaffUser()
     
     let query = db
       .select({
@@ -70,7 +70,7 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
     }
   })
   .handler(async ({ data }) => {
-    const session = await requireAuth()
+    const session = await requireStaffUser()
     
     // Generate a unique 6-character alphanumeric code
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // Removed confusing chars like I, 1, O, 0
@@ -86,14 +86,14 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
       issuedBy: session.id
     }).returning()
     
-    await logActivity(
-      session.id,
-      session.role,
-      'ISSUE_TICKET',
-      'ticket',
-      ticket.id,
-      `Issued ticket ${ticketCode} to ${data.participantName}`
-    )
+    await writeActivityLog({
+      actorUserId: session.id,
+      actorRole: session.role,
+      action: 'ISSUE_TICKET',
+      entityType: 'ticket',
+      entityId: ticket.id,
+      details: { message: `Issued ticket ${ticketCode} to ${data.participantName}` }
+    })
     
     return ticket
   })
@@ -107,7 +107,7 @@ export const verifyTicketByCodeFn = createServerFn({ method: 'POST' })
     }
   })
   .handler(async ({ data }) => {
-    const session = await requireAuth().catch(() => null) // Optional auth for public viewing
+    const session = await requireStaffUser().catch(() => null) // Optional auth for public viewing
     
     const [result] = await db
       .select({
@@ -170,14 +170,14 @@ export const verifyTicketByCodeFn = createServerFn({ method: 'POST' })
       .where(eq(tickets.id, ticket.id))
       .returning()
       
-    await logActivity(
-      session.id,
-      session.role,
-      'SCAN_TICKET',
-      'ticket',
-      ticket.id,
-      `Scanned and checked in ticket ${ticket.ticketCode}`
-    )
+    await writeActivityLog({
+      actorUserId: session.id,
+      actorRole: session.role,
+      action: 'SCAN_TICKET',
+      entityType: 'ticket',
+      entityId: ticket.id,
+      details: { message: `Scanned and checked in ticket ${ticket.ticketCode}` }
+    })
       
     return { 
       success: true, 
@@ -190,13 +190,13 @@ export const verifyTicketByCodeFn = createServerFn({ method: 'POST' })
 
 export const getEventsForTicketsFn = createServerFn({ method: 'GET' })
   .handler(async () => {
-    await requireAuth()
+    await requireStaffUser()
     return db.select().from(events).orderBy(desc(events.date))
   })
 
 export const getTicketTypesFn = createServerFn({ method: 'GET' })
   .handler(async () => {
-    await requireAuth()
+    await requireStaffUser()
     return db.select().from(ticketTypes).orderBy(desc(ticketTypes.createdAt))
   })
 
@@ -210,19 +210,18 @@ export const createTicketTypeFn = createServerFn({ method: 'POST' })
     }
   })
   .handler(async ({ data }) => {
-    const session = await requireAuth()
-    if (session.role !== 'organizer') throw new Error('Unauthorized')
+    const session = await requireOrganizerUser()
     
     const [type] = await db.insert(ticketTypes).values(data).returning()
     
-    await logActivity(
-      session.id,
-      session.role,
-      'CREATE_TICKET_TYPE',
-      'ticketType',
-      type.id,
-      `Created ticket type ${type.name}`
-    )
+    await writeActivityLog({
+      actorUserId: session.id,
+      actorRole: session.role,
+      action: 'CREATE_TICKET_TYPE',
+      entityType: 'ticketType',
+      entityId: type.id,
+      details: { message: `Created ticket type ${type.name}` }
+    })
     
     return type
   })
@@ -232,26 +231,25 @@ export const deleteTicketTypeFn = createServerFn({ method: 'POST' })
     return Number(data)
   })
   .handler(async ({ data }) => {
-    const session = await requireAuth()
-    if (session.role !== 'organizer') throw new Error('Unauthorized')
+    const session = await requireOrganizerUser()
     
     await db.delete(ticketTypes).where(eq(ticketTypes.id, data))
     
-    await logActivity(
-      session.id,
-      session.role,
-      'DELETE_TICKET_TYPE',
-      'ticketType',
-      data,
-      `Deleted ticket type ${data}`
-    )
+    await writeActivityLog({
+      actorUserId: session.id,
+      actorRole: session.role,
+      action: 'DELETE_TICKET_TYPE',
+      entityType: 'ticketType',
+      entityId: data,
+      details: { message: `Deleted ticket type ${data}` }
+    })
     
     return { success: true }
   })
 
 export const getEventsFn = createServerFn({ method: 'GET' })
   .handler(async () => {
-    await requireAuth()
+    await requireStaffUser()
     return db.select().from(events).orderBy(desc(events.date))
   })
 
@@ -268,19 +266,18 @@ export const createEventFn = createServerFn({ method: 'POST' })
     }
   })
   .handler(async ({ data }) => {
-    const session = await requireAuth()
-    if (session.role !== 'organizer') throw new Error('Unauthorized')
+    const session = await requireOrganizerUser()
     
     const [event] = await db.insert(events).values(data).returning()
     
-    await logActivity(
-      session.id,
-      session.role,
-      'CREATE_EVENT',
-      'event',
-      event.id,
-      `Created event ${event.title}`
-    )
+    await writeActivityLog({
+      actorUserId: session.id,
+      actorRole: session.role,
+      action: 'CREATE_EVENT',
+      entityType: 'event',
+      entityId: event.id,
+      details: { message: `Created event ${event.title}` }
+    })
     
     return event
   })
@@ -290,19 +287,18 @@ export const deleteEventFn = createServerFn({ method: 'POST' })
     return Number(data)
   })
   .handler(async ({ data }) => {
-    const session = await requireAuth()
-    if (session.role !== 'organizer') throw new Error('Unauthorized')
+    const session = await requireOrganizerUser()
     
     await db.delete(events).where(eq(events.id, data))
     
-    await logActivity(
-      session.id,
-      session.role,
-      'DELETE_EVENT',
-      'event',
-      data,
-      `Deleted event ${data}`
-    )
+    await writeActivityLog({
+      actorUserId: session.id,
+      actorRole: session.role,
+      action: 'DELETE_EVENT',
+      entityType: 'event',
+      entityId: data,
+      details: { message: `Deleted event ${data}` }
+    })
     
     return { success: true }
   })
@@ -316,8 +312,7 @@ export const updateTicketStatusFn = createServerFn({ method: 'POST' })
     }
   })
   .handler(async ({ data }) => {
-    const session = await requireAuth()
-    if (session.role !== 'organizer' && session.role !== 'volunteer') throw new Error('Unauthorized')
+    const session = await requireStaffUser()
     
     const [ticket] = await db.update(tickets)
       .set({ status: data.status, updatedAt: new Date() })
@@ -326,14 +321,14 @@ export const updateTicketStatusFn = createServerFn({ method: 'POST' })
       
     if (!ticket) throw new Error('Ticket not found')
     
-    await logActivity(
-      session.id,
-      session.role,
-      'UPDATE_TICKET_STATUS',
-      'ticket',
-      ticket.id,
-      `Updated ticket ${ticket.ticketCode} status to ${data.status}`
-    )
+    await writeActivityLog({
+      actorUserId: session.id,
+      actorRole: session.role,
+      action: 'UPDATE_TICKET_STATUS',
+      entityType: 'ticket',
+      entityId: ticket.id,
+      details: { message: `Updated ticket ${ticket.ticketCode} status to ${data.status}` }
+    })
     
     return ticket
   })
@@ -343,21 +338,20 @@ export const deleteTicketFn = createServerFn({ method: 'POST' })
     return Number(data)
   })
   .handler(async ({ data }) => {
-    const session = await requireAuth()
-    if (session.role !== 'organizer') throw new Error('Unauthorized')
+    const session = await requireOrganizerUser()
     
     const [ticket] = await db.delete(tickets).where(eq(tickets.id, data)).returning()
     
     if (!ticket) throw new Error('Ticket not found')
     
-    await logActivity(
-      session.id,
-      session.role,
-      'DELETE_TICKET',
-      'ticket',
-      data,
-      `Deleted ticket ${ticket.ticketCode}`
-    )
+    await writeActivityLog({
+      actorUserId: session.id,
+      actorRole: session.role,
+      action: 'DELETE_TICKET',
+      entityType: 'ticket',
+      entityId: data,
+      details: { message: `Deleted ticket ${ticket.ticketCode}` }
+    })
     
     return { success: true }
   })

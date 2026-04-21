@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Html5QrcodeScanner } from 'html5-qrcode'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { verifyTicketFn, getTicketDetailsFn, getScannerEventsFn } from '@/server/functions/tickets'
+import { verifyTicketByCodeFn, getEventsForTicketsFn } from '@/server/functions/tickets'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -27,9 +27,8 @@ function VerifyTicketPage() {
   const { data: events, isLoading: isLoadingEvents } = useQuery({
     queryKey: ['scanner-events'],
     queryFn: async () => {
-      const result = await getScannerEventsFn()
-      if (result.error) throw new Error(result.error)
-      return result.data
+      const result = await getEventsForTicketsFn()
+      return result
     },
     enabled: !!user,
   })
@@ -37,11 +36,11 @@ function VerifyTicketPage() {
   // Automatically select the first active event if none is selected
   useEffect(() => {
     if (events && events.length > 0 && selectedEventId === 'all') {
-      const activeEvent = events.find(e => e.status === 'published')
+      const activeEvent = events.find(e => e.published === true)
       if (activeEvent) {
-        setSelectedEventId(activeEvent.id)
+        setSelectedEventId(activeEvent.id.toString())
       } else {
-        setSelectedEventId(events[0].id)
+        setSelectedEventId(events[0].id.toString())
       }
     }
   }, [events, selectedEventId])
@@ -51,9 +50,9 @@ function VerifyTicketPage() {
     queryKey: ['ticket', code],
     queryFn: async () => {
       if (!code || code === 'scan') return null
-      const result = await getTicketDetailsFn({ data: { code } })
-      if (result.error) throw new Error(result.error)
-      return result.data
+      const result = await verifyTicketByCodeFn({ data: { code, markAsUsed: false } })
+      if (!result.success) throw new Error(result.message)
+      return result
     },
     enabled: !!code && code !== 'scan' && !!user,
     retry: false,
@@ -62,14 +61,14 @@ function VerifyTicketPage() {
   // Verify ticket mutation
   const verifyMutation = useMutation({
     mutationFn: async (ticketCode: string) => {
-      const result = await verifyTicketFn({ 
+      const result = await verifyTicketByCodeFn({ 
         data: { 
           code: ticketCode,
-          eventId: selectedEventId === 'all' ? undefined : selectedEventId
+          markAsUsed: true
         } 
       })
-      if (result.error) throw new Error(result.error)
-      return result.data
+      if (!result.success) throw new Error(result.message)
+      return result
     },
     onSuccess: () => {
       setScanResult('success')
@@ -121,7 +120,7 @@ function VerifyTicketPage() {
 
   // Auto-verify when landing on a specific code page
   useEffect(() => {
-    if (code && code !== 'scan' && ticketDetails && ticketDetails.status === 'valid' && !verifyMutation.isPending && !scanResult) {
+    if (code && code !== 'scan' && ticketDetails && ticketDetails.ticket?.status === 'valid' && !verifyMutation.isPending && !scanResult) {
       verifyMutation.mutate(code)
     }
   }, [code, ticketDetails, verifyMutation, scanResult])
@@ -186,8 +185,8 @@ function VerifyTicketPage() {
                   <SelectContent>
                     <SelectItem value="all">Alla event (Automatisk matchning)</SelectItem>
                     {events?.map(event => (
-                      <SelectItem key={event.id} value={event.id}>
-                        {event.title} {event.status !== 'published' ? '(Inaktivt)' : ''}
+                      <SelectItem key={event.id} value={event.id.toString()}>
+                        {event.title} {!event.published ? '(Inaktivt)' : ''}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -257,7 +256,7 @@ function VerifyTicketPage() {
               <p className="text-green-100 text-lg">Biljetten är giltig och har nu markerats som använd.</p>
             </div>
             <CardContent className="pt-6">
-              {ticketDetails && (
+              {ticketDetails && ticketDetails.ticket && (
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Biljettinformation</h3>
@@ -265,35 +264,35 @@ function VerifyTicketPage() {
                       <div className="flex items-start gap-3">
                         <Ticket className="h-5 w-5 text-slate-400 mt-0.5" />
                         <div>
-                          <p className="font-medium text-slate-900">{ticketDetails.ticketType.name}</p>
-                          <p className="text-sm text-slate-500">Kod: {ticketDetails.code}</p>
+                          <p className="font-medium text-slate-900">{ticketDetails.ticket.ticketType}</p>
+                          <p className="text-sm text-slate-500">Kod: {ticketDetails.ticket.ticketCode}</p>
                         </div>
                       </div>
                       
-                      <div className="flex items-start gap-3">
-                        <Calendar className="h-5 w-5 text-slate-400 mt-0.5" />
-                        <div>
-                          <p className="font-medium text-slate-900">{ticketDetails.event.title}</p>
-                          <p className="text-sm text-slate-500">
-                            {new Date(ticketDetails.event.date).toLocaleDateString('sv-SE', { 
-                              weekday: 'long', 
-                              year: 'numeric', 
-                              month: 'long', 
-                              day: 'numeric' 
-                            })}
-                          </p>
-                        </div>
-                      </div>
-
-                      {ticketDetails.user && (
+                      {ticketDetails.event && (
                         <div className="flex items-start gap-3">
-                          <User className="h-5 w-5 text-slate-400 mt-0.5" />
+                          <Calendar className="h-5 w-5 text-slate-400 mt-0.5" />
                           <div>
-                            <p className="font-medium text-slate-900">{ticketDetails.user.name}</p>
-                            <p className="text-sm text-slate-500">{ticketDetails.user.email}</p>
+                            <p className="font-medium text-slate-900">{ticketDetails.event.title}</p>
+                            <p className="text-sm text-slate-500">
+                              {new Date(ticketDetails.event.date).toLocaleDateString('sv-SE', { 
+                                weekday: 'long', 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                              })}
+                            </p>
                           </div>
                         </div>
                       )}
+
+                      <div className="flex items-start gap-3">
+                        <User className="h-5 w-5 text-slate-400 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-slate-900">{ticketDetails.ticket.participantName}</p>
+                          <p className="text-sm text-slate-500">{ticketDetails.ticket.participantEmail}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -308,28 +307,27 @@ function VerifyTicketPage() {
               </Button>
             </CardContent>
           </Card>
-        ) : scanResult === 'error' || (ticketDetails && ticketDetails.status !== 'valid') ? (
+        ) : scanResult === 'error' || (ticketDetails && ticketDetails.ticket?.status !== 'valid') ? (
           <Card className="border-red-500 shadow-lg shadow-red-100">
             <div className="bg-red-500 text-white p-6 text-center rounded-t-lg">
               <XCircle className="h-20 w-20 mx-auto mb-4" />
               <h2 className="text-3xl font-bold mb-2">Nekad</h2>
               <p className="text-red-100 text-lg">
-                {errorMessage || (ticketDetails?.status === 'used' ? 'Biljetten är redan använd' : 'Ogiltig biljett')}
+                {errorMessage || (ticketDetails?.ticket?.status === 'used' ? 'Biljetten är redan använd' : 'Ogiltig biljett')}
               </p>
             </div>
             <CardContent className="pt-6">
-              {ticketDetails && (
+              {ticketDetails && ticketDetails.ticket && (
                 <div className="space-y-6">
                   <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-800">
                     <AlertTitle className="font-bold flex items-center gap-2">
                       <Clock className="h-4 w-4" />
-                      Status: {ticketDetails.status === 'used' ? 'Redan använd' : 'Makulerad'}
+                      Status: {ticketDetails.ticket.status === 'used' ? 'Redan använd' : 'Makulerad'}
                     </AlertTitle>
                     <AlertDescription className="mt-2">
-                      {ticketDetails.status === 'used' && ticketDetails.scannedAt && (
+                      {ticketDetails.ticket.status === 'used' && ticketDetails.ticket.scannedAt && (
                         <span>
-                          Denna biljett scannades <strong>{new Date(ticketDetails.scannedAt).toLocaleString('sv-SE')}</strong>
-                          {ticketDetails.scannedBy && ` av ${ticketDetails.scannedBy.name}`}.
+                          Denna biljett scannades <strong>{new Date(ticketDetails.ticket.scannedAt).toLocaleString('sv-SE')}</strong>.
                         </span>
                       )}
                     </AlertDescription>
@@ -341,26 +339,26 @@ function VerifyTicketPage() {
                       <div className="flex items-start gap-3">
                         <Ticket className="h-5 w-5 text-slate-400 mt-0.5" />
                         <div>
-                          <p className="font-medium text-slate-900">{ticketDetails.ticketType.name}</p>
-                          <p className="text-sm text-slate-500">Kod: {ticketDetails.code}</p>
+                          <p className="font-medium text-slate-900">{ticketDetails.ticket.ticketType}</p>
+                          <p className="text-sm text-slate-500">Kod: {ticketDetails.ticket.ticketCode}</p>
                         </div>
                       </div>
                       
-                      <div className="flex items-start gap-3">
-                        <Calendar className="h-5 w-5 text-slate-400 mt-0.5" />
-                        <div>
-                          <p className="font-medium text-slate-900">{ticketDetails.event.title}</p>
-                        </div>
-                      </div>
-
-                      {ticketDetails.user && (
+                      {ticketDetails.event && (
                         <div className="flex items-start gap-3">
-                          <User className="h-5 w-5 text-slate-400 mt-0.5" />
+                          <Calendar className="h-5 w-5 text-slate-400 mt-0.5" />
                           <div>
-                            <p className="font-medium text-slate-900">{ticketDetails.user.name}</p>
+                            <p className="font-medium text-slate-900">{ticketDetails.event.title}</p>
                           </div>
                         </div>
                       )}
+
+                      <div className="flex items-start gap-3">
+                        <User className="h-5 w-5 text-slate-400 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-slate-900">{ticketDetails.ticket.participantName}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -374,7 +372,7 @@ function VerifyTicketPage() {
                 >
                   <Camera className="mr-2 h-4 w-4" /> Ny scan
                 </Button>
-                {ticketDetails && ticketDetails.status === 'valid' && (
+                {ticketDetails && ticketDetails.ticket?.status === 'valid' && (
                   <Button 
                     className="flex-1 h-12" 
                     onClick={() => verifyMutation.mutate(code)}

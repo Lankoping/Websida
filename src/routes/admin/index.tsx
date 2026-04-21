@@ -1,320 +1,228 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { getPostsFn, deletePostFn } from '../../server/functions/posts'
-import { getDatabaseStatsFn } from '../../server/functions/stats'
-import { useState } from 'react'
-import { 
-  Search, 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  FileText, 
-  Newspaper,
-  Calendar,
-  MoreVertical,
-  Eye,
-  ArrowRight,
-  Database,
-  Server,
-  Activity
-} from 'lucide-react'
-
-export const Route = createFileRoute('/admin/')({
-  loader: async () => {
-    const [blogs, news, dbStats] = await Promise.all([
-      getPostsFn({ data: 'blog' }),
-      getPostsFn({ data: 'news' }),
-      getDatabaseStatsFn()
-    ])
-    return {
-      posts: [...blogs, ...news].sort((a, b) => {
-        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0
-        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0
-        return bTime - aTime
-      }),
-      stats: {
-        blogs: blogs.length,
-        news: news.length,
-        total: blogs.length + news.length
-      },
-      dbStats
-    }
-  },
-  component: AdminDashboard,
-})
-
-function StatCard({ 
-  label, 
-  value, 
-  icon: Icon,
-  subtext
-}: { 
-  label: string
-  value: number | string
-  icon: any
-  subtext?: string
-}) {
-  return (
-    <div className="bg-card border border-border p-6 transition-all hover:border-primary/30">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs font-medium tracking-widest text-muted-foreground uppercase mb-2">{label}</p>
-          <p className="font-display text-4xl text-foreground">{value}</p>
-          {subtext && <p className="text-xs text-muted-foreground mt-2">{subtext}</p>}
-        </div>
-        <div className="p-2 bg-primary/10">
-          <Icon className="w-5 h-5 text-primary" />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function AdminDashboard() {
-  const { posts, stats, dbStats } = Route.useLoaderData()
-  const router = useRouter()
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filterType, setFilterType] = useState<'all' | 'blog' | 'news'>('all')
-  const [menuOpen, setMenuOpen] = useState<number | null>(null)
-
-  const handleDelete = async (id: number) => {
-    if (window.confirm('Är du säker på att du vill radera detta inlägg?')) {
-      try {
-        await deletePostFn({ data: id })
-        await router.invalidate()
-      } catch (err) {
-        console.error(err)
-        alert('Kunde inte radera inlägget')
-      }
-    }
-  }
-
-  const filteredPosts = posts.filter(post => {
-    const searchLower = searchQuery.toLowerCase()
-    const matchesSearch = 
-      post.title?.toLowerCase().includes(searchLower) ||
-      post.slug?.toLowerCase().includes(searchLower) ||
-      post.excerpt?.toLowerCase().includes(searchLower)
-    const matchesType = filterType === 'all' || post.type === filterType
-    return matchesSearch && matchesType
-  })
-
-  return (
-    <div className="max-w-7xl mx-auto">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-        <div>
-          <p className="text-xs font-medium tracking-widest text-primary uppercase mb-2">Adminpanel</p>
-          <h1 className="font-display text-4xl md:text-5xl text-foreground">Översikt</h1>
-          <p className="text-muted-foreground mt-2">Välkommen tillbaka! Hantera ditt innehåll och övervaka systemet.</p>
-        </div>
-        <a 
-          href="/admin/new" 
-          className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Skapa inlägg
-        </a>
-      </div>
-
-      {/* System Stats Grid */}
-      <div className="mb-8">
-        <h2 className="text-sm font-medium tracking-widest text-primary uppercase mb-4">Systemstatus</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatCard 
-            icon={Server} 
-            label="Server Hälsa" 
-            value={dbStats.serverHealth} 
-            subtext="Databasanslutning aktiv"
-          />
-          <StatCard 
-            icon={Database} 
-            label="Databasstorlek" 
-            value={dbStats.dbSize} 
-            subtext={`${dbStats.totalRows} rader totalt`}
-          />
-          <StatCard 
-            icon={Activity} 
-            label="Snitt Rader/Användare" 
-            value={dbStats.avgRowsPerUser} 
-            subtext={`Baserat på ${dbStats.userCount} användare`}
-          />
-        </div>
-      </div>
-
-      {/* Content Stats Grid */}
-      <div className="mb-10">
-        <h2 className="text-sm font-medium tracking-widest text-primary uppercase mb-4">Innehållsstatistik</h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard icon={FileText} label="Totalt" value={stats.total} />
-          <StatCard icon={FileText} label="Blogginlägg" value={stats.blogs} />
-          <StatCard icon={Newspaper} label="Nyheter" value={stats.news} />
-          <StatCard icon={Eye} label="Publicerade" value={posts.filter(p => p.published).length} />
-        </div>
-      </div>
-
-      {/* Content Section */}
-      <div className="bg-card border border-border">
-        {/* Header */}
-        <div className="px-6 py-5 border-b border-border">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-2 h-2 bg-primary" />
-            <span className="text-xs font-medium tracking-widest text-primary uppercase">Innehåll</span>
-          </div>
-          <h2 className="font-display text-2xl text-foreground">Alla inlägg</h2>
-        </div>
-
-        {/* Toolbar */}
-        <div className="p-4 border-b border-border bg-secondary/30">
-          <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input 
-                type="text" 
-                placeholder="Sök på titel eller text..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 text-sm border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
-              />
-            </div>
-
-            {/* Filters */}
-            <div className="flex gap-2">
-              {[
-                { value: 'all', label: 'Alla' },
-                { value: 'blog', label: 'Blogg' },
-                { value: 'news', label: 'Nyheter' },
-              ].map((filter) => (
-                <button
-                  key={filter.value}
-                  onClick={() => setFilterType(filter.value as any)}
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${
-                    filterType === filter.value
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground border border-border bg-card hover:text-foreground hover:border-primary/30'
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Content Grid */}
-        <div className="p-6">
-          {filteredPosts.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredPosts.map((post) => (
-                <article 
-                  key={post.id} 
-                  className="group bg-card border border-border p-5 hover:border-primary/50 transition-all"
-                >
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-primary" />
-                      <span className="text-[10px] font-medium tracking-widest text-primary uppercase">
-                        {post.type === 'blog' ? 'Blogg' : 'Nyhet'}
-                      </span>
-                    </div>
-                    
-                    <div className="relative">
-                      <button 
-                        onClick={() => setMenuOpen(menuOpen === post.id ? null : post.id)}
-                        className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <MoreVertical className="w-4 h-4" />
-                      </button>
-                      
-                      {menuOpen === post.id && (
-                        <>
-                          <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(null)} />
-                          <div className="absolute right-0 mt-1 w-36 bg-card border border-border shadow-lg py-1 z-20">
-                            <a 
-                              href={`/admin/edit/${post.id}`}
-                              className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                            >
-                              <Edit2 className="w-4 h-4" />
-                              Redigera
-                            </a>
-                            <button 
-                              onClick={() => { setMenuOpen(null); handleDelete(post.id) }}
-                              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                              Radera
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <h3 className="font-display text-xl text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                    {post.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
-                    {post.excerpt || 'Ingen beskrivning...'}
-                  </p>
-
-                  {/* Footer */}
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {new Date(post.createdAt!).toLocaleDateString('sv-SE', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric'
-                      })}
-                    </div>
-                    <a 
-                      href={`/admin/edit/${post.id}`}
-                      className="inline-flex items-center text-xs font-medium text-primary hover:text-foreground transition-colors"
-                    >
-                      Redigera
-                      <ArrowRight className="w-3 h-3 ml-1" />
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 bg-secondary flex items-center justify-center mx-auto mb-4">
-                <FileText className="w-8 h-8 text-muted-foreground" />
-              </div>
-              <h3 className="font-display text-2xl text-foreground mb-2">
-                {posts.length === 0 ? 'Inget innehåll' : 'Inga träffar'}
-              </h3>
-              <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                {posts.length === 0 
-                  ? 'Kom igång genom att skapa ditt första inlägg.' 
-                  : 'Försök med andra sökord eller filter.'}
-              </p>
-              {posts.length === 0 && (
-                <a 
-                  href="/admin/new" 
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-                >
-                  <Plus className="w-4 h-4" />
-                  Skapa första inlägget
-                </a>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        {filteredPosts.length > 0 && (
-          <div className="px-6 py-4 border-t border-border bg-secondary/30">
-            <p className="text-xs text-muted-foreground">
-              Visar {filteredPosts.length} av {posts.length} inlägg
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
+aW1wb3J0IHsgY3JlYXRlRmlsZVJvdXRlLCB1c2VSb3V0ZXIgfSBmcm9tICdA
+dGFuc3RhY2svcmVhY3Qtcm91dGVyJwppbXBvcnQgeyBnZXRQb3N0c0ZuLCBk
+ZWxldGVQb3N0Rm4gfSBmcm9tICcuLi8uLi9zZXJ2ZXIvZnVuY3Rpb25zL3Bv
+c3RzJwppbXBvcnQgeyB1c2VTdGF0ZSB9IGZyb20gJ3JlYWN0JwppbXBvcnQg
+eyAKICBTZWFyY2gsIAogIFBsdXMsIAogIEVkaXQyLCAKICBUcmFzaDIsIAog
+IEZpbGVUZXh0LCAKICBNb3JlVmVydGljYWwsCiAgQ2FsZW5kYXIsCiAgQXJy
+b3dSaWdodAp9IGZyb20gJ2x1Y2lkZS1yZWFjdCcKCmV4cG9ydCBjb25zdCBS
+b3V0ZSA9IGNyZWF0ZUZpbGVSb3V0ZSgnL2FkbWluLycpKHsKICBsb2FkZXI6
+IGFzeW5jICgpID0+IHsKICAgIGNvbnN0IFtibG9ncywgbmV3c10gPSBhd2Fp
+dCBQcm9taXNlLmFsbChbCiAgICAgIGdldFBvc3RzRm4oeyBkYXRhOiAnYmxv
+ZycgfSksCiAgICAgIGdldFBvc3RzRm4oeyBkYXRhOiAnbmV3cycgfSksCiAg
+ICBdKQogICAgcmV0dXJuIHsKICAgICAgcG9zdHM6IFsuLi5ibG9ncywgLi4u
+bmV3c10uc29ydCgoYSwgYikgPT4gewogICAgICAgIGNvbnN0IGFUaW1lID0g
+YS5jcmVhdGVkQXQgPyBuZXcgRGF0ZShhLmNyZWF0ZWRBdCkuZ2V0VGltZSgp
+IDogMAogICAgICAgIGNvbnN0IGJUaW1lID0gYi5jcmVhdGVkQXQgPyBuZXcg
+RGF0ZShiLmNyZWF0ZWRBdCkuZ2V0VGltZSgpIDogMAogICAgICAgIHJldHVy
+biBiVGltZSAtIGFUaW1lCiAgICAgIH0pLAogICAgfQogIH0sCiAgY29tcG9u
+ZW50OiBBZG1pbkRhc2hib2FyZCwKfSkKCmZ1bmN0aW9uIEFkbWluRGFzaGJv
+YXJkKCkgewogIGNvbnN0IHsgcG9zdHMgfSA9IFJvdXRlLnVzZUxvYWRlckRh
+dGEoKQogIGNvbnN0IHJvdXRlciA9IHVzZVJvdXRlcigpCiAgY29uc3QgW3Nl
+YXJjaFF1ZXJ5LCBzZXRTZWFyY2hRdWVyeV0gPSB1c2VTdGF0ZSgnJykKICBj
+b25zdCBbZmlsdGVyVHlwZSwgc2V0RmlsdGVyVHlwZV0gPSB1c2VTdGF0ZTwn
+YWxsJyB8ICdibG9nJyB8ICduZXdzJz4oJ2FsbCcpCiAgY29uc3QgW21lbnVP
+cGVuLCBzZXRNZW51T3Blbl0gPSB1c2VTdGF0ZTxudW1iZXIgfCBudWxsPihu
+dWxsKQoKICBjb25zdCBoYW5kbGVEZWxldGUgPSBhc3luYyAoaWQ6IG51bWJl
+cikgPT4gewogICAgaWYgKHdpbmRvdy5jb25maXJtKCfDhHIgZHUgc8Oka2Vy
+IHDDpSBhdHQgZHUgdmlsbCByYWRlcmEgZGV0dGEgaW5sw6RnZz8nKSkgewog
+ICAgICB0cnkgewogICAgICAgIGF3YWl0IGRlbGV0ZVBvc3RGbih7IGRhdGE6
+IGlkIH0pCiAgICAgICAgYXdhaXQgcm91dGVyLmludmFsaWRhdGUoKQogICAg
+ICB9IGNhdGNoIChlcnIpIHsKICAgICAgICBjb25zb2xlLmVycm9yKGVycikK
+ICAgICAgICBhbGVydCgnS3VuZGUgaW50ZSByYWRlcmEgaW5sw6RnZ2V0JykK
+ICAgICAgfQogICAgfQogIH0KCiAgY29uc3QgZmlsdGVyZWRQb3N0cyA9IHBv
+c3RzLmZpbHRlcihwb3N0ID0+IHsKICAgIGNvbnN0IHNlYXJjaExvd2VyID0g
+c2VhcmNoUXVlcnkudG9Mb3dlckNhc2UoKQogICAgY29uc3QgbWF0Y2hlc1Nl
+YXJjaCA9IAogICAgICBwb3N0LnRpdGxlPy50b0xvd2VyQ2FzZSgpLmluY2x1
+ZGVzKHNlYXJjaExvd2VyKSB8fAogICAgICBwb3N0LnNsdWc/LnRvTG93ZXJD
+YXNlKCkuaW5jbHVkZXMoc2VhcmNoTG93ZXIpIHx8CiAgICAgIHBvc3QuZXhj
+ZXJwdD8udG9Mb3dlckNhc2UoKS5pbmNsdWRlcyhzZWFyY2hMb3dlcikKICAg
+IGNvbnN0IG1hdGNoZXNUeXBlID0gZmlsdGVyVHlwZSA9PT0gJ2FsbCcgfHwg
+cG9zdC50eXBlID09PSBmaWx0ZXJUeXBlCiAgICByZXR1cm4gbWF0Y2hlc1Nl
+YXJjaCAmJiBtYXRjaGVzVHlwZQogIH0pCgogIHJldHVybiAoCiAgICA8ZGl2
+IGNsYXNzTmFtZT0ibWF4LXctN3hsIG14LWF1dG8iPgogICAgICB7LyogUGFn
+ZSBIZWFkZXIgKi99CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGZsZXgt
+Y29sIHNtOmZsZXgtcm93IHNtOml0ZW1zLWVuZCBqdXN0aWZ5LWJldHdlZW4g
+Z2FwLTQgbWItOCI+CiAgICAgICAgPGRpdj4KICAgICAgICAgIDxwIGNsYXNz
+TmFtZT0idGV4dC14cyBmb250LW1lZGl1bSB0cmFja2luZy13aWRlc3QgdGV4
+dC1wcmltYXJ5IHVwcGVyY2FzZSBtYi0yIj5BZG1pbnBhbmVsPC9wPgogICAg
+ICAgICAgPGgxIGNsYXNzTmFtZT0iZm9udC1kaXNwbGF5IHRleHQtNHhsIG1k
+OnRleHQtNXhsIHRleHQtZm9yZWdyb3VuZCI+w5Z2ZXJzaWt0PC9oMT4KICAg
+ICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1tdXRlZC1mb3JlZ3JvdW5kIG10
+LTIiPlbDpGxrb21tZW4gdGlsbGJha2EhIEhhbnRlcmEgZGl0dCBpbm5laMOl
+bGwgZMOkciBuZWRhbi48L3A+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGEg
+CiAgICAgICAgICBocmVmPSIvYWRtaW4vbmV3IiAKICAgICAgICAgIGNsYXNz
+TmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0yIHB4LTUgcHkt
+MyBiZy1wcmltYXJ5IHRleHQtcHJpbWFyeS1mb3JlZ3JvdW5kIHRleHQtc20g
+Zm9udC1tZWRpdW0gaG92ZXI6YmctcHJpbWFyeS85MCB0cmFuc2l0aW9uLWNv
+bG9ycyIKICAgICAgICA+CiAgICAgICAgICA8UGx1cyBjbGFzc05hbWU9Inct
+NCBoLTQiIC8+CiAgICAgICAgICBTa2FwYSBpbmzDpGdnCiAgICAgICAgPC9h
+PgogICAgICA8L2Rpdj4KCiAgICAgIHsvKiBDb250ZW50IFNlY3Rpb24gKi99
+CiAgICAgIDxkaXYgY2xhc3NOYW1lPSJiZy1jYXJkIGJvcmRlciBib3JkZXIt
+Ym9yZGVyIj4KICAgICAgICB7LyogSGVhZGVyICovfQogICAgICAgIDxkaXYg
+Y2xhc3NOYW1lPSJweC02IHB5LTUgYm9yZGVyLWIgYm9yZGVyLWJvcmRlciI+
+CiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIg
+Z2FwLTMgbWItNCI+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ3LTIg
+aC0yIGJnLXByaW1hcnkiIC8+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFt
+ZT0idGV4dC14cyBmb250LW1lZGl1bSB0cmFja2luZy13aWRlc3QgdGV4dC1w
+cmltYXJ5IHVwcGVyY2FzZSI+SW5uZWhvbGw8L3NwYW4+CiAgICAgICAgICA8
+L2Rpdj4KICAgICAgICAgIDxoMiBjbGFzc05hbWU9ImZvbnQtZGlzcGxheSB0
+ZXh0LTJ4bCB0ZXh0LWZvcmVncm91bmQiPkFsbGEgaW5sw6RnZzwvaDI+CiAg
+ICAgICAgPC9kaXY+CgogICAgICAgIHsvKiBUb29sYmFyICovfQogICAgICAg
+IDxkaXYgY2xhc3NOYW1lPSJwLTQgYm9yZGVyLWIgYm9yZGVyLWJvcmRlciBi
+Zy1zZWNvbmRhcnkvMzAiPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZs
+ZXggZmxleC1jb2wgc206ZmxleC1yb3cgZ2FwLTMiPgogICAgICAgICAgICB7
+LyogU2VhcmNoICovfQogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icmVs
+YXRpdmUgZmxleC0xIj4KICAgICAgICAgICAgICA8U2VhcmNoIGNsYXNzTmFt
+ZT0iYWJzb2x1dGUgbGVmdC0zIHRvcC0xLzIgLXRyYW5zbGF0ZS15LTEvMiB3
+LTQgaC00IHRleHQtbXV0ZWQtZm9yZWdyb3VuZCIgLz4KICAgICAgICAgICAg
+ICA8aW5wdXQgCiAgICAgICAgICAgICAgICB0eXBlPSJ0ZXh0IiAKICAgICAg
+ICAgICAgICAgIHBsYWNlaG9sZGVyPSJTw7ZrIHDDpSB0aXRlbCBlbGxlciB0
+ZXh0Li4uIiAKICAgICAgICAgICAgICAgIHZhbHVlPXtzZWFyY2hRdWVyeX0K
+ICAgICAgICAgICAgICAgIG9uQ2hhbmdlPXsoZSkgPT4gc2V0U2VhcmNoUXVl
+cnkoZS50YXJnZXQudmFsdWUpfQogICAgICAgICAgICAgICAgY2xhc3NOYW1l
+PSJ3LWZ1bGwgcGwtMTAgcHItNCBweS0yLjUgdGV4dC1zbSBib3JkZXIgYm9y
+ZGVyLWJvcmRlciBiZy1jYXJkIHRleHQtZm9yZWdyb3VuZCBwbGFjZWhvbGRl
+cjp0ZXh0LW11dGVkLWZvcmVncm91bmQgZm9jdXM6b3V0bGluZS1ub25lIGZv
+Y3VzOnJpbmctMiBmb2N1czpyaW5nLXByaW1hcnkvMzAgZm9jdXM6Ym9yZGVy
+LXByaW1hcnkgdHJhbnNpdGlvbi1hbGwiCiAgICAgICAgICAgICAgLz4KICAg
+ICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICB7LyogRmlsdGVycyAqL30K
+ICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggZ2FwLTIiPgogICAg
+ICAgICAgICAgIHtbCiAgICAgICAgICAgICAgICB7IHZhbHVlOiAnYWxsJywg
+bGFiZWw6ICdBbGxhJyB9LAogICAgICAgICAgICAgICAgeyB2YWx1ZTogJ2Js
+b2cnLCBsYWJlbDogJ0Jsb2dnJyB9LAogICAgICAgICAgICAgICAgeyB2YWx1
+ZTogJ25ld3MnLCBsYWJlbDogJ055aGV0ZXInIH0sCiAgICAgICAgICAgICAg
+XS5tYXAoKGZpbHRlcikgPT4gKAogICAgICAgICAgICAgICAgPGJ1dHRvbgog
+ICAgICAgICAgICAgICAgICBrZXk9e2ZpbHRlci52YWx1ZX0KICAgICAgICAg
+ICAgICAgICAgb25DbGljaz17KCkgPT4gc2V0RmlsdGVyVHlwZShmaWx0ZXIu
+dmFsdWUgYXMgYW55KX0KICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPXtg
+cHgtNCBweS0yIHRleHQtc20gZm9udC1tZWRpdW0gdHJhbnNpdGlvbi1jb2xv
+cnMgJHsKICAgICAgICAgICAgICAgICAgICBmaWx0ZXJUeXBlID09PSBmaWx0
+ZXIudmFsdWUKICAgICAgICAgICAgICAgICAgICAgID8gJ2JnLXByaW1hcnkg
+dGV4dC1wcmltYXJ5LWZvcmVncm91bmQnCiAgICAgICAgICAgICAgICAgICAg
+ICA6ICd0ZXh0LW11dGVkLWZvcmVncm91bmQgYm9yZGVyIGJvcmRlci1ib3Jk
+ZXIgYmctY2FyZCBob3Zlcjp0ZXh0LWZvcmVncm91bmQgaG92ZXI6Ym9yZGVy
+LXByaW1hcnkvMzAnCiAgICAgICAgICAgICAgICAgIH1gfQogICAgICAgICAg
+ICAgICAgPgogICAgICAgICAgICAgICAgICB7ZmlsdGVyLmxhYmVsfQogICAg
+ICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgICAgKXl9CiAgICAg
+ICAgICAgIDwvZGl2PgogICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+
+CgogICAgICAgIHsvKiBDb250ZW50IEdyaWQgKi99CiAgICAgICAgPGRpdiBj
+bGFzc05hbWU9InAtNiI+CiAgICAgICAgICB7ZmlsdGVyZWRQb3N0cy5sZW5n
+dGggPiAwID8gKAogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZ3JpZCBn
+YXAtNCBzbTpncmlkLWNvbHMtMiBsZzpncmlkLWNvbHMtMyI+CiAgICAgICAg
+ICAgICAge2ZpbHRlcmVkUG9zdHMubWFwKChwb3N0KSA9PiAoCiAgICAgICAg
+ICAgICAgICA8YXJ0aWNsZSAKICAgICAgICAgICAgICAgICAga2V5PXtwb3N0
+LmlkfSAKICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPSJncm91cCBiZy1j
+YXJkIGJvcmRlciBib3JkZXItYm9yZGVyIHAtNSBob3Zlcjpib3JkZXItcHJp
+bWFyeS81MCB0cmFuc2l0aW9uLWFsbCIKICAgICAgICAgICAgICAgID4KICAg
+ICAgICAgICAgICAgICAgey8qIEhlYWRlciAqL30KICAgICAgICAgICAgICAg
+ICAgPGRpdiBjbGFzc05hbWU9ImZsZXggaXRlbXMtc3RhcnQganVzdGlmeS1i
+ZXR3ZWVuIG1iLTQiPgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NO
+YW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiI+CiAgICAgICAgICAgICAg
+ICAgICAgICA8ZGl2IGNsYXNzTmFtZT0idy0xLjUgaC0xLjUgYmctcHJpbWFy
+eSIgLz4KICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0i
+dGV4dC1bMTBweF0gZm9udC1tZWRpdW0gdHJhY2tpbmctd2lkZXN0IHRleHQt
+cHJpbWFyeSB1cHBlcmNhc2UiPgogICAgICAgICAgICAgICAgICAgICAgICB7
+cG9zdC50eXBlID09PSAnYmxvZycgPyAnQmxvZ2cnIDogJ055aGV0J30KICAg
+ICAgICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICAgICAg
+ICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAg
+ICAgICA8ZGl2IGNsYXNzTmFtZT0icmVsYXRpdmUiPgogICAgICAgICAgICAg
+ICAgICAgICAgPGJ1dHRvbiAKICAgICAgICAgICAgICAgICAgICAgICAgb25D
+bGljaz17KCkgPT4gc2V0TWVudU9wZW4obWVudU9wZW4gPT09IHBvc3QuaWQg
+PyBudWxsIDogcG9zdC5pZCl9CiAgICAgICAgICAgICAgICAgICAgICAgIGNs
+YXNzTmFtZT0icC0xLjUgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIGhvdmVyOnRl
+eHQtZm9yZWdyb3VuZCB0cmFuc2l0aW9uLWNvbG9ycyIKICAgICAgICAgICAg
+ICAgICAgICAgID4KICAgICAgICAgICAgICAgICAgICAgICAgPE1vcmVWZXJ0
+aWNhbCBjbGFzc05hbWU9InctNCBoLTQiIC8+CiAgICAgICAgICAgICAgICAg
+ICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgICAgICAgICAgIAogICAgICAg
+ICAgICAgICAgICAgICAge21lbnVPcGVuID09PSBwb3N0LmlkICYmICgKICAg
+ICAgICAgICAgICAgICAgICAgICAgPD4KICAgICAgICAgICAgICAgICAgICAg
+ICAgICA8ZGl2IGNsYXNzTmFtZT0iZml4ZWQgaW5zZXQtMCB6LTEwIiBvbkNs
+aWNrPXsoKSA9PiBzZXRNZW51T3BlbihudWxsKX0gLz4KICAgICAgICAgICAg
+ICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iYWJzb2x1dGUgcmlnaHQt
+MCBtdC0xIHctMzYgYmctY2FyZCBib3JkZXIgYm9yZGVyLWJvcmRlciBzaGFk
+b3ctbGcgcHktMSB6LTIwIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IDxhIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBocmVmPXtgL2Fk
+bWluL2VkaXQvJHtwb3N0LmlkfWB9CiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgcHgt
+MyBweS0yIHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIGhvdmVyOnRl
+eHQtZm9yZWdyb3VuZCBob3ZlcjpiZy1zZWNvbmRhcnkvNTAiCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICA+CiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIDxFZGl0MiBjbGFzc05hbWU9InctNCBoLTQiIC8+CiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIFJlZGlnZXJhCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICA8L2E+CiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICA8YnV0dG9uIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBvbkNs
+aWNrPXsoKSA9PiB7IHNldE1lbnVPcGVuKG51bGwpOyBoYW5kbGVEZWxldGUo
+cG9zdC5pZCkgfX0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xh
+c3NOYW1lPSJ3LWZ1bGwgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgcHgtMyBw
+eS0yIHRleHQtc20gdGV4dC1kZXN0cnVjdGl2ZSBob3ZlcjpiZy1kZXN0cnVj
+dGl2ZS8xMCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgID4KICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgPFRyYXNoMiBjbGFzc05hbWU9Inct
+NCBoLTQiIC8+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFJhZGVy
+YQogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAg
+ICAgICAgIDwvPgogICAgICAgICAgICAgICAgICAgICAgKX0KICAgICAgICAg
+ICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgPC9kaXY+Cgog
+ICAgICAgICAgICAgICAgICB7LyogQ29udGVudCAqL30KICAgICAgICAgICAg
+ICAgICAgPGgzIGNsYXNzTmFtZT0iZm9udC1kaXNwbGF5IHRleHQteGwgdGV4
+dC1mb3JlZ3JvdW5kIG1iLTIgbGluZS1jbGFtcC0yIGdyb3VwLWhvdmVyOnRl
+eHQtcHJpbWFyeSB0cmFuc2l0aW9uLWNvbG9ycyI+CiAgICAgICAgICAgICAg
+ICAgICAge3Bvc3QudGl0bGV9CiAgICAgICAgICAgICAgICAgIDwvaDM+CiAg
+ICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1zbSB0ZXh0LW11
+dGVkLWZvcmVncm91bmQgbGluZS1jbGFtcC0yIG1iLTQgbGVhZGluZy1yZWxh
+eGVkIj4KICAgICAgICAgICAgICAgICAgICB7cG9zdC5leGNlcnB0IHx8ICdJ
+bmdlbiBiZXNrcml2bmluZy4uLid9CiAgICAgICAgICAgICAgICAgIDwvcD4K
+CiAgICAgICAgICAgICAgICAgIHsvKiBGb290ZXIgKi99CiAgICAgICAgICAg
+ICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0
+aWZ5LWJldHdlZW4gcHQtNCBib3JkZXItdCBib3JkZXItYm9yZGVyIj4KICAg
+ICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1j
+ZW50ZXIgZ2FwLTEuNSB0ZXh0LXhzIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+
+CiAgICAgICAgICAgICAgICAgICAgICA8Q2FsZW5kYXIgY2xhc3NOYW1lPSJ3
+LTMuNSBoLTMuNSIgLz4KICAgICAgICAgICAgICAgICAgICAgIHtuZXcgRGF0
+ZShwb3N0LmNyZWF0ZWRBdCEpLnRvTG9jYWxlRGF0ZVN0cmluZygnc3YtU0Un
+LCB7CiAgICAgICAgICAgICAgICAgICAgICAgIGRheTogJ251bWVyaWMnLAog
+ICAgICAgICAgICAgICAgICAgICAgICBtb250aDogJ3Nob3J0JywKICAgICAg
+ICAgICAgICAgICAgICAgICAgeWVhcjogJ251bWVyaWMnCiAgICAgICAgICAg
+ICAgICAgICAgICB9KX0KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAg
+ICAgICAgICAgICAgICAgICA8YSAKICAgICAgICAgICAgICAgICAgICAgIGhy
+ZWY9e2AvYWRtaW4vZWRpdC8ke3Bvc3QuaWR9YH0KICAgICAgICAgICAgICAg
+ICAgICAgIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIHRl
+eHQteHMgZm9udC1tZWRpdW0gdGV4dC1wcmltYXJ5IGhvdmVyOnRleHQtZm9y
+ZWdyb3VuZCB0cmFuc2l0aW9uLWNvbG9ycyIKICAgICAgICAgICAgICAgICAg
+ICA+CiAgICAgICAgICAgICAgICAgICAgICBSZWRpZ2VyYQogICAgICAgICAg
+ICAgICAgICAgICAgPEFycm93UmlnaHQgY2xhc3NOYW1lPSJ3LTMgaC0zIG1s
+LTEiIC8+CiAgICAgICAgICAgICAgICAgICAgPC9hPgogICAgICAgICAgICAg
+ICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDwvYXJ0aWNsZT4KICAgICAg
+ICAgICAgICApKX0KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICApIDog
+KAogICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0idGV4dC1jZW50ZXIgcHkt
+MTYiPgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ3LTE2IGgtMTYg
+Ymctc2Vjb25kYXJ5IGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVy
+IG14LWF1dG8gbWItNCI+CiAgICAgICAgICAgICAgICA8RmlsZVRleHQgY2xh
+c3NOYW1lPSJ3LTggaC04IHRleHQtbXV0ZWQtZm9yZWdyb3VuZCIgLz4KICAg
+ICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8aDMgY2xhc3NOYW1l
+PSJmb250LWRpc3BsYXkgdGV4dC0yeGwgdGV4dC1mb3JlZ3JvdW5kIG1iLTIi
+PgogICAgICAgICAgICAgICAge3Bvc3RzLmxlbmd0aCA9PT0gMCA/ICdJbmdl
+dCBpbm5laMOlbGwnIDogJ0luZ2EgdHLDpGZmYXInfQogICAgICAgICAgICAg
+IDwvaDM+CiAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXNtIHRl
+eHQtbXV0ZWQtZm9yZWdyb3VuZCBtYi02IG1heC13LW1kIG14LWF1dG8iPgog
+ICAgICAgICAgICAgICAge3Bvc3RzLmxlbmd0aCA9PT0gMCAKICAgICAgICAg
+ICAgICAgICAgPyAnS29tIGlnw6VuZyBnZW5vbSBhdHQgc2thcGEgZGl0dCBm
+w7Zyc3RhIGlubMOkZ2cuJyAKICAgICAgICAgICAgICAgICAgOiAnRsO2cnPD
+tmsgbWVkIGFuZHJhIHPDtmtvcmQgZWxsZXIgZmlsdGVyLid9CiAgICAgICAg
+ICAgICAgPC9wPgogICAgICAgICAgICAgIHtwb3N0cy5sZW5ndGggPT09IDAg
+JiYgKAogICAgICAgICAgICAgICAgPGEgCiAgICAgICAgICAgICAgICAgIGhy
+ZWY9Ii9hZG1pbi9uZXciIAogICAgICAgICAgICAgICAgICBjbGFzc05hbWU9
+ImlubGluZS1mbGV4IGl0ZW1zLWNlbnRlciBnYXAtMiBweC01IHB5LTIuNSBi
+Zy1wcmltYXJ5IHRleHQtcHJpbWFyeS1mb3JlZ3JvdW5kIHRleHQtc20gZm9u
+dC1tZWRpdW0gaG92ZXI6YmctcHJpbWFyeS85MCB0cmFuc2l0aW9uLWNvbG9y
+cyIKICAgICAgICAgICAgICAgID4KICAgICAgICAgICAgICAgICAgPFBsdXMg
+Y2xhc3NOYW1lPSJ3LTQgaC00IiAvPgogICAgICAgICAgICAgICAgICBTa2Fw
+YSBmw7Zyc3RhIGlubMOkZ2dldAogICAgICAgICAgICAgICAgPC9hPgogICAg
+ICAgICAgICAgICl9CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgKX0K
+ICAgICAgICA8L2Rpdj4KCiAgICAgICAgey8qIEZvb3RlciAqL30KICAgICAg
+ICB7ZmlsdGVyZWRQb3N0cy5sZW5ndGggPiAwICYmICgKICAgICAgICAgIDxk
+aXYgY2xhc3NOYW1lPSJweC02IHB5LTQgYm9yZGVyLXQgYm9yZGVyLWJvcmRl
+ciBiZy1zZWNvbmRhcnkvMzAiPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9
+InRleHQteHMgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAg
+ICBWaXNhciB7ZmlsdGVyZWRQb3N0cy5sZW5ndGh9IGF2IHtwb3N0cy5sZW5n
+dGh9IGlubMOkZ2cKICAgICAgICAgICAgPC9wPgogICAgICAgICAgPC9kaXY+
+CiAgICAgICAgKX0KICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICApCn0K

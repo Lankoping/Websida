@@ -41,7 +41,7 @@ function Index() {
         <div className="mx-auto max-w-6xl px-6 py-24">
           <div className="group max-w-2xl mx-auto text-center">
             <div className="relative w-full h-64 overflow-hidden rounded-lg mb-8">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Strykj%C3%A4rnet_Norrk%C3%B6ping.jpg/1200px-Strykj%C3%A4rnet_Norrk%C3%B6ping.jpg" alt="Strykjärnet Norrköping" className="w-full h-full object-cover" />
+              <img src="https://www.interkultur.com/fileadmin/_processed_/0/2/csm_N-1-20220616-NicoleOlssen_37fb01bd34.jpg" alt="Strykjärnet Norrköping" className="w-full h-full object-cover" />
               <div className="absolute inset-0 flex items-center justify-center bg-black/20"></div>
             </div>
             <h3 className="font-bold text-2xl tracking-wider mb-4 text-foreground">NORRKÖPING</h3>

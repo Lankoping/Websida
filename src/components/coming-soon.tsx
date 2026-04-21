@@ -34,10 +34,10 @@ interface ComingSoonProps {
 
 const fallbackContent = {
   sv: {
-    eyebrow: 'LAN-Event i Norrkoping',
+    eyebrow: 'LAN-Event i Norrköping',
     headline: 'Lankoping',
     tagline: 'Gaming Community',
-    description: 'Vi bygger en gemenskap for gamers i Ostergotland. Snart oppnar vi dorrar till vart forsta event.',
+    description: 'Vi bygger en gemenskap för gamers i Ostergotland. Snart oppnar vi dorrar till vart forsta event.',
     rulesLabel: 'Regler',
     teamLabel: 'Team',
     privacyLabel: 'Integritet',
@@ -63,7 +63,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
     headline: locale === 'en' ? (heroData?.headlineEn || heroData?.headline || fallbackContent.en.headline) : (heroData?.headline || fallbackContent.sv.headline),
     tagline: locale === 'en' ? (heroData?.taglineEn || heroData?.tagline || fallbackContent.en.tagline) : (heroData?.tagline || fallbackContent.sv.tagline),
     description: locale === 'en' ? (heroData?.descriptionEn || heroData?.description || fallbackContent.en.description) : (heroData?.description || fallbackContent.sv.description),
-    primaryButtonText: locale === 'en' ? (heroData?.primaryButtonTextEn || heroData?.primaryButtonText || fallbackContent.en.rulesLabel) : (heroData?.primaryButtonText || fallbackContent.sv.rulesLabel),
+    primaryButtonText: 'Discord',
     primaryButtonLink: heroData?.primaryButtonLink || 'https://discord.gg/h8wuaqyBwT',
     secondaryButtonText: locale === 'en' ? heroData?.secondaryButtonTextEn : heroData?.secondaryButtonText,
     secondaryButtonLink: heroData?.secondaryButtonLink || 'https://www.youtube.com/@LANKPNG',
@@ -74,7 +74,6 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
   }
   
   const infoSections = infoSectionsData || []
-
   
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -150,7 +149,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
                 href={content.secondaryButtonLink} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="px-8 py-3 border border-border text-foreground font-medium hover:bg-secondary transition-colors"
+                className="px-8 py-3 border border-border text-foreground font-medium hover:bg-secondary transition-colors ml-4"
               >
                 {content.secondaryButtonText}
               </a>
@@ -186,45 +185,29 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
                   <div>
                     <div className="relative w-full h-48 overflow-hidden rounded-lg mb-4">
                       <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover" />
-                    </div>
-                    <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
-                      {locale === 'sv' ? 'NORRKÖPING' : 'NORRKÖPING'}
-                    </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {locale === 'sv' 
-                        ? 'Vårt första event kommer hållas i Norrköping, Östergötland.'
-                        : 'Our first event will be held in Norrköping, Östergötland.'}
-                    </p>
-                  </div>
-
-                  <div>
-                    <div className="w-10 h-10 flex items-center justify-center bg-secondary mb-4">
-                      <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20" />
                     </div>
                     <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
                       {locale === 'sv' ? 'GEMENSKAP' : 'COMMUNITY'}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      {locale === 'sv'
-                        ? 'En plats for gamers att traffas, tavla och ha kul tillsammans.'
-                        : 'A place for gamers to meet, compete and have fun together.'}
+                      {locale === 'sv' 
+                        ? 'En plats för gamers att träffas, tävla och ha kul tillsammans i en inkluderande miljö.' 
+                        : 'A place for gamers to meet, compete and have fun together in an inclusive environment.'}
                     </p>
                   </div>
                   <div>
-                    <div className="w-10 h-10 flex items-center justify-center bg-secondary mb-4">
-                      <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
+                    <div className="relative w-full h-48 overflow-hidden rounded-lg mb-4">
+                      <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20" />
                     </div>
                     <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
                       {locale === 'sv' ? 'LAN-PARTY' : 'LAN PARTY'}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      {locale === 'sv'
-                        ? 'Ta med din dator och njut av en helg fylld med gaming.'
-                        : 'Bring your computer and enjoy a weekend full of gaming.'}
+                      {locale === 'sv' 
+                        ? 'Ta med din dator och njut av en helg fylld med gaming, tävlingar och nya vänner.' 
+                        : 'Bring your computer and enjoy a weekend filled with gaming, competitions and new friends.'}
                     </p>
                   </div>
                 </>
@@ -234,7 +217,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
         </section>
       </main>
 
-      {/* Footer - stays at bottom */}
+      {/* Footer */}
       <footer className="border-t border-border mt-auto">
         <div className="max-w-6xl mx-auto px-6 py-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">

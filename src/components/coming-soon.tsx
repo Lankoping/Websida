@@ -37,10 +37,10 @@ const fallbackContent = {
     eyebrow: 'LAN-Event i Norrköping',
     headline: 'Lankoping',
     tagline: 'Gaming Community',
-    description: 'Vi bygger en gemenskap för gamers i Ostergotland. Snart oppnar vi dorrar till vart forsta event.',
+    description: 'Vi bygger en gemenskap för gamers i Östergötland. Snart öppnar vi dörrar till vårt första event.',
     rulesLabel: 'Regler',
     teamLabel: 'Team',
-    privacyLabel: 'Integritet',
+    privacyLabel: 'Datapolicy',
     rights: 'Alla rättigheter förbehållna',
   },
   en: {
@@ -50,7 +50,7 @@ const fallbackContent = {
     description: 'We are building a community for gamers in Ostergotland. Soon we open doors to our first event.',
     rulesLabel: 'Rules',
     teamLabel: 'Team',
-    privacyLabel: 'Privacy',
+    privacyLabel: 'Data Policy',
     rights: 'All rights reserved',
   },
 } as const
@@ -90,7 +90,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
             <Link to={`${basePath}/team`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {content.teamLabel}
             </Link>
-            <Link to={`${basePath}/privacy`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/datapolicy/se" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {content.privacyLabel}
             </Link>
           </nav>
@@ -232,7 +232,7 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
               <Link to={`${basePath}/team`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {content.teamLabel}
               </Link>
-              <Link to={`${basePath}/privacy`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/datapolicy/se" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {content.privacyLabel}
               </Link>
             </nav>

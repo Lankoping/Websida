@@ -7,27 +7,27 @@ export const Route = createFileRoute('/_public/datapolicy/se')({
 
 function DataPolicySwedish() {
   return (
-    <div className="min-h-screen bg-[#100E0C] text-[#F0E8D8] px-4 py-10">
-      <div className="mx-auto max-w-3xl border border-[#C04A2A]/20 bg-[#141210]/70 rounded-sm p-6 sm:p-10">
-        <Link to="/login" className="inline-flex items-center gap-2 text-[#C04A2A] hover:text-[#F0E8D8] transition-colors text-sm uppercase tracking-[0.12em]">
+    <div className="min-h-screen bg-background text-foreground px-4 py-10">
+      <div className="mx-auto max-w-3xl border border-border bg-card rounded-sm p-6 sm:p-10">
+        <Link to="/login" className="inline-flex items-center gap-2 text-primary hover:text-foreground transition-colors text-sm uppercase tracking-[0.12em]">
           <ArrowLeft size={16} /> Tillbaka till inloggning
         </Link>
 
-        <h1 className="mt-6 font-display text-4xl tracking-wide text-[#C04A2A]">Datapolicy & Cookies</h1>
-        <p className="mt-3 text-sm text-[#F0E8D8]/75">
+        <h1 className="mt-6 font-display text-4xl tracking-wide text-foreground">Datapolicy & Cookies</h1>
+        <p className="mt-3 text-sm text-muted-foreground">
           Denna policy förklarar hur Lankoping ("vi", "oss", "vår") behandlar dina personuppgifter som arrangör eller volontär, samt hur vi använder cookies, i enlighet med Dataskyddsförordningen (GDPR).
         </p>
 
-        <div className="mt-8 space-y-6 text-sm leading-relaxed text-[#F0E8D8]/85">
+        <div className="mt-8 space-y-6 text-sm leading-relaxed text-muted-foreground">
           <section>
-            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">1. Personuppgiftsansvarig</h2>
+            <h2 className="text-primary uppercase tracking-[0.15em] text-xs mb-2">1. Personuppgiftsansvarig</h2>
             <p>
               Lankoping är personuppgiftsansvarig för behandlingen av dina personuppgifter i detta system. För integritetsrelaterade frågor, vänligen kontakta administrationen.
             </p>
           </section>
 
           <section>
-            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">2. Vad vi loggar & Rättslig grund</h2>
+            <h2 className="text-primary uppercase tracking-[0.15em] text-xs mb-2">2. Vad vi loggar & Rättslig grund</h2>
             <p>
               Vi loggar säkerhets- och administrationshändelser för volontärer och arrangörer, inklusive inloggningar, profiländringar och utförda åtgärder (t.ex. biljettscanning, publicering av innehåll).
               Den rättsliga grunden för denna behandling är vårt <strong>berättigade intresse</strong> (GDPR Artikel 6.1 f) av att säkerställa säkerheten, integriteten och spårbarheten i våra administrativa system.
@@ -35,7 +35,7 @@ function DataPolicySwedish() {
           </section>
 
           <section>
-            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">3. Datalagring</h2>
+            <h2 className="text-primary uppercase tracking-[0.15em] text-xs mb-2">3. Datalagring</h2>
             <ul className="list-disc pl-5 space-y-1">
               <li><strong>Kontouppgifter:</strong> Lagras under den tid du har en aktiv roll som volontär eller arrangör. Vid din avgång och efter genomförd avslutningsprocess kommer ditt konto och tillhörande personuppgifter att raderas eller anonymiseras.</li>
               <li><strong>Aktivitetsloggar:</strong> Lagras för säkerhetsgranskning och rensas regelbundet enligt våra interna säkerhetspolicyer.</li>
@@ -44,7 +44,7 @@ function DataPolicySwedish() {
           </section>
 
           <section>
-            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">4. Användning av Cookies</h2>
+            <h2 className="text-primary uppercase tracking-[0.15em] text-xs mb-2">4. Användning av Cookies</h2>
             <p>
               Vi använder cookies (små textfiler som sparas i din webbläsare) för att säkerställa att webbplatsen och administrationssystemet fungerar korrekt.
             </p>
@@ -58,7 +58,7 @@ function DataPolicySwedish() {
           </section>
 
           <section>
-            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">5. Dina rättigheter</h2>
+            <h2 className="text-primary uppercase tracking-[0.15em] text-xs mb-2">5. Dina rättigheter</h2>
             <p>Enligt GDPR har du följande rättigheter gällande dina personuppgifter:</p>
             <ul className="list-disc pl-5 mt-2 space-y-1">
               <li><strong>Rätt till tillgång:</strong> Du kan begära en kopia av de uppgifter vi har om dig.</li>
@@ -70,7 +70,7 @@ function DataPolicySwedish() {
           </section>
 
           <section>
-            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">6. Klagomål</h2>
+            <h2 className="text-primary uppercase tracking-[0.15em] text-xs mb-2">6. Klagomål</h2>
             <p>
               Om du anser att vår behandling av dina personuppgifter bryter mot dataskyddslagstiftningen har du rätt att lämna in ett klagomål till Integritetsskyddsmyndigheten (IMY).
             </p>

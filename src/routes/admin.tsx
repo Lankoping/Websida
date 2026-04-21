@@ -11,7 +11,6 @@ import {
   History,
   ChevronDown,
   ChevronRight,
-  Palette,
   Menu,
   X,
   ExternalLink
@@ -62,11 +61,11 @@ interface NavItemProps {
   label: string
   icon: React.ReactNode
   badge?: number
-  isActive?: boolean
+  isActived?: boolean
 }
 
-function NavItem({ href, label, icon, badge, isActive }: NavItemProps) {
-  const active = isActive ?? (typeof window !== 'undefined' && window.location.pathname === href)
+function NavItem({ href, label, icon, badge, isActived }: NavItemProps) {
+  const active = isActived ?? (typeof window !== 'undefined' && window.location.pathname === href)
 
   return (
     <a
@@ -181,7 +180,6 @@ function AdminLayout() {
 
   const roleLabel = user.role === 'organizer' ? 'Organisatör' : 'Volontär'
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : ''
-  const isCmsPath = currentPath.startsWith('/admin/cms')
   const isTicketsPath = currentPath.startsWith('/admin/tickets')
 
   return (
@@ -223,19 +221,6 @@ function AdminLayout() {
               )}
             </div>
 
-            {/* Content Management */}
-            {isOrganizer && (
-              <div className="mb-6">
-                <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Innehåll</p>
-                <NavGroup label="CMS" icon={<Palette className="w-5 h-5" />} defaultOpen={isCmsPath}>
-                  <SubNavItem href="/admin/cms" label="Översikt" />
-                  <SubNavItem href="/admin/cms/pages" label="Sidor" />
-                  <SubNavItem href="/admin/cms/navigation" label="Navigation" />
-                  <SubNavItem href="/admin/cms/settings" label="Inställningar" />
-                </NavGroup>
-              </div>
-            )}
-
             {/* Management */}
             <div className="mb-6">
               <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Hantering</p>
@@ -269,7 +254,7 @@ function AdminLayout() {
             <div className="p-4 bg-secondary/50 rounded">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-display text-lg">
+                  <span className="text-primary-foreground font-display text-sm">
                     {(user.name || 'A').charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -334,80 +319,6 @@ function AdminLayout() {
               <ExternalLink className="w-4 h-4" />
               Visa sida
             </a>
-            
-            <div className="relative">
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 p-1.5 hover:bg-secondary/50 rounded transition-colors"
-              >
-                <div className="w-8 h-8 bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-display text-sm">
-                    {(user.name || 'A').charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              </button>
-
-              {userMenuOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-64 bg-card border border-border rounded shadow-lg py-2 z-50">
-                    <div className="px-4 py-3 border-b border-border">
-                      <p className="text-sm font-medium text-foreground">{user.name || 'Namnlös'}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
-                      <p className="text-xs text-muted-foreground mt-1">ID: {user.id}</p>
-                    </div>
-                    
-                    <div className="p-2">
-                      {editingName ? (
-                        <div className="px-2 py-2 space-y-2">
-                          <input
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full px-3 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-                            placeholder="Ange namn"
-                          />
-                          <div className="flex gap-2">
-                            <button
-                              onClick={handleSaveName}
-                              disabled={savingName}
-                              className="flex-1 px-3 py-1.5 text-xs font-medium text-primary-foreground bg-primary rounded hover:bg-primary/90 disabled:opacity-50"
-                            >
-                              {savingName ? 'Sparar...' : 'Spara'}
-                            </button>
-                            <button
-                              onClick={() => { setEditingName(false); setName(user.name || '') }}
-                              className="px-3 py-1.5 text-xs font-medium text-muted-foreground border border-border rounded hover:bg-secondary/50"
-                            >
-                              Avbryt
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => setEditingName(true)}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded transition-colors"
-                        >
-                          <Settings className="w-4 h-4" />
-                          Redigera profil
-                        </button>
-                      )}
-                    </div>
-                    
-                    <div className="border-t border-border p-2">
-                      <button
-                        onClick={handleLogout}
-                        disabled={loggingOut}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 rounded transition-colors disabled:opacity-50"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        {loggingOut ? 'Loggar ut...' : 'Logga ut'}
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
           </div>
         </header>
 

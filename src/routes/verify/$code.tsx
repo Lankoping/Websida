@@ -1,14 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Html5QrcodeScanner } from 'html5-qrcode'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { verifyTicketByCodeFn, getEventsForTicketsFn } from '@/server/functions/tickets'
+import { getSessionFn, logoutFn } from '@/server/functions/auth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Loader2, CheckCircle2, XCircle, Camera, QrCode, RefreshCcw, LogOut, Ticket, Calendar, User, Clock } from 'lucide-react'
-import { useAuth } from '@/components/auth-provider'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export const Route = createFileRoute('/verify/$code')({
@@ -17,11 +17,33 @@ export const Route = createFileRoute('/verify/$code')({
 
 function VerifyTicketPage() {
   const { code } = Route.useParams()
+  const queryClient = useQueryClient()
   const [scanResult, setScanResult] = useState<'success' | 'error' | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
   const [isScanning, setIsScanning] = useState(false)
   const [selectedEventId, setSelectedEventId] = useState<string>('all')
-  const { user, logout } = useAuth()
+
+  const { data: user, isLoading: isLoadingUser } = useQuery({
+    queryKey: ['session'],
+    queryFn: async () => {
+      const result = await getSessionFn()
+      return result
+    }
+  })
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await logoutFn()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['session'] })
+      window.location.href = '/login?redirect=/verify/scan'
+    }
+  })
+
+  const logout = () => {
+    logoutMutation.mutate()
+  }
 
   // Fetch events for the scanner to select from
   const { data: events, isLoading: isLoadingEvents } = useQuery({
@@ -124,6 +146,14 @@ function VerifyTicketPage() {
       verifyMutation.mutate(code)
     }
   }, [code, ticketDetails, verifyMutation, scanResult])
+
+  if (isLoadingUser) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   // Require login
   if (!user) {

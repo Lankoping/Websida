@@ -30,7 +30,9 @@ function NewsPost() {
         <span className="mx-2">·</span>
         <span className="bg-[#C04A2A]/20 text-[#C04A2A] px-2 py-0.5 rounded text-xs uppercase tracking-wider">{post.type}</span>
       </div>
-      <MarkdownContent content={post.content} />
+      <div className="prose prose-black max-w-none">
+        <MarkdownContent content={post.content} />
+      </div>
     </div>
   )
 }

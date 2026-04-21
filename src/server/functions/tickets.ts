@@ -6,7 +6,7 @@ import { requireOrganizerUser, requireStaffUser } from '../lib/access'
 import { writeActivityLog } from './logs'
 
 export const getTicketsFn = createServerFn({ method: 'GET' })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     const d = data as Record<string, unknown> | undefined
     return {
       search: typeof d?.search === 'string' ? d.search : undefined,
@@ -59,7 +59,7 @@ export const getTicketsFn = createServerFn({ method: 'GET' })
   })
 
 export const issueTicketFn = createServerFn({ method: 'POST' })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     const d = data as Record<string, unknown>
     return {
       eventId: Number(d.eventId),
@@ -99,7 +99,7 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
   })
 
 export const verifyTicketByCodeFn = createServerFn({ method: 'POST' })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     const d = data as Record<string, unknown>
     return {
       code: String(d.code),
@@ -201,12 +201,14 @@ export const getTicketTypesFn = createServerFn({ method: 'GET' })
   })
 
 export const createTicketTypeFn = createServerFn({ method: 'POST' })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     const d = data as Record<string, unknown>
     return {
+      eventId: Number(d.eventId),
       name: String(d.name),
       price: Number(d.price),
-      description: d.description ? String(d.description) : undefined
+      description: d.description ? String(d.description) : undefined,
+      capacity: d.capacity ? Number(d.capacity) : undefined
     }
   })
   .handler(async ({ data }) => {
@@ -227,7 +229,7 @@ export const createTicketTypeFn = createServerFn({ method: 'POST' })
   })
 
 export const deleteTicketTypeFn = createServerFn({ method: 'POST' })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     return Number(data)
   })
   .handler(async ({ data }) => {
@@ -254,7 +256,7 @@ export const getEventsFn = createServerFn({ method: 'GET' })
   })
 
 export const createEventFn = createServerFn({ method: 'POST' })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     const d = data as Record<string, unknown>
     return {
       title: String(d.title),
@@ -283,7 +285,7 @@ export const createEventFn = createServerFn({ method: 'POST' })
   })
 
 export const deleteEventFn = createServerFn({ method: 'POST' })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     return Number(data)
   })
   .handler(async ({ data }) => {
@@ -304,7 +306,7 @@ export const deleteEventFn = createServerFn({ method: 'POST' })
   })
 
 export const updateTicketStatusFn = createServerFn({ method: 'POST' })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     const d = data as Record<string, unknown>
     return {
       id: Number(d.id),
@@ -334,7 +336,7 @@ export const updateTicketStatusFn = createServerFn({ method: 'POST' })
   })
 
 export const deleteTicketFn = createServerFn({ method: 'POST' })
-  .validator((data: unknown) => {
+  .inputValidator((data: unknown) => {
     return Number(data)
   })
   .handler(async ({ data }) => {

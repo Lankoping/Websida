@@ -19,13 +19,13 @@ function Rules() {
   ]
 
   return (
-    <div className="container mx-auto p-8 max-w-4xl text-white">
+    <div className="container mx-auto p-8 max-w-4xl text-black">
       <h1 className="text-4xl font-bold mb-8">Regler</h1>
       <div className="grid gap-6">
         {rules.map((rule, index) => (
-          <div key={index} className="border border-gray-700 p-6 rounded-lg bg-gray-900">
+          <div key={index} className="border border-gray-300 p-6 rounded-lg bg-white">
             <h2 className="font-bold text-xl mb-2 text-[#C04A2A]">{rule.title}</h2>
-            <p className="text-gray-300">{rule.details}</p>
+            <p className="text-gray-800">{rule.details}</p>
           </div>
         ))}
       </div>

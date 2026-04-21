@@ -1,238 +1,363 @@
-J3VzZSBzZXJ2ZXInCmltcG9ydCB7IGNyZWF0ZVNlcnZlckZuIH0gZnJvbSAn
-QHRhbnN0YWNrL3JlYWN0LXN0YXJ0JwppbXBvcnQgeyBnZXREYiB9IGZyb20g
-Jy4uL2RiL3J1bnRpbWUnCmltcG9ydCB7IHRpY2tldHMsIHBvc3RzLCB0aWNr
-ZXRUeXBlcywgZXZlbnRzLCB1c2VycyB9IGZyb20gJy4uL2RiL3NjaGVtYScK
-aW1wb3J0IHsgZXEsIGFuZCwgbmVxIH0gZnJvbSAnZHJpenpsZS1vcm0nCmlt
-cG9ydCB7IHogfSBmcm9tICd6b2QnCmltcG9ydCB7IGdldENvb2tpZSB9IGZy
-b20gJ0B0YW5zdGFjay9yZWFjdC1zdGFydC9zZXJ2ZXInCmltcG9ydCB7IG5h
-bm9pZCB9IGZyb20gJ25hbm9pZCcKaW1wb3J0IHsgaXNEZW1vVGVzdGVyVXNl
-ciwgcmVxdWlyZVN0YWZmVXNlciB9IGZyb20gJy4uL2xpYi9hY2Nlc3MnCmlt
-cG9ydCB7IHdyaXRlQWN0aXZpdHlMb2cgfSBmcm9tICcuL2xvZ3MnCgphc3lu
-YyBmdW5jdGlvbiBjaGVja0FkbWluKCkgewogIGNvbnN0IHVzZXIgPSBhd2Fp
-dCByZXF1aXJlU3RhZmZVc2VyKCkKICByZXR1cm4gdXNlcgp9CgpleHBvcnQg
-Y29uc3QgZ2V0RXZlbnRzRm4gPSBjcmVhdGVTZXJ2ZXJGbih7IG1ldGhvZDog
-J0dFVCcgfSkKICAuaGFuZGxlcihhc3luYyAoKSA9PiB7CiAgICBhd2FpdCBj
-aGVja0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdhaXQgZ2V0RGIoKQogICAg
-cmV0dXJuIGF3YWl0IGRiLnNlbGVjdCgpLmZyb20oZXZlbnRzKQogIH0pCgpl
-eHBvcnQgY29uc3QgY3JlYXRlRXZlbnRGbiA9IGNyZWF0ZVNlcnZlckZuKHsg
-bWV0aG9kOiAiUE9TVCIgfSkKICAuaW5wdXRWYWxpZGF0b3IoKGRhdGE6IHVu
-a25vd24pID0+CiAgICB6Lm9iamVjdCh7CiAgICAgIHRpdGxlOiB6LnN0cmlu
-ZygpLAogICAgICBkZXNjcmlwdGlvbjogei5zdHJpbmcoKS5vcHRpb25hbCgp
-LAogICAgICBkYXRlOiB6LnN0cmluZygpLCAvLyBXZSdsbCBwYXJzZSB0aGlz
-IGFzIGEgRGF0ZSBvbiB0aGUgc2VydmVyCiAgICAgIGxvY2F0aW9uOiB6LnN0
-cmluZygpLm9wdGlvbmFsKCksCiAgICAgIGltYWdlOiB6LnN0cmluZygpLm9w
-dGlvbmFsKCksCiAgICAgIHB1Ymxpc2hlZDogei5ib29sZWFuKCkuZGVmYXVs
-dChmYWxzZSksCiAgICB9KS5wYXJzZShkYXRhKQogICkKICAuaGFuZGxlcihh
-c3luYyAoeyBkYXRhIH0pID0+IHsKICAgIGNvbnN0IGFkbWluID0gYXdhaXQg
-Y2hlY2tBZG1pbigpCiAgICBjb25zdCBkYiA9IGF3YWl0IGdldERiKCkKICAg
-IGNvbnN0IHJlc3VsdCA9IGF3YWl0IGRiLmluc2VydChldmVudHMpLnZhbHVl
-cyh7CiAgICAgIC4uLmRhdGEsCiAgICAgIGRhdGU6IG5ldyBEYXRlKGRhdGEu
-ZGF0ZSksCiAgICB9KS5yZXR1cm5pbmcoKQoKICAgIGF3YWl0IHdyaXRlQWN0
-aXZpdHlMb2coewogICAgICBhY3RvclVzZXJJZDogYWRtaW4uaWQsCiAgICAg
-IGFjdG9yUm9sZTogYWRtaW4ucm9sZSwKICAgICAgYWN0aW9uOiAnZXZlbnQu
-Y3JlYXRlJywKICAgICAgZW50aXR5VHlwZTogJ2V2ZW50JywKICAgICAgZW50
-aXR5SWQ6IHJlc3VsdFswXS5pZCwKICAgICAgZGV0YWlsczogeyB0aXRsZTog
-cmVzdWx0WzBdLnRpdGxlIH0sCiAgICB9KQoKICAgIHJldHVybiByZXN1bHRb
-MF0KICB9KQoKZXhwb3J0IGNvbnN0IGRlbGV0ZUV2ZW50Rm4gPSBjcmVhdGVT
-ZXJ2ZXJGbih7IG1ldGhvZDogIlBPU1QiIH0pCiAgLmlucHV0VmFsaWRhdG9y
-KChkYXRhOiB1bmtub3duKSA9PiB6Lm51bWJlcigpLnBhcnNlKGRhdGEpKQog
-IC5oYW5kbGVyKGFzeW5jICh7IGRhdGE6IGlkIH0pID0+IHsKICAgIGNvbnN0
-IGFkbWluID0gYXdhaXQgY2hlY2tBZG1pbigpCiAgICBjb25zdCBkYiA9IGF3
-YWl0IGdldERiKCkKICAgIGF3YWl0IGRiLmRlbGV0ZShldmVudHMpLndoZXJl
-KGVxKGV2ZW50cy5pZCwgaWQpKQoKICAgIGF3YWl0IHdyaXRlQWN0aXZpdHlM
-b2coewogICAgICBhY3RvclVzZXJJZDogYWRtaW4uaWQsCiAgICAgIGFjdG9y
-Um9sZTogYWRtaW4ucm9sZSwKICAgICAgYWN0aW9uOiAnZXZlbnQuZGVsZXRl
-JywKICAgICAgZW50aXR5VHlwZTogJ2V2ZW50JywKICAgICAgZW50aXR5SWQ6
-IGlkLAogICAgfSkKCiAgICByZXR1cm4geyBzdWNjZXNzOiB0cnVlIH0KICB9
-KQoKZXhwb3J0IGNvbnN0IGdldFRpY2tldFR5cGVzRm4gPSBjcmVhdGVTZXJ2
-ZXJGbih7IG1ldGhvZDogIkdFVCIgfSkKICAuaGFuZGxlcihhc3luYyAoKSA9
-PiB7CiAgICBhd2FpdCBjaGVja0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdh
-aXQgZ2V0RGIoKQogICAgcmV0dXJuIGF3YWl0IGRiLnNlbGVjdCgpLmZyb20o
-dGlja2V0VHlwZXMpCiAgfSkKCmV4cG9ydCBjb25zdCBjcmVhdGVUaWNrZXRU
-eXBlRm4gPSBjcmVhdGVTZXJ2ZXJGbih7IG1ldGhvZDogIlBPU1QiIH0pCiAg
-LmlucHV0VmFsaWRhdG9yKChkYXRhOiB1bmtub3duKSA9PgogICAgei5vYmpl
-Y3QoewogICAgICBuYW1lOiB6LnN0cmluZygpLAogICAgICBwcmljZTogei5u
-dW1iZXIoKSwKICAgICAgZGVzY3JpcHRpb246IHouc3RyaW5nKCkub3B0aW9u
-YWwoKSwKICAgIH0pLnBhcnNlKGRhdGEpCiAgKQogIC5oYW5kbGVyKGFzeW5j
-ICh7IGRhdGEgfSkgPT4gewogICAgY29uc3QgYWRtaW4gPSBhd2FpdCBjaGVj
-a0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdhaXQgZ2V0RGIoKQogICAgY29u
-c3QgcmVzdWx0ID0gYXdhaXQgZGIuaW5zZXJ0KHRpY2tldFR5cGVzKS52YWx1
-ZXMoZGF0YSkucmV0dXJuaW5nKCkKCiAgICBhd2FpdCB3cml0ZUFjdGl2aXR5
-TG9nKHsKICAgICAgYWN0b3JVc2VySWQ6IGFkbWluLmlkLAogICAgICBhY3Rv
-clJvbGU6IGFkbWluLnJvbGUsCiAgICAgIGFjdGlvbjogJ3RpY2tldF90eXBl
-LmNyZWF0ZScsCiAgICAgIGVudGl0eVR5cGU6ICd0aWNrZXRfdHlwZScsCiAg
-ICAgIGVudGl0eUlkOiByZXN1bHRbMF0uaWQsCiAgICAgIGRldGFpbHM6IHsg
-bmFtZTogcmVzdWx0WzBdLm5hbWUgfSwKICAgIH0pCgogICAgcmV0dXJuIHJl
-c3VsdFswXQogIH0pCgpleHBvcnQgY29uc3QgZGVsZXRlVGlja2V0VHlwZUZu
-ID0gY3JlYXRlU2VydmVyRm4oeyBtZXRob2Q6ICJQT1NUIiB9KQogIC5pbnB1
-dFZhbGlkYXRvcigoZGF0YTogdW5rbm93bikgPT4gei5udW1iZXIoKS5wYXJz
-ZShkYXRhKSkKICAuaGFuZGxlcihhc3luYyAoeyBkYXRhOiBpZCB9KSA9PiB7
-CiAgICBjb25zdCBhZG1pbiA9IGF3YWl0IGNoZWNrQWRtaW4oKQogICAgY29u
-c3QgZGIgPSBhd2FpdCBnZXREYigpCiAgICBhd2FpdCBkYi5kZWxldGUodGlj
-a2V0VHlwZXMpLndoZXJlKGVxKHRpY2tldFR5cGVzLmlkLCBpZCkpCgogICAg
-YXdhaXQgd3JpdGVBY3Rpdml0eUxvZyh7CiAgICAgIGFjdG9yVXNlcklkOiBh
-ZG1pbi5pZCwKICAgICAgYWN0b3JSb2xlOiBhZG1pbi5yb2xlLAogICAgICBh
-Y3Rpb246ICd0aWNrZXRfdHlwZS5kZWxldGUnLAogICAgICBlbnRpdHlUeXBl
-OiAndGlja2V0X3R5cGUnLAogICAgICBlbnRpdHlJZDogaWQsCiAgICB9KQoK
-ICAgIHJldHVybiB7IHN1Y2Nlc3M6IHRydWUgfQogIH0pCgpleHBvcnQgY29u
-c3QgZ2V0VGlja2V0c0ZuID0gY3JlYXRlU2VydmVyRm4oeyBtZXRob2Q6ICJH
-RVQiIH0pCiAgLmhhbmRsZXIoYXN5bmMgKCkgPT4gewogICAgY29uc3QgYWRt
-aW4gPSBhd2FpdCBjaGVja0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdhaXQg
-Z2V0RGIoKQogICAgY29uc3QgYmFzZVF1ZXJ5ID0gZGIuc2VsZWN0KHsKICAg
-ICAgaWQ6IHRpY2tldHMuaWQsCiAgICAgIGV2ZW50SWQ6IHRpY2tldHMuZXZl
-bnRJZCwKICAgICAgcGFydGljaXBhbnROYW1lOiB0aWNrZXRzLnBhcnRpY2lw
-YW50TmFtZSwKICAgICAgcGFydGljaXBhbnRFbWFpbDogdGlja2V0cy5wYXJ0
-aWNpcGFudEVtYWlsLAogICAgICB0aWNrZXRUeXBlOiB0aWNrZXRzLnRpY2tl
-dFR5cGUsCiAgICAgIHByaWNlUGFpZDogdGlja2V0cy5wcmljZVBhaWQsCiAg
-ICAgIHRpY2tldENvZGU6IHRpY2tldHMudGlja2V0Q29kZSwKICAgICAgc3Rh
-dHVzOiB0aWNrZXRzLnN0YXR1cywKICAgICAgc2Nhbm5lZEF0OiB0aWNrZXRz
-LnNjYW5uZWRBdCwKICAgICAgc2Nhbm5lZEJ5OiB0aWNrZXRzLnNjYW5uZWRC
-eSwKICAgICAgc2Nhbm5lZEJ5TmFtZTogdXNlcnMubmFtZSwKICAgICAgaXNzdWVk
-Qnk6IHRpY2tldHMuaXNzdWVkQnksCiAgICAgIGNyZWF0ZWRBdDogdGlja2V0
-cy5jcmVhdGVkQXQsCiAgICAgIHVwZGF0ZWRBdDogdGlja2V0cy51cGRhdGVk
-QXQsCiAgICB9KQogICAgLmZyb20odGlja2V0cykKICAgIC5sZWZ0Sm9pbih1
-c2VycywgZXEodGlja2V0cy5zY2FubmVkQnksIHVzZXJzLmlkKSkKCiAgICBp
-ZiAoaXNEZW1vVGVzdGVyVXNlcihhZG1pbikpIHsKICAgICAgcmV0dXJuIGF3
-YWl0IGJhc2VRdWVyeS53aGVyZShlcSh0aWNrZXRzLmlzc3VlZEJ5LCBhZG1p
-bi5pZCkpCiAgICB9CgogICAgcmV0dXJuIGF3YWl0IGJhc2VRdWVyeQogIH0p
-CgpleHBvcnQgY29uc3QgZ2V0VGlja2V0Rm4gPSBjcmVhdGVTZXJ2ZXJGbih7
-IG1ldGhvZDogJ0dFVCcgfSkKICAuaW5wdXRWYWxpZGF0b3IoKGRhdGE6IHVu
-a25vd24pID0+IHouc3RyaW5nKCkucGFyc2UoZGF0YSkpCiAgLmhhbmRsZXIo
-YXN5bmMgKHsgZGF0YTogdGlja2V0SWQgfSkgPT4gewogICAgY29uc3QgYWRt
-aW4gPSBhd2FpdCBjaGVja0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdhaXQg
-Z2V0RGIoKQogICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgZGIuc2VsZWN0KCku
-ZnJvbSh0aWNrZXRzKS53aGVyZShlcSh0aWNrZXRzLmlkLCBwYXJzZUludCh0
-aWNrZXRJZCkpKS5saW1pdCgxKQogICAgaWYgKGlzRGVtb1Rlc3RlclVzZXIo
-YWRtaW4pICYmIHJlc3VsdFswXSAmJiByZXN1bHRbMF0uaXNzdWVkQnkgIT09
-IGFkbWluLmlkKSB7CiAgICAgIHRocm93IG5ldyBFcnJvcignRm9yYmlkZGVu
-IGluIGRlbW8gbW9kZScpCiAgICB9CiAgICByZXR1cm4gcmVzdWx0WzBdCiAg
-fSkKCmV4cG9ydCBjb25zdCBpc3N1ZVRpY2tldEZuID0gY3JlYXRlU2VydmVy
-Rm4oeyBtZXRob2Q6ICdQT1NUJyB9KQogIC5pbnB1dFZhbGlkYXRvcigoZGF0
-YTogdW5rbm93bikgPT4KICAgIHoub2JqZWN0KHsKICAgICAgZXZlbnRJZDog
-ei5udW1iZXIoKSwKICAgICAgcGFydGljaXBhbnROYW1lOiB6LnN0cmluZygp
-LAogICAgICBwYXJ0aWNpcGFudEVtYWlsOiB6LnN0cmluZygpLmVtYWlsKCks
-CiAgICAgIHRpY2tldFR5cGU6IHouc3RyaW5nKCksCiAgICAgIHByaWNlUGFp
-ZDogei5udW1iZXIoKSwKICAgIH0pLnBhcnNlKGRhdGEpCiAgKQogIC5oYW5k
-bGVyKGFzeW5jICh7IGRhdGEgfSkgPT4gewogICAgY29uc3QgYWRtaW4gPSBh
-d2FpdCBjaGVja0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdhaXQgZ2V0RGIo
-KQogICAgCiAgICBjb25zdCB0aWNrZXRDb2RlID0gYFRLVC0ke25hbm9pZCg4
-KS50b1VwcGVyQ2FzZSgpfWAKICAgIAogICAgY29uc3QgbmV3VGlja2V0ID0g
-YXdhaXQgZGIuaW5zZXJ0KHRpY2tldHMpLnZhbHVlcyh7CiAgICAgIGV2ZW50
-SWQ6IGRhdGEuZXZlbnRJZCwKICAgICAgcGFydGljaXBhbnROYW1lOiBkYXRh
-LnBhcnRpY2lwYW50TmFtZSwKICAgICAgcGFydGljaXBhbnRFbWFpbDogZGF0
-YS5wYXJ0aWNpcGFudEVtYWlsLAogICAgICB0aWNrZXRUeXBlOiBkYXRhLnRp
-Y2tldFR5cGUsCiAgICAgIHByaWNlUGFpZDogZGF0YS5wcmljZVBhaWQsCiAg
-ICAgIHRpY2tldENvZGUsCiAgICAgIGlzc3VlZEJ5OiBhZG1pbi5pZCwKICAg
-IH0pLnJldHVybmluZygpCgogICAgYXdhaXQgd3JpdGVBY3Rpdml0eUxvZyh7
-CiAgICAgIGFjdG9yVXNlcklkOiBhZG1pbi5pZCwKICAgICAgYWN0b3JSb2xl
-OiBhZG1pbi5yb2xlLAogICAgICBhY3Rpb246ICd0aWNrZXQuaXNzdWUnLAog
-ICAgICBlbnRpdHlUeXBlOiAndGlja2V0JywKICAgICAgZW50aXR5SWQ6IG5l
-d1RpY2tldFswXS5pZCwKICAgICAgZGV0YWlsczogewogICAgICAgIGNvZGU6
-IG5ld1RpY2tldFswXS50aWNrZXRDb2RlLAogICAgICAgIGV2ZW50SWQ6IG5l
-d1RpY2tldFswXS5ldmVudElkLAogICAgICB9LAogICAgfSkKCiAgICByZXR1
-cm4gbmV3VGlja2V0WzBdCiAgfSkKCmV4cG9ydCBjb25zdCB1cGRhdGVUaWNr
-ZXRTdGF0dXNGbiA9IGNyZWF0ZVNlcnZlckZuKHsgbWV0aG9kOiAiUE9TVCIg
-fSkKICAuaW5wdXRWYWxpZGF0b3IoKGRhdGE6IHVua25vd24pID0+CiAgICB6
-Lm9iamVjdCh7CiAgICAgIHRpY2tldElkOiB6Lm51bWJlcigpLAogICAgICBz
-dGF0dXM6IHouZW51bShbJ3ZhbGlkJywgJ3VzZWQnLCAnY2FuY2VsbGVkJ10p
-LAogICAgfSkucGFyc2UoZGF0YSkKICApCiAgLmhhbmRsZXIoYXN5bmMgKHsg
-ZGF0YSB9KSA9PiB7CiAgICBjb25zdCBhZG1pbiA9IGF3YWl0IGNoZWNrQWRt
-aW4oKQogICAgY29uc3QgZGIgPSBhd2FpdCBnZXREYigpCgogICAgaWYgKGlz
-RGVtb1Rlc3RlclVzZXIoYWRtaW4pKSB7CiAgICAgIGNvbnN0IGV4aXN0aW5n
-ID0gYXdhaXQgZGIuc2VsZWN0KCkuZnJvbSh0aWNrZXRzKS53aGVyZShlcSh0
-aWNrZXRzLmlkLCBkYXRhLnRpY2tldElkKSkubGltaXQoMSkKICAgICAgaWYg
-KCFleGlzdGluZ1swXSB8fCBleGlzdGluZ1swXS5pc3N1ZWRCeSAhPT0gYWRt
-aW4uaWQpIHsKICAgICAgICB0aHJvdyBuZXcgRXJyb3IoJ0ZvcmJpZGRlbiBp
-biBkZW1vIG1vZGUnKQogICAgICB9CiAgICB9CgogICAgY29uc3Qgc2NhbkRh
-dGUgPSBkYXRhLnN0YXR1cyA9PT0gJ3VzZWQnID8gbmV3IERhdGUoKSA6IG51
-bGwKICAgIGNvbnN0IHVwZGF0ZWQgPSBhd2FpdCBkYi51cGRhdGUodGlja2V0
-cykKICAgICAgLnNldCh7IAogICAgICAgIHN0YXR1czogZGF0YS5zdGF0dXMs
-IAogICAgICAgIHNjYW5uZWRBdDogc2NhbkRhdGUsCiAgICAgICAgc2Nhbm5l
-ZEJ5OiBkYXRhLnN0YXR1cyA9PT0gJ3VzZWQnID8gYWRtaW4uaWQgOiBudWxs
-LAogICAgICAgIHVwZGF0ZWRBdDogbmV3IERhdGUoKSAKICAgICAgfSkKICAg
-ICAgLndoZXJlKGVxKHRpY2tldHMuaWQsIGRhdGEudGlja2V0SWQpKQogICAg
-ICAucmV0dXJuaW5nKCkKCiAgICBhd2FpdCB3cml0ZUFjdGl2aXR5TG9nKHsK
-ICAgICAgYWN0b3JVc2VySWQ6IGFkbWluLmlkLAogICAgICBhY3RvclJvbGU6
-IGFkbWluLnJvbGUsCiAgICAgIGFjdGlvbjogJ3RpY2tldC5zdGF0dXMudXBk
-YXRlJywKICAgICAgZW50aXR5VHlwZTogJ3RpY2tldCcsCiAgICAgIGVudGl0
-eUlkOiBkYXRhLnRpY2tldElkLAogICAgICBkZXRhaWxzOiB7IHN0YXR1czog
-ZGF0YS5zdGF0dXMgfSwKICAgIH0pCgogICAgcmV0dXJuIHVwZGF0ZWRbMF0K
-ICB9KQoKZXhwb3J0IGNvbnN0IGRlbGV0ZVRpY2tldEZuID0gY3JlYXRlU2VydmVy
-Rm4oeyBtZXRob2Q6ICdQT1NUJyB9KQogIC5pbnB1dFZhbGlkYXRvcigoZGF0
-YTogdW5rbm93bikgPT4gei5udW1iZXIoKS5wYXJzZShkYXRhKSkKICAuaGFu
-ZGxlcihhc3luYyAoeyBkYXRhOiB0aWNrZXRJZCB9KSA9PiB7CiAgICBjb25z
-dCBhZG1pbiA9IGF3YWl0IGNoZWNrQWRtaW4oKQogICAgY29uc3QgZGIgPSBh
-d2FpdCBnZXREYigpCgogICAgaWYgKGlzRGVtb1Rlc3RlclVzZXIoYWRtaW4p
-KSB7CiAgICAgIGNvbnN0IGV4aXN0aW5nID0gYXdhaXQgZGIuc2VsZWN0KCku
-ZnJvbSh0aWNrZXRzKS53aGVyZShlcSh0aWNrZXRzLmlkLCB0aWNrZXRJZCkp
-LmxpbWl0KDEpCiAgICAgIGlmICghZXhpc3RpbmdbMF0gfHwgZXhpc3Rpbmdb
-MF0uaXNzdWVkQnkgIT09IGFkbWluLmlkKSB7CiAgICAgICAgdGhyb3cgbmV3
-IEVycm9yKCdGb3JiaWRkZW4gaW4gZGVtbyBtb2RlJykKICAgICAgfQogICAg
-fQoKICAgIGF3YWl0IGRiLmRlbGV0ZSh0aWNrZXRzKS53aGVyZShlcSh0aWNr
-ZXRzLmlkLCB0aWNrZXRJZCkpCgogICAgYXdhaXQgd3JpdGVBY3Rpdml0eUxv
-Zyh7CiAgICAgIGFjdG9yVXNlcklkOiBhZG1pbi5pZCwKICAgICAgYWN0b3JS
-b2xlOiBhZG1pbi5yb2xlLAogICAgICBhY3Rpb246ICd0aWNrZXQuZGVsZXRl
-JywKICAgICAgZW50aXR5VHlwZTogJ3RpY2tldCcsCiAgICAgIGVudGl0eUlk
-OiB0aWNrZXRJZCwKICAgIH0pCgogICAgcmV0dXJuIHsgc3VjY2VzczogdHJ1
-ZSB9CiAgfSkKCmV4cG9ydCBjb25zdCB2ZXJpZnlUaWNrZXRCeUNvZGVGbiA9
-IGNyZWF0ZVNlcnZlckZuKHsgbWV0aG9kOiAiUE9TVCIgfSkKICAuaW5wdXRW
-YWxpZGF0b3IoKGRhdGE6IHVua25vd24pID0+CiAgICB6Lm9iamVjdCh7CiAg
-ICAgIGNvZGU6IHouc3RyaW5nKCksCiAgICAgIG1hcmtBc1VzZWQ6IHouYm9v
-bGVhbigpLmRlZmF1bHQodHJ1ZSksCiAgICB9KS5wYXJzZShkYXRhKQogICkK
-ICAuaGFuZGxlcihhc3luYyAoeyBkYXRhOiB7IGNvZGUsIG1hcmtBc1VzZWQg
-fSB9KSA9PiB7CiAgICBjb25zdCBkYiA9IGF3YWl0IGdldERiKCkKICAgIC8v
-IFRyeSB0byBnZXQgYWRtaW5JZCBpZiB0aGV5J3JlIGxvZ2dlZCBpbgogICAg
-bGV0IGFkbWluSWQ6IG51bWJlciB8IG51bGwgPSBudWxsCiAgICBsZXQgYWRt
-aW5Sb2xlOiAnb3JnYW5pemVyJyB8ICd2b2x1bnRlZXInIHwgbnVsbCA9IG51
-bGwKICAgIGxldCBkZW1vUmVzdHJpY3RlZCA9IGZhbHNlCiAgICB0cnkgewog
-ICAgICBjb25zdCBhZG1pbiA9IGF3YWl0IGNoZWNrQWRtaW4oKQogICAgICBh
-ZG1pbklkID0gYWRtaW4uaWQKICAgICAgYWRtaW5Sb2xlID0gYWRtaW4ucm9s
-ZQogICAgICBkZW1vUmVzdHJpY3RlZCA9IGlzRGVtb1Rlc3RlclVzZXIoYWRt
-aW4pCiAgICB9IGNhdGNoIChlKSB7CiAgICAgIC8vIE5vdCBsb2dnZWQgaW4g
-b3Igbm90IGFkbWluLCB0aGF0J3MgZmluZSBmb3IgcHVibGljIHZlcmlmaWNh
-dGlvbgogICAgfQoKICAgIGNvbnN0IHJlc3VsdCA9IGF3YWl0IGRiLnNlbGVj
-dCgpLmZyb20odGlja2V0cykud2hlcmUoZXEodGlja2V0cy50aWNrZXRDb2Rl
-LCBjb2RlKSkubGltaXQoMSkKICAgIGlmIChyZXN1bHQubGVuZ3RoID09PSAw
-KSByZXR1cm4geyBzdWNjZXNzOiBmYWxzZSwgbWVzc2FnZTogJ09naWx0aWcg
-YmlsamV0dGtvZCcgfQogICAgCiAgICBjb25zdCB0aWNrZXQgPSByZXN1bHRb
-MF0KCiAgICBpZiAoZGVtb1Jlc3RyaWN0ZWQgJiYgYWRtaW5JZCAmJiB0aWNr
-ZXQuaXNzdWVkQnkgIT09IGFkbWluSWQpIHsKICAgICAgdGhyb3cgbmV3IEVy
-cm9yKCdGb3JiaWRkZW4gaW4gZGVtbyBtb2RlJykKICAgIH0KCiAgICBsZXQg
-Y2hlY2tpbmdJbiA9IGZhbHNlCiAgICAKICAgIC8vIElmIHRpY2tldCBpcyB2
-YWxpZCwgbWFyayBpdCBhcyB1c2VkIGFuZCByZWNvcmQgc2NhbiB0aW1lIE9O
-TFkgaWYgbWFya0FzVXNlZCBpcyB0cnVlCiAgICBpZiAodGlja2V0LnN0YXR1
-cyA9PT0gJ3ZhbGlkJyAmJiBtYXJrQXNVc2VkKSB7CiAgICAgIGNoZWNraW5n
-SW4gPSB0cnVlCiAgICAgIGNvbnN0IHNjYW5EYXRlID0gbmV3IERhdGUoKQog
-ICAgICBhd2FpdCBkYi51cGRhdGUodGlja2V0cykKICAgICAgICAuc2V0KHsg
-CiAgICAgICAgICBzdGF0dXM6ICd1c2VkJywgCiAgICAgICAgICBzY2FubmVk
-QXQ6IHNjYW5EYXRlLCAKICAgICAgICAgIHNjYW5uZWRCeTogYWRtaW5JZCwK
-ICAgICAgICAgIHVwZGF0ZWRBdDogc2NhbkRhdGUgCiAgICAgICAgfSkKICAg
-ICAgICAud2hlcmUoZXEodGlja2V0cy5pZCwgdGlja2V0LmlkKSkKCiAgICAg
-IGlmIChhZG1pbklkICYmIGFkbWluUm9sZSkgewogICAgICAgIGF3YWl0IHdy
-aXRlQWN0aXZpdHlMb2coewogICAgICAgICAgYWN0b3JVc2VySWQ6IGFkbWlu
-SWQsCiAgICAgICAgICBhY3RvclJvbGU6IGFkbWluUm9sZSwKICAgICAgICAg
-IGFjdGlvbjogJ3RpY2tldC52ZXJpZnkuY2hlY2tpbicsCiAgICAgICAgICBl
-bnRpdHlUeXBlOiAndGlja2V0JywKICAgICAgICAgIGVudGl0eUlkOiB0aWNr
-ZXQuaWQsCiAgICAgICAgICBkZXRhaWxzOiB7IGNvZGUgfSwKICAgICAgICB9
-KQogICAgICB9CiAgICAgIAogICAgICAvLyBVcGRhdGUgbG9jYWwgb2JqZWN0
-IGZvciByZXNwb25zZQogICAgICB0aWNrZXQuc3RhdHVzID0gJ3VzZWQnCiAg
-ICAgIHRpY2tldC5zY2FubmVkQXQgPSBzY2FuRGF0ZQogICAgICB0aWNrZXQu
-c2Nhbm5lZEJ5ID0gYWRtaW5JZAogICAgfQoKICAgIC8vIEFsc28gZ2V0IGV2
-ZW50IGRldGFpbHMgZnJvbSB0aGUgZXZlbnRzIHRhYmxlCiAgICBjb25zdCBl
-dmVudCA9IGF3YWl0IGRiLnNlbGVjdCgpLmZyb20oZXZlbnRzKS53aGVyZShl
-cShldmVudHMuaWQsIHRpY2tldC5ldmVudElkKSkubGltaXQoMSkKICAgIAog
-ICAgLy8gRmV0Y2ggb3RoZXIgdGlja2V0cyBmb3IgdGhlIHNhbWUgdXNlciBh
-bmQgZXZlbnQKICAgIGNvbnN0IG90aGVyVGlja2V0cyA9IGF3YWl0IGRiLnNl
-bGVjdCgpCiAgICAgIC5mcm9tKHRpY2tldHMpCiAgICAgIC53aGVyZSgKICAg
-ICAgICBhbmQoCiAgICAgICAgICBlcSh0aWNrZXRzLmV2ZW50SWQsIHRpY2tl
-dC5ldmVudElkKSwKICAgICAgICAgIGVxKHRpY2tldHMucGFydGljaXBhbnRF
-bWFpbCwgdGlja2V0LnBhcnRpY2lwYW50RW1haWwpLAogICAgICAgICAgbmVx
-KHRpY2tldHMuaWQsIHRpY2tldC5pZCkKICAgICAgICApCiAgICAgICkKICAg
-IAogICAgcmV0dXJuIHsgCiAgICAgIHN1Y2Nlc3M6IHRydWUsIAogICAgICB0
-aWNrZXQsIAogICAgICBvdGhlclRpY2tldHMsCiAgICAgIGV2ZW50OiBldmVu
-dFswXSB8fCBudWxsLAogICAgICBjaGVja2luZ0luCiAgICB9CiAgfSkKCmV4
-cG9ydCBjb25zdCBnZXRFdmVudHNGb3JUaWNrZXRzRm4gPSBjcmVhdGVTZXJ2
-ZXJGbih7IG1ldGhvZDogJ0dFVCcgfSkKICAuaGFuZGxlcihhc3luYyAoKSA9
-PiB7CiAgICBhd2FpdCBjaGVja0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdh
-aXQgZ2V0RGIoKQogICAgcmV0dXJuIGF3YWl0IGRiLnNlbGVjdCgpLmZyb20o
-ZXZlbnRzKQogIH0pCg==
+import { createServerFn } from '@tanstack/start'
+import { db } from '../db'
+import { tickets, events, ticketTypes } from '../db/schema'
+import { eq, desc, and, ilike, or } from 'drizzle-orm'
+import { requireAuth } from './auth'
+import { logActivity } from './logs'
+
+export const getTicketsFn = createServerFn({ method: 'GET' })
+  .validator((data: unknown) => {
+    const d = data as Record<string, unknown> | undefined
+    return {
+      search: typeof d?.search === 'string' ? d.search : undefined,
+      status: typeof d?.status === 'string' ? d.status : undefined,
+      eventId: typeof d?.eventId === 'number' ? d.eventId : undefined
+    }
+  })
+  .handler(async ({ data }) => {
+    await requireAuth()
+    
+    let query = db
+      .select({
+        ticket: tickets,
+        event: events
+      })
+      .from(tickets)
+      .leftJoin(events, eq(tickets.eventId, events.id))
+      .orderBy(desc(tickets.createdAt))
+    
+    const conditions = []
+    
+    if (data.search) {
+      conditions.push(
+        or(
+          ilike(tickets.participantName, `%${data.search}%`),
+          ilike(tickets.participantEmail, `%${data.search}%`),
+          ilike(tickets.ticketCode, `%${data.search}%`)
+        )
+      )
+    }
+    
+    if (data.status && data.status !== 'all') {
+      conditions.push(eq(tickets.status, data.status))
+    }
+    
+    if (data.eventId && data.eventId !== 0) {
+      conditions.push(eq(tickets.eventId, data.eventId))
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any
+    }
+    
+    const results = await query
+    
+    return results.map(r => ({
+      ...r.ticket,
+      event: r.event
+    }))
+  })
+
+export const issueTicketFn = createServerFn({ method: 'POST' })
+  .validator((data: unknown) => {
+    const d = data as Record<string, unknown>
+    return {
+      eventId: Number(d.eventId),
+      participantName: String(d.participantName),
+      participantEmail: String(d.participantEmail),
+      ticketType: String(d.ticketType),
+      pricePaid: Number(d.pricePaid)
+    }
+  })
+  .handler(async ({ data }) => {
+    const session = await requireAuth()
+    
+    // Generate a unique 6-character alphanumeric code
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // Removed confusing chars like I, 1, O, 0
+    let ticketCode = ''
+    for (let i = 0; i < 6; i++) {
+      ticketCode += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    
+    const [ticket] = await db.insert(tickets).values({
+      ...data,
+      ticketCode,
+      status: 'valid',
+      issuedBy: session.id
+    }).returning()
+    
+    await logActivity(
+      session.id,
+      session.role,
+      'ISSUE_TICKET',
+      'ticket',
+      ticket.id,
+      `Issued ticket ${ticketCode} to ${data.participantName}`
+    )
+    
+    return ticket
+  })
+
+export const verifyTicketByCodeFn = createServerFn({ method: 'POST' })
+  .validator((data: unknown) => {
+    const d = data as Record<string, unknown>
+    return {
+      code: String(d.code),
+      markAsUsed: Boolean(d.markAsUsed)
+    }
+  })
+  .handler(async ({ data }) => {
+    const session = await requireAuth().catch(() => null) // Optional auth for public viewing
+    
+    const [result] = await db
+      .select({
+        ticket: tickets,
+        event: events
+      })
+      .from(tickets)
+      .leftJoin(events, eq(tickets.eventId, events.id))
+      .where(eq(tickets.ticketCode, data.code))
+    
+    if (!result || !result.ticket) {
+      return { success: false, message: 'Biljetten hittades inte' }
+    }
+    
+    const { ticket, event } = result
+    
+    // If just viewing (markAsUsed = false), return the ticket info
+    if (!data.markAsUsed) {
+      return { 
+        success: true, 
+        ticket,
+        event
+      }
+    }
+    
+    // If trying to mark as used, require auth
+    if (!session) {
+      throw new Error('Unauthorized to scan tickets')
+    }
+    
+    if (ticket.status === 'used') {
+      return { 
+        success: false, 
+        message: 'Biljetten är redan använd',
+        ticket,
+        event,
+        checkingIn: false
+      }
+    }
+    
+    if (ticket.status === 'cancelled') {
+      return { 
+        success: false, 
+        message: 'Biljetten är ogiltig/makulerad',
+        ticket,
+        event,
+        checkingIn: false
+      }
+    }
+    
+    // Mark as used
+    const [updatedTicket] = await db
+      .update(tickets)
+      .set({ 
+        status: 'used',
+        scannedAt: new Date(),
+        scannedBy: session.id,
+        updatedAt: new Date()
+      })
+      .where(eq(tickets.id, ticket.id))
+      .returning()
+      
+    await logActivity(
+      session.id,
+      session.role,
+      'SCAN_TICKET',
+      'ticket',
+      ticket.id,
+      `Scanned and checked in ticket ${ticket.ticketCode}`
+    )
+      
+    return { 
+      success: true, 
+      message: 'Incheckning lyckades',
+      ticket: updatedTicket,
+      event,
+      checkingIn: true
+    }
+  })
+
+export const getEventsForTicketsFn = createServerFn({ method: 'GET' })
+  .handler(async () => {
+    await requireAuth()
+    return db.select().from(events).orderBy(desc(events.date))
+  })
+
+export const getTicketTypesFn = createServerFn({ method: 'GET' })
+  .handler(async () => {
+    await requireAuth()
+    return db.select().from(ticketTypes).orderBy(desc(ticketTypes.createdAt))
+  })
+
+export const createTicketTypeFn = createServerFn({ method: 'POST' })
+  .validator((data: unknown) => {
+    const d = data as Record<string, unknown>
+    return {
+      name: String(d.name),
+      price: Number(d.price),
+      description: d.description ? String(d.description) : undefined
+    }
+  })
+  .handler(async ({ data }) => {
+    const session = await requireAuth()
+    if (session.role !== 'organizer') throw new Error('Unauthorized')
+    
+    const [type] = await db.insert(ticketTypes).values(data).returning()
+    
+    await logActivity(
+      session.id,
+      session.role,
+      'CREATE_TICKET_TYPE',
+      'ticketType',
+      type.id,
+      `Created ticket type ${type.name}`
+    )
+    
+    return type
+  })
+
+export const deleteTicketTypeFn = createServerFn({ method: 'POST' })
+  .validator((data: unknown) => {
+    return Number(data)
+  })
+  .handler(async ({ data }) => {
+    const session = await requireAuth()
+    if (session.role !== 'organizer') throw new Error('Unauthorized')
+    
+    await db.delete(ticketTypes).where(eq(ticketTypes.id, data))
+    
+    await logActivity(
+      session.id,
+      session.role,
+      'DELETE_TICKET_TYPE',
+      'ticketType',
+      data,
+      `Deleted ticket type ${data}`
+    )
+    
+    return { success: true }
+  })
+
+export const getEventsFn = createServerFn({ method: 'GET' })
+  .handler(async () => {
+    await requireAuth()
+    return db.select().from(events).orderBy(desc(events.date))
+  })
+
+export const createEventFn = createServerFn({ method: 'POST' })
+  .validator((data: unknown) => {
+    const d = data as Record<string, unknown>
+    return {
+      title: String(d.title),
+      description: d.description ? String(d.description) : undefined,
+      date: new Date(String(d.date)),
+      location: d.location ? String(d.location) : undefined,
+      image: d.image ? String(d.image) : undefined,
+      published: Boolean(d.published)
+    }
+  })
+  .handler(async ({ data }) => {
+    const session = await requireAuth()
+    if (session.role !== 'organizer') throw new Error('Unauthorized')
+    
+    const [event] = await db.insert(events).values(data).returning()
+    
+    await logActivity(
+      session.id,
+      session.role,
+      'CREATE_EVENT',
+      'event',
+      event.id,
+      `Created event ${event.title}`
+    )
+    
+    return event
+  })
+
+export const deleteEventFn = createServerFn({ method: 'POST' })
+  .validator((data: unknown) => {
+    return Number(data)
+  })
+  .handler(async ({ data }) => {
+    const session = await requireAuth()
+    if (session.role !== 'organizer') throw new Error('Unauthorized')
+    
+    await db.delete(events).where(eq(events.id, data))
+    
+    await logActivity(
+      session.id,
+      session.role,
+      'DELETE_EVENT',
+      'event',
+      data,
+      `Deleted event ${data}`
+    )
+    
+    return { success: true }
+  })
+
+export const updateTicketStatusFn = createServerFn({ method: 'POST' })
+  .validator((data: unknown) => {
+    const d = data as Record<string, unknown>
+    return {
+      id: Number(d.id),
+      status: String(d.status) as 'valid' | 'used' | 'cancelled'
+    }
+  })
+  .handler(async ({ data }) => {
+    const session = await requireAuth()
+    if (session.role !== 'organizer' && session.role !== 'volunteer') throw new Error('Unauthorized')
+    
+    const [ticket] = await db.update(tickets)
+      .set({ status: data.status, updatedAt: new Date() })
+      .where(eq(tickets.id, data.id))
+      .returning()
+      
+    if (!ticket) throw new Error('Ticket not found')
+    
+    await logActivity(
+      session.id,
+      session.role,
+      'UPDATE_TICKET_STATUS',
+      'ticket',
+      ticket.id,
+      `Updated ticket ${ticket.ticketCode} status to ${data.status}`
+    )
+    
+    return ticket
+  })
+
+export const deleteTicketFn = createServerFn({ method: 'POST' })
+  .validator((data: unknown) => {
+    return Number(data)
+  })
+  .handler(async ({ data }) => {
+    const session = await requireAuth()
+    if (session.role !== 'organizer') throw new Error('Unauthorized')
+    
+    const [ticket] = await db.delete(tickets).where(eq(tickets.id, data)).returning()
+    
+    if (!ticket) throw new Error('Ticket not found')
+    
+    await logActivity(
+      session.id,
+      session.role,
+      'DELETE_TICKET',
+      'ticket',
+      data,
+      `Deleted ticket ${ticket.ticketCode}`
+    )
+    
+    return { success: true }
+  })

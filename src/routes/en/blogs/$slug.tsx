@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { getPostBySlugTranslatedToEnglishFn } from '../../../../server/functions/posts'
-import { MarkdownContent } from '../../../../components/markdown-content'
+import { getPostBySlugTranslatedToEnglishFn } from '../../../server/functions/posts'
+import { MarkdownContent } from '../../../components/markdown-content'
 
 export const Route = createFileRoute('/en/blogs/$slug')({
   loader: async ({ params }) => {

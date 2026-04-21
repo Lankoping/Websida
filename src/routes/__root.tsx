@@ -10,7 +10,7 @@ import appCss from '../styles.css?url'
 import type { QueryClient } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from 'next-themes'
-import { LanguageSwitcher } from '@/components/language-switcher'
+import { CookieBanner } from '@/components/cookie-banner'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -101,8 +101,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
           <HtmlLangSync />
-          <LanguageSwitcher />
           {children}
+          <CookieBanner />
           <Toaster />
         </ThemeProvider>
         <Scripts />
@@ -116,7 +116,7 @@ function HtmlLangSync() {
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      document.documentElement.lang = pathname.startsWith('/en') ? 'en' : 'sv'
+      document.documentElement.lang = 'sv'
     }
   }, [pathname])
 

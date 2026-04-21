@@ -1,5 +1,4 @@
 const swedishStaticPaths = new Set(['/', '/rules', '/team', '/privacy', '/blogs', '/nyheter', '/datapolicy/se'])
-const englishStaticPaths = new Set(['/en', '/en/rules', '/en/team', '/en/privacy', '/en/blogs', '/en/nyheter', '/datapolicy/en'])
 
 function isSwedishContentPath(pathname: string): boolean {
   if (swedishStaticPaths.has(pathname)) return true
@@ -8,39 +7,7 @@ function isSwedishContentPath(pathname: string): boolean {
   return false
 }
 
-function isEnglishContentPath(pathname: string): boolean {
-  if (englishStaticPaths.has(pathname)) return true
-  if (pathname.startsWith('/en/blogs/')) return true
-  if (pathname.startsWith('/en/nyheter/')) return true
-  return false
-}
-
-function toEnglishPath(pathname: string): string {
-  if (pathname === '/datapolicy/se') return '/datapolicy/en'
-  if (pathname === '/') return '/en'
-  return `/en${pathname}`
-}
-
-function toSwedishPath(pathname: string): string {
-  if (pathname === '/datapolicy/en') return '/datapolicy/se'
-  if (pathname === '/en') return '/'
-  return pathname.replace(/^\/en/, '') || '/'
-}
-
-export function getLanguageToggle(pathname: string): { targetPath: string; label: 'EN' | 'SV' } {
-  if (isSwedishContentPath(pathname)) {
-    return {
-      targetPath: toEnglishPath(pathname),
-      label: 'EN',
-    }
-  }
-
-  if (isEnglishContentPath(pathname)) {
-    return {
-      targetPath: toSwedishPath(pathname),
-      label: 'SV',
-    }
-  }
-
-  return {} // Return an empty object instead of null
+export function getLanguageToggle(pathname: string): { targetPath?: string; label?: 'EN' | 'SV' } {
+  // Language switching is disabled as we are focusing on a Swedish audience only.
+  return {}
 }

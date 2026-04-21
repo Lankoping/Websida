@@ -13,9 +13,9 @@ function DataPolicySwedish() {
           <ArrowLeft size={16} /> Tillbaka till inloggning
         </Link>
 
-        <h1 className="mt-6 font-display text-4xl tracking-wide text-[#C04A2A]">Datapolicy (SV)</h1>
+        <h1 className="mt-6 font-display text-4xl tracking-wide text-[#C04A2A]">Datapolicy & Cookies</h1>
         <p className="mt-3 text-sm text-[#F0E8D8]/75">
-          Denna policy förklarar hur Lankoping ("vi", "oss", "vår") behandlar dina personuppgifter som arrangör eller volontär, i enlighet med Dataskyddsförordningen (GDPR).
+          Denna policy förklarar hur Lankoping ("vi", "oss", "vår") behandlar dina personuppgifter som arrangör eller volontär, samt hur vi använder cookies, i enlighet med Dataskyddsförordningen (GDPR).
         </p>
 
         <div className="mt-8 space-y-6 text-sm leading-relaxed text-[#F0E8D8]/85">
@@ -44,7 +44,21 @@ function DataPolicySwedish() {
           </section>
 
           <section>
-            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">4. Dina rättigheter</h2>
+            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">4. Användning av Cookies</h2>
+            <p>
+              Vi använder cookies (små textfiler som sparas i din webbläsare) för att säkerställa att webbplatsen och administrationssystemet fungerar korrekt.
+            </p>
+            <ul className="list-disc pl-5 mt-2 space-y-1">
+              <li><strong>Nödvändiga cookies:</strong> Används för inloggning, säkerhet och för att spara dina inställningar (t.ex. ditt val angående cookies). Dessa kan inte stängas av.</li>
+              <li><strong>Funktionella & Analytiska cookies:</strong> Används för att förstå hur systemet används så att vi kan förbättra det. Du kan välja att avvisa dessa via vår cookie-banner.</li>
+            </ul>
+            <p className="mt-2">
+              Ditt samtycke till icke-nödvändiga cookies är frivilligt (GDPR Artikel 7) och kan när som helst återkallas genom att rensa din webbläsares cookies.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">5. Dina rättigheter</h2>
             <p>Enligt GDPR har du följande rättigheter gällande dina personuppgifter:</p>
             <ul className="list-disc pl-5 mt-2 space-y-1">
               <li><strong>Rätt till tillgång:</strong> Du kan begära en kopia av de uppgifter vi har om dig.</li>
@@ -56,7 +70,7 @@ function DataPolicySwedish() {
           </section>
 
           <section>
-            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">5. Klagomål</h2>
+            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">6. Klagomål</h2>
             <p>
               Om du anser att vår behandling av dina personuppgifter bryter mot dataskyddslagstiftningen har du rätt att lämna in ett klagomål till Integritetsskyddsmyndigheten (IMY).
             </p>

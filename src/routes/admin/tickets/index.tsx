@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Loader2, Plus, Ticket, Users, QrCode, Search, Trash2, Edit, CheckCircle2, XCircle, Clock } from 'lucide-react'
-import { useToast } from '@/components/ui/use-toast'
+import { useToast } from '@/hooks/use-toast'
 import { format } from 'date-fns'
 import { sv } from 'date-fns/locale'
 

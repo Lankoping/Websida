@@ -1,10 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_public/rules')({
   component: Rules,
 })
 
 function Rules() {
+  const navigate = useNavigate()
   const rules = [
     { title: "Ingen alkohol eller droger", details: "Det är inte tillåtet att ta med, använda eller sälja droger eller andra berusningsmedel under eventet." },
     { title: "Nolltolerans mot trakasserier", details: "Inget hat, hot, diskriminering, mobbning eller sexuella trakasserier. Respektera allas gränser." },
@@ -20,6 +21,12 @@ function Rules() {
 
   return (
     <div className="container mx-auto p-8 max-w-4xl text-black">
+      <button 
+        onClick={() => navigate({ to: '/' })} 
+        className="text-[#C04A2A] hover:underline mb-8 block"
+      >
+        ← Tillbaka
+      </button>
       <h1 className="text-4xl font-bold mb-8">Regler</h1>
       <div className="grid gap-6">
         {rules.map((rule, index) => (

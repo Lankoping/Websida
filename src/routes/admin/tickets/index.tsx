@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Loader2, Plus, Ticket, Users, QrCode, Search, Trash2, Edit, CheckCircle2, XCircle, Clock } from 'lucide-react'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { sv } from 'date-fns/locale'
 
@@ -142,7 +142,6 @@ function EventsList({ selectedEventId, onSelectEvent }: { selectedEventId: strin
 }
 
 function TicketTypesList({ eventId }: { eventId: string }) {
-  const { toast } = useToast()
   const queryClient = useQueryClient()
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
@@ -180,10 +179,10 @@ function TicketTypesList({ eventId }: { eventId: string }) {
       queryClient.invalidateQueries({ queryKey: ['ticket-types', eventId] })
       setIsCreateOpen(false)
       resetForm()
-      toast({ title: 'Biljettyp skapad', description: 'Den nya biljettypen har lagts till.' })
+      toast.success('Biljettyp skapad', { description: 'Den nya biljettypen har lagts till.' })
     },
     onError: (error: Error) => {
-      toast({ title: 'Ett fel uppstod', description: error.message, variant: 'destructive' })
+      toast.error('Ett fel uppstod', { description: error.message })
     }
   })
 
@@ -196,10 +195,10 @@ function TicketTypesList({ eventId }: { eventId: string }) {
       queryClient.invalidateQueries({ queryKey: ['ticket-types', eventId] })
       setIsEditOpen(false)
       resetForm()
-      toast({ title: 'Biljettyp uppdaterad', description: 'Ändringarna har sparats.' })
+      toast.success('Biljettyp uppdaterad', { description: 'Ändringarna har sparats.' })
     },
     onError: (error: Error) => {
-      toast({ title: 'Ett fel uppstod', description: error.message, variant: 'destructive' })
+      toast.error('Ett fel uppstod', { description: error.message })
     }
   })
 
@@ -210,10 +209,10 @@ function TicketTypesList({ eventId }: { eventId: string }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ticket-types', eventId] })
-      toast({ title: 'Biljettyp borttagen' })
+      toast.success('Biljettyp borttagen')
     },
     onError: (error: Error) => {
-      toast({ title: 'Kunde inte ta bort', description: error.message, variant: 'destructive' })
+      toast.error('Kunde inte ta bort', { description: error.message })
     }
   })
 
@@ -536,7 +535,6 @@ function TicketsList({ eventId, onSelectEvent }: { eventId: string | null, onSel
 }
 
 function IssueTicketForm({ eventId, onSelectEvent }: { eventId: string | null, onSelectEvent: (id: string) => void }) {
-  const { toast } = useToast()
   const queryClient = useQueryClient()
   
   const [selectedTypeId, setSelectedTypeId] = useState<string>('')
@@ -577,8 +575,7 @@ function IssueTicketForm({ eventId, onSelectEvent }: { eventId: string | null, o
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['event-tickets', eventId] })
-      toast({ 
-        title: 'Biljett utfärdad!', 
+      toast.success('Biljett utfärdad!', {
         description: `Biljettkod: ${data.ticketCode}`,
       })
       setUserEmail('')
@@ -586,7 +583,7 @@ function IssueTicketForm({ eventId, onSelectEvent }: { eventId: string | null, o
       setNotes('')
     },
     onError: (error: Error) => {
-      toast({ title: 'Ett fel uppstod', description: error.message, variant: 'destructive' })
+      toast.error('Ett fel uppstod', { description: error.message })
     }
   })
 

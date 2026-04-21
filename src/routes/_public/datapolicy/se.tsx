@@ -39,7 +39,7 @@ function DataPolicySwedish() {
             <ul className="list-disc pl-5 space-y-1">
               <li><strong>Kontouppgifter:</strong> Lagras under den tid du har en aktiv roll som volontär eller arrangör. Vid din avgång och efter genomförd avslutningsprocess kommer ditt konto och tillhörande personuppgifter att raderas eller anonymiseras.</li>
               <li><strong>Aktivitetsloggar:</strong> Lagras för säkerhetsgranskning och rensas regelbundet enligt våra interna säkerhetspolicyer.</li>
-              <li><strong>IP-adresser:</strong> IP-relaterad metadata lagras i maximalt 3 dagar och raderas därefter automatiskt.</li>
+              <li><strong>IP-adresser:</strong> IP-relaterad metadata lagras i maximalt 7 dagar och raderas därefter automatiskt.</li>
             </ul>
           </section>
 

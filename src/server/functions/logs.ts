@@ -48,7 +48,7 @@ export async function deleteActivityLogsForUser(actorUserId: number) {
   return removed.length
 }
 
-export async function purgeExpiredRequestMetadata(retentionDays = 3) {
+export async function purgeExpiredRequestMetadata(retentionDays = 7) {
   const db = await getDb()
   const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000)
 

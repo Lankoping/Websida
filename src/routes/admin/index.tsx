@@ -1,5 +1,6 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { getPostsFn, deletePostFn } from '../../server/functions/posts'
+import { getDatabaseStatsFn } from '../../server/functions/stats'
 import { useState } from 'react'
 import { 
   Search, 
@@ -11,14 +12,18 @@ import {
   Calendar,
   MoreVertical,
   Eye,
-  ArrowRight
+  ArrowRight,
+  Database,
+  Server,
+  Activity
 } from 'lucide-react'
 
 export const Route = createFileRoute('/admin/')({
   loader: async () => {
-    const [blogs, news] = await Promise.all([
+    const [blogs, news, dbStats] = await Promise.all([
       getPostsFn({ data: 'blog' }),
-      getPostsFn({ data: 'news' })
+      getPostsFn({ data: 'news' }),
+      getDatabaseStatsFn()
     ])
     return {
       posts: [...blogs, ...news].sort((a, b) => {
@@ -30,7 +35,8 @@ export const Route = createFileRoute('/admin/')({
         blogs: blogs.length,
         news: news.length,
         total: blogs.length + news.length
-      }
+      },
+      dbStats
     }
   },
   component: AdminDashboard,
@@ -40,10 +46,12 @@ function StatCard({
   label, 
   value, 
   icon: Icon,
+  subtext
 }: { 
   label: string
   value: number | string
   icon: any
+  subtext?: string
 }) {
   return (
     <div className="bg-card border border-border p-6 transition-all hover:border-primary/30">
@@ -51,6 +59,7 @@ function StatCard({
         <div>
           <p className="text-xs font-medium tracking-widest text-muted-foreground uppercase mb-2">{label}</p>
           <p className="font-display text-4xl text-foreground">{value}</p>
+          {subtext && <p className="text-xs text-muted-foreground mt-2">{subtext}</p>}
         </div>
         <div className="p-2 bg-primary/10">
           <Icon className="w-5 h-5 text-primary" />
@@ -61,7 +70,7 @@ function StatCard({
 }
 
 function AdminDashboard() {
-  const { posts, stats } = Route.useLoaderData()
+  const { posts, stats, dbStats } = Route.useLoaderData()
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState<'all' | 'blog' | 'news'>('all')
@@ -96,7 +105,7 @@ function AdminDashboard() {
         <div>
           <p className="text-xs font-medium tracking-widest text-primary uppercase mb-2">Adminpanel</p>
           <h1 className="font-display text-4xl md:text-5xl text-foreground">Översikt</h1>
-          <p className="text-muted-foreground mt-2">Välkommen tillbaka! Hantera ditt innehåll.</p>
+          <p className="text-muted-foreground mt-2">Välkommen tillbaka! Hantera ditt innehåll och övervaka systemet.</p>
         </div>
         <a 
           href="/admin/new" 
@@ -107,12 +116,40 @@ function AdminDashboard() {
         </a>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        <StatCard icon={FileText} label="Totalt" value={stats.total} />
-        <StatCard icon={FileText} label="Blogginlägg" value={stats.blogs} />
-        <StatCard icon={Newspaper} label="Nyheter" value={stats.news} />
-        <StatCard icon={Eye} label="Publicerade" value={posts.filter(p => p.published).length} />
+      {/* System Stats Grid */}
+      <div className="mb-8">
+        <h2 className="text-sm font-medium tracking-widest text-primary uppercase mb-4">Systemstatus</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <StatCard 
+            icon={Server} 
+            label="Server Hälsa" 
+            value={dbStats.serverHealth} 
+            subtext="Databasanslutning aktiv"
+          />
+          <StatCard 
+            icon={Database} 
+            label="Databasstorlek" 
+            value={dbStats.dbSize} 
+            subtext={`${dbStats.totalRows} rader totalt`}
+          />
+          <StatCard 
+            icon={Activity} 
+            label="Snitt Rader/Användare" 
+            value={dbStats.avgRowsPerUser} 
+            subtext={`Baserat på ${dbStats.userCount} användare`}
+          />
+        </div>
+      </div>
+
+      {/* Content Stats Grid */}
+      <div className="mb-10">
+        <h2 className="text-sm font-medium tracking-widest text-primary uppercase mb-4">Innehållsstatistik</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard icon={FileText} label="Totalt" value={stats.total} />
+          <StatCard icon={FileText} label="Blogginlägg" value={stats.blogs} />
+          <StatCard icon={Newspaper} label="Nyheter" value={stats.news} />
+          <StatCard icon={Eye} label="Publicerade" value={posts.filter(p => p.published).length} />
+        </div>
       </div>
 
       {/* Content Section */}
@@ -209,7 +246,7 @@ function AdminDashboard() {
                               Radera
                             </button>
                           </div>
-                        </>
+                        <//>
                       )}
                     </div>
                   </div>

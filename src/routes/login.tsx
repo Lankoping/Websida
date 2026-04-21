@@ -18,7 +18,7 @@ function Login() {
     try {
       const res = await loginFn({ data: { email, passwordHash: password } }) // Simplified hash
       if (res.success) {
-        window.location.href = '/admin' // Force reload to pick up cookie
+        router.navigate({ to: '/admin' }) // Use router.navigate instead of window.location.href
       }
     } catch (err: any) {
       console.error('Login error:', err)

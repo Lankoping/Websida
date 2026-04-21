@@ -1,7 +1,6 @@
 import { ComingSoon } from '@/components/coming-soon'
 import { createFileRoute } from '@tanstack/react-router'
 import { getPostsTranslatedToEnglishFn } from '../../server/functions/posts'
-import { getHeroContentFn, getInfoSectionsFn } from '../../server/functions/cms'
 
 export const Route = createFileRoute('/en/')({
   head: () => ({
@@ -35,18 +34,16 @@ export const Route = createFileRoute('/en/')({
   }),
   loader: async () => {
     try {
-      const [blogs, news, heroContent, infoSections] = await Promise.all([
+      const [blogs, news] = await Promise.all([
         getPostsTranslatedToEnglishFn({ data: 'blog' }),
         getPostsTranslatedToEnglishFn({ data: 'news' }),
-        getHeroContentFn(),
-        getInfoSectionsFn(),
       ])
 
       return {
         latestBlog: blogs[0] ?? null,
         latestNews: news[0] ?? null,
-        heroContent,
-        infoSections,
+        heroContent: null,
+        infoSections: [],
       }
     } catch {
       return {

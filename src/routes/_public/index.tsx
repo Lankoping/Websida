@@ -1,23 +1,20 @@
 import { ComingSoon } from '@/components/coming-soon'
 import { createFileRoute } from '@tanstack/react-router'
 import { getPostsFn } from '../../server/functions/posts'
-import { getHeroContentFn, getInfoSectionsFn } from '../../server/functions/cms'
 
 export const Route = createFileRoute('/_public/')({
   loader: async () => {
     try {
-      const [blogs, news, hero, infoSections] = await Promise.all([
+      const [blogs, news] = await Promise.all([
         getPostsFn({ data: 'blog' }),
         getPostsFn({ data: 'news' }),
-        getHeroContentFn(),
-        getInfoSectionsFn(),
       ])
 
       return {
         latestBlog: blogs[0] ?? null,
         latestNews: news[0] ?? null,
-        heroData: hero,
-        infoSectionsData: infoSections,
+        heroData: null,
+        infoSectionsData: [],
       }
     } catch (error) {
       console.error('[v0] Error loading homepage data:', error)
@@ -25,7 +22,7 @@ export const Route = createFileRoute('/_public/')({
         latestBlog: null,
         latestNews: null,
         heroData: null,
-        infoSectionsData: null,
+        infoSectionsData: [],
       }
     }
   },

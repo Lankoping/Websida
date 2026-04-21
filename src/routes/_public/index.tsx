@@ -43,7 +43,7 @@ function Index() {
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="mb-12">
             <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Senaste</p>
-            <h2 className="font-bold text-3xl md:text-4xl text-foreground">Blogg & Nyheter</h2>
+            <h2 className="font-bold text-3xl md:text-4xl text-black">Blogg & Nyheter</h2>
           </div>
 
           <div className="grid gap-8 md:grid-cols-2">
@@ -54,17 +54,17 @@ function Index() {
               </div>
               {latestBlog ? (
                 <>
-                  <h3 className="font-bold text-xl md:text-2xl text-foreground mb-3">
+                  <h3 className="font-bold text-xl md:text-2xl text-black mb-3">
                     {latestBlog.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-gray-700 mb-4">
                     {latestBlog.createdAt ? new Date(latestBlog.createdAt).toLocaleDateString('sv-SE') : ''}
                   </p>
-                  <p className="text-muted-foreground leading-relaxed mb-6">
+                  <p className="text-gray-800 leading-relaxed mb-6">
                     {latestBlog.excerpt || 'Läs senaste blogginlägget.'}
                   </p>
                   <a 
-                    className="inline-flex items-center text-sm font-medium text-primary hover:text-foreground transition-colors" 
+                    className="inline-flex items-center text-sm font-medium text-primary hover:text-black transition-colors" 
                     href={`/blogs/${latestBlog.slug}`}
                   >
                     Läs mer
@@ -74,7 +74,7 @@ function Index() {
                   </a>
                 </>
               ) : (
-                <p className="text-muted-foreground">Ingen blogg publicerad än.</p>
+                <p className="text-gray-700">Ingen blogg publicerad än.</p>
               )}
             </article>
 
@@ -85,17 +85,17 @@ function Index() {
               </div>
               {latestNews ? (
                 <>
-                  <h3 className="font-bold text-xl md:text-2xl text-foreground mb-3">
+                  <h3 className="font-bold text-xl md:text-2xl text-black mb-3">
                     {latestNews.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-gray-700 mb-4">
                     {latestNews.createdAt ? new Date(latestNews.createdAt).toLocaleDateString('sv-SE') : ''}
                   </p>
-                  <p className="text-muted-foreground leading-relaxed mb-6">
+                  <p className="text-gray-800 leading-relaxed mb-6">
                     {latestNews.excerpt || 'Läs senaste nyheten.'}
                   </p>
                   <a 
-                    className="inline-flex items-center text-sm font-medium text-primary hover:text-foreground transition-colors" 
+                    className="inline-flex items-center text-sm font-medium text-primary hover:text-black transition-colors" 
                     href={`/nyheter/${latestNews.slug}`}
                   >
                     Läs mer
@@ -105,7 +105,7 @@ function Index() {
                   </a>
                 </>
               ) : (
-                <p className="text-muted-foreground">Ingen nyhet publicerad än.</p>
+                <p className="text-gray-700">Ingen nyhet publicerad än.</p>
               )}
             </article>
           </div>

@@ -22,15 +22,15 @@ function NewsPost() {
   const navigate = useNavigate()
 
   return (
-    <div className="container mx-auto p-8 max-w-4xl bg-white text-black min-h-screen">
-      <button onClick={() => navigate({ to: '/nyheter' })} className="text-[#C04A2A] hover:underline mb-8 block">← Tillbaka</button>
-      <h1 className="text-4xl font-bold mb-4 text-black">{post.title}</h1>
-      <div className="flex items-center gap-2 text-sm text-gray-600 mb-8">
+    <div className="container mx-auto p-8 max-w-4xl bg-background text-foreground min-h-screen">
+      <button onClick={() => navigate({ to: '/nyheter' })} className="text-primary hover:underline mb-8 block">← Tillbaka</button>
+      <h1 className="text-4xl font-bold mb-4 text-foreground">{post.title}</h1>
+      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
         <span>{new Date(post.createdAt!).toLocaleDateString()}</span>
-        <span className="mx-2">·</span>
-        <span className="bg-[#C04A2A]/20 text-[#C04A2A] px-2 py-0.5 rounded text-xs uppercase tracking-wider">{post.type}</span>
+        <span className="mx-2">•</span>
+        <span className="bg-primary/20 text-primary px-2 py-0.5 rounded text-xs uppercase tracking-wider">{post.type}</span>
       </div>
-      <div className="prose prose-black max-w-none">
+      <div className="prose prose-slate max-w-none">
         <MarkdownContent content={post.content} />
       </div>
     </div>

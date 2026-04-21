@@ -1,442 +1,717 @@
-aW1wb3J0IHsgY3JlYXRlRmlsZVJvdXRlLCB1c2VSb3V0ZXIgfSBmcm9tICdA
-dGFuc3RhY2svcmVhY3Qtcm91dGVyJwppbXBvcnQgeyBnZXRUaWNrZXRzRm4s
-IGRlbGV0ZVRpY2tldEZuLCB1cGRhdGVUaWNrZXRTdGF0dXNGbiwgZ2V0RXZl
-bnRzRm9yVGlja2V0c0ZuLCB2ZXJpZnlUaWNrZXRCeUNvZGVGbiB9IGZyb20g
-Jy4uLy4uLy4uL3NlcnZlci9mdW5jdGlvbnMvdGlja2V0cycKaW1wb3J0IHsg
-dXNlRWZmZWN0LCB1c2VTdGF0ZSB9IGZyb20gJ3JlYWN0JwppbXBvcnQgeyBQ
-bHVzLCBUcmFzaDIsIENoZWNrQ2lyY2xlLCBYQ2lyY2xlLCBTZWFyY2gsIFRp
-Y2tldCwgTWFpbCwgVXNlciwgQ2FsZW5kYXIsIFFyQ29kZSwgU2V0dGluZ3Ms
-IENvcHksIENoZWNrLCBTaGllbGRDaGVjaywgQWxlcnRUcmlhbmdsZSB9IGZy
-b20gJ2x1Y2lkZS1yZWFjdCcKaW1wb3J0IHsgdXNlTmF2aWdhdGUgfSBmcm9t
-ICdAdGFuc3RhY2svcmVhY3Qtcm91dGVyJwppbXBvcnQgeyBRUkNvZGVTVkcg
-fSBmcm9tICdxcmNvZGUucmVhY3QnCgpjb25zdCBzdG9ja2hvbG1UaW1lRm9y
-bWF0dGVyID0gbmV3IEludGwuRGF0ZVRpbWVGb3JtYXQoJ3N2LVNFJywgewog
-IGhvdXI6ICcyLWRpZ2l0JywKICBtaW51dGU6ICcyLWRpZ2l0JywKICB0aW1l
-Wm9uZTogJ0V1cm9wZS9TdG9ja2hvbG0nLAp9KQoKZnVuY3Rpb24gZm9ybWF0
-U3RvY2tob2xtVGltZSh2YWx1ZTogRGF0ZSB8IHN0cmluZyB8IG51bGwgfCB1
-bmRlZmluZWQsIGZhbGxiYWNrID0gJycpIHsKICBpZiAoIXZhbHVlKSByZXR1
-cm4gZmFsbGJhY2sKICByZXR1cm4gc3RvY2tob2xtVGltZUZvcm1hdHRlci5m
-b3JtYXQobmV3IERhdGUodmFsdWUpKQp9CgpleHBvcnQgY29uc3QgUm91dGUg
-PSBjcmVhdGVGaWxlUm91dGUoJy9hZG1pbi90aWNrZXRzLycpKHsKICBsb2Fk
-ZXI6IGFzeW5jICgpID0+IHsKICAgIGNvbnN0IFt0aWNrZXRzLCBldmVudHNd
-ID0gYXdhaXQgUHJvbWlzZS5hbGwoWwogICAgICBnZXRUaWNrZXRzRm4oKSwK
-ICAgICAgZ2V0RXZlbnRzRm9yVGlja2V0c0ZuKCkKICAgIF0pCiAgICByZXR1
-cm4geyB0aWNrZXRzLCBldmVudHMgfQogIH0sCiAgY29tcG9uZW50OiBUaWNr
-ZXRzQWRtaW4sCn0pCgpmdW5jdGlvbiBUaWNrZXRzQWRtaW4oKSB7CiAgY29u
-c3QgeyB0aWNrZXRzLCBldmVudHMgfSA9IFJvdXRlLnVzZUxvYWRlckRhdGEo
-KQogIGNvbnN0IHJvdXRlciA9IHVzZVJvdXRlcigpCiAgY29uc3QgbmF2aWdh
-dGUgPSB1c2VOYXZpZ2F0ZSgpCiAgY29uc3QgW3NlYXJjaFF1ZXJ5LCBzZXRT
-ZWFyY2hRdWVyeV0gPSB1c2VTdGF0ZSgnJykKICBjb25zdCBbc2VsZWN0ZWRU
-aWNrZXQsIHNldFNlbGVjdGVkVGlja2V0XSA9IHVzZVN0YXRlPHR5cGVvZiB0
-aWNrZXRzWzBdIHwgbnVsbD4obnVsbCkKICBjb25zdCBbY29waWVkSWQsIHNl
-dENvcGllZElkXSA9IHVzZVN0YXRlPG51bWJlciB8IG51bGw+KG51bGwpCiAg
-Y29uc3QgW3ZlcmlmaWNhdGlvblJlc3VsdCwgc2V0VmVyaWZpY2F0aW9uUmVz
-dWx0XSA9IHVzZVN0YXRlPGFueT4obnVsbCkKICBjb25zdCBbdmVyaWZpY2F0
-aW9uVXJsLCBzZXRWZXJpZmljYXRpb25VcmxdID0gdXNlU3RhdGUoJycpCgog
-IHVzZUVmZmVjdCgoKSA9PiB7CiAgICBzZXRWZXJpZmljYXRpb25VcmwoYCR7
-d2luZG93LmxvY2F0aW9uLm9yaWdpbn0vdmVyaWZ5L2ApCiAgfSwgW10pCgog
-IGNvbnN0IGhhbmRsZU1hbnVhbFZlcmlmaWNhdGlvbiA9IGFzeW5jICgpID0+
-IHsKICAgIGNvbnN0IGNvZGUgPSB3aW5kb3cucHJvbXB0KCdBbmdlIGJpbGpl
-dHRrb2QgKHQuZXguIFRLVC1BQkMxMjNYWSk6JykKICAgIGlmICghY29kZSkg
-cmV0dXJuCgogICAgdHJ5IHsKICAgICAgY29uc3QgcmVzID0gYXdhaXQgdmVy
-aWZ5VGlja2V0QnlDb2RlRm4oeyBkYXRhOiB7IGNvZGU6IGNvZGUudHJpbSgp
-LnRvVXBwZXJDYXNlKCksIG1hcmtBc1VzZWQ6IHRydWUgfSB9KQogICAgICBz
-ZXRWZXJpZmljYXRpb25SZXN1bHQocmVzKQogICAgICBhd2FpdCByb3V0ZXIu
-aW52YWxpZGF0ZSgpCiAgICB9IGNhdGNoIChlcnIpIHsKICAgICAgY29uc29s
-ZS5lcnJvcihlcnIpCiAgICAgIGFsZXJ0KCdWZXJpZmllcmluZyBtaXNzbHlj
-a2FkZXMnKQogICAgfQogIH0KCiAgY29uc3QgaGFuZGxlQ29weUxpbmsgPSAo
-Y29kZTogc3RyaW5nLCB0aWNrZXRJZDogbnVtYmVyKSA9PiB7CiAgICBjb25z
-dCB1cmwgPSBgJHt3aW5kb3cubG9jYXRpb24ub3JpZ2lufS9iaWxqZXR0LyR7
-Y29kZX1gCiAgICBuYXZpZ2F0b3IuY2xpcGJvYXJkLndyaXRlVGV4dCh1cmwp
-CiAgICBzZXRDb3BpZWRJZCh0aWNrZXRJZCkKICAgIHNldFRpbWVvdXQoKCkg
-PT4gc2V0Q29waWVkSWQobnVsbCksIDIwMDApCiAgfQoKICBjb25zdCBoYW5k
-bGVEZWxldGUgPSBhc3luYyAoaWQ6IG51bWJlcikgPT4gewogICAgaWYgKHdp
-bmRvdy5jb25maXJtKCfDhHIgZHUgc8Oka2VyIHDDpSBhdHQgZHUgdmlsbCBy
-YWRlcmEgZGVubmEgYmlsamV0dD8nKSkgewogICAgICB0cnkgewogICAgICAg
-IGF3YWl0IGRlbGV0ZVRpY2tldEZuKHsgZGF0YTogaWQgfSkKICAgICAgICBh
-d2FpdCByb3V0ZXIuaW52YWxpZGF0ZSgpCiAgICAgIH0gY2F0Y2ggKGVycikg
-ewogICAgICAgIGNvbnNvbGUuZXJyb3IoZXJyKQogICAgICAgIGFsZXJ0KCdL
-dW5kZSBpbnRlIHJhZGVyYSBiaWxqZXR0ZW4nKQogICAgICB9CiAgICB9CiAg
-fQoKICBjb25zdCBoYW5kbGVVcGRhdGVTdGF0dXMgPSBhc3luYyAoaWQ6IG51
-bWJlciwgc3RhdHVzOiAndmFsaWQnIHwgJ3VzZWQnIHwgJ2NhbmNlbGxlZCcp
-ID0+IHsKICAgIHRyeSB7CiAgICAgIGF3YWl0IHVwZGF0ZVRpY2tldFN0YXR1
-c0ZuKHsgZGF0YTogeyB0aWNrZXRJZDogaWQsIHN0YXR1cyB9IH0pCiAgICAg
-IGF3YWl0IHJvdXRlci5pbnZhbGlkYXRlKCkKICAgIH0gY2F0Y2ggKGVycikg
-ewogICAgICBjb25zb2xlLmVycm9yKGVycikKICAgICAgYWxlcnQoJ0t1bmRl
-IGludGUgdXBwZGF0ZXJhIHN0YXR1cycpCiAgICB9CiAgfQoKICBjb25zdCBn
-ZXRFdmVudFRpdGxlID0gKGV2ZW50SWQ6IG51bWJlcikgPT4gewogICAgcmV0
-dXJuIGV2ZW50cy5maW5kKGUgPT4gZS5pZCA9PT0gZXZlbnRJZCk/LnRpdGxl
-IHx8ICdPa8OkbnQgZXZlbnQnCiAgfQoKICBjb25zdCBmaWx0ZXJlZFRpY2tl
-dHMgPSB0aWNrZXRzLmZpbHRlcih0aWNrZXQgPT4gewogICAgY29uc3Qgc2Vh
-cmNoTG93ZXIgPSBzZWFyY2hRdWVyeS50b0xvd2VyQ2FzZSgpCiAgICBjb25z
-dCBldmVudFRpdGxlID0gZ2V0RXZlbnRUaXRsZSh0aWNrZXQuZXZlbnRJZCku
-dG9Mb3dlckNhc2UoKQogICAgcmV0dXJuICgKICAgICAgdGlja2V0LnBhcnRp
-Y2lwYW50TmFtZS50b0xvd2VyQ2FzZSgpLmluY2x1ZGVzKHNlYXJjaExvd2Vy
-KSB8fAogICAgICB0aWNrZXQucGFydGljaXBhbnRFbWFpbC50b0xvd2VyQ2Fz
-ZSgpLmluY2x1ZGVzKHNlYXJjaExvd2VyKSB8fAogICAgICB0aWNrZXQudGlj
-a2V0Q29kZS50b0xvd2VyQ2FzZSgpLmluY2x1ZGVzKHNlYXJjaExvd2VyKSB8
-fAogICAgICBldmVudFRpdGxlLmluY2x1ZGVzKHNlYXJjaExvd2VyKQogICAg
-KQogIH0pCgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0ibWF4LXct
-N3hsIG14LWF1dG8iPgogICAgICA8ZGl2IGNsYXNzTmFtZT0ibWItOCI+CiAg
-ICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtbWVkaXVtIHRyYWNr
-aW5nLXdpZGVzdCB0ZXh0LXByaW1hcnkgdXBwZXJjYXNlIG1iLTIiPkJpbGpl
-dHRlcjwvcD4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBmbGV4LWNv
-bCB4bDpmbGV4LXJvdyBqdXN0aWZ5LWJldHdlZW4geGw6aXRlbXMtZW5kIGdh
-cC00Ij4KICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgIDxoMSBjbGFzc05h
-bWU9ImZvbnQtZGlzcGxheSB0ZXh0LTR4bCB0ZXh0LWZvcmVncm91bmQgZmxl
-eCBpdGVtcy1jZW50ZXIgZ2FwLTMiPgogICAgICAgICAgICAgIDxUaWNrZXQg
-Y2xhc3NOYW1lPSJ3LTggaC04IHRleHQtcHJpbWFyeSIgLz4KICAgICAgICAg
-ICAgICBCaWxqZXR0aGFudGVyaW5nCiAgICAgICAgICAgIDwvaDE+CiAgICAg
-ICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1tdXRlZC1mb3JlZ3JvdW5kIG10
-LTIiPlV0ZsOkcmRhIG9jaCBoYW50ZXJhIGJpbGpldHRlciBmw7ZyIGRpbmEg
-ZXZlbnQuPC9wPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8ZGl2IGNs
-YXNzTmFtZT0iZmxleCBmbGV4LXdyYXAgZ2FwLTIiPgogICAgICAgICAgICA8
-YnV0dG9uIAogICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IG5hdmlnYXRl
-KHsgdG86ICcvYWRtaW4vdGlja2V0cy9ldmVudHMnIH0pfQogICAgICAgICAg
-ICAgIGNsYXNzTmFtZT0icHgtNCBweS0yLjUgYm9yZGVyIGJvcmRlci1ib3Jk
-ZXIgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHRleHQteHMgdXBwZXJjYXNlIHRy
-YWNraW5nLXdpZGVyIGZvbnQtbWVkaXVtIGhvdmVyOnRleHQtZm9yZWdyb3Vu
-ZCBob3Zlcjpib3JkZXItcHJpbWFyeS81MCB0cmFuc2l0aW9uLWFsbCBpbmxp
-bmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIiCiAgICAgICAgICAgID4KICAg
-ICAgICAgICAgICA8Q2FsZW5kYXIgY2xhc3NOYW1lPSJ3LTQgaC00IiAvPgog
-ICAgICAgICAgICAgIEV2ZW50cwogICAgICAgICAgICA8L2J1dHRvbj4KICAg
-ICAgICAgICAgPGJ1dHRvbiAKICAgICAgICAgICAgICBvbkNsaWNrPXsoKSA9
-PiBuYXZpZ2F0ZSh7IHRvOiAnL2FkbWluL3RpY2tldHMvdHlwZXMnIH0pfQog
-ICAgICAgICAgICAgIGNsYXNzTmFtZT0icHgtNCBweS0yLjUgYm9yZGVyIGJv
-cmRlci1ib3JkZXIgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHRleHQteHMgdXBw
-ZXJjYXNlIHRyYWNraW5nLXdpZGVyIGZvbnQtbWVkaXVtIGhvdmVyOnRleHQt
-Zm9yZWdyb3VuZCBob3Zlcjpib3JkZXItcHJpbWFyeS81MCB0cmFuc2l0aW9u
-LWFsbCBpbmxpbmUtZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIiCiAgICAgICAg
-ICAgID4KICAgICAgICAgICAgICA8U2V0dGluZ3MgY2xhc3NOYW1lPSJ3LTQg
-aC00IiAvPgogICAgICAgICAgICAgIFR5cGVyCiAgICAgICAgICAgIDwvYnV0
-dG9uPgogICAgICAgICAgICA8YnV0dG9uIAogICAgICAgICAgICAgIG9uQ2xp
-Y2s9e2hhbmRsZU1hbnVhbFZlcmlmaWNhdGlvbn0KICAgICAgICAgICAgICBj
-bGFzc05hbWU9InB4LTQgcHktMi41IGJvcmRlciBib3JkZXItYm9yZGVyIHRl
-eHQtbXV0ZWQtZm9yZWdyb3VuZCB0ZXh0LXhzIHVwcGVyY2FzZSB0cmFja2lu
-Zy13aWRlciBmb250LW1lZGl1bSBob3Zlcjp0ZXh0LWZvcmVncm91bmQgaG92
-ZXI6Ym9yZGVyLXByaW1hcnkvNTAgdHJhbnNpdGlvbi1hbGwgaW5saW5lLWZs
-ZXggaXRlbXMtY2VudGVyIGdhcC0yIgogICAgICAgICAgICA+CiAgICAgICAg
-ICAgICAgPFRpY2tldCBjbGFzc05hbWU9InctNCBoLTQiIC8+CiAgICAgICAg
-ICAgICAgQW5nZSBLb2QKICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAg
-ICAgIDxidXR0b24gCiAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gbmF2
-aWdhdGUoeyB0bzogJy9hZG1pbi90aWNrZXRzL25ldycgfSl9CiAgICAgICAg
-ICAgICAgY2xhc3NOYW1lPSJweC00IHB5LTIuNSBiZy1wcmltYXJ5IHRleHQt
-cHJpbWFyeS1mb3JlZ3JvdW5kIHRleHQteHMgdXBwZXJjYXNlIHRyYWNraW5n
-LXdpZGVyIGZvbnQtbWVkaXVtIGhvdmVyOmJnLXByaW1hcnkvOTAgdHJhbnNp
-dGlvbi1hbGwgaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0yIgogICAg
-ICAgICAgICA+CiAgICAgICAgICAgICAgPFBsdXMgY2xhc3NOYW1lPSJ3LTQg
-aC00IiAvPgogICAgICAgICAgICAgIE55IGJpbGpldHQKICAgICAgICAgICAg
-PC9idXR0b24+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAg
-ICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzTmFtZT0iYmctY2FyZCBib3Jk
-ZXIgYm9yZGVyLWJvcmRlciI+CiAgICAgICAgPGRpdiBjbGFzc05hbWU9InAt
-NCBib3JkZXItYiBib3JkZXItYm9yZGVyIj4KICAgICAgICAgIDxkaXYgY2xh
-c3NOYW1lPSJyZWxhdGl2ZSI+CiAgICAgICAgICAgIDxpbnB1dCAKICAgICAg
-ICAgICAgICB0eXBlPSJ0ZXh0IiAKICAgICAgICAgICAgICBwbGFjZWhvbGRl
-cj0iU8O2ayBww6UgbmFtbiwgZS1wb3N0LCBrb2QgZWxsZXIgZXZlbnQuLi4i
-IAogICAgICAgICAgICAgIHZhbHVlPXtzZWFyY2hRdWVyeX0KICAgICAgICAg
-ICAgICBvbkNoYW5nZT17KGUpID0+IHNldFNlYXJjaFF1ZXJ5KGUudGFyZ2V0
-LnZhbHVlKX0KICAgICAgICAgICAgICBjbGFzc05hbWU9InctZnVsbCBwLTMg
-cGwtMTAgYmctYmFja2dyb3VuZCBib3JkZXIgYm9yZGVyLWJvcmRlciBmb2N1
-czpib3JkZXItcHJpbWFyeS81MCBmb2N1czpyaW5nLTIgZm9jdXM6cmluZy1w
-cmltYXJ5LzIwIG91dGxpbmUtbm9uZSB0ZXh0LWZvcmVncm91bmQgdGV4dC1z
-bSB0cmFuc2l0aW9uLWFsbCBwbGFjZWhvbGRlcjp0ZXh0LW11dGVkLWZvcmVn
-cm91bmQiCiAgICAgICAgICAgIC8+CiAgICAgICAgICAgIDxTZWFyY2ggY2xh
-c3NOYW1lPSJhYnNvbHV0ZSBsZWZ0LTMgdG9wLTMuNSB3LTQgaC00IHRleHQt
-bXV0ZWQtZm9yZWdyb3VuZCIgLz4KICAgICAgICAgIDwvZGl2PgogICAgICAg
-IDwvZGl2PgoKICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ib3ZlcmZsb3cteC1h
-dXRvIj4KICAgICAgICAgIDx0YWJsZSBjbGFzc05hbWU9InctZnVsbCB0ZXh0
-LWxlZnQgYm9yZGVyLWNvbGxhcHNlIj4KICAgICAgICAgICAgPHRoZWFkPgog
-ICAgICAgICAgICAgIDx0ciBjbGFzc05hbWU9ImJvcmRlci1iIGJvcmRlci1i
-b3JkZXIgYmctc2Vjb25kYXJ5LzMwIj4KICAgICAgICAgICAgICAgIDx0aCBj
-bGFzc05hbWU9InAtNCB0ZXh0LVsxMHB4XSB1cHBlcmNhc2UgdHJhY2tpbmct
-d2lkZXN0IGZvbnQtbWVkaXVtIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+S29k
-PC90aD4KICAgICAgICAgICAgICAgIDx0aCBjbGFzc05hbWU9InAtNCB0ZXh0
-LVsxMHB4XSB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IGZvbnQtbWVkaXVt
-IHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+RGVsdGFnYXJlPC90aD4KICAgICAg
-ICAgICAgICAgIDx0aCBjbGFzc05hbWU9InAtNCB0ZXh0LVsxMHB4XSB1cHBl
-cmNhc2UgdHJhY2tpbmctd2lkZXN0IGZvbnQtbWVkaXVtIHRleHQtbXV0ZWQt
-Zm9yZWdyb3VuZCI+VHlwICYgUHJpczwvdGg+CiAgICAgICAgICAgICAgICA8
-dGggY2xhc3NOYW1lPSJwLTQgdGV4dC1bMTBweF0gdXBwZXJjYXNlIHRyYWNr
-aW5nLXdpZGVzdCBmb250LW1lZGl1bSB0ZXh0LW11dGVkLWZvcmVncm91bmQi
-PlN0YXR1czwvdGg+CiAgICAgICAgICAgICAgICA8dGggY2xhc3NOYW1lPSJw
-LTQgdGV4dC1bMTBweF0gdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBmb250
-LW1lZGl1bSB0ZXh0LW11dGVkLWZvcmVncm91bmQgdGV4dC1yaWdodCI+w4V0
-Z8OkcmRlcjwvdGg+CiAgICAgICAgICAgICAgPC90cj4KICAgICAgICAgICAg
-PC90aGVhZD4KICAgICAgICAgICAgPHRib2R5IGNsYXNzTmFtZT0iZGl2aWRl
-LXkgZGl2aWRlLWJvcmRlciI+CiAgICAgICAgICAgICAge2ZpbHRlcmVkVGlj
-a2V0cy5tYXAoKHRpY2tldCkgPT4gKAogICAgICAgICAgICAgICAgPHRyIGtl
-eT17dGlja2V0LmlkfSBjbGFzc05hbWU9ImhvdmVyOmJnLXNlY29uZGFyeS8z
-MCB0cmFuc2l0aW9uLWNvbG9ycyBncm91cCI+CiAgICAgICAgICAgICAgICAg
-IDx0ZCBjbGFzc05hbWU9InAtNCB3aGl0ZXNwYWNlLW5vd3JhcCI+CiAgICAg
-ICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJmb250LW1vbm8gdGV4
-dC14cyBiZy1zZWNvbmRhcnkgcHgtMiBweS0xIGJvcmRlciBib3JkZXItYm9y
-ZGVyIHRleHQtZm9yZWdyb3VuZCI+CiAgICAgICAgICAgICAgICAgICAgICB7
-dGlja2V0LnRpY2tldENvZGV9CiAgICAgICAgICAgICAgICAgICAgPC9zcGFu
-PgogICAgICAgICAgICAgICAgICA8L3RkPgogICAgICAgICAgICAgICAgICA8
-dGQgY2xhc3NOYW1lPSJwLTQiPgogICAgICAgICAgICAgICAgICAgIDxkaXYg
-Y2xhc3NOYW1lPSJmbGV4IGZsZXgtY29sIG1pbi13LVsxMjBweF0iPgogICAg
-ICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LXNtIGZv
-bnQtbWVkaXVtIGZsZXggaXRlbXMtY2VudGVyIGdhcC0xLjUgdGV4dC1mb3Jl
-Z3JvdW5kIj4KICAgICAgICAgICAgICAgICAgICAgICA8VXNlciBjbGFzc05h
-bWU9InctMyBoLTMgdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIiAvPgogICAgICAg
-ICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idHJ1bmNhdGUiPnt0
-aWNrZXQucGFydGljaXBhbnROYW1lfTwvc3Bhbj4KICAgICAgICAgICAgICAg
-ICAgICA8L3NwYW4+CiAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NO
-YW1lPSJ0ZXh0LXhzIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCBmbGV4IGl0ZW1z
-LWNlbnRlciBnYXAtMS41IG10LTAuNSI+CiAgICAgICAgICAgICAgICAgICAg
-ICAgPENhbGVuZGFyIGNsYXNzTmFtZT0idy0zIGgtMyIgLz4KICAgICAgICAg
-ICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InRydW5jYXRlIj57Z2V0
-RXZlbnRUaXRsZSh0aWNrZXQuZXZlbnRJZCl9PC9zcGFuPgogICAgICAgICAg
-ICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICAgICAgPC9kaXY+CiAg
-ICAgICAgICAgICAgICA8L3RkPgogICAgICAgICAgICAgICAgPHRkIGNsYXNz
-TmFtZT0icC00Ij4KICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9
-ImZsZXggZmxleC1jb2wgd2hpdGVzcGFjZS1ub3dyYXAiPgogICAgICAgICAg
-ICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bMTBweF0gdXBwZXJj
-YXNlIHRyYWNraW5nLXdpZGVyIGZvbnQtbWVkaXVtIHRleHQtcHJpbWFyeSI+
-e3RpY2tldC50aWNrZXRUeXBlfTwvc3Bhbj4KICAgICAgICAgICAgICAgICAg
-ICA8c3BhbiBjbGFzc05hbWU9InRleHQtc20gZm9udC1tb25vIHRleHQtZm9y
-ZWdyb3VuZCI+e3RpY2tldC5wcmljZVBhaWR9IFNFSzwvc3Bhbj4KICAgICAg
-ICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8L3RkPgogICAg
-ICAgICAgICAgICAgPHRkIGNsYXNzTmFtZT0icC00Ij4KICAgICAgICAgICAg
-ICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXggZmxleC1jb2wgbWluLXctWzEw
-MHB4XSI+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9e2Bw
-eC0yIHB5LTEgdGV4dC1bMTBweF0gZm9udC1tZWRpdW0gdXBwZXJjYXNlIHRy
-YWNraW5nLXdpZGVyIGJvcmRlciBtYi0xLjUgZmxleCBpdGVtcy1jZW50ZXIg
-anVzdGlmeS1iZXR3ZWVuIHRyYW5zaXRpb24tYWxsICR7CiAgICAgICAgICAg
-ICAgICAgICAgICB0aWNrZXQuc3RhdHVzID09PSAndmFsaWQnID8gJ2JvcmRl
-ci1ncmVlbi01MDAvMzAgdGV4dC1ncmVlbi02MDAgYmctZ3JlZW4tNTAnIDoK
-ICAgICAgICAgICAgICAgICAgICAgIHRpY2tldC5zdGF0dXMgPT09ICd1c2Vk
-JyA/ICdib3JkZXItYmx1ZS01MDAvMzAgdGV4dC1ibHVlLTYwMCBiZy1ibHVl
-LTUwJyA6CiAgICAgICAgICAgICAgICAgICAgICAnYm9yZGVyLXJlZC01MDAv
-MzAgdGV4dC1yZWQtNjAwIGJnLXJlZC01MCcKICAgICAgICAgICAgICAgICAg
-ICB9YH0+CiAgICAgICAgICAgICAgICAgICAgICA8c2VsZWN0IAogICAgICAg
-ICAgICAgICAgICAgICAgICB2YWx1ZT17dGlja2V0LnN0YXR1c30KICAgICAg
-ICAgICAgICAgICAgICAgICAgb25DaGFuZ2U9eyhlKSA9PiBoYW5kbGVVcGRh
-dGVTdGF0dXModGlja2V0LmlkLCBlLnRhcmdldC52YWx1ZSBhcyBhbnkpfQog
-ICAgICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9ImJnLXRyYW5zcGFy
-ZW50IG91dGxpbmUtbm9uZSBjdXJzb3ItcG9pbnRlciB3LWZ1bGwiCiAgICAg
-ICAgICAgICAgICAgICAgICA+CiAgICAgICAgICAgICAgICAgICAgICAgIDxv
-cHRpb24gdmFsdWU9InZhbGlkIj5HaWx0aWc8L29wdGlvbj4KICAgICAgICAg
-ICAgICAgICAgICAgICAgPG9wdGlvbiB2YWx1ZT0idXNlZCI+QW52w6RuZDwv
-b3B0aW9uPgogICAgICAgICAgICAgICAgICAgICAgICA8b3B0aW9uIHZhbHVl
-PSJjYW5jZWxsZWQiPkFubnVsbGVyYWQ8L29wdGlvbj4KICAgICAgICAgICAg
-ICAgICAgICAgIDwvc2VsZWN0PgogICAgICAgICAgICAgICAgICAgIDwvZGl2
-PgogICAgICAgICAgICAgICAgICAgIHt0aWNrZXQuc2Nhbm5lZEF0ICYmICgK
-ICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGZs
-ZXgtY29sIG10LTAuNSI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFu
-IGNsYXNzTmFtZT0idGV4dC1bMTBweF0gdGV4dC1tdXRlZC1mb3JlZ3JvdW5k
-Ij4KICAgICAgICAgICAgICAgICAgICAgICAgICBTa2FubmFkOiB7Zm9ybWF0
-U3RvY2tob2xtVGltZSh0aWNrZXQuc2Nhbm5lZEF0KX0KICAgICAgICAgICAg
-ICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICAgICAgICAgICAgICB7
-dGlja2V0LnNjYW5uZWRCeU5hbWUgJiYgKAogICAgICAgICAgICAgICAgICAg
-ICAgICAgIDxzcGFuIGNsYXNzTmFtZT0idGV4dC1bMTBweF0gdGV4dC1wcmlt
-YXJ5IGZvbnQtbWVkaXVtIG10LTAuNSI+CiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBBdjoge3RpY2tldC5zY2FubmVkQnlOYW1lfQogICAgICAgICAg
-ICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICAg
-ICAgKX0KICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAg
-ICAgICAgICAgICl9CiAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAg
-ICAgICAgICAgPC90ZD4KICAgICAgICAgICAgICAgIDx0ZCBjbGFzc05hbWU9
-InAtNCB0ZXh0LXJpZ2h0Ij4KICAgICAgICAgICAgICAgICAgPGRpdiBjbGFz
-c05hbWU9ImZsZXgganVzdGlmeS1lbmQgZ2FwLTEiPgogICAgICAgICAgICAg
-ICAgICAgIDxidXR0b24gCiAgICAgICAgICAgICAgICAgICAgICBvbkNsaWNr
-PXsoKSA9PiBoYW5kbGVDb3B5TGluayh0aWNrZXQudGlja2V0Q29kZSwgdGlj
-a2V0LmlkKX0KICAgICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT17YHAt
-MiB0cmFuc2l0aW9uLWFsbCBmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMSAkewog
-ICAgICAgICAgICAgICAgICAgICAgICBjb3BpZWRJZCA9PT0gdGlja2V0Lmlk
-ID8gJ3RleHQtZ3JlZW4tNjAwIGJnLWdyZWVuLTUwJyA6ICd0ZXh0LW11dGVk
-LWZvcmVncm91bmQgaG92ZXI6dGV4dC1mb3JlZ3JvdW5kIGhvdmVyOmJnLXNl
-Y29uZGFyeScKICAgICAgICAgICAgICAgICAgICAgIH1gfQogICAgICAgICAg
-ICAgICAgICAgICAgdGl0bGU9IktvcGllcmEgbMOkbmsiCiAgICAgICAgICAg
-ICAgICAgICAgPgogICAgICAgICAgICAgICAgICAgICAge2NvcGllZElkID09
-PSB0aWNrZXQuaWQgPyA8Q2hlY2sgY2xhc3NOYW1lPSJ3LTQgaC00IiAvPiA6
-IDxDb3B5IGNsYXNzTmFtZT0idy00IGgtNCIgLz59CiAgICAgICAgICAgICAg
-ICAgICAgPC9idXR0b24+CiAgICAgICAgICAgICAgICAgICAgPGJ1dHRvbiAK
-ICAgICAgICAgICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IHNldFNlbGVj
-dGVkVGlja2V0KHRpY2tldCl9CiAgICAgICAgICAgICAgICAgICAgICBjbGFz
-c05hbWU9InAtMiB0ZXh0LW11dGVkLWZvcmVncm91bmQgaG92ZXI6dGV4dC1w
-cmltYXJ5IGhvdmVyOmJnLXByaW1hcnkvMTAgdHJhbnNpdGlvbi1hbGwiCiAg
-ICAgICAgICAgICAgICAgICAgICB0aXRsZT0iVmlzYSBRUiIKICAgICAgICAg
-ICAgICAgICAgICA+CiAgICAgICAgICAgICAgICAgICAgICA8UXJDb2RlIGNs
-YXNzTmFtZT0idy00IGgtNCIgLz4KICAgICAgICAgICAgICAgICAgICA8L2J1
-dHRvbj4KICAgICAgICAgICAgICAgICAgICA8YnV0dG9uIAogICAgICAgICAg
-ICAgICAgICAgICAgb25DbGljaz17KCkgPT4gaGFuZGxlRGVsZXRlKHRpY2tl
-dC5pZCl9CiAgICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9InAtMiB0
-ZXh0LW11dGVkLWZvcmVncm91bmQgaG92ZXI6dGV4dC1kZXN0cnVjdGl2ZSBo
-b3ZlcjpiZy1kZXN0cnVjdGl2ZS8xMCB0cmFuc2l0aW9uLWFsbCIKICAgICAg
-ICAgICAgICAgICAgICAgIHRpdGxlPSJSYWRlcmEiCiAgICAgICAgICAgICAg
-ICAgICAgPgogICAgICAgICAgICAgICAgICAgICAgPFRyYXNoMiBjbGFzc05h
-bWU9InctNCBoLTQiIC8+CiAgICAgICAgICAgICAgICAgICAgPC9idXR0b24+
-CiAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPC90
-ZD4KICAgICAgICAgICAgICA8L3RyPgogICAgICAgICAgICApKX0KICAgICAg
-ICAgICAge2ZpbHRlcmVkVGlja2V0cy5sZW5ndGggPT09IDAgJiYgKAogICAg
-ICAgICAgICAgIDx0cj4KICAgICAgICAgICAgICAgIDx0ZCBjb2xTcGFuPXs1
-fSBjbGFzc05hbWU9InAtMTIgdGV4dC1jZW50ZXIgdGV4dC1tdXRlZC1mb3Jl
-Z3JvdW5kIGl0YWxpYyI+CiAgICAgICAgICAgICAgICAgIEluZ2EgYmlsamV0
-dGVyIGhpdHRhZGVzLgogICAgICAgICAgICAgICAgPC90ZD4KICAgICAgICAg
-ICAgICA8L3RyPgogICAgICAgICAgICApfQogICAgICAgICAgPC90Ym9keT4K
-ICAgICAgICA8L3RhYmxlPgogICAgICAgIDwvZGl2PgogICAgICA8L2Rpdj4K
-CiAgICAgIHt2ZXJpZmljYXRpb25SZXN1bHQgJiYgKAogICAgICAgIDxkaXYg
-Y2xhc3NOYW1lPSJmaXhlZCBpbnNldC0wIHotWzYwXSBmbGV4IGl0ZW1zLWNl
-bnRlciBqdXN0aWZ5LWNlbnRlciBwLTQgYmctZm9yZWdyb3VuZC84MCBiYWNr
-ZHJvcC1ibHVyLW1kIiBvbkNsaWNrPXsoKSA9PiBzZXRWZXJpZmljYXRpb25S
-ZXN1bHQobnVsbCl9PgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9e2B3LWZ1
-bGwgbWF4LXctc20gcC04IGJnLWNhcmQgYm9yZGVyICR7CiAgICAgICAgICAg
-ICF2ZXJpZmljYXRpb25SZXN1bHQuc3VjY2VzcyB8fCAhdmVyaWZpY2F0aW9u
-UmVzdWx0LmNoZWNraW5nSW4KICAgICAgICAgICAgICA/ICdib3JkZXItZGVz
-dHJ1Y3RpdmUvMzAnCiAgICAgICAgICAgICAgOiAnYm9yZGVyLWdyZWVuLTUw
-MC8zMCcKICAgICAgICAgIH0gcmVsYXRpdmUgb3ZlcmZsb3ctaGlkZGVuIHRl
-eHQtY2VudGVyYH0gb25DbGljaz17ZSA9PiBlLnN0b3BQcm9wYWdhdGlvbigp
-fT4KICAgICAgICAgICAgCiAgICAgICAgICAgIDxidXR0b24gCiAgICAgICAg
-ICAgICAgb25DbGljaz17KCkgPT4gc2V0VmVyaWZpY2F0aW9uUmVzdWx0KG51
-bGwpfQogICAgICAgICAgICAgIGNsYXNzTmFtZT0iYWJzb2x1dGUgdG9wLTQg
-cmlnaHQtNCB0ZXh0LW11dGVkLWZvcmVncm91bmQgaG92ZXI6dGV4dC1mb3Jl
-Z3JvdW5kIHRyYW5zaXRpb24tY29sb3JzIgogICAgICAgICAgICA+CiAgICAg
-ICAgICAgICAgPFhDaXJjbGUgY2xhc3NOYW1lPSJ3LTYgaC02IiAvPgogICAg
-ICAgICAgICA8L2J1dHRvbj4KCiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1l
-PSJtYi02IGZsZXgganVzdGlmeS1jZW50ZXIiPgogICAgICAgICAgICAgIHt2
-ZXJpZmljYXRpb25SZXN1bHQuc3VjY2VzcyA/ICgKICAgICAgICAgICAgICAg
-IHZlcmlmaWNhdGlvblJlc3VsdC5jaGVja2luZ0luID8gKAogICAgICAgICAg
-ICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icC00IGJnLWdyZWVuLTEwMCBib3Jk
-ZXIgYm9yZGVyLWdyZWVuLTMwMCI+CiAgICAgICAgICAgICAgICAgICAgPFNo
-aWVsZENoZWNrIGNsYXNzTmFtZT0idy0xMiBoLTEyIHRleHQtZ3JlZW4tNjAw
-IiAvPgogICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAg
-ICkgOiB2ZXJpZmljYXRpb25SZXN1bHQudGlja2V0LnN0YXR1cyA9PT0gJ3Vz
-ZWQnID8gKAogICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0icC00
-IGJnLW9yYW5nZS0xMDAgYm9yZGVyIGJvcmRlci1vcmFuZ2UtMzAwIj4KICAg
-ICAgICAgICAgICAgICAgICA8QWxlcnRUcmlhbmdsZSBjbGFzc05hbWU9Inct
-MTIgaC0xMiB0ZXh0LW9yYW5nZS02MDAiIC8+CiAgICAgICAgICAgICAgICAg
-IDwvZGl2PgogICAgICAgICAgICAgICAgKSA6ICgKICAgICAgICAgICAgICAg
-ICAgPGRpdiBjbGFzc05hbWU9InAtNCBiZy1yZWQtMTAwIGJvcmRlciBib3Jk
-ZXItcmVkLTMwMCI+CiAgICAgICAgICAgICAgICAgICAgPFhDaXJjbGUgY2xh
-c3NOYW1lPSJ3LTEyIGgtMTIgdGV4dC1yZWQtNjAwIiAvPgogICAgICAgICAg
-ICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICkKICAgICAgICAgICAg
-ICApIDogKAogICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9InAtNCBi
-Zy1yZWQtMTAwIGJvcmRlciBib3JkZXItcmVkLTMwMCI+CiAgICAgICAgICAg
-ICAgICAgIDxYQ2lyY2xlIGNsYXNzTmFtZT0idy0xMiBoLTEyIHRleHQtcmVk
-LTYwMCIgLz4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAg
-ICl9CiAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgPGgzIGNsYXNz
-TmFtZT0iZm9udC1kaXNwbGF5IHRleHQtMnhsIHRleHQtZm9yZWdyb3VuZCBt
-Yi0xIj4KICAgICAgICAgICAgICB7dmVyaWZpY2F0aW9uUmVzdWx0LnN1Y2Nl
-c3MgCiAgICAgICAgICAgICAgICA/ICh2ZXJpZmljYXRpb25SZXN1bHQuY2hl
-Y2tpbmdJbiA/ICdHb2Rrw6RuZCBJbmNoZWNrbmluZycgOiAodmVyaWZpY2F0
-aW9uUmVzdWx0LnRpY2tldC5zdGF0dXMgPT09ICd1c2VkJyA/ICdCaWxqZXR0
-IFJlZGFuIEFudsOkbmQnIDogJ0JpbGpldHQgT2dpbHRpZycpKSAKICAgICAg
-ICAgICAgICAgIDogJ09naWx0aWcgS29kJ30KICAgICAgICAgICAgPC9oMz4K
-ICAgICAgICAgICAgCiAgICAgICAgICAgIHt2ZXJpZmljYXRpb25SZXN1bHQu
-dGlja2V0ICYmICgKICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXQt
-NiB0ZXh0LWxlZnQgc3BhY2UteS00IGJvcmRlci10IGJvcmRlci1ib3JkZXIg
-cHQtNiI+CiAgICAgICAgICAgICAgICA8ZGl2PgogICAgICAgICAgICAgICAg
-ICA8cCBjbGFzc05hbWU9InRleHQtWzEwcHhdIHVwcGVyY2FzZSB0cmFja2lu
-Zy13aWRlc3QgZm9udC1tZWRpdW0gdGV4dC1wcmltYXJ5Ij5EZWx0YWdhcmU8
-L3A+CiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0idGV4dC1sZyBm
-b250LW1lZGl1bSB0ZXh0LWZvcmVncm91bmQiPnt2ZXJpZmljYXRpb25SZXN1
-bHQudGlja2V0LnBhcnRpY2lwYW50TmFtZX08L3A+CiAgICAgICAgICAgICAg
-ICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAg
-ICAgIDxwIGNsYXNzTmFtZT0idGV4dC1bMTBweF0gdXBwZXJjYXNlIHRyYWNr
-aW5nLXdpZGVzdCBmb250LW1lZGl1bSB0ZXh0LXByaW1hcnkiPkV2ZW50PC9w
-PgogICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtc20gdGV4
-dC1mb3JlZ3JvdW5kIj57dmVyaWZpY2F0aW9uUmVzdWx0LmV2ZW50Py50aXRs
-ZSB8fCAnT2vDpG50IGV2ZW50J308L3A+CiAgICAgICAgICAgICAgICA8L2Rp
-bj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJiZy1zZWNvbmRh
-cnkgcC0yIGJvcmRlciBib3JkZXItYm9yZGVyIHRleHQtY2VudGVyIGZvbnQt
-bW9ubyB0ZXh0LXhzIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCI+CiAgICAgICAg
-ICAgICAgICAgIHt2ZXJpZmljYXRpb25SZXN1bHQudGlja2V0LnRpY2tldENv
-ZGV9CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICA8L2Rp
-dj4KICAgICAgICAgICAgKX0KCiAgICAgICAgICAgIHt2ZXJpZmljYXRpb25S
-ZXN1bHQub3RoZXJUaWNrZXRzICYmIHZlcmlmaWNhdGlvblJlc3VsdC5vdGhl
-clRpY2tldHMubGVuZ3RoID4gMCAmJiAoCiAgICAgICAgICAgICAgPGRpdiBj
-bGFzc05hbWU9Im10LTYgcHQtNiBib3JkZXItdCBib3JkZXItYm9yZGVyIHRl
-eHQtbGVmdCI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxl
-eCBpdGVtcy1jZW50ZXIgZ2FwLTIgbWItNCI+CiAgICAgICAgICAgICAgICAg
-IDxUaWNrZXQgY2xhc3NOYW1lPSJ3LTUgaC01IHRleHQtbXV0ZWQtZm9yZWdy
-b3VuZCIgLz4KICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0
-LVsxMHB4XSB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0IHRleHQtZm9yZWdy
-b3VuZCBmb250LWJvbGQiPgogICAgICAgICAgICAgICAgICAgIEFuZHJhIGJp
-bGpldHRlciBmw7ZyIGRlbm5hIGFudsOkbmRhcmUgKDB7dmVyaWZpY2F0aW9u
-UmVzdWx0Lm90aGVyVGlja2V0cy5sZW5ndGh9KQogICAgICAgICAgICAgICAg
-ICA8L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAg
-IDx1bCBjbGFzc05hbWU9InNwYWNlLXktMiI+CiAgICAgICAgICAgICAgICAg
-IHt2ZXJpZmljYXRpb25SZXN1bHQub3RoZXJUaWNrZXRzLm1hcCgob3RoZXJU
-aWNrZXQ6IGFueSkgPT4gKAogICAgICAgICAgICAgICAgICAgIDxsaSBrZXk9
-e290aGVyVGlja2V0LmlkfSBjbGFzc05hbWU9ImZsZXggaXRlbXMtY2VudGVy
-IGp1c3RpZnktYmV0d2VlbiBiZy1zZWNvbmRhcnkvNTAgcC0zIHJvdW5kZWQt
-c20gYm9yZGVyIGJvcmRlci1ib3JkZXIiPgogICAgICAgICAgICAgICAgICAg
-ICAgPGRpdj4KICAgICAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1l
-PSJmb250LW1vbm8gdGV4dC14cyB0ZXh0LWZvcmVncm91bmQiPntvdGhlclRp
-Y2tldC50aWNrZXRDb2RlfTwvcD4KICAgICAgICAgICAgICAgICAgICAgICAg
-PHAgY2xhc3NOYW1lPSJ0ZXh0LVsxMHB4XSB0ZXh0LW11dGVkLWZvcmVncm91
-bmQiPntvdGhlclRpY2tldC50aWNrZXRUeXBlfTwvcD4KICAgICAgICAgICAg
-ICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgICAgPGRpdj4K
-ICAgICAgICAgICAgICAgICAgICAgICAge290aGVyVGlja2V0LnN0YXR1cyA9
-PT0gJ3ZhbGlkJyA/ICgKICAgICAgICAgICAgICAgICAgICAgICAgICA8c3Bh
-biBjbGFzc05hbWU9InRleHQtWzEwcHhdIHB4LTIgcHktMSByb3VuZGVkLWZ1
-bGwgYmctZ3JlZW4tNTAwLzIwIHRleHQtZ3JlZW4tNjAwIGJvcmRlciBib3Jk
-ZXItZ3JlZW4tNTAwLzQwIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IEdpbHRpZwogICAgICAgICAgICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAg
-ICAgICAgICAgICAgICAgICAgICAgKSA6IG90aGVyVGlja2V0LnN0YXR1cyA9
-PT0gJ3VzZWQnID8gKAogICAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFu
-IGNsYXNzTmFtZT0idGV4dC1bMTBweF0gcHgtMiBweS0xIHJvdW5kZWQtZnVs
-bCBiZy1ibHVlLTUwMC8yMCB0ZXh0LWJsdWUtNjAwIGJvcmRlciBib3JkZXIt
-Ymx1ZS01MDAvNDAiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgQW52
-w6RuZAogICAgICAgICAgICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAg
-ICAgICAgICAgICAgICAgICAgKSA6ICgKICAgICAgICAgICAgICAgICAgICAg
-ICAgICA8c3BhbiBjbGFzc05hbWU9InRleHQtWzEwcHhdIHB4LTIgcHktMSBy
-b3VuZGVkLWZ1bGwgYmctcmVkLTUwMC8yMCB0ZXh0LXJlZC02MDAgYm9yZGVy
-IGJvcmRlci1yZWQtNTAwLzQwIj4KICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIE9naWx0aWcKICAgICAgICAgICAgICAgICAgICAgICAgICA8L3NwYW4+
-CiAgICAgICAgICAgICAgICAgICAgICAgICl9CiAgICAgICAgICAgICAgICAg
-ICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8L2xpPgogICAgICAg
-ICAgICAgICAgICApKX0KICAgICAgICAgICAgICAgIDwvdWw+CiAgICAgICAg
-ICAgICAgPC9kaXY+CiAgICAgICAgICAgICl9CgogICAgICAgICAgICB7IXZl
-cmlmaWNhdGlvblJlc3VsdC5zdWNjZXNzICYmICgKICAgICAgICAgICAgICA8
-cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1kZXN0cnVjdGl2ZSBtdC00Ij57
-dmVyaWZpY2F0aW9uUmVzdWx0Lm1lc3NhZ2V9PC9wPgogICAgICAgICAgICAp
-fQoKICAgICAgICAgICAgPGJ1dHRvbiAKICAgICAgICAgICAgICBvbkNsaWNr
-PXsoKSA9PiBzZXRWZXJpZmljYXRpb25SZXN1bHQobnVsbCl9CiAgICAgICAg
-ICAgICAgY2xhc3NOYW1lPSJ3LWZ1bGwgbXQtOCBweS0zIGJnLXByaW1hcnkg
-dGV4dC1wcmltYXJ5LWZvcmVncm91bmQgdGV4dC14cyB1cHBlcmNhc2UgdHJh
-Y2tpbmctd2lkZXN0IGZvbnQtbWVkaXVtIGhvdmVyOmJnLXByaW1hcnkvOTAg
-dHJhbnNpdGlvbi1hbGwiCiAgICAgICAgICAgID4KICAgICAgICAgICAgICBT
-dMOkbmcKICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICA8L2Rpdj4K
-ICAgICAgICA8L2Rpdj4KICAgICAgKX0KCiAgICAgIHtzZWxlY3RlZFRpY2tl
-dCAmJiAoCiAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZpeGVkIGluc2V0LTAg
-ei01MCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBwLTQgYmct
-Zm9yZWdyb3VuZC84MCBiYWNrZHJvcC1ibHVyLXNtIiBvbkNsaWNrPXsoKSA9
-PiBzZXRTZWxlY3RlZFRpY2RldChudWxsKX0+CiAgICAgICAgICA8ZGl2IGNs
-YXNzTmFtZT0iYmctY2FyZCBib3JkZXIgYm9yZGVyLWJvcmRlciBwLTggbWF4
-LXctc20gdy1mdWxsIHJlbGF0aXZlIiBvbkNsaWNrPXtlID0+IGUuc3RvcFBy
-b3BhZ2F0aW9uKCl9PgogICAgICAgICAgICA8YnV0dG9uIAogICAgICAgICAg
-ICAgIG9uQ2xpY2s9eygpID0+IHNldFNlbGVjdGVkVGlja2V0KG51bGwpfQog
-ICAgICAgICAgICAgIGNsYXNzTmFtZT0iYWJzb2x1dGUgdG9wLTQgcmlnaHQt
-NCB0ZXh0LW11dGVkLWZvcmVncm91bmQgaG92ZXI6dGV4dC1mb3JlZ3JvdW5k
-IgogICAgICAgICAgICA+CiAgICAgICAgICAgICAgPFhDaXJjbGUgY2xhc3NO
-YW1lPSJ3LTYgaC02IiAvPgogICAgICAgICAgICA8L2J1dHRvbj4KICAgICAg
-ICAgICAgCiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ0ZXh0LWNlbnRl
-ciBzcGFjZS15LTYiPgogICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAg
-ICAgICA8aDMgY2xhc3NOYW1lPSJmb250LWRpc3BsYXkgdGV4dC14bCB0ZXh0
-LWZvcmVncm91bmQgbWItMSI+e3NlbGVjdGVkVGlja2V0LnBhcnRpY2lwYW50
-TmFtZX08L2gzPgogICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0
-LW11dGVkLWZvcmVncm91bmQgdGV4dC14cyB1cHBlcmNhc2UgdHJhY2tpbmct
-d2lkZXIiPntnZXRFdmVudFRpdGxlKHNlbGVjdGVkVGlja2V0LmV2ZW50SWQp
-fTwvcD4KICAgICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgICAgPGRp
-diBjbGFzc05hbWU9ImJnLXdoaXRlIHAtNCBpbmxpbmUtYmxvY2sgYm9yZGVy
-IGJvcmRlci1ib3JkZXIiPgogICAgICAgICAgICAgICAgPFFSQ29kZVNWRyB2
-YWx1ZT17YCR7dmVyaWZpY2F0aW9uVXJsfSR7c2VsZWN0ZWRUaWNrZXQudGlj
-a2V0Q29kZX1gfSBzaXplPXsyMDB9IGxldmVsPSJIIiAvPgogICAgICAgICAg
-ICAgIDwvZGl2PgoKICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ic3Bh
-Y2UteS0yIj4KICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0iZm9udC1t
-b25vIHRleHQtc20gYmctc2Vjb25kYXJ5IHB5LTIgYm9yZGVyIGJvcmRlci1i
-b3JkZXIgdGV4dC1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAgICAgICAge3Nl
-bGVjdGVkVGlja2V0LnRpY2tldENvZGV9CiAgICAgICAgICAgICAgICA8L3A+
-CiAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtWzEwcHhdIHRl
-eHQtbXV0ZWQtZm9yZWdyb3VuZCB1cHBlcmNhc2UgdHJhY2tpbmctd2lkZXN0
-Ij5Ta2FubmEgZsO2ciBhdHQgdmVyaWZpZXJhPC9wPgogICAgICAgICAgICAg
-IDwvZGl2PgoKICAgICAgICAgICAgICA8YnV0dG9uIAogICAgICAgICAgICAg
-ICAgb25DbGljaz17KCkgPT4gd2luZG93LnByaW50KCl9CiAgICAgICAgICAg
-ICAgICBjbGFzc05hbWU9InctZnVsbCBweS0zIGJnLXByaW1hcnkgdGV4dC1w
-cmltYXJ5LWZvcmVncm91bmQgdGV4dC14cyB1cHBlcmNhc2UgdHJhY2tpbmct
-d2lkZXN0IGZvbnQtbWVkaXVtIGhvdmVyOmJnLXByaW1hcnkvOTAgdHJhbnNp
-dGlvbi1hbGwiCiAgICAgICAgICAgICAgPgogICAgICAgICAgICAgICAgU2ty
-aXYgdXQgYmlsamV0dAogICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAg
-ICAgICA8L2Rpdj4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2Pgog
-ICAgICApfQogICAgPC9kaXY+CiAgKQp9Cg==
+import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { getEventsFn, getEventTicketsFn, getTicketTypesFn, createTicketTypeFn, updateTicketTypeFn, deleteTicketTypeFn, issueTicketFn, getScannerEventsFn } from '@/server/functions/tickets'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Loader2, Plus, Ticket, Users, QrCode, Search, Trash2, Edit, CheckCircle2, XCircle, Clock } from 'lucide-react'
+import { useToast } from '@/components/ui/use-toast'
+import { format } from 'date-fns'
+import { sv } from 'date-fns/locale'
+
+export const Route = createFileRoute('/admin/tickets/')({
+  component: AdminTicketsPage,
+})
+
+function AdminTicketsPage() {
+  const [activeTab, setActiveTab] = useState('events')
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
+  
+  return (
+    <div className="container mx-auto py-8 max-w-6xl">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Biljetthantering</h1>
+          <p className="text-muted-foreground mt-1">Hantera event, biljettyper och utfärdade biljetter</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => window.open('/verify/scan', '_blank')}>
+            <QrCode className="mr-2 h-4 w-4" />
+            Öppna Scanner
+          </Button>
+        </div>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3 max-w-md">
+          <TabsTrigger value="events">Event & Typer</TabsTrigger>
+          <TabsTrigger value="tickets">Utfärdade Biljetter</TabsTrigger>
+          <TabsTrigger value="issue">Utfärda Manuell</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="events" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-1">
+              <EventsList 
+                selectedEventId={selectedEventId} 
+                onSelectEvent={setSelectedEventId} 
+              />
+            </div>
+            <div className="md:col-span-2">
+              {selectedEventId ? (
+                <TicketTypesList eventId={selectedEventId} />
+              ) : (
+                <Card className="h-full flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
+                  <Ticket className="h-12 w-12 mb-4 opacity-20" />
+                  <p>Välj ett event i listan för att hantera dess biljettyper</p>
+                </Card>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="tickets">
+          <TicketsList eventId={selectedEventId} onSelectEvent={setSelectedEventId} />
+        </TabsContent>
+
+        <TabsContent value="issue">
+          <IssueTicketForm eventId={selectedEventId} onSelectEvent={setSelectedEventId} />
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}
+
+function EventsList({ selectedEventId, onSelectEvent }: { selectedEventId: string | null, onSelectEvent: (id: string) => void }) {
+  const { data: events, isLoading } = useQuery({
+    queryKey: ['admin-events'],
+    queryFn: async () => {
+      const result = await getScannerEventsFn()
+      if (result.error) throw new Error(result.error)
+      return result.data
+    }
+  })
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Event</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <Card className="h-full flex flex-col">
+      <CardHeader>
+        <CardTitle>Event</CardTitle>
+        <CardDescription>Välj event för att hantera biljetter</CardDescription>
+      </CardHeader>
+      <CardContent className="flex-1 p-0">
+        <div className="divide-y border-t">
+          {events?.length === 0 ? (
+            <div className="p-4 text-center text-muted-foreground text-sm">
+              Inga event hittades
+            </div>
+          ) : (
+            events?.map(event => (
+              <button
+                key={event.id}
+                onClick={() => onSelectEvent(event.id)}
+                className={`w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors flex items-center justify-between ${
+                  selectedEventId === event.id ? 'bg-muted border-l-4 border-l-primary' : 'border-l-4 border-l-transparent'
+                }`}
+              >
+                <div>
+                  <div className="font-medium">{event.title}</div>
+                  <div className="text-xs text-muted-foreground flex items-center mt-1">
+                    <Clock className="h-3 w-3 mr-1" />
+                    {format(new Date(event.date), 'd MMM yyyy', { locale: sv })}
+                  </div>
+                </div>
+                <Badge variant={event.status === 'published' ? 'default' : 'secondary'}>
+                  {event.status === 'published' ? 'Aktiv' : 'Utkast'}
+                </Badge>
+              </button>
+            ))
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function TicketTypesList({ eventId }: { eventId: string }) {
+  const { toast } = useToast()
+  const queryClient = useQueryClient()
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [editingType, setEditingType] = useState<any>(null)
+  
+  // Form state
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [price, setPrice] = useState('0')
+  const [capacity, setCapacity] = useState('')
+  
+  const { data: ticketTypes, isLoading } = useQuery({
+    queryKey: ['ticket-types', eventId],
+    queryFn: async () => {
+      const result = await getTicketTypesFn({ data: { eventId } })
+      if (result.error) throw new Error(result.error)
+      return result.data
+    },
+    enabled: !!eventId
+  })
+
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      const result = await createTicketTypeFn({
+        data: {
+          eventId,
+          name,
+          description: description || undefined,
+          price: parseInt(price) || 0,
+          capacity: capacity ? parseInt(capacity) : undefined
+        }
+      })
+      if (result.error) throw new Error(result.error)
+      return result.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ticket-types', eventId] })
+      setIsCreateOpen(false)
+      resetForm()
+      toast({ title: 'Biljettyp skapad', description: 'Den nya biljettypen har lagts till.' })
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Ett fel uppstod', description: error.message, variant: 'destructive' })
+    }
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: async () => {
+      const result = await updateTicketTypeFn({
+        data: {
+          id: editingType.id,
+          name,
+          description: description || undefined,
+          price: parseInt(price) || 0,
+          capacity: capacity ? parseInt(capacity) : undefined,
+          isActive: editingType.isActive
+        }
+      })
+      if (result.error) throw new Error(result.error)
+      return result.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ticket-types', eventId] })
+      setIsEditOpen(false)
+      resetForm()
+      toast({ title: 'Biljettyp uppdaterad', description: 'Ändringarna har sparats.' })
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Ett fel uppstod', description: error.message, variant: 'destructive' })
+    }
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const result = await deleteTicketTypeFn({ data: { id } })
+      if (result.error) throw new Error(result.error)
+      return result.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ticket-types', eventId] })
+      toast({ title: 'Biljettyp borttagen' })
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Kunde inte ta bort', description: error.message, variant: 'destructive' })
+    }
+  })
+
+  const resetForm = () => {
+    setName('')
+    setDescription('')
+    setPrice('0')
+    setCapacity('')
+    setEditingType(null)
+  }
+
+  const openEdit = (type: any) => {
+    setEditingType(type)
+    setName(type.name)
+    setDescription(type.description || '')
+    setPrice(type.price.toString())
+    setCapacity(type.capacity?.toString() || '')
+    setIsEditOpen(true)
+  }
+
+  if (isLoading) {
+    return (
+      <Card className="h-full">
+        <CardContent className="flex justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <Card className="h-full flex flex-col">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle>Biljettyper</CardTitle>
+          <CardDescription>Hantera tillgängliga biljettyper för detta event</CardDescription>
+        </div>
+        <Dialog open={isCreateOpen} onOpenChange={(open) => {
+          setIsCreateOpen(open)
+          if (!open) resetForm()
+        }}>
+          <DialogTrigger asChild>
+            <Button size="sm">
+              <Plus className="mr-2 h-4 w-4" /> Ny biljettyp
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Skapa ny biljettyp</DialogTitle>
+              <DialogDescription>
+                Lägg till en ny biljettyp som användare kan boka eller köpa.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Namn *</Label>
+                <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="t.ex. Standardbiljett, VIP" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Beskrivning</Label>
+                <Input id="description" value={description} onChange={e => setDescription(e.target.value)} placeholder="Kort beskrivning av vad som ingår" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="price">Pris (SEK) *</Label>
+                  <Input id="price" type="number" min="0" value={price} onChange={e => setPrice(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="capacity">Kapacitet (frivilligt)</Label>
+                  <Input id="capacity" type="number" min="1" value={capacity} onChange={e => setCapacity(e.target.value)} placeholder="Obegränsad" />
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Avbryt</Button>
+              <Button onClick={() => createMutation.mutate()} disabled={!name || createMutation.isPending}>
+                {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Skapa biljettyp
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardHeader>
+      <CardContent className="flex-1">
+        {ticketTypes?.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground border rounded-lg bg-slate-50/50">
+            <Ticket className="h-10 w-10 mx-auto mb-3 text-slate-300" />
+            <p>Inga biljettyper har skapats för detta event ännu.</p>
+            <Button variant="link" onClick={() => setIsCreateOpen(true)} className="mt-2">
+              Skapa den första biljettypen
+            </Button>
+          </div>
+        ) : (
+          <div className="rounded-md border overflow-hidden">
+            <Table>
+              <TableHeader className="bg-muted/50">
+                <TableRow>
+                  <TableHead>Namn</TableHead>
+                  <TableHead>Pris</TableHead>
+                  <TableHead>Kapacitet</TableHead>
+                  <TableHead className="text-right">Åtgärder</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {ticketTypes?.map((type) => (
+                  <TableRow key={type.id}>
+                    <TableCell>
+                      <div className="font-medium">{type.name}</div>
+                      {type.description && <div className="text-xs text-muted-foreground">{type.description}</div>}
+                    </TableCell>
+                    <TableCell>{type.price === 0 ? 'Gratis' : `${type.price} kr`}</TableCell>
+                    <TableCell>
+                      {type.capacity ? (
+                        <div className="flex items-center gap-1">
+                          <Users className="h-3 w-3 text-muted-foreground" />
+                          <span>{type.capacity}</span>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground text-xs">Obegränsad</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => openEdit(type)}>
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                          onClick={() => {
+                            if (confirm('Är du säker på att du vill ta bort denna biljettyp? Redan utfärdade biljetter påverkas inte.')) {
+                              deleteMutation.mutate(type.id)
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </CardContent>
+
+      {/* Edit Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={(open) => {
+        setIsEditOpen(open)
+        if (!open) resetForm()
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Redigera biljettyp</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-name">Namn *</Label>
+              <Input id="edit-name" value={name} onChange={e => setName(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-description">Beskrivning</Label>
+              <Input id="edit-description" value={description} onChange={e => setDescription(e.target.value)} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-price">Pris (SEK) *</Label>
+                <Input id="edit-price" type="number" min="0" value={price} onChange={e => setPrice(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-capacity">Kapacitet (frivilligt)</Label>
+                <Input id="edit-capacity" type="number" min="1" value={capacity} onChange={e => setCapacity(e.target.value)} placeholder="Obegränsad" />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditOpen(false)}>Avbryt</Button>
+            <Button onClick={() => updateMutation.mutate()} disabled={!name || updateMutation.isPending}>
+              {updateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Spara ändringar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </Card>
+  )
+}
+
+function TicketsList({ eventId, onSelectEvent }: { eventId: string | null, onSelectEvent: (id: string) => void }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  
+  const { data: events } = useQuery({
+    queryKey: ['admin-events'],
+    queryFn: async () => {
+      const result = await getScannerEventsFn()
+      if (result.error) throw new Error(result.error)
+      return result.data
+    }
+  })
+
+  const { data: tickets, isLoading } = useQuery({
+    queryKey: ['event-tickets', eventId],
+    queryFn: async () => {
+      if (!eventId) return []
+      const result = await getEventTicketsFn({ data: { eventId } })
+      if (result.error) throw new Error(result.error)
+      return result.data
+    },
+    enabled: !!eventId
+  })
+
+  const filteredTickets = tickets?.filter(ticket => {
+    if (!searchTerm) return true
+    const term = searchTerm.toLowerCase()
+    return (
+      ticket.code.toLowerCase().includes(term) ||
+      ticket.user?.name?.toLowerCase().includes(term) ||
+      ticket.user?.email?.toLowerCase().includes(term) ||
+      ticket.ticketType.name.toLowerCase().includes(term)
+    )
+  })
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Utfärdade Biljetter</CardTitle>
+        <CardDescription>Se alla biljetter som utfärdats för ett event</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="w-full sm:w-1/3">
+            <Label htmlFor="event-select" className="mb-2 block">Välj event</Label>
+            <Select value={eventId || ''} onValueChange={onSelectEvent}>
+              <SelectTrigger id="event-select">
+                <SelectValue placeholder="Välj ett event..." />
+              </SelectTrigger>
+              <SelectContent>
+                {events?.map(event => (
+                  <SelectItem key={event.id} value={event.id}>{event.title}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="w-full sm:w-2/3">
+            <Label htmlFor="search-tickets" className="mb-2 block">Sök biljetter</Label>
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="search-tickets"
+                placeholder="Sök på namn, e-post, biljettkod..."
+                className="pl-9"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                disabled={!eventId}
+              />
+            </div>
+          </div>
+        </div>
+
+        {!eventId ? (
+          <div className="text-center py-12 text-muted-foreground border rounded-lg bg-slate-50/50">
+            <p>Välj ett event ovan för att se dess biljetter.</p>
+          </div>
+        ) : isLoading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : filteredTickets?.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground border rounded-lg bg-slate-50/50">
+            {searchTerm ? 'Inga biljetter matchade din sökning.' : 'Inga biljetter har utfärdats för detta event ännu.'}
+          </div>
+        ) : (
+          <div className="rounded-md border overflow-hidden">
+            <Table>
+              <TableHeader className="bg-muted/50">
+                <TableRow>
+                  <TableHead>Kod</TableHead>
+                  <TableHead>Användare</TableHead>
+                  <TableHead>Biljettyp</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Utfärdad</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredTickets?.map((ticket) => (
+                  <TableRow key={ticket.id}>
+                    <TableCell className="font-mono text-xs">{ticket.code}</TableCell>
+                    <TableCell>
+                      {ticket.user ? (
+                        <div>
+                          <div className="font-medium">{ticket.user.name}</div>
+                          <div className="text-xs text-muted-foreground">{ticket.user.email}</div>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground italic">Gästanvändare</span>
+                      )}
+                    </TableCell>
+                    <TableCell>{ticket.ticketType.name}</TableCell>
+                    <TableCell>
+                      {ticket.status === 'valid' ? (
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          <CheckCircle2 className="mr-1 h-3 w-3" /> Giltig
+                        </Badge>
+                      ) : ticket.status === 'used' ? (
+                        <Badge variant="outline" className="bg-slate-100 text-slate-700 border-slate-200">
+                          <Clock className="mr-1 h-3 w-3" /> Använd
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                          <XCircle className="mr-1 h-3 w-3" /> Makulerad
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {format(new Date(ticket.createdAt), 'd MMM yyyy, HH:mm', { locale: sv })}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+function IssueTicketForm({ eventId, onSelectEvent }: { eventId: string | null, onSelectEvent: (id: string) => void }) {
+  const { toast } = useToast()
+  const queryClient = useQueryClient()
+  
+  const [selectedTypeId, setSelectedTypeId] = useState<string>('')
+  const [userEmail, setUserEmail] = useState('')
+  const [userName, setUserName] = useState('')
+  const [notes, setNotes] = useState('')
+
+  const { data: events } = useQuery({
+    queryKey: ['admin-events'],
+    queryFn: async () => {
+      const result = await getScannerEventsFn()
+      if (result.error) throw new Error(result.error)
+      return result.data
+    }
+  })
+
+  const { data: ticketTypes } = useQuery({
+    queryKey: ['ticket-types', eventId],
+    queryFn: async () => {
+      if (!eventId) return []
+      const result = await getTicketTypesFn({ data: { eventId } })
+      if (result.error) throw new Error(result.error)
+      return result.data
+    },
+    enabled: !!eventId
+  })
+
+  const issueMutation = useMutation({
+    mutationFn: async () => {
+      const result = await issueTicketFn({
+        data: {
+          eventId: eventId!,
+          ticketTypeId: selectedTypeId,
+          userEmail: userEmail || undefined,
+          userName: userName || undefined,
+          notes: notes || undefined
+        }
+      })
+      if (result.error) throw new Error(result.error)
+      return result.data
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['event-tickets', eventId] })
+      toast({ 
+        title: 'Biljett utfärdad!', 
+        description: `Biljettkod: ${data.code}`,
+      })
+      setUserEmail('')
+      setUserName('')
+      setNotes('')
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Ett fel uppstod', description: error.message, variant: 'destructive' })
+    }
+  })
+
+  return (
+    <Card className="max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle>Utfärda biljett manuellt</CardTitle>
+        <CardDescription>
+          Skapa en biljett direkt i systemet. Användbart för VIP, gäster eller manuell försäljning.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="issue-event">Event *</Label>
+            <Select value={eventId || ''} onValueChange={(val) => {
+              onSelectEvent(val)
+              setSelectedTypeId('')
+            }}>
+              <SelectTrigger id="issue-event">
+                <SelectValue placeholder="Välj ett event..." />
+              </SelectTrigger>
+              <SelectContent>
+                {events?.map(event => (
+                  <SelectItem key={event.id} value={event.id}>{event.title}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="issue-type">Biljettyp *</Label>
+            <Select value={selectedTypeId} onValueChange={setSelectedTypeId} disabled={!eventId || !ticketTypes?.length}>
+              <SelectTrigger id="issue-type">
+                <SelectValue placeholder={!eventId ? "Välj event först" : ticketTypes?.length ? "Välj biljettyp..." : "Inga biljettyper finns"} />
+              </SelectTrigger>
+              <SelectContent>
+                {ticketTypes?.map(type => (
+                  <SelectItem key={type.id} value={type.id}>
+                    {type.name} ({type.price === 0 ? 'Gratis' : `${type.price} kr`})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+            <div className="space-y-2">
+              <Label htmlFor="issue-name">Mottagarens namn</Label>
+              <Input 
+                id="issue-name" 
+                value={userName} 
+                onChange={e => setUserName(e.target.value)} 
+                placeholder="Frivilligt" 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="issue-email">Mottagarens e-post</Label>
+              <Input 
+                id="issue-email" 
+                type="email" 
+                value={userEmail} 
+                onChange={e => setUserEmail(e.target.value)} 
+                placeholder="Frivilligt (för att koppla till konto)" 
+              />
+              <p className="text-xs text-muted-foreground">
+                Om e-posten matchar ett befintligt konto kopplas biljetten dit.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="issue-notes">Interna anteckningar</Label>
+            <Input 
+              id="issue-notes" 
+              value={notes} 
+              onChange={e => setNotes(e.target.value)} 
+              placeholder="T.ex. VIP-gäst, Betald via Swish, etc." 
+            />
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-between border-t p-6">
+        <Button variant="outline" onClick={() => {
+          setSelectedTypeId('')
+          setUserEmail('')
+          setUserName('')
+          setNotes('')
+        }}>
+          Rensa formulär
+        </Button>
+        <Button 
+          onClick={() => issueMutation.mutate()} 
+          disabled={!eventId || !selectedTypeId || issueMutation.isPending}
+        >
+          {issueMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Utfärda biljett
+        </Button>
+      </CardFooter>
+    </Card>
+  )
+}

@@ -1,43 +1,27 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getPostsFn } from '../../server/functions/posts'
-import { useQuery } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/nyheter/')({
   loader: async () => {
-    try {
-      return {
-        posts: await getPostsFn({ data: 'news' }),
-      }
-    } catch {
-      return { posts: [] }
-    }
+    const posts = await getPostsFn({ data: 'news' })
+    return { posts }
   },
-  component: NewsList,
+  component: NewsIndex,
 })
 
-function NewsList() {
+function NewsIndex() {
   const { posts } = Route.useLoaderData()
-
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-[#C04A2A]">Nyheter</h1>
-      
-      {posts.length === 0 ? (
-        <p className="text-gray-500">Inga nyheter ännu.</p>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
-            <div key={post.id} className="bg-[#100E0C] border border-[#C04A2A]/20 p-6 rounded-lg text-[#F0E8D8]">
-              <h2 className="text-xl font-bold mb-2">{post.title}</h2>
-              <p className="text-sm text-gray-400 mb-4">{new Date(post.createdAt!).toLocaleDateString()}</p>
-              <div className="prose prose-invert max-w-none">
-                <p>{post.excerpt}</p>
-              </div>
-              <a href={`/nyheter/${post.slug}`} className="block mt-4 text-[#C04A2A] hover:underline">Read more →</a>
-            </div>
-          ))}
-        </div>
-      )}
+    <div className="container mx-auto p-8 max-w-4xl">
+      <h1 className="text-4xl font-bold mb-8 text-black">Nyheter</h1>
+      <div className="grid gap-6">
+        {posts.map((post) => (
+          <a key={post.id} href={`/nyheter/${post.slug}`} className="block bg-white border border-gray-200 p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+            <h2 className="text-2xl font-bold mb-2 text-black">{post.title}</h2>
+            <p className="text-gray-700">{post.excerpt}</p>
+          </a>
+        ))}
+      </div>
     </div>
   )
 }

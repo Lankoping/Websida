@@ -28,7 +28,7 @@ function BlogPost() {
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-8">
         <span>{new Date(post.createdAt!).toLocaleDateString()}</span>
         <span className="mx-2">•</span>
-        <span className="bg-black/20 text-black px-2 py-0.5 rounded text-xs uppercase tracking-wider">{post.type}</span>
+        <span className="bg-black text-white px-2 py-0.5 rounded text-xs uppercase tracking-wider">{post.type}</span>
       </div>
       <div className="prose prose-black max-w-none">
         <MarkdownContent content={post.content} />

@@ -1,7 +1,6 @@
 import { ComingSoon } from '@/components/coming-soon'
 import { createFileRoute } from '@tanstack/react-router'
 import { getPostsFn } from '../../server/functions/posts'
-import { getHeroContentFn, getInfoSectionsFn } from '../../server/functions/cms'
 
 export const Route = createFileRoute('/_public/')({
   loader: async () => {
@@ -14,16 +13,12 @@ export const Route = createFileRoute('/_public/')({
       return {
         latestBlog: blogs[0] ?? null,
         latestNews: news[0] ?? null,
-        heroData: null,
-        infoSectionsData: [],
       }
     } catch (error) {
       console.error('[v0] Error loading homepage data:', error)
       return {
         latestBlog: null,
         latestNews: null,
-        heroData: null,
-        infoSectionsData: [],
       }
     }
   },
@@ -31,11 +26,11 @@ export const Route = createFileRoute('/_public/')({
 })
 
 function Index() {
-  const { latestBlog, latestNews, heroData, infoSectionsData } = Route.useLoaderData()
+  const { latestBlog, latestNews } = Route.useLoaderData()
 
   return (
     <>
-      <ComingSoon locale="sv" heroData={heroData} infoSectionsData={infoSectionsData} />
+      <ComingSoon locale="sv" />
 
       <section className="bg-background border-t border-border">
         <div className="mx-auto max-w-6xl px-6 py-24">

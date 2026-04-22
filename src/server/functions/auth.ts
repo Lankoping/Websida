@@ -1,10 +1,11 @@
 'use server'
 import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '../db/runtime'
-import { users, activityLogs, tickets } from '../db/schema'
+import { users, activityLogs, tickets, passwordResetTokens } from '../db/schema'
 import { eq, inArray, or, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
+import { randomBytes } from 'node:crypto'
 import {
   enforceDemoOwnUserScope,
   getDemoAccountEmails,
@@ -116,7 +117,7 @@ export const createUserFn = createServerFn({ method: "POST" })
     z
       .object({
         email: z.string().email(),
-        password: z.string().min(1),
+        password: z.string().optional(),
         name: z.string().optional(),
         role: z.enum(['organizer', 'volunteer']).default('volunteer'),
       })
@@ -135,16 +136,33 @@ export const createUserFn = createServerFn({ method: "POST" })
       throw new Error('Email already exists')
     }
 
+    // If no password provided, generate a random one
+    const initialPassword = data.password || randomBytes(16).toString('hex')
+
     const created = await db
       .insert(users)
       .values({
         email: data.email,
-        passwordHash: hashPassword(data.password),
+        passwordHash: hashPassword(initialPassword),
         name: data.name,
         role: data.role,
         active: true,
       })
       .returning()
+
+    let resetToken = null
+    if (!data.password) {
+      // Generate a reset token
+      resetToken = randomBytes(32).toString('hex')
+      const expiresAt = new Date()
+      expiresAt.setDate(expiresAt.getDate() + 7) // Token valid for 7 days
+
+      await db.insert(passwordResetTokens).values({
+        userId: created[0].id,
+        token: resetToken,
+        expiresAt,
+      })
+    }
 
     await writeActivityLog({
       actorUserId: currentUser.id,
@@ -155,10 +173,14 @@ export const createUserFn = createServerFn({ method: "POST" })
       details: {
         email: created[0].email,
         role: created[0].role,
+        generatedPassword: !data.password,
       },
     })
 
-    return created[0]
+    return {
+      user: created[0],
+      resetToken,
+    }
   })
 
 export const changePasswordFn = createServerFn({ method: "POST" })
@@ -241,6 +263,9 @@ export const deleteUserFn = createServerFn({ method: "POST" })
       // Tickets issued or scanned by this user
       await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))
       await db.update(tickets).set({ scannedBy: null }).where(eq(tickets.scannedBy, data.userId))
+
+      // Password reset tokens
+      await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, data.userId))
 
       // Handle tables that might exist in the database but aren't in schema.ts anymore
       // This is a fallback in case the DROP TABLE statements in init.ts didn't execute properly

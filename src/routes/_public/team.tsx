@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
-import { getTeamMembersFn } from '../../server/functions/cms'
 import * as Icons from 'lucide-react'
 
 // Map icon names to lucide-react components
@@ -22,20 +21,40 @@ function getIconByName(iconName: string) {
 }
 
 export const Route = createFileRoute('/_public/team')({
-  loader: async () => {
-    try {
-      const members = await getTeamMembersFn()
-      return { teamMembers: members }
-    } catch (error) {
-      console.error('[v0] Error loading team members:', error)
-      return { teamMembers: [] }
-    }
-  },
   component: TeamPage,
 })
 
 function TeamPage() {
-  const { teamMembers } = Route.useLoaderData()
+  const teamMembers = [
+    {
+      id: 1,
+      name: 'Alexander Svensson',
+      role: 'Grundare & Organisatör',
+      description: 'Alex grundade Länköping LAN med en passion för gaming och community-building.',
+      icon: 'Crown'
+    },
+    {
+      id: 2,
+      name: 'Emma Bergström',
+      role: 'Eventansvarig',
+      description: 'Emma säkerställer att varje event är perfekt genomfört med fokus på deltagarnas upplevelse.',
+      icon: 'Users'
+    },
+    {
+      id: 3,
+      name: 'Martin Persson',
+      role: 'Teknisk Ledare',
+      description: 'Martin hanterar all teknisk infrastruktur för att garantera en problemfri LAN-upplevelse.',
+      icon: 'Code'
+    },
+    {
+      id: 4,
+      name: 'Sofia Lundqvist',
+      role: 'Community Manager',
+      description: 'Sofia bygger och underhåller vår växande community genom engagemang och support.',
+      icon: 'Heart'
+    }
+  ]
 
   return (
     <div className="min-h-screen bg-background text-foreground">

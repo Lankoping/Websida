@@ -18,7 +18,9 @@ export const getDbStatsFn = createServerFn({ method: 'GET' })
       for (const table of tables) {
         try {
           const result = await db.execute(sql.raw(`SELECT COUNT(*) as count FROM ${table}`))
-          const count = parseInt(result[0]?.count as string || '0', 10)
+          // Handle different result formats (e.g., postgres returns { rows: [...] })
+          const rows = (result as any).rows || result
+          const count = parseInt(rows[0]?.count as string || '0', 10)
           tableStats[table] = count
           totalRows += count
         } catch (e) {
@@ -31,7 +33,8 @@ export const getDbStatsFn = createServerFn({ method: 'GET' })
       let outOfSync = false
       try {
         const migResult = await db.execute(sql`SELECT COUNT(*) as count FROM __drizzle_migrations`)
-        migrationsCount = parseInt(migResult[0]?.count as string || '0', 10)
+        const rows = (migResult as any).rows || migResult
+        migrationsCount = parseInt(rows[0]?.count as string || '0', 10)
         // If we have 0 migrations but tables exist, something might be out of sync
         if (migrationsCount === 0 && totalRows > 0) {
           outOfSync = true

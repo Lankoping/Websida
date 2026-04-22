@@ -67,16 +67,21 @@ function Index() {
     <>
       <ComingSoon locale="en" heroData={heroContent} infoSectionsData={infoSections} />
 
-      (* Cities of Ã–stergÃ¶wFÆæB6V7F–öâ¢ò¢Ç6V7F–öâ6Æ74æÖSÒ&&rÖ&6¶w&÷VæB&÷&FW"×B&÷&FW"Ö&÷&FW"#à¢ÆF—b6Æ74æÖSÒ&×‚ÖWFòÖ‚×rÓg†Â‚Ób’Ó##à¢ÆF—b6Æ74æÖSÒ&Ö"Ó"#à¢Ç6Æ74æÖSÒ'FW‡B×6ÒföçBÖÖVF—VÒG&6¶–ær×v–FW7BFW‡B×&–Ö'’WW&66RÖ"Ó2#äF—66÷fW#Â÷à¢Æƒ"6Æ74æÖSÒ&föçBÖF—7Æ’FW‡BÓG†ÂÖC§FW‡BÓW†ÂFW‡BÖf÷&Vw&÷VæB#ä6—F–W2öb9g7FW&|;gtland</h2>
+      {/* Cities of Ã–stergÃ¶tland Section */}
+      <section className="bg-background border-t border-border">
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <div className="mb-12">
+            <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Discover</p>
+            <h2 className="font-display text-4xl md:text-5xl text-foreground">Cities in Ã–stergÃ¶tland</h2>
           </div>
 
           <div className="grid gap-8 md:grid-cols-1">
             {/* NorrkÃ¶ping Card */}
             <article className="group border border-border bg-card p-8 transition-all hover:border-primary/50">
-              <img 
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaoLCZsAIYEk4sJGANU9T5_zkxZBwWi5Fmcg&s" 
-                alt="NorrkÃ¶ping industrial landscape" 
-                className="w-full h-48 object-cover mb-6 rounded-sm" 
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaoLCZsAIYEk4sJGANU9T5_zkxZBwWi5Fmcg&s"
+                alt="NorrkÃ¶ping industrial landscape"
+                className="w-full h-48 object-cover mb-6 rounded-sm"
               />
               <h3 className="font-display text-2xl md:text-3xl text-foreground mb-3">
                 Norrk&ouml;ping
@@ -115,8 +120,8 @@ function Index() {
                   <p className="text-muted-foreground leading-relaxed mb-6">
                     {latestBlog.excerpt || 'Read our latest blog post.'}
                   </p>
-                  <a 
-                    className="inline-flex items-center text-sm font-medium text-primary hover:text-foreground transition-colors" 
+                  <a
+                    className="inline-flex items-center text-sm font-medium text-primary hover:text-foreground transition-colors"
                     href={`/en/blogs/${latestBlog.slug}`}
                   >
                     Read more
@@ -147,8 +152,8 @@ function Index() {
                   <p className="text-muted-foreground leading-relaxed mb-6">
                     {latestNews.excerpt || 'Read our latest news update.'}
                   </p>
-                  <a 
-                    className="inline-flex items-center text-sm font-medium text-primary hover:text-foreground transition-colors" 
+                  <a
+                    className="inline-flex items-center text-sm font-medium text-primary hover:text-foreground transition-colors"
                     href={`/en/nyheter/${latestNews.slug}`}
                   >
                     Read more

@@ -1,118 +1,113 @@
-aW1wb3J0IHsgY3JlYXRlRmlsZVJvdXRlLCBMaW5rIH0gZnJvbSAnQHRhbnN0
-YWNrL3JlYWN0LXJvdXRlcicKaW1wb3J0IHsgQXJyb3dMZWZ0LCBTaGllbGRD
-aGVjaywgSW5mbywgQ2xvY2sgfSBmcm9tICdsdWNpZGUtcmVhY3QnCgpleHBv
-cnQgY29uc3QgUm91dGUgPSBjcmVhdGVGaWxlUm91dGUoJy9fcHVibGljL2Rh
-dGFwb2xpY3kvJykoewogIGNvbXBvbmVudDogUHJpdmFjeVBhZ2UsCn0pCgpm
-dW5jdGlvbiBQcml2YWN5UGFnZSgpIHsKICBjb25zdCBjb2xsZWN0aW9uSXRl
-bXMgPSBbCiAgICB7IAogICAgICB0aXRsZTogJ0UtcG9zdGFkcmVzcz4sIAog
-ICAgICBkZXNjOiAnRsO2ciBpbmxvZ2duaW5nIG9jaCB1dHNraWNrIGF2IHZp
-a3RpZyBpbmZvcm1hdGlvbi4nLAogICAgICBpY29uOiBJbmZvLAogICAgfSwK
-ICAgIHsgCiAgICAgIHRpdGxlOiAnTWFudWVsbGEgdXBwZ2lmdGVyJywgCiAg
-ICAgIGRlc2M6ICdWaWQgbWFudWVsbGEgYmlsamV0dGvDtnAga2FuIHZpIGVm
-dGVyZnLDpWdhIG5hbW4gb2NoIGtvbnRha3R1cHBnaWZ0ZXIgZsO2ciBhdHQg
-dmVyaWZpZXJhIGRpbiBwbGF0cy4nLAogICAgICBpY29uOiBJbmZvLAogICAg
-fSwKICBdCgogIHJldHVybiAoCiAgICA8ZGl2IGNsYXNzTmFtZT0ibWluLWgt
-c2NyZWVuIGJnLWJhY2tncm91bmQgdGV4dC1mb3JlZ3JvdW5kIj4KICAgICAgey
-8qIEhlYWRlciAqL30KICAgICAgPGhlYWRlciBjbGFzc05hbWU9ImJvcmRlci1i
-IGJvcmRlci1ib3JkZXIiPgogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYXgt
-dy00eGwgbXgtYXV0byBweC02IHB5LTQiPgogICAgICAgICAgPExpbmsgdG89
-Ii8iIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0y
-IHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIGhvdmVyOnRleHQtZm9y
-ZWdyb3VuZCB0cmFuc2l0aW9uLWNvbG9ycyI+CiAgICAgICAgICAgIDxBcnJv
-d0xlZnQgc2l6ZT17MTZ9IC8+CiAgICAgICAgICAgIDxzcGFuPlRpbGxiYWth
-PC9zcGFuPgogICAgICAgICAgPC9MaW5rPgogICAgICAgIDwvZGl2PgogICAg
-ICA8L2hlYWRlcj4KCiAgICAgIDxtYWluIGNsYXNzTmFtZT0ibWF4LXctNHhs
-IG14LWF1dG8gcHgtNiBweS0xNiI+CiAgICAgICAgey8qIFBhZ2UgSGVhZGVy
-ICovfQogICAgICAgIDxkaXYgY2xhc3NOYW1lPSJtYi0xNiI+CiAgICAgICAg
-ICA8cCBjbGFzc05hbWU9InRleHQtc20gZm9udC1tZWRpdW0gdHJhY2tpbmct
-d2lkZXN0IHRleHQtcHJpbWFyeSB1cHBlcmNhc2UgbWItMyI+RGF0YXBvbGlj
-eTwvcD4KICAgICAgICAgIDxoMSBjbGFzc05hbWU9ImZvbnQtYm9sZCB0ZXh0
-LTN4bCBtZDp0ZXh0LTV4bCB0ZXh0LWZvcmVncm91bmQgbWItNCI+SW50ZWdy
-aXRldDwvaDE+CiAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtbGcgdGV4
-dC1tdXRlZC1mb3JlZ3JvdW5kIj4KICAgICAgICAgICAgSHVyIHZpIGhhbnRl
-cmFyIGRpbmEgcGVyc29udXBwZ2lmdGVyIGbDtnIgTMOkbmvDtnBpbmcuc2UK
-ICAgICAgICAgIDwvcD4KICAgICAgICA8L2Rpdj4KCiAgICAgICAgey8qIERh
-dGEgQ29sbGVjdGlvbiBTZWN0aW9uICovfQogICAgICAgIDxzZWN0aW9uIGNs
-YXNzTmFtZT0ibWItMTYiPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZs
-ZXggaXRlbXMtY2VudGVyIGdhcC0zIG1iLTgiPgogICAgICAgICAgICA8ZGl2
-IGNsYXNzTmFtZT0idy0xMCBoLTEwIGZsZXggaXRlbXMtY2VudGVyIGp1c3Rp
-ZnktY2VudGVyIGJnLXNlY29uZGFyeSI+CiAgICAgICAgICAgICAgPFNoaWVs
-ZENoZWNrIGNsYXNzTmFtZT0idy01IGgtNSB0ZXh0LXByaW1hcnkiIC8+CiAg
-ICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8aDIgY2xhc3NOYW1lPSJm
-b250LWJvbGQgdGV4dC14bCB0ZXh0LWZvcmVncm91bmQiPkluc2FtbGluZyBh
-diBwZXJzb251cHBnaWZ0ZXI8L2gyPgogICAgICAgICAgPC9kaXY+CgogICAg
-ICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LW11dGVkLWZvcmVncm91bmQgbGVh
-ZGluZy1yZWxheGVkIG1iLTgiPgogICAgICAgICAgICBGw7ZyIGF0dCB2aSBz
-a2Ega3VubmEgZ2Vub21bDtnJhIGV0dCBzw6RrZXJ0IG9jaCB2w6Rsb3JnYW5p
-c2VyYXQgZXZlbnQgc2FtbGFyIHZpIGluIG9jaCBiZWhhbmRsYXIgZsO2bGph
-bmRlIHVwcGdpZnRlciBmcsOlbiB2w6VyYSBkZWx0YWdhcmU6CiAgICAgICAg
-ICA8L3A+CiAgICAgICAgICAKICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJz
-cGFjZS15LTQiPgogICAgICAgICAgICB7Y29sbGVjdGlvbkl0ZW1zLm1hcCgo
-aXRlbSkgPT4gKAogICAgICAgICAgICAgIDxkaXYgCiAgICAgICAgICAgICAg
-ICBrZXk9e2l0ZW0udGl0bGV9IAogICAgICAgICAgICAgICAgY2xhc3NOYW1l
-PSJmbGV4IGdhcC00IHAtNCBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy1jYXJk
-IGhvdmVyOmJvcmRlci1wcmltYXJ5LzIwIHRyYW5zaXRpb24tY29sb3JzIgog
-ICAgICAgICAgICAgID4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFt
-ZT0iZmxleC1zaHJpbmstMCB3LTggaC04IGZsZXggaXRlbXMtY2VudGVyIGp1
-c3RpZnktY2VudGVyIGJnLXNlY29uZGFyeSI+CiAgICAgICAgICAgICAgICAg
-IDxpdGVtLmljb24gY2xhc3NOYW1lPSJ3LTQgaC00IHRleHQtcHJpbWFyeSIg
-Lz4KICAgICAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICAgICAgICAgIDxk
-aXYgY2xhc3NOYW1lPSJwdC0xIj4KICAgICAgICAgICAgICAgICAgPHAgY2xh
-c3NOYW1lPSJ0ZXh0LXByaW1hcnkgZm9udC1tZWRpdW0gbWItMSI+e2l0ZW0u
-dGl0bGV9PC9wPgogICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRl
-eHQtZm9yZWdyb3VuZC84MCBsZWFkaW5nLXJlbGF4ZWQiPntpdGVtLmRlc2N9
-PC9wPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgPC9k
-aXY+CiAgICAgICAgICAgICkpfQogICAgICAgICAgPC9kaXY+CiAgICAgICAg
-PC9zZWN0aW9uPgoKICAgICAgICB7LyogV2h5IFdlIENvbGxlY3QgU2VjdGlv
-biAqL30KICAgICAgICA8c2VjdGlvbiBjbGFzc05hbWU9Im1iLTE2Ij4KICAg
-ICAgICAgIDxoMiBjbGFzc05hbWU9ImZvbnQtZGlzcGxheSB0ZXh0LTJ4bCB0
-ZXh0LWZvcmVncm91bmQgbWItNiI+VmFyZsO2ciBzYW1sYXIgdmkgaW4gZGV0
-dGE/PC9oMj4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJzcGFjZS15LTQg
-dGV4dC1tdXRlZC1mb3JlZ3JvdW5kIGxlYWRpbmctcmVsYXhlZCI+CiAgICAg
-ICAgICAgIDxwPlVwcGdpZnRlcm5hIGFudsOkbmRzIHV0ZXNsdXRhbmRlIGbD
-tnIgYWRtaW5pc3RyYXRpb24gYXYgZXZlbnRldCwgc8Oka2VyaGV0c8OldfDpH
-JkZXIgb2NoIHZlcmlmaWVyaW5nIGF2IGRpbiBiaWxqZXR0LjwvcD4KICAg
-ICAgICAgICAgPHA+RWZ0ZXJzb20gYmlsamV0dGvDtnAgaGFudGVyYXMgbWFu
-dWVsbHQgbGFncmFzIGluZ2EgYmV0YWxuaW5nc3VwcGdpZnRlciBww6UgZGVu
-bmEgd2ViYnBsYXRzLjwvcD4KICAgICAgICAgICAgPHA+VmkgZGVsYXIgYWxk
-cmlnIGRpbmEgdXBwZ2lmdGVyIG1lZCB0cmVkamUgcGFydCBpIHZpbnN0ZHJp
-dmFuZGUgc3lmdGUuIEluZm9ybWF0aW9uIGthbiBkb2NrIGtvbW1hIGF0dCBk
-ZWxhcyBtZWQgbXluZGlnaGV0ZXIgKHQuZXguIHBvbGlzIGVsbGVyIHNqdWt2
-w6VyZCkgb20gZW4gbsO2ZHNpdHVhdGlvbiB1cHBzdMOlci48L3A+CiAgICAg
-ICAgICA8L2Rpdj4KICAgICAgICA8L3NlY3Rpb24+CgogICAgICAgIHsvKiBB
-ZnRlciBFdmVudCBTZWN0aW9uICovfQogICAgICAgIDxzZWN0aW9uIGNsYXNz
-TmFtZT0ibWItMTYiPgogICAgICAgICAgPGRpdiBjbGFzc05hbWU9ImZsZXgg
-aXRlbXMtY2VudGVyIGdhcC0zIG1iLTYiPgogICAgICAgICAgICA8ZGl2IGNs
-YXNzTmFtZT0idy0xMCBoLTEwIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnkt
-Y2VudGVyIGJnLXNlY29uZGFyeSI+CiAgICAgICAgICAgICAgPENsb2NrIGNs
-YXNzTmFtZT0idy01IGgtNSB0ZXh0LXByaW1hcnkiIC8+CiAgICAgICAgICAg
-IDwvZGl2PgogICAgICAgICAgICA8aDIgY2xhc3NOYW1lPSJmbGV4IGZvbnQt
-ZGlzcGxheSB0ZXh0LTJ4bCB0ZXh0LWZvcmVncm91bmQiPlZhZCBow6RuZGVy
-IGVmdGVyIGV2ZW50ZXQ/PC9oMj4KICAgICAgICAgIDwvZGl2PgogICAgICAg
-ICAgIAogICAgICAgICAgPGRpdiBjbGFzc05hbWU9InNwYWNlLXktNiB0ZXh0
-LW11dGVkLWZvcmVncm91bmQgbGVhZGluZy1yZWxheGVkIj4KICAgICAgICAg
-ICAgPHA+CiAgICAgICAgICAgICAgT20gYWxsdCDDpHIgZ3LDtm50IChpbmdh
-IHJlZ2VsYnJvdHQpIHPDpSB0YXMgZGluYSBwZXJzb251cHBnaWZ0ZXIgYm9y
-dCBmcsOlbiB2w6VyYSBzZXJ2cmFyLgogICAgICAgICAgICAgIERldCBpbm5l
-YsOkciBhdHQgZGUgbGFncmFzIDxzdHJvbmcgY2xhc3NOYW1lPSJ0ZXh0LWZv
-cmVncm91bmQiPm1heCAzMCBkYWdhcjwvc3Ryb25nPiBlZnRlciBhdnNsdXRh
-dCBldmVudC4KICAgICAgICAgICAgPC9wPgogICAgICAgICAgICAKICAgICAg
-ICAgICAgPGRpdiBjbGFzc05hbWU9InAtNiBib3JkZXIgYm9yZGVyLXByaW1h
-cnkvMzAgYmctcHJpbWFyeS81Ij4KICAgICAgICAgICAgICA8aDMgY2xhc3NO
-YW1lPSJmbGV4IGZvbnQtYm9sZCB0ZXh0LWxnIHRleHQtcHJpbWFyeSBtYi0z
-Ij5JbmZvcm1hdGlvbiBzb20gdmkgaW50ZSB0YXIgYm9ydDwvaDM+CiAgICAg
-ICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LWZvcmVncm91bmQvODAiPgog
-ICAgICAgICAgICAgICAgVmkgdGFyIGJvcnQgYWxsIGluZm9ybWF0aW9uIHNv
-bSB2aSBpbnRlIGJlaMO2dmVyIGJlaMOlbGxhIGRlbi4gRXhlbXBlbHZpcyBv
-bSBkdSBoYXIgYnJ1dGl0IG1vdCBldmVudGV0cyByZWdsZXIgc8Ogc3BhcmFy
-IHZpIGRlbiBpbmZvcm1hdGlvbmVuLgogICAgICAgICAgICAgICAgRGV0dGEg
-YmV0eWRlciBhdHQgZHUga2FuIGJsaSBwb3J0YWQgZnLDpW4gZnJhbXRpZGEg
-ZXZlbnRzLgogICAgICAgICAgICAgIDwvcD4KICAgICAgICAgICAgPC9kaXY+
-CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L3NlY3Rpb24+CgogICAgICAg
-IHsvKiBGb290ZXIgKi99CiAgICAgICAgPGZvb3RlciBjbGFzc05hbWU9InB0
-LTggYm9yZGVyLXQgYm9yZGVyLWJvcmRlciI+CiAgICAgICAgICA8cCBjbGFz
-c05hbWU9InRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHRleHQtY2Vu
-dGVyIj4KICAgICAgICAgICAgwqkgMjAyNiBMw6Rua8O2cGluZy5zZSDigJQg
-RGluIGludGVncml0ZXQgw6RyIHZpa3RpZyBmw7ZyIG9zcy4KICAgICAgICAg
-IDwvcD4KICAgICAgICA8L2Zvb3Rlcj4KICAgICAgPC9tYWluPgogICAgPC9k
-aXY+CiAgKQp9Cg==
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { ArrowLeft, ShieldCheck, Info, Clock } from 'lucide-react'
+
+export const Route = createFileRoute('/_public/datapolicy/')({
+  component: PrivacyPage,
+})
+
+function PrivacyPage() {
+  const collectionItems = [
+    { 
+      title: 'E-postadress', 
+      desc: 'För inloggning och utskick av viktig information.',
+      icon: Info,
+    },
+    { 
+      title: 'Manuella uppgifter', 
+      desc: 'Vid manuella biljettköp kan vi efterfråga namn och kontaktuppgifter för att verifiera din plats.',
+      icon: Info,
+    },
+  ]
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="border-b border-border">
+        <div className="max-w-4xl mx-auto px-6 py-4">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft size={16} />
+            <span>Tillbaka</span>
+          </Link>
+        </div>
+      </header>
+
+      <main className="max-w-4xl mx-auto px-6 py-16">
+        <div className="mb-16">
+          <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Datapolicy</p>
+          <h1 className="font-bold text-3xl md:text-5xl text-foreground mb-4">Integritet</h1>
+          <p className="text-lg text-muted-foreground">
+            Hur vi hanterar dina personuppgifter för Länköping.se
+          </p>
+        </div>
+
+        <section className="mb-16">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 flex items-center justify-center bg-secondary">
+              <ShieldCheck className="w-5 h-5 text-primary" />
+            </div>
+            <h2 className="font-bold text-xl text-foreground">Insamling av personuppgifter</h2>
+          </div>
+
+          <p className="text-muted-foreground leading-relaxed mb-8">
+            För att vi ska kunna genomföra ett säkert och välorganiserat event samlar vi in och behandlar följande uppgifter från våra deltagare:
+          </p>
+          
+          <div className="space-y-4">
+            {collectionItems.map((item) => (
+              <div 
+                key={item.title} 
+                className="flex gap-4 p-4 border border-border bg-card hover:border-primary/20 transition-colors"
+              >
+                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-secondary">
+                  <item.icon className="w-4 h-4 text-primary" />
+                </span>
+                <div className="pt-1">
+                  <p className="text-primary font-medium mb-1">{item.title}</p>
+                  <p className="text-foreground/80 leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-16">
+          <h2 className="font-display text-2xl text-foreground mb-6">Varför samlar vi in detta?</h2>
+          <div className="space-y-4 text-muted-foreground leading-relaxed">
+            <p>Uppgifterna används uteslutande för administration av eventet, säkerhetsåtgärder och verifiering av din biljett.</p>
+            <p>Eftersom biljettköp hanteras manuellt lagras inga betalningsuppgifter på denna webbplats.</p>
+            <p>Vi delar aldrig dina uppgifter med tredje part i vinstdrivande syfte. Information kan dock komma att delas med myndigheter (t.ex. polis eller sjukvård) om en nödsituation uppstår.</p>
+          </div>
+        </section>
+
+        <section className="mb-16">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 flex items-center justify-center bg-secondary">
+              <Clock className="w-5 h-5 text-primary" />
+            </div>
+            <h2 className="font-display text-2xl text-foreground">Vad händer efter eventet?</h2>
+          </div>
+          
+          <div className="space-y-6 text-muted-foreground leading-relaxed">
+            <p>
+              Om allt är grönt (inga regelbrott) så tas dina personuppgifter bort från våra servrar.
+              Det innebär att de lagras <strong>max 30 dagar</strong> efter avslutat event.
+            </p>
+            
+            <div className="p-6 border border-primary/30 bg-primary/5">
+              <h3 className="font-bold text-lg text-primary mb-3">Information som vi inte tar bort</h3>
+              <p className="text-foreground/80">
+                Vi tar bort all information som vi inte behöver behålla den. Exempelvis om du har brutit mot eventets regler så sparar vi den informationen.
+                Detta betyder att du kan bli portad från framtida events.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <footer className="pt-8 border-t border-border">
+          <p className="text-sm text-muted-foreground text-center">
+            © 2026 Länköping.se • Din integritet är viktig för oss.
+          </p>
+        </footer>
+      </main>
+    </div>
+  )
+}

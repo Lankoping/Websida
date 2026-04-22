@@ -153,6 +153,7 @@ export const createUserFn = createServerFn({ method: "POST" })
 
     let resetToken = null
     let emailSent = false
+    let emailError = null
     if (!data.password) {
       // Generate a reset token
       resetToken = randomBytes(32).toString('hex')
@@ -182,12 +183,20 @@ export const createUserFn = createServerFn({ method: "POST" })
         ${resetLink}</p>
       `
 
-      emailSent = await sendEmail({
-        to: data.email,
-        subject: 'Ditt Länköping-konto',
-        text: emailText,
-        html: emailHtml,
-      })
+      try {
+        emailSent = await sendEmail({
+          to: data.email,
+          subject: 'Ditt Länköping-konto',
+          text: emailText,
+          html: emailHtml,
+        })
+        if (!emailSent) {
+          emailError = 'Misslyckades att skicka e-post. Kontrollera SMTP-inställningarna.'
+        }
+      } catch (e: any) {
+        emailSent = false
+        emailError = e.message || 'Ett okänt fel inträffade vid e-postutskick.'
+      }
     }
 
     await writeActivityLog({
@@ -201,6 +210,7 @@ export const createUserFn = createServerFn({ method: "POST" })
         role: created[0].role,
         generatedPassword: !data.password,
         emailSent,
+        emailError,
       },
     })
 
@@ -208,7 +218,96 @@ export const createUserFn = createServerFn({ method: "POST" })
       user: created[0],
       resetToken,
       emailSent,
+      emailError,
     }
+  })
+
+export const sendResetLinkFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({
+      userId: z.number(),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const currentUser = await requireOrganizerUser()
+    const db = await getDb()
+
+    if (isDemoTesterUser(currentUser)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
+    const targetUser = await db.select().from(users).where(eq(users.id, data.userId)).limit(1)
+    if (!targetUser[0]) {
+      throw new Error('User not found')
+    }
+
+    // Delete old tokens for this user
+    await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, data.userId))
+
+    // Generate a new reset token
+    const resetToken = randomBytes(32).toString('hex')
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + 7) // Token valid for 7 days
+
+    await db.insert(passwordResetTokens).values({
+      userId: targetUser[0].id,
+      token: resetToken,
+      expiresAt,
+    })
+
+    // Send email
+    const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
+    const resetLink = `${baseUrl}/login?userid=${targetUser[0].id}&token=${resetToken}&makepassword=true`
+    
+    const userName = targetUser[0].name || 'Användare'
+    const adminName = currentUser.name || 'En administratör'
+    
+    const emailText = `Hej! ${userName}\n${adminName} har begärt att du sätter ett nytt lösenord för ditt Länköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
+    
+    const emailHtml = `
+      <p>Hej! ${userName}</p>
+      <p>${adminName} har begärt att du sätter ett nytt lösenord för ditt Länköping-konto.</p>
+      <p><a href="${resetLink}">Klicka här för att skapa ditt lösenord</a></p>
+      <p>Eller kopiera och klistra in denna länk i din webbläsare:<br/>
+      ${resetLink}</p>
+    `
+
+    let emailSent = false
+    let emailError = null
+
+    try {
+      emailSent = await sendEmail({
+        to: targetUser[0].email,
+        subject: 'Återställ ditt lösenord för Länköping.se',
+        text: emailText,
+        html: emailHtml,
+      })
+      if (!emailSent) {
+        emailError = 'Misslyckades att skicka e-post. Kontrollera SMTP-inställningarna.'
+      }
+    } catch (e: any) {
+      emailSent = false
+      emailError = e.message || 'Ett okänt fel inträffade vid e-postutskick.'
+    }
+
+    await writeActivityLog({
+      actorUserId: currentUser.id,
+      actorRole: currentUser.role,
+      action: 'user.password_reset_link_sent',
+      entityType: 'user',
+      entityId: targetUser[0].id,
+      details: {
+        email: targetUser[0].email,
+        emailSent,
+        emailError,
+      },
+    })
+
+    if (!emailSent) {
+      throw new Error(emailError || 'Failed to send email')
+    }
+
+    return { success: true, resetLink }
   })
 
 export const changePasswordFn = createServerFn({ method: "POST" })

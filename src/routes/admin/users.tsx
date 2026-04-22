@@ -7,8 +7,9 @@ import {
   deleteUserFn,
   getSessionFn,
   updateUserFn,
+  sendResetLinkFn,
 } from '../../server/functions/auth'
-import { Copy, Mail } from 'lucide-react'
+import { Copy, Mail, AlertCircle, CheckCircle2 } from 'lucide-react'
 
 export const Route = createFileRoute('/admin/users')({
   beforeLoad: async () => {
@@ -37,7 +38,7 @@ function AdminUsers() {
   const [role, setRole] = useState<'organizer' | 'volunteer'>('volunteer')
   const [error, setError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
-  const [createdUserLink, setCreatedUserLink] = useState<{name: string, email: string, link: string, emailSent: boolean} | null>(null)
+  const [createdUserLink, setCreatedUserLink] = useState<{name: string, email: string, link: string, emailSent: boolean, emailError?: string | null} | null>(null)
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
@@ -57,6 +58,9 @@ function AdminUsers() {
   const [isUpdatingId, setIsUpdatingId] = useState<number | null>(null)
   
   const [copiedId, setCopiedId] = useState<number | null>(null)
+  
+  // Resend email state
+  const [isResendingId, setIsResendingId] = useState<number | null>(null)
 
   const handleChangePassword = async (userId: number, e: React.FormEvent) => {
     e.preventDefault()
@@ -104,7 +108,8 @@ function AdminUsers() {
           name: result.user.name || 'Användare',
           email: result.user.email,
           link: resetLink,
-          emailSent: result.emailSent || false
+          emailSent: result.emailSent || false,
+          emailError: result.emailError
         })
       }
 
@@ -117,6 +122,18 @@ function AdminUsers() {
       setError(err?.message || 'Kunde inte skapa användaren')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleResendEmail = async (userId: number) => {
+    setIsResendingId(userId)
+    try {
+      const result = await sendResetLinkFn({ data: { userId } })
+      alert('E-post med återställningslänk har skickats!')
+    } catch (err: any) {
+      alert(`Kunde inte skicka e-post: ${err?.message || 'Okänt fel'}`)
+    } finally {
+      setIsResendingId(null)
     }
   }
 
@@ -233,9 +250,9 @@ function AdminUsers() {
 
         {/* Success message with reset link */}
         {createdUserLink && (
-          <div className="mt-6 p-4 border border-emerald-500/30 bg-emerald-500/10 rounded-md">
-            <h4 className="flex items-center gap-2 font-medium text-emerald-600 mb-2">
-              <Mail className="w-4 h-4" />
+          <div className={`mt-6 p-4 border rounded-md ${createdUserLink.emailSent ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-amber-500/30 bg-amber-500/10'}`}>
+            <h4 className={`flex items-center gap-2 font-medium mb-2 ${createdUserLink.emailSent ? 'text-emerald-600' : 'text-amber-600'}`}>
+              {createdUserLink.emailSent ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
               Användare skapad utan lösenord
             </h4>
             {createdUserLink.emailSent ? (
@@ -243,9 +260,16 @@ function AdminUsers() {
                 Ett e-postmeddelande har skickats till användaren med instruktioner för att sätta sitt lösenord. Du kan också kopiera länken nedan om det behövs.
               </p>
             ) : (
-              <p className="text-sm text-foreground/80 mb-4">
-                Kunde inte skicka e-post automatiskt. Skicka följande meddelande till användaren så att de kan sätta sitt lösenord:
-              </p>
+              <div className="mb-4">
+                <p className="text-sm text-foreground/80 mb-2">
+                  Kunde inte skicka e-post automatiskt. Skicka följande meddelande till användaren så att de kan sätta sitt lösenord:
+                </p>
+                {createdUserLink.emailError && (
+                  <p className="text-xs text-red-500 bg-red-500/10 p-2 rounded border border-red-500/20">
+                    Fel: {createdUserLink.emailError}
+                  </p>
+                )}
+              </div>
             )}
             <div className="p-3 bg-background border border-border rounded text-sm font-mono text-muted-foreground whitespace-pre-wrap">
               Hej {createdUserLink.name}!{'\n\n'}
@@ -253,7 +277,7 @@ function AdminUsers() {
               Gå till följande länk för att skapa ditt lösenord:{'\n'}
               {createdUserLink.link}
             </div>
-            <div className="mt-3 flex gap-3">
+            <div className="mt-3 flex flex-wrap gap-3">
               <button 
                 onClick={() => handleCopyLink(createdUserLink.link)}
                 className="flex items-center gap-2 px-3 py-1.5 bg-secondary text-foreground text-xs font-medium rounded hover:bg-secondary/80 transition-colors"
@@ -322,6 +346,16 @@ function AdminUsers() {
                     className="px-3 py-1.5 text-xs border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 rounded transition-colors"
                   >
                     Byt lösenord
+                  </button>
+                )}
+                {user.id !== currentUser?.id && (
+                  <button
+                    type="button"
+                    onClick={() => handleResendEmail(user.id)}
+                    disabled={isResendingId === user.id}
+                    className="px-3 py-1.5 text-xs border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 rounded transition-colors disabled:opacity-50"
+                  >
+                    {isResendingId === user.id ? 'Skickar...' : 'Skicka inbjudan'}
                   </button>
                 )}
                 {user.id !== currentUser?.id && (

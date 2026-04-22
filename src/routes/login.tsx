@@ -4,8 +4,8 @@ import { loginFn, resetPasswordWithTokenFn } from '../server/functions/auth'
 import { z } from 'zod'
 
 const searchSchema = z.object({
-  makepassword: z.string().optional(),
-  userid: z.string().optional(),
+  makepassword: z.boolean().optional().or(z.string().optional()),
+  userid: z.number().optional().or(z.string().optional()),
   token: z.string().optional(),
 })
 
@@ -18,8 +18,10 @@ function Login() {
   const router = useRouter()
   const searchParams = Route.useSearch()
 
-  const isResetMode = searchParams.makepassword === 'true'
-  const userId = searchParams.userid ? parseInt(searchParams.userid) : null
+  const isResetMode = searchParams.makepassword === true || searchParams.makepassword === 'true'
+  const userId = typeof searchParams.userid === 'number' 
+    ? searchParams.userid 
+    : (searchParams.userid ? parseInt(searchParams.userid) : null)
   const token = searchParams.token
 
   const [email, setEmail] = useState('')

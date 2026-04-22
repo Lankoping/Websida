@@ -242,6 +242,26 @@ export const deleteUserFn = createServerFn({ method: "POST" })
       await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))
       await db.update(tickets).set({ scannedBy: null }).where(eq(tickets.scannedBy, data.userId))
 
+      // Handle tables that might exist in the database but aren't in schema.ts anymore
+      // This is a fallback in case the DROP TABLE statements in init.ts didn't execute properly
+      try {
+        await db.execute(sql`UPDATE avgangs_requests SET reviewed_by = NULL WHERE reviewed_by = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
+      
+      try {
+        await db.execute(sql`UPDATE stadgar SET updated_by = NULL WHERE updated_by = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
+
+      try {
+        await db.execute(sql`DELETE FROM organization_members WHERE user_id = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
+
       // Activity logs - delete logs where this user was the actor using the dedicated function
       await deleteActivityLogsForUser(data.userId)
 

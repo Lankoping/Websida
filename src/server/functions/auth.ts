@@ -15,6 +15,7 @@ import {
 } from '../lib/access'
 import { hashPassword, isHashedPassword, verifyPassword } from '../lib/password'
 import { writeActivityLog, deleteActivityLogsForUser } from './logs'
+import { sendEmail } from '../lib/email'
 
 export const loginFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ email: z.string(), passwordHash: z.string() }).parse(data))
@@ -151,6 +152,7 @@ export const createUserFn = createServerFn({ method: "POST" })
       .returning()
 
     let resetToken = null
+    let emailSent = false
     if (!data.password) {
       // Generate a reset token
       resetToken = randomBytes(32).toString('hex')
@@ -161,6 +163,30 @@ export const createUserFn = createServerFn({ method: "POST" })
         userId: created[0].id,
         token: resetToken,
         expiresAt,
+      })
+
+      // Send email
+      const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
+      const resetLink = `${baseUrl}/login?userid=${created[0].id}&token=${resetToken}&makepassword=true`
+      
+      const userName = data.name || 'Användare'
+      const adminName = currentUser.name || 'En administratör'
+      
+      const emailText = `Hej! ${userName}\n${adminName} har begärt att du skapar ett Länköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
+      
+      const emailHtml = `
+        <p>Hej! ${userName}</p>
+        <p>${adminName} har begärt att du skapar ett Länköping-konto.</p>
+        <p><a href="${resetLink}">Klicka här för att skapa ditt lösenord</a></p>
+        <p>Eller kopiera och klistra in denna länk i din webbläsare:<br/>
+        ${resetLink}</p>
+      `
+
+      emailSent = await sendEmail({
+        to: data.email,
+        subject: 'Ditt Länköping-konto',
+        text: emailText,
+        html: emailHtml,
       })
     }
 
@@ -174,12 +200,14 @@ export const createUserFn = createServerFn({ method: "POST" })
         email: created[0].email,
         role: created[0].role,
         generatedPassword: !data.password,
+        emailSent,
       },
     })
 
     return {
       user: created[0],
       resetToken,
+      emailSent,
     }
   })
 

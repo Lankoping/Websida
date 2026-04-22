@@ -37,7 +37,7 @@ function AdminUsers() {
   const [role, setRole] = useState<'organizer' | 'volunteer'>('volunteer')
   const [error, setError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
-  const [createdUserLink, setCreatedUserLink] = useState<{name: string, email: string, link: string} | null>(null)
+  const [createdUserLink, setCreatedUserLink] = useState<{name: string, email: string, link: string, emailSent: boolean} | null>(null)
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
@@ -103,7 +103,8 @@ function AdminUsers() {
         setCreatedUserLink({
           name: result.user.name || 'Användare',
           email: result.user.email,
-          link: resetLink
+          link: resetLink,
+          emailSent: result.emailSent || false
         })
       }
 
@@ -237,9 +238,15 @@ function AdminUsers() {
               <Mail className="w-4 h-4" />
               Användare skapad utan lösenord
             </h4>
-            <p className="text-sm text-foreground/80 mb-4">
-              Skicka följande meddelande till användaren så att de kan sätta sitt lösenord:
-            </p>
+            {createdUserLink.emailSent ? (
+              <p className="text-sm text-foreground/80 mb-4">
+                Ett e-postmeddelande har skickats till användaren med instruktioner för att sätta sitt lösenord. Du kan också kopiera länken nedan om det behövs.
+              </p>
+            ) : (
+              <p className="text-sm text-foreground/80 mb-4">
+                Kunde inte skicka e-post automatiskt. Skicka följande meddelande till användaren så att de kan sätta sitt lösenord:
+              </p>
+            )}
             <div className="p-3 bg-background border border-border rounded text-sm font-mono text-muted-foreground whitespace-pre-wrap">
               Hej {createdUserLink.name}!{'\n\n'}
               {currentUser?.name || 'En administratör'} har begärt att du skapar ett Länköping-konto.{'\n\n'}
@@ -254,13 +261,15 @@ function AdminUsers() {
                 <Copy className="w-3 h-3" />
                 Kopiera länk
               </button>
-              <a 
-                href={`mailto:${createdUserLink.email}?subject=Ditt Länköping-konto&body=Hej ${createdUserLink.name}!%0D%0A%0D%0A${currentUser?.name || 'En administratör'} har begärt att du skapar ett Länköping-konto.%0D%0A%0D%0AGå till följande länk för att skapa ditt lösenord:%0D%0A${encodeURIComponent(createdUserLink.link)}`}
-                className="flex items-center gap-2 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-medium rounded hover:bg-primary/90 transition-colors"
-              >
-                <Mail className="w-3 h-3" />
-                Skicka e-post
-              </a>
+              {!createdUserLink.emailSent && (
+                <a 
+                  href={`mailto:${createdUserLink.email}?subject=Ditt Länköping-konto&body=Hej ${createdUserLink.name}!%0D%0A%0D%0A${currentUser?.name || 'En administratör'} har begärt att du skapar ett Länköping-konto.%0D%0A%0D%0AGå till följande länk för att skapa ditt lösenord:%0D%0A${encodeURIComponent(createdUserLink.link)}`}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-medium rounded hover:bg-primary/90 transition-colors"
+                >
+                  <Mail className="w-3 h-3" />
+                  Skicka e-post manuellt
+                </a>
+              )}
             </div>
           </div>
         )}

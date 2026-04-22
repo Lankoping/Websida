@@ -40,7 +40,7 @@ export function ComingSoon({ locale = 'sv' }: { locale?: Locale }) {
   return (
     <>
       <section className="min-h-[80vh] flex flex-col items-center justify-center px-6 py-24 text-center">
-        <div className="max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
+        <div className="max-w-4xl mx-auto flex flex-col items-center justify-center">
           {/* Eyebrow */}
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-6 text-center">
             {content.eyebrow}
@@ -65,12 +65,12 @@ export function ComingSoon({ locale = 'sv' }: { locale?: Locale }) {
           </p>
 
           {/* Primary Button */}
-          <div className="flex justify-center w-full">
+          <div className="flex justify-center">
             <a 
               href={content.primaryButtonLink} 
               target={content.primaryButtonLink.startsWith('http') ? '_blank' : undefined}
               rel={content.primaryButtonLink.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="px-8 py-3 bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors mx-auto"
+              className="px-8 py-3 bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
             >
               {content.primaryButtonText}
             </a>
@@ -80,7 +80,7 @@ export function ComingSoon({ locale = 'sv' }: { locale?: Locale }) {
                 href={content.secondaryButtonLink} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="px-8 py-3 border border-border text-foreground font-medium hover:bg-secondary transition-colors ml-4 mx-auto"
+                className="px-8 py-3 border border-border text-foreground font-medium hover:bg-secondary transition-colors ml-4"
               >
                 {content.secondaryButtonText}
               </a>
@@ -91,8 +91,8 @@ export function ComingSoon({ locale = 'sv' }: { locale?: Locale }) {
 
       {/* Info Section */}
       <section className="border-t border-border w-full">
-        <div className="max-w-6xl mx-auto px-6 py-24 flex flex-col items-center text-center">
-          <div className="grid md:grid-cols-2 gap-12 w-full max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto px-6 py-24 flex flex-col items-center">
+          <div className="grid md:grid-cols-2 gap-12 w-full max-w-4xl">
             <div className="flex flex-col items-center text-center">
               <div className="relative w-full h-48 overflow-hidden rounded-lg mb-4">
                 <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover mx-auto" />

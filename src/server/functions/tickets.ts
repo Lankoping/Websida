@@ -282,18 +282,24 @@ export const resendTicketEmailFn = createServerFn({ method: "POST" })
     
     const event = await db.select().from(events).where(eq(events.id, ticket[0].eventId)).limit(1)
     const eventTitle = event[0]?.title || 'Event'
+    const eventDate = event[0]?.date ? new Date(event[0].date).toLocaleDateString('sv-SE') : 'Okänt datum'
 
     const emailHtml = `
       <p>Hej ${ticket[0].participantName}!</p>
       <p>Här är din biljett för ${eventTitle}.</p>
-      <p>Biljettkod: <b>${ticket[0].ticketCode}</b></p>
+      <ul>
+        <li><b>Namn:</b> ${ticket[0].participantName}</li>
+        <li><b>Datum:</b> ${eventDate}</li>
+        <li><b>Kostnad:</b> ${ticket[0].pricePaid} SEK</li>
+        <li><b>Biljettkod:</b> ${ticket[0].ticketCode}</li>
+      </ul>
       <p><a href="${process.env.BASE_URL || 'https://lankoping.se'}/biljett/${ticket[0].ticketCode}">Visa biljett</a></p>
     `
 
     const sent = await sendEmail({
       to: ticket[0].participantEmail,
       subject: `Din biljett för ${eventTitle}`,
-      text: `Hej ${ticket[0].participantName}! Din biljettkod för ${eventTitle} är ${ticket[0].ticketCode}.`,
+      text: `Hej ${ticket[0].participantName}! Din biljettkod för ${eventTitle} (${eventDate}) är ${ticket[0].ticketCode}. Kostnad: ${ticket[0].pricePaid} SEK.`,
       html: emailHtml,
     })
 

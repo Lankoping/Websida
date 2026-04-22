@@ -13,7 +13,7 @@ import {
   requireStaffUser,
 } from '../lib/access'
 import { hashPassword, isHashedPassword, verifyPassword } from '../lib/password'
-import { writeActivityLog } from './logs'
+import { writeActivityLog, deleteActivityLogsForUser } from './logs'
 
 export const loginFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ email: z.string(), passwordHash: z.string() }).parse(data))
@@ -235,33 +235,38 @@ export const deleteUserFn = createServerFn({ method: "POST" })
       throw new Error('User not found')
     }
 
-    // Null out all foreign key references to this user before deletion
+    try {
+      // Null out all foreign key references to this user before deletion
 
-    // Tickets issued or scanned by this user
-    await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))
-    await db.update(tickets).set({ scannedBy: null }).where(eq(tickets.scannedBy, data.userId))
+      // Tickets issued or scanned by this user
+      await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))
+      await db.update(tickets).set({ scannedBy: null }).where(eq(tickets.scannedBy, data.userId))
 
-    // Activity logs - delete logs where this user was the actor (actorUserId is NOT NULL)
-    await db.delete(activityLogs).where(eq(activityLogs.actorUserId, data.userId))
+      // Activity logs - delete logs where this user was the actor using the dedicated function
+      await deleteActivityLogsForUser(data.userId)
 
-    // Delete user
-    await db
-      .delete(users)
-      .where(eq(users.id, data.userId))
+      // Delete user
+      await db
+        .delete(users)
+        .where(eq(users.id, data.userId))
 
-    // Log the deletion (using current user as actor, not the deleted user)
-    await writeActivityLog({
-      actorUserId: currentUser.id,
-      actorRole: currentUser.role,
-      action: 'user.delete',
-      entityType: 'user',
-      entityId: data.userId,
-      details: {
-        email: targetUser[0]?.email ?? null,
-      },
-    })
+      // Log the deletion (using current user as actor, not the deleted user)
+      await writeActivityLog({
+        actorUserId: currentUser.id,
+        actorRole: currentUser.role,
+        action: 'user.delete',
+        entityType: 'user',
+        entityId: data.userId,
+        details: {
+          email: targetUser[0]?.email ?? null,
+        },
+      })
 
-    return { success: true }
+      return { success: true }
+    } catch (error) {
+      console.error(`Failed to delete user where user ID ${data.userId}`, error)
+      throw new Error(`Failed to delete user: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   })
 
 export const lockUserFn = createServerFn({ method: "POST" })

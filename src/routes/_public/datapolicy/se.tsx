@@ -36,6 +36,13 @@ function DataPolicySwedish() {
           </section>
 
           <section>
+            <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">Biljettdata och Deltagare</h2>
+            <p>
+              Personuppgifter kopplade till biljetter (namn och e-post) anonymiseras automatiskt efter 1 år i enlighet med GDPR:s princip om lagringsminimering.
+            </p>
+          </section>
+
+          <section>
             <h2 className="text-[#C04A2A] uppercase tracking-[0.15em] text-xs mb-2">IP-adresser</h2>
             <p>
               IP-relaterad metadata lagras i maximalt 7 dagar och rensas därefter automatiskt.

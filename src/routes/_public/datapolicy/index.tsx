@@ -88,14 +88,14 @@ function PrivacyPage() {
           
           <div className="space-y-6 text-muted-foreground leading-relaxed">
             <p>
-              Om allt är grönt (inga regelbrott) så tas dina personuppgifter bort från våra servrar.
-              Det innebär att de lagras <strong>max 30 dagar</strong> efter avslutat event.
+              För att följa GDPR och principen om lagringsminimering anonymiseras personuppgifter kopplade till biljetter (namn och e-post) automatiskt.
+              Det innebär att de lagras i <strong>max 1 år</strong> efter att biljetten skapades, därefter tas de bort från våra servrar.
             </p>
             
             <div className="p-6 border border-primary/30 bg-primary/5">
               <h3 className="font-bold text-lg text-primary mb-3">Information som vi inte tar bort</h3>
               <p className="text-foreground/80">
-                Vi tar bort all information som vi inte behöver behålla den. Exempelvis om du har brutit mot eventets regler så sparar vi den informationen.
+                Vi tar bort all information som vi inte behöver behålla. Exempelvis om du har brutit mot eventets regler så sparar vi den informationen.
                 Detta betyder att du kan bli portad från framtida events.
               </p>
             </div>

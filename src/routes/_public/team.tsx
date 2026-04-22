@@ -28,31 +28,17 @@ function TeamPage() {
   const teamMembers = [
     {
       id: 1,
-      name: 'Alexander Svensson',
-      role: 'Grundare & Organisatör',
-      description: 'Alex grundade Länköping LAN med en passion för gaming och community-building.',
+      name: 'Elias',
+      role: 'Ägare',
+      description: 'blah blah blah',
       icon: 'Crown'
     },
     {
       id: 2,
-      name: 'Emma Bergström',
-      role: 'Eventansvarig',
-      description: 'Emma säkerställer att varje event är perfekt genomfört med fokus på deltagarnas upplevelse.',
-      icon: 'Users'
-    },
-    {
-      id: 3,
-      name: 'Martin Persson',
-      role: 'Teknisk Ledare',
-      description: 'Martin hanterar all teknisk infrastruktur för att garantera en problemfri LAN-upplevelse.',
-      icon: 'Code'
-    },
-    {
-      id: 4,
-      name: 'Sofia Lundqvist',
-      role: 'Community Manager',
-      description: 'Sofia bygger och underhåller vår växande community genom engagemang och support.',
-      icon: 'Heart'
+      name: 'Victor',
+      role: 'Ägare',
+      description: 'blah blah blah',
+      icon: 'Crown'
     }
   ]
 

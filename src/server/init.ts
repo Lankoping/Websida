@@ -1,10 +1,12 @@
 // Server initialization - runs when the server starts
 import { purgeExpiredRequestMetadata } from './functions/logs'
 import { getDb } from './db/runtime'
-import { sql } from 'drizzle-orm'
+import { sql, lt, and, eq } from 'drizzle-orm'
+import { tickets, events } from './db/schema'
 
 let initialized = false
 let purgeInterval: ReturnType<typeof setInterval> | null = null
+let ticketCleanupInterval: ReturnType<typeof setInterval> | null = null
 
 async function runRetentionPurge() {
   try {
@@ -14,6 +16,39 @@ async function runRetentionPurge() {
     }
   } catch (error) {
     console.error('⚠️  Failed to run activity log retention purge', error)
+  }
+}
+
+async function runTicketCleanup() {
+  try {
+    const db = await getDb()
+    
+    // Anonymize tickets 30 days after the event has ended AND the event is marked as finished
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+    
+    const oldEvents = await db.select({ id: events.id })
+      .from(events)
+      .where(and(eq(events.finished, true), lt(events.date, thirtyDaysAgo)))
+      
+    const oldEventIds = oldEvents.map(e => e.id)
+
+    if (oldEventIds.length > 0) {
+      const eventIdsList = oldEventIds.join(',')
+      const result = await db.execute(sql`
+        UPDATE tickets 
+        SET participant_name = 'Anonymized', participant_email = 'anonymized@example.com'
+        WHERE event_id IN (${sql.raw(eventIdsList)}) 
+        AND participant_name != 'Anonymized'
+        RETURNING id
+      `)
+      
+      if (result.length > 0) {
+        console.log(`🧹 Anonymized ${result.length} old tickets (30 days post-event for finished events)`)
+      }
+    }
+  } catch (error) {
+    console.error('⚠️  Failed to run ticket cleanup', error)
   }
 }
 
@@ -62,11 +97,19 @@ export async function initializeServer() {
   await dropUnusedTables()
   await ensureRequiredTables()
   await runRetentionPurge()
+  await runTicketCleanup()
 
   if (!purgeInterval) {
     purgeInterval = setInterval(() => {
       void runRetentionPurge()
     }, 6 * 60 * 60 * 1000)
+  }
+
+  if (!ticketCleanupInterval) {
+    // Run ticket cleanup every 24 hours
+    ticketCleanupInterval = setInterval(() => {
+      void runTicketCleanup()
+    }, 24 * 60 * 60 * 1000)
   }
 
   console.log('✅ Server initialization complete\n')

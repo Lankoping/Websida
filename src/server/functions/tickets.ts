@@ -2,7 +2,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '../db/runtime'
 import { tickets, posts, ticketTypes, events, users } from '../db/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, lt, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { getCookie } from '@tanstack/react-start/server'
 import { nanoid } from 'nanoid'
@@ -31,6 +31,7 @@ export const createEventFn = createServerFn({ method: "POST" })
       location: z.string().optional(),
       image: z.string().optional(),
       published: z.boolean().default(false),
+      finished: z.boolean().default(false),
     }).parse(data)
   )
   .handler(async ({ data }) => {
@@ -48,6 +49,73 @@ export const createEventFn = createServerFn({ method: "POST" })
       entityType: 'event',
       entityId: result[0].id,
       details: { title: result[0].title },
+    })
+
+    return result[0]
+  })
+
+export const updateEventFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({
+      id: z.number(),
+      title: z.string(),
+      description: z.string().optional(),
+      date: z.string(),
+      location: z.string().optional(),
+      image: z.string().optional(),
+      published: z.boolean().default(false),
+      finished: z.boolean().default(false),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const admin = await checkAdmin()
+    const db = await getDb()
+    const { id, ...updateData } = data
+    
+    const result = await db.update(events)
+      .set({
+        ...updateData,
+        date: new Date(updateData.date),
+        updatedAt: new Date()
+      })
+      .where(eq(events.id, id))
+      .returning()
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'event.update',
+      entityType: 'event',
+      entityId: id,
+      details: { title: result[0].title },
+    })
+
+    return result[0]
+  })
+
+export const updateEventStatusFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({
+      eventId: z.number(),
+      finished: z.boolean(),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const admin = await checkAdmin()
+    const db = await getDb()
+    
+    const result = await db.update(events)
+      .set({ finished: data.finished, updatedAt: new Date() })
+      .where(eq(events.id, data.eventId))
+      .returning()
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'event.status.update',
+      entityType: 'event',
+      entityId: data.eventId,
+      details: { finished: data.finished },
     })
 
     return result[0]
@@ -71,7 +139,7 @@ export const deleteEventFn = createServerFn({ method: "POST" })
     return { success: true }
   })
 
-export const getTicketTypesFn = createServerFn({ method: "GET" })
+export const getTicketTypesFn = createServerFn({ method: 'GET' })
   .handler(async () => {
     await checkAdmin()
     const db = await getDb()
@@ -121,7 +189,7 @@ export const deleteTicketTypeFn = createServerFn({ method: "POST" })
     return { success: true }
   })
 
-export const getTicketsFn = createServerFn({ method: "GET" })
+export const getTicketsFn = createServerFn({ method: 'GET' })
   .handler(async () => {
     const admin = await checkAdmin()
     const db = await getDb()
@@ -163,7 +231,7 @@ export const getTicketFn = createServerFn({ method: 'GET' })
     return result[0]
   })
 
-export const issueTicketFn = createServerFn({ method: 'POST' })
+export const issueTicketFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) =>
     z.object({
       eventId: z.number(),
@@ -204,7 +272,7 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
     return newTicket[0]
   })
 
-export const resendTicketEmailFn = createServerFn({ method: 'POST' })
+export const resendTicketEmailFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ ticketId: z.number() }).parse(data))
   .handler(async ({ data }) => {
     const admin = await checkAdmin()
@@ -214,18 +282,24 @@ export const resendTicketEmailFn = createServerFn({ method: 'POST' })
     
     const event = await db.select().from(events).where(eq(events.id, ticket[0].eventId)).limit(1)
     const eventTitle = event[0]?.title || 'Event'
+    const eventDate = event[0]?.date ? new Date(event[0].date).toLocaleDateString('sv-SE') : 'Okänt datum'
 
     const emailHtml = `
       <p>Hej ${ticket[0].participantName}!</p>
       <p>Här är din biljett för ${eventTitle}.</p>
-      <p>Biljettkod: <b>${ticket[0].ticketCode}</b></p>
+      <ul>
+        <li><b>Namn:</b> ${ticket[0].participantName}</li>
+        <li><b>Datum:</b> ${eventDate}</li>
+        <li><b>Kostnad:</b> ${ticket[0].pricePaid} SEK</li>
+        <li><b>Biljettkod:</b> ${ticket[0].ticketCode}</li>
+      </ul>
       <p><a href="${process.env.BASE_URL || 'https://lankoping.se'}/biljett/${ticket[0].ticketCode}">Visa biljett</a></p>
     `
 
     const sent = await sendEmail({
       to: ticket[0].participantEmail,
       subject: `Din biljett för ${eventTitle}`,
-      text: `Hej ${ticket[0].participantName}! Din biljettkod för ${eventTitle} är ${ticket[0].ticketCode}.`,
+      text: `Hej ${ticket[0].participantName}! Din biljettkod för ${eventTitle} (${eventDate}) är ${ticket[0].ticketCode}. Kostnad: ${ticket[0].pricePaid} SEK.`,
       html: emailHtml,
     })
 
@@ -388,4 +462,40 @@ export const getEventsForTicketsFn = createServerFn({ method: 'GET' })
     await checkAdmin()
     const db = await getDb()
     return await db.select().from(events)
+  })
+
+export const cleanupOldTicketsFn = createServerFn({ method: "POST" })
+  .handler(async () => {
+    const admin = await requireStaffUser()
+    const db = await getDb()
+    
+    // Anonymize tickets 30 days after the event has ended AND the event is marked as finished
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+    
+    // Find events that are finished AND older than 30 days
+    const oldEvents = await db.select({ id: events.id })
+      .from(events)
+      .where(and(eq(events.finished, true), lt(events.date, thirtyDaysAgo)))
+      
+    const oldEventIds = oldEvents.map(e => e.id)
+
+    if (oldEventIds.length > 0) {
+      const eventIdsList = oldEventIds.join(',')
+      await db.execute(sql`
+        UPDATE tickets 
+        SET participant_name = 'Anonymized', participant_email = 'anonymized@example.com'
+        WHERE event_id IN (${sql.raw(eventIdsList)}) 
+        AND participant_name != 'Anonymized'
+      `)
+    }
+      
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.cleanup.anonymize',
+      entityType: 'ticket',
+    })
+      
+    return { success: true }
   })

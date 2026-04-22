@@ -435,8 +435,18 @@ export const deleteUserFn = createServerFn({ method: "POST" })
       // Null out or delete all foreign key references to this user before deletion
 
       // Tickets issued or scanned by this user
-      await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))
-      await db.update(tickets).set({ scannedBy: null }).where(eq(tickets.scannedBy, data.userId))
+      // Anonymize instead of nullifying where possible for GDPR compliance
+      await db.update(tickets)
+        .set({ 
+          participantName: 'Anonymized', 
+          participantEmail: 'anonymized@example.com',
+          issuedBy: null 
+        })
+        .where(eq(tickets.issuedBy, data.userId))
+      
+      await db.update(tickets)
+        .set({ scannedBy: null })
+        .where(eq(tickets.scannedBy, data.userId))
 
       // Password reset tokens
       await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, data.userId))

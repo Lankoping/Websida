@@ -36,7 +36,7 @@ export function ComingSoon() {
             <Link to="/team" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {content.teamLabel}
             </Link>
-            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/datapolicy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {content.privacyLabel}
             </Link>
           </nav>
@@ -119,7 +119,7 @@ export function ComingSoon() {
               <Link to="/team" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {content.teamLabel}
               </Link>
-              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/datapolicy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {content.privacyLabel}
               </Link>
             </nav>

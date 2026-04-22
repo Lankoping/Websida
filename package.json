@@ -15,7 +15,8 @@
     "generate:routes": "tsr generate",
     "clean": "rm -rf .ouptut dist node_modules/.vite .nitro .tanstack",
     "migrate": "drizzle-kit push",
-    "makeuser": "tsx scripts/makeuser.ts"
+    "makeuser": "tsx scripts/makeuser.ts",
+    "setpassword": "tsx scripts/setpassword.ts"
   },
   "dependencies": {
     "@better-auth/cli": "^1.4.21",

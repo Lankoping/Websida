@@ -2,7 +2,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '../db/runtime'
 import { users, activityLogs, tickets } from '../db/schema'
-import { eq, inArray, or } from 'drizzle-orm'
+import { eq, inArray, or, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
 import {
@@ -241,6 +241,19 @@ export const deleteUserFn = createServerFn({ method: "POST" })
       // Tickets issued or scanned by this user
       await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))
       await db.update(tickets).set({ scannedBy: null }).where(eq(tickets.scannedBy, data.userId))
+
+      // Handle tables that might exist in the database but aren't in schema.ts anymore
+      try {
+        await db.execute(sql`UPDATE avgangs_requests SET reviewed_by = NULL WHERE reviewed_by = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
+      
+      try {
+        await db.execute(sql`UPDATE stadgar SET updated_by = NULL WHERE updated_by = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
 
       // Activity logs - delete logs where this user was the actor using the dedicated function
       await deleteActivityLogsForUser(data.userId)

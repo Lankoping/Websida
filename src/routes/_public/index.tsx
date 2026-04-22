@@ -29,14 +29,14 @@ function Index() {
   const { latestBlog, latestNews } = Route.useLoaderData()
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen text-center">
       <ComingSoon locale="sv" />
 
       <section className="w-full bg-background border-t border-border">
         <div className="mx-auto max-w-6xl px-6 py-24 flex flex-col items-center justify-center text-center">
           <div className="group max-w-2xl text-center flex flex-col items-center">
             <div className="relative w-full h-64 overflow-hidden rounded-lg mb-8">
-              <img src="https://www.interkultur.com/fileadmin/_processed_/0/2/csm_N-1-20220616-NicoleOlssen_37fb01bd34.jpg" alt="Strykjärnet Norrköping" className="w-full h-full object-cover" />
+              <img src="https://www.interkultur.com/fileadmin/_processed_/0/2/csm_N-1-20220616-NicoleOlssen_37fb01bd34.jpg" alt="Strykjärnet Norrköping" className="w-full h-full object-cover mx-auto" />
               <div className="absolute inset-0 flex items-center justify-center bg-black/20"></div>
             </div>
             <h3 className="font-bold text-2xl tracking-wider mb-4 text-foreground">NORRKÖPING</h3>
@@ -46,14 +46,14 @@ function Index() {
       </section>
 
       <section className="w-full bg-background border-t border-border">
-        <div className="mx-auto max-w-6xl px-6 py-20 flex flex-col items-center justify-center">
+        <div className="mx-auto max-w-6xl px-6 py-20 flex flex-col items-center justify-center text-center">
           <div className="mb-12 text-center flex flex-col items-center">
             <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Senaste</p>
             <h2 className="font-bold text-3xl md:text-4xl text-foreground">Blogg & Nyheter</h2>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 w-full max-w-4xl">
-            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/20 flex flex-col items-center">
+          <div className="grid gap-8 md:grid-cols-2 w-full max-w-4xl mx-auto">
+            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/20 flex flex-col items-center text-center">
               <div className="flex items-center gap-3 mb-6 justify-center">
                 <div className="w-2 h-2 bg-primary" />
                 <span className="text-xs font-medium tracking-widest text-primary uppercase">Blogg</span>
@@ -86,7 +86,7 @@ function Index() {
               )}
             </article>
 
-            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/20 flex flex-col items-center">
+            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/20 flex flex-col items-center text-center">
               <div className="flex items-center gap-3 mb-6 justify-center">
                 <div className="w-2 h-2 bg-primary" />
                 <span className="text-xs font-medium tracking-widest text-primary uppercase">Nyhet</span>

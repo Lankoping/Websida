@@ -1,28 +1,26 @@
-services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: lankoping-web
-    restart: always
-    expose:
-      - "3000"
-    environment:
-      - PORT=3000
-      - NITRO_HOST=0.0.0.0
-      - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.lankoping-web.rule=Host(`lankoping.se`) || Host(`www.lankoping.se`)"
-      - "traefik.http.routers.lankoping-web.entrypoints=web,websecure"
-      - "traefik.http.routers.lankoping-web.tls.certresolver=letsencrypt"
-      - "traefik.http.services.lankoping-web.loadbalancer.server.port=3000"
-    healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+c2VydmljZXM6CiAgd2ViOgogICAgYnVpbGQ6CiAgICAgIGNvbnRleHQ6IC4K
+ICAgICAgZG9ja2VyZmlsZTogRG9ja2VyZmlsZQogICAgY29udGFpbmVyX25h
+bWU6IGxhbmtvcGluZy13ZWIKICAgIHJlc3RhcnQ6IGFsd2F5cwogICAgZXhw
+b3NlOgogICAgICAtICIzMDAwIgogICAgZW52aXJvbm1lbnQ6CiAgICAgIC0g
+UE9SVD0zMDAwCiAgICAgIC0gTklUUk9fSE9TVD0wLjAuMC4wCiAgICAgIC0g
+Tk9ERV9FTlY9cHJvZHVjdGlvbgogICAgICAtIERBVEFCQVNFX1VSTD0ke0RB
+VEFCQVNFX1VSTH0KICAgICAgLSBHRU1JTklfQVBJX0tFWT0ke0dFTUlOSV9B
+UElfS0VZfQogICAgICAtIEdPT0dMRV9BUElfS0VZPSR7R09PR0xFX0FQSV9L
+RVl9CiAgICAgIC0gU01UUF9IT1NUPSR7U01UUF9IT1NUfQogICAgICAtIFNN
+VFBfUE9SVD0ke1NNVFBfUE9SVH0KICAgICAgLSBTTVRQX1VTRVI9JHtTTVRQ
+X1VTRVJ9CiAgICAgIC0gU01UUF9QQVNTPSR7U01UUF9QQVNTfQogICAgICAt
+IFNNVFBfRlJPTT0ke1NNVFBfRlJPTX0KICAgIGxhYmVsczoKICAgICAgLSAi
+dHJhZWZpay5lbmFibGU9dHJ1ZSIKICAgICAgLSAidHJhZWZpay5odHRwLnJv
+dXRlcnMubGFua29waW5nLXdlYi5ydWxlPUhvc3QoYGxhbmtvcGluZy5zZWAp
+IHx8IEhvc3QoYHd3dy5sYW5rb3Bpbmcuc2VgKSIKICAgICAgLSAidHJhZWZp
+ay5odHRwLnJvdXRlcnMubGFua29waW5nLXdlYi5lbnRyeXBvaW50cz13ZWIs
+d2Vic2VjdXJlIgogICAgICAtICJ0cmFlZmlrLmh0dHAucm91dGVycy5sYW5r
+b3Bpbmctd2ViLnRscy5jZXJ0cmVzb2x2ZXI9bGV0c2VuY3J5cHQiCiAgICAg
+IC0gInRyYWVmaWsuaHR0cC5zZXJ2aWNlcy5sYW5rb3Bpbmctd2ViLmxvYWRi
+YWxhbmNlci5zZXJ2ZXIucG9ydD0zMDAwIgogICAgaGVhbHRoY2hlY2s6CiAg
+ICAgIHRlc3Q6IFsiQ01EIiwgIm5vZGUiLCAiLWUiLCAiZmV0Y2goJ2h0dHA6
+Ly9sb2NhbGhvc3Q6MzAwMC8nKS50aGVuKHIgPT4gci5vayA/IHByb2Nlc3Mu
+ZXhpdCgwKSA6IHByb2Nlc3MuZXhpdCgxKSkuY2F0Y2goKCkgPT4gcHJvY2Vz
+cy5leGl0KDEpKSJdCiAgICAgIGludGVydmFsOiAzMHMKICAgICAgdGltZW91
+dDogMTBzCiAgICAgIHJldHJpZXM6IDMKICAgICAgc3RhcnRfcGVyaW9kOiA0
+MHMK

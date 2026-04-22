@@ -10,7 +10,7 @@ import appCss from '../styles.css?url'
 import type { QueryClient } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from 'next-themes'
-import { LanguageSwitcher } from '@/components/language-switcher'
+import { CookieConsent } from '@/components/cookie-consent'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -100,25 +100,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           enableSystem={false}
           disableTransitionOnChange
         >
-          <HtmlLangSync />
-          <LanguageSwitcher />
           {children}
+          <CookieConsent />
           <Toaster />
         </ThemeProvider>
         <Scripts />
       </body>
     </html>
   )
-}
-
-function HtmlLangSync() {
-  const pathname = useRouterState({ select: (state) => state.location.pathname })
-
-  useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.lang = pathname.startsWith('/en') ? 'en' : 'sv'
-    }
-  }, [pathname])
-
-  return <></> // Return an empty React fragment instead of null
 }

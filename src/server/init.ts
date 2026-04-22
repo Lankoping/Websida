@@ -1,5 +1,7 @@
 // Server initialization - runs when the server starts
 import { purgeExpiredRequestMetadata } from './functions/logs'
+import { getDb } from './db/runtime'
+import { sql } from 'drizzle-orm'
 
 let initialized = false
 let purgeInterval: ReturnType<typeof setInterval> | null = null
@@ -15,18 +17,31 @@ async function runRetentionPurge() {
   }
 }
 
+async function dropUnusedTables() {
+  try {
+    const db = await getDb()
+    await db.execute(sql`DROP TABLE IF EXISTS avgangs_requests CASCADE`)
+    await db.execute(sql`DROP TABLE IF EXISTS stadgar CASCADE`)
+    await db.execute(sql`DROP TABLE IF EXISTS organization_members CASCADE`)
+    console.log('🧹 Dropped unused tables (avgangs_requests, stadgar, organization_members)')
+  } catch (error) {
+    console.error('⚠️  Failed to drop unused tables', error)
+  }
+}
+
 export async function initializeServer() {
   if (initialized) {
     console.log('⚠️  Server already initialized, skipping...')
     return
   }
 
-  console.log('\n╔════════════════════════════════════════════════════════════╗')
+  console.log('\n╔══════════════════════════════════════════════════════════════════════════════╗')
   console.log('║          🚀 Lankoping.se Server Starting...              ║')
-  console.log('╚════════════════════════════════════════════════════════════╝\n')
+  console.log('╚══════════════════════════════════════════════════════════════════════════════╝\n')
 
   initialized = true
 
+  await dropUnusedTables()
   await runRetentionPurge()
 
   if (!purgeInterval) {

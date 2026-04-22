@@ -1,10 +1,11 @@
-// New function to clean up old ticket data
+// src/server/functions/tickets.ts - Added cleanupOldTicketsFn
+// ... (original content preserved, with new cleanupOldTicketsFn)
 export const cleanupOldTicketsFn = createServerFn({ method: "POST" })
   .handler(async () => {
-    const admin = await checkAdmin()
+    const admin = await requireStaffUser()
     const db = await getDb()
     
-    // Example: Anonymize tickets older than 1 year
+    // Anonymize tickets older than 1 year
     const oneYearAgo = new Date()
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
     
@@ -13,7 +14,15 @@ export const cleanupOldTicketsFn = createServerFn({ method: "POST" })
         participantName: 'Anonymized', 
         participantEmail: 'anonymized@example.com' 
       })
-      .where(lt(tickets.createdAt, oneYearAgo))
+      .where(and(eq(tickets.status, 'used'), lt(tickets.createdAt, oneYearAgo)))
+      
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.cleanup.anonymize',
+      entityType: 'ticket',
+    })
       
     return { success: true }
   })
+// ...

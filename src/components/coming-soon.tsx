@@ -24,53 +24,36 @@ function getIconByName(iconName: string) {
   return iconMap[iconName] || null
 }
 
-type Locale = 'sv' | 'en'
-
 interface ComingSoonProps {
-  locale?: Locale
   heroData?: Awaited<ReturnType<typeof getHeroContentFn>> | null
   infoSectionsData?: Awaited<ReturnType<typeof getInfoSectionsFn>> | null
 }
 
 const fallbackContent = {
-  sv: {
-    eyebrow: 'LAN-Event i Norrkoping',
-    headline: 'Lankoping',
-    tagline: 'Gaming Community',
-    description: 'Vi bygger en gemenskap for gamers i Ostergotland. Snart oppnar vi dorrar till vart forsta event.',
-    rulesLabel: 'Regler',
-    teamLabel: 'Team',
-    privacyLabel: 'Integritet',
-    rights: 'Alla rättigheter förbehållna',
-  },
-  en: {
-    eyebrow: 'LAN Event in Norrkoping',
-    headline: 'Lankoping',
-    tagline: 'Gaming Community',
-    description: 'We are building a community for gamers in Ostergotland. Soon we open doors to our first event.',
-    rulesLabel: 'Rules',
-    teamLabel: 'Team',
-    privacyLabel: 'Privacy',
-    rights: 'All rights reserved',
-  },
-} as const
+  eyebrow: 'LAN-Event i Norrkoping',
+  headline: 'Lankoping',
+  tagline: 'Gaming Community',
+  description: 'Vi bygger en gemenskap for gamers i Ostergotland. Snart oppnar vi dorrar till vart forsta event.',
+  rulesLabel: 'Regler',
+  teamLabel: 'Team',
+  privacyLabel: 'Integritet',
+  rights: 'Alla rättigheter förbehållna',
+}
 
-export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: ComingSoonProps) {
-  const basePath = locale === 'en' ? '/en' : ''
-  
+export function ComingSoon({ heroData, infoSectionsData }: ComingSoonProps) {
   const content = {
-    eyebrow: locale === 'en' ? (heroData?.eyebrowEn || heroData?.eyebrow || fallbackContent.en.eyebrow) : (heroData?.eyebrow || fallbackContent.sv.eyebrow),
-    headline: locale === 'en' ? (heroData?.headlineEn || heroData?.headline || fallbackContent.en.headline) : (heroData?.headline || fallbackContent.sv.headline),
-    tagline: locale === 'en' ? (heroData?.taglineEn || heroData?.tagline || fallbackContent.en.tagline) : (heroData?.tagline || fallbackContent.sv.tagline),
-    description: locale === 'en' ? (heroData?.descriptionEn || heroData?.description || fallbackContent.en.description) : (heroData?.description || fallbackContent.sv.description),
-    primaryButtonText: locale === 'en' ? (heroData?.primaryButtonTextEn || heroData?.primaryButtonText || fallbackContent.en.rulesLabel) : (heroData?.primaryButtonText || fallbackContent.sv.rulesLabel),
+    eyebrow: heroData?.eyebrow || fallbackContent.eyebrow,
+    headline: heroData?.headline || fallbackContent.headline,
+    tagline: heroData?.tagline || fallbackContent.tagline,
+    description: heroData?.description || fallbackContent.description,
+    primaryButtonText: heroData?.primaryButtonText || fallbackContent.rulesLabel,
     primaryButtonLink: heroData?.primaryButtonLink || 'https://discord.gg/h8wuaqyBwT',
-    secondaryButtonText: locale === 'en' ? heroData?.secondaryButtonTextEn : heroData?.secondaryButtonText,
+    secondaryButtonText: heroData?.secondaryButtonText,
     secondaryButtonLink: heroData?.secondaryButtonLink || 'https://www.youtube.com/@LANKPNG',
-    rulesLabel: locale === 'en' ? fallbackContent.en.rulesLabel : fallbackContent.sv.rulesLabel,
-    teamLabel: locale === 'en' ? fallbackContent.en.teamLabel : fallbackContent.sv.teamLabel,
-    privacyLabel: locale === 'en' ? fallbackContent.en.privacyLabel : fallbackContent.sv.privacyLabel,
-    rights: locale === 'en' ? fallbackContent.en.rights : fallbackContent.sv.rights,
+    rulesLabel: fallbackContent.rulesLabel,
+    teamLabel: fallbackContent.teamLabel,
+    privacyLabel: fallbackContent.privacyLabel,
+    rights: fallbackContent.rights,
   }
   
   const infoSections = infoSectionsData || []
@@ -85,13 +68,13 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
             <span className="font-bold text-xl tracking-tight text-foreground">Lankoping</span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
-            <Link to={`${basePath}/rules`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/rules" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {content.rulesLabel}
             </Link>
-            <Link to={`${basePath}/team`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/team" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {content.teamLabel}
             </Link>
-            <Link to={`${basePath}/privacy`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {content.privacyLabel}
             </Link>
           </nav>
@@ -165,8 +148,8 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
               <div className="grid md:grid-cols-3 gap-12">
                 {infoSections.map((section) => {
                   const IconComponent = getIconByName(section.icon)
-                  const title = locale === 'en' ? section.titleEn || section.title : section.title
-                  const desc = locale === 'en' ? section.descriptionEn || section.description : section.description
+                  const title = section.title
+                  const desc = section.description
                   
                   return (
                     <div key={section.id}>
@@ -196,13 +179,13 @@ export function ComingSoon({ locale = 'sv', heroData, infoSectionsData }: Coming
               <span className="text-muted-foreground text-sm">.se</span>
             </div>
             <nav className="flex items-center gap-6 md:hidden">
-              <Link to={`${basePath}/rules`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/rules" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {content.rulesLabel}
               </Link>
-              <Link to={`${basePath}/team`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/team" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {content.teamLabel}
               </Link>
-              <Link to={`${basePath}/privacy`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {content.privacyLabel}
               </Link>
             </nav>

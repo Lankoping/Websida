@@ -1,8 +1,16 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { loginFn, resetPasswordWithTokenFn } from '../server/functions/auth'
+import { z } from 'zod'
+
+const searchSchema = z.object({
+  makepassword: z.string().optional(),
+  userid: z.string().optional(),
+  token: z.string().optional(),
+})
 
 export const Route = createFileRoute('/login')({
+  validateSearch: searchSchema,
   component: Login,
 })
 
@@ -11,8 +19,8 @@ function Login() {
   const searchParams = Route.useSearch()
 
   const isResetMode = searchParams.makepassword === 'true'
-  const userId = searchParams.userid ? parseInt(searchParams.userid as string) : null
-  const token = searchParams.token as string | undefined
+  const userId = searchParams.userid ? parseInt(searchParams.userid) : null
+  const token = searchParams.token
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -59,7 +67,7 @@ function Login() {
     }
   }
 
-  if (isResetMode ?? false) {
+  if (isResetMode) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
         <div className="w-full max-w-md p-8 bg-card border border-border rounded">

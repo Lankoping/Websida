@@ -54,6 +54,45 @@ export const createEventFn = createServerFn({ method: "POST" })
     return result[0]
   })
 
+export const updateEventFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({
+      id: z.number(),
+      title: z.string(),
+      description: z.string().optional(),
+      date: z.string(),
+      location: z.string().optional(),
+      image: z.string().optional(),
+      published: z.boolean().default(false),
+      finished: z.boolean().default(false),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const admin = await checkAdmin()
+    const db = await getDb()
+    const { id, ...updateData } = data
+    
+    const result = await db.update(events)
+      .set({
+        ...updateData,
+        date: new Date(updateData.date),
+        updatedAt: new Date()
+      })
+      .where(eq(events.id, id))
+      .returning()
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'event.update',
+      entityType: 'event',
+      entityId: id,
+      details: { title: result[0].title },
+    })
+
+    return result[0]
+  })
+
 export const updateEventStatusFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) =>
     z.object({

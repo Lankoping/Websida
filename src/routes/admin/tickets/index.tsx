@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { getTicketsFn, deleteTicketFn, updateTicketStatusFn, getEventsForTicketsFn, verifyTicketByCodeFn } from '../../../server/functions/tickets'
+import { getTicketsFn, deleteTicketFn, updateTicketStatusFn, getEventsForTicketsFn, verifyTicketByCodeFn, resendTicketEmailFn } from '../../../server/functions/tickets'
 import { useEffect, useState } from 'react'
-import { Plus, Trash2, CheckCircle, XCircle, Search, Ticket, Mail, User, Calendar, QrCode, Settings, Copy, Check, ShieldCheck, AlertTriangle } from 'lucide-react'
+import { Plus, Trash2, CheckCircle, XCircle, Search, Ticket, Mail, User, Calendar, QrCode, Settings, Copy, Check, ShieldCheck, AlertTriangle, RefreshCw } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { QRCodeSVG } from 'qrcode.react'
 
@@ -36,6 +36,7 @@ function TicketsAdmin() {
   const [copiedId, setCopiedId] = useState<number | null>(null)
   const [verificationResult, setVerificationResult] = useState<any>(null)
   const [verificationUrl, setVerificationUrl] = useState('')
+  const [resendingId, setResendingId] = useState<number | null>(null)
 
   useEffect(() => {
     setVerificationUrl(`${window.location.origin}/verify/`)
@@ -81,6 +82,18 @@ function TicketsAdmin() {
     } catch (err) {
       console.error(err)
       alert('Kunde inte uppdatera status')
+    }
+  }
+
+  const handleResendEmail = async (ticketId: number) => {
+    setResendingId(ticketId)
+    try {
+      await resendTicketEmailFn({ data: { ticketId } })
+      alert('E-post har skickats!')
+    } catch (err: any) {
+      alert(`Kunde inte skicka e-post: ${err?.message || 'Okänt fel'}`)
+    } finally {
+      setResendingId(null)
     }
   }
 
@@ -182,88 +195,98 @@ function TicketsAdmin() {
                       <span className="text-sm font-medium flex items-center gap-1.5 text-foreground">
                        <User className="w-3 h-3 text-muted-foreground" />
                        <span className="truncate">{ticket.participantName}</span>
-                    </span>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
-                       <Calendar className="w-3 h-3" />
-                       <span className="truncate">{getEventTitle(ticket.eventId)}</span>
-                    </span>
-                  </div>
-                </td>
-                <td className="p-4">
-                  <div className="flex flex-col whitespace-nowrap">
-                    <span className="text-[10px] uppercase tracking-wider font-medium text-primary">{ticket.ticketType}</span>
-                    <span className="text-sm font-mono text-foreground">{ticket.pricePaid} SEK</span>
-                  </div>
-                </td>
-                <td className="p-4">
-                  <div className="flex flex-col min-w-[100px]">
-                    <div className={`px-2 py-1 text-[10px] font-medium uppercase tracking-wider border mb-1.5 flex items-center justify-between transition-all ${
-                      ticket.status === 'valid' ? 'border-green-500/30 text-green-600 bg-green-50' :
-                      ticket.status === 'used' ? 'border-blue-500/30 text-blue-600 bg-blue-50' :
-                      'border-red-500/30 text-red-600 bg-red-50'
-                    }`}>
-                      <select 
-                        value={ticket.status}
-                        onChange={(e) => handleUpdateStatus(ticket.id, e.target.value as any)}
-                        className="bg-transparent outline-none cursor-pointer w-full"
-                      >
-                        <option value="valid">Giltig</option>
-                        <option value="used">Använd</option>
-                        <option value="cancelled">Annullerad</option>
-                      </select>
+                      </span>
+                      <span className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                        <Calendar className="w-3 h-3" />
+                        <span className="truncate">{getEventTitle(ticket.eventId)}</span>
+                      </span>
                     </div>
-                    {ticket.scannedAt && (
-                      <div className="flex flex-col mt-0.5">
-                        <span className="text-[10px] text-muted-foreground">
-                          Skannad: {formatStockholmTime(ticket.scannedAt)}
-                        </span>
-                        {ticket.scannedByName && (
-                          <span className="text-[10px] text-primary font-medium mt-0.5">
-                            Av: {ticket.scannedByName}
-                          </span>
-                        )}
+                  </td>
+                  <td className="p-4">
+                    <div className="flex flex-col whitespace-nowrap">
+                      <span className="text-[10px] uppercase tracking-wider font-medium text-primary">{ticket.ticketType}</span>
+                      <span className="text-sm font-mono text-foreground">{ticket.pricePaid} SEK</span>
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <div className="flex flex-col min-w-[100px]">
+                      <div className={`px-2 py-1 text-[10px] font-medium uppercase tracking-wider border mb-1 flex items-center justify-between transition-all ${
+                        ticket.status === 'valid' ? 'border-green-500/30 text-green-600 bg-green-50' :
+                        ticket.status === 'used' ? 'border-blue-500/30 text-blue-600 bg-blue-50' :
+                        'border-red-500/30 text-red-600 bg-red-50'
+                      }`}>
+                        <select 
+                          value={ticket.status}
+                          onChange={(e) => handleUpdateStatus(ticket.id, e.target.value as any)}
+                          className="bg-transparent outline-none cursor-pointer w-full"
+                        >
+                          <option value="valid">Giltig</option>
+                          <option value="used">Använd</option>
+                          <option value="cancelled">Annullerad</option>
+                        </select>
                       </div>
-                    )}
-                  </div>
-                </td>
-                <td className="p-4 text-right">
-                  <div className="flex justify-end gap-1">
-                    <button 
-                      onClick={() => handleCopyLink(ticket.ticketCode, ticket.id)}
-                      className={`p-2 transition-all flex items-center gap-1 ${
-                        copiedId === ticket.id ? 'text-green-600 bg-green-50' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
-                      }`}
-                      title="Kopiera länk"
-                    >
-                      {copiedId === ticket.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    </button>
-                    <button 
-                      onClick={() => setSelectedTicket(ticket)}
-                      className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
-                      title="Visa QR"
-                    >
-                      <QrCode className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(ticket.id)}
-                      className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-                      title="Radera"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {filteredTickets.length === 0 && (
-              <tr>
-                <td colSpan={5} className="p-12 text-center text-muted-foreground italic">
-                  Inga biljetter hittades.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                      {ticket.scannedAt && (
+                        <div className="flex flex-col mt-0.5">
+                          <span className="text-[10px] text-muted-foreground">
+                            Skannad: {formatStockholmTime(ticket.scannedAt)}
+                          </span>
+                          {ticket.scannedByName && (
+                            <span className="text-[10px] text-primary font-medium mt-0.5">
+                              Av: {ticket.scannedByName}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="p-4 text-right">
+                    <div className="flex justify-end gap-1">
+                      <button 
+                        onClick={() => handleResendEmail(ticket.id)}
+                        disabled={resendingId === ticket.id}
+                        className={`p-2 transition-all flex items-center gap-1 ${
+                          resendingId === ticket.id ? 'text-muted-foreground' : 'text-muted-foreground hover:text-primary hover:bg-secondary'
+                        }`}
+                        title="Skicka e-post igen"
+                      >
+                        {resendingId === ticket.id ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                      </button>
+                      <button 
+                        onClick={() => handleCopyLink(ticket.ticketCode, ticket.id)}
+                        className={`p-2 transition-all flex items-center gap-1 ${
+                          copiedId === ticket.id ? 'text-green-600 bg-green-50' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                        }`}
+                        title="Kopiera länk"
+                      >
+                        {copiedId === ticket.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                      <button 
+                        onClick={() => setSelectedTicket(ticket)}
+                        className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                        title="Visa QR"
+                      >
+                        <QrCode className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(ticket.id)}
+                        className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                        title="Radera"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {filteredTickets.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="p-12 text-center text-muted-foreground italic">
+                    Inga biljetter hittades.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

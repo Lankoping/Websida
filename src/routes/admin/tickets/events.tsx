@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { getEventsFn, createEventFn, deleteEventFn, updateEventStatusFn } from '../../../server/functions/tickets'
+import { getEventsFn, createEventFn, deleteEventFn, updateEventStatusFn, updateEventFn } from '../../../server/functions/tickets'
 import { useState } from 'react'
-import { Plus, Trash2, Calendar as CalendarIcon, Save, ArrowLeft, MapPin, CheckCircle } from 'lucide-react'
+import { Plus, Trash2, Calendar as CalendarIcon, Save, ArrowLeft, MapPin, CheckCircle, Edit2, X } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/admin/tickets/events')({
@@ -16,7 +16,9 @@ function EventsAdmin() {
   const router = useRouter()
   const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formData, setFormData] = useState({
+  const [editingId, setEditingId] = useState<number | null>(null)
+  
+  const defaultFormData = {
     title: '',
     description: '',
     date: '',
@@ -24,7 +26,31 @@ function EventsAdmin() {
     image: '',
     published: false,
     finished: false,
-  })
+  }
+  
+  const [formData, setFormData] = useState(defaultFormData)
+
+  const handleEdit = (event: typeof events[0]) => {
+    setEditingId(event.id)
+    // Format date for datetime-local input (YYYY-MM-DDThh:mm)
+    const eventDate = new Date(event.date)
+    const formattedDate = new Date(eventDate.getTime() - eventDate.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+    
+    setFormData({
+      title: event.title,
+      description: event.description || '',
+      date: formattedDate,
+      location: event.location || '',
+      image: event.image || '',
+      published: event.published,
+      finished: event.finished,
+    })
+  }
+
+  const handleCancelEdit = () => {
+    setEditingId(null)
+    setFormData(defaultFormData)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,20 +58,17 @@ function EventsAdmin() {
 
     setIsSubmitting(true)
     try {
-      await createEventFn({ data: formData })
-      setFormData({ 
-        title: '', 
-        description: '', 
-        date: '', 
-        location: '', 
-        image: '', 
-        published: false,
-        finished: false
-      })
+      if (editingId) {
+        await updateEventFn({ data: { id: editingId, ...formData } })
+        setEditingId(null)
+      } else {
+        await createEventFn({ data: formData })
+      }
+      setFormData(defaultFormData)
       await router.invalidate()
     } catch (err) {
       console.error(err)
-      alert('Kunde inte skapa event.')
+      alert(`Kunde inte ${editingId ? 'uppdatera' : 'skapa'} event.`)
     } finally {
       setIsSubmitting(false)
     }
@@ -55,6 +78,7 @@ function EventsAdmin() {
     if (window.confirm('Är du säker på att du vill radera detta event?')) {
       try {
         await deleteEventFn({ data: id })
+        if (editingId === id) handleCancelEdit()
         await router.invalidate()
       } catch (err) {
         console.error(err)
@@ -98,10 +122,19 @@ function EventsAdmin() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Form Column */}
         <div className="lg:col-span-1">
-          <form onSubmit={handleSubmit} className="bg-card border border-border p-6 space-y-5 sticky top-4">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-1.5 h-1.5 bg-primary" />
-              <span className="text-[10px] font-medium tracking-widest text-primary uppercase">Skapa nytt event</span>
+          <form onSubmit={handleSubmit} className={`bg-card border p-6 space-y-5 sticky top-4 ${editingId ? 'border-primary shadow-sm shadow-primary/10' : 'border-border'}`}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-primary" />
+                <span className="text-[10px] font-medium tracking-widest text-primary uppercase">
+                  {editingId ? 'Redigera event' : 'Skapa nytt event'}
+                </span>
+              </div>
+              {editingId && (
+                <button type="button" onClick={handleCancelEdit} className="text-muted-foreground hover:text-foreground">
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -178,7 +211,7 @@ function EventsAdmin() {
               className="w-full px-4 py-3 bg-primary text-primary-foreground text-xs uppercase tracking-widest font-medium hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center gap-2 justify-center"
             >
               <Save className="w-4 h-4" />
-              Spara Event
+              {editingId ? 'Uppdatera Event' : 'Spara Event'}
             </button>
           </form>
         </div>
@@ -186,10 +219,10 @@ function EventsAdmin() {
         {/* List Column */}
         <div className="lg:col-span-2 space-y-3">
           {events.map((event) => (
-            <div key={event.id} className="bg-card border border-border p-5 flex justify-between items-center group hover:border-primary/30 transition-all">
+            <div key={event.id} className={`bg-card border p-5 flex justify-between items-center group transition-all ${editingId === event.id ? 'border-primary shadow-sm shadow-primary/10' : 'border-border hover:border-primary/30'}`}>
               <div className="flex items-start gap-4 flex-1">
-                <div className="p-3 bg-primary/10 flex-shrink-0">
-                  <CalendarIcon className="w-5 h-5 text-primary" />
+                <div className={`p-3 flex-shrink-0 ${editingId === event.id ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'}`}>
+                  <CalendarIcon className="w-5 h-5" />
                 </div>
                 <div className="overflow-hidden flex-1">
                   <div className="flex items-center gap-2 mb-1">
@@ -234,13 +267,22 @@ function EventsAdmin() {
                   <CheckCircle className="w-4 h-4" />
                   {event.finished ? 'Avslutat' : 'Markera Avslutat'}
                 </button>
-                <button 
-                  onClick={() => handleDelete(event.id)}
-                  className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all opacity-0 group-hover:opacity-100"
-                  title="Radera"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => handleEdit(event)}
+                    className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                    title="Redigera"
+                  >
+                    <Edit2 className="w-5 h-5" />
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(event.id)}
+                    className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                    title="Radera"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}

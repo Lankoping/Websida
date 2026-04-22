@@ -95,13 +95,13 @@ export function ComingSoon({ locale = 'sv' }: { locale?: Locale }) {
           <div className="grid md:grid-cols-2 gap-12 w-full max-w-4xl">
             <div className="flex flex-col items-center text-center">
               <div className="relative w-full h-48 overflow-hidden rounded-lg mb-4">
-                <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover" />
+                <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover mx-auto" />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20" />
               </div>
-              <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
+              <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground text-center">
                 {locale === 'sv' ? 'GEMENSKAP' : 'COMMUNITY'}
               </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+              <p className="text-muted-foreground text-sm leading-relaxed text-center">
                 {locale === 'sv' 
                   ? 'En plats för gamers att träffas, tävla och ha kul tillsammans i en inkluderande miljö.' 
                   : 'A place for gamers to meet, compete and have fun together in an inclusive environment.'}
@@ -109,13 +109,13 @@ export function ComingSoon({ locale = 'sv' }: { locale?: Locale }) {
             </div>
             <div className="flex flex-col items-center text-center">
               <div className="relative w-full h-48 overflow-hidden rounded-lg mb-4">
-                <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover" />
+                <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover mx-auto" />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20" />
               </div>
-              <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">
+              <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground text-center">
                 {locale === 'sv' ? 'LAN-PARTY' : 'LAN PARTY'}
               </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+              <p className="text-muted-foreground text-sm leading-relaxed text-center">
                 {locale === 'sv' 
                   ? 'Ta med din dator och njut av en helg fylld med gaming, tävlingar och nya vänner.' 
                   : 'Bring your computer and enjoy a weekend filled with gaming, competitions and new friends.'}

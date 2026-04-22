@@ -1,26 +1,34 @@
-c2VydmljZXM6CiAgd2ViOgogICAgYnVpbGQ6CiAgICAgIGNvbnRleHQ6IC4K
-ICAgICAgZG9ja2VyZmlsZTogRG9ja2VyZmlsZS5wcmV2aWV3CiAgICBjb250
-YWluZXJfbmFtZTogbGFua29waW5nLXByZXZpZXcKICAgIHJlc3RhcnQ6IGFs
-d2F5cwogICAgZXhwb3NlOgogICAgICAtICIzMDAwIgogICAgZW52aXJvbm1l
-bnQ6CiAgICAgIC0gUE9SVD0zMDAwCiAgICAgIC0gTklUUk9fSE9TVD0wLjAu
-MC4wCiAgICAgIC0gTk9ERV9FTlY9cHJvZHVjdGlvbgogICAgICAtIERBVEFC
-QVNFX1VSTD0ke0RBVEFCQVNFX1VSTH0KICAgICAgLSBHRU1JTklfQVBJX0tF
-WT0ke0dFTUlOSV9BUElfS0VZfQogICAgICAtIEdPT0dMRV9BUElfS0VZPSR7
-R09PR0xFX0FQSV9LRVl9CiAgICAgIC0gU01UUF9IT1NUPSR7U01UUF9IT1NU
-fQogICAgICAtIFNNVFBfUE9SVD0ke1NNVFBfUE9SVH0KICAgICAgLSBTTVRQ
-X1VTRVI9JHtTTVRQX1VTRVJ9CiAgICAgIC0gU01UUF9QQVNTPSR7U01UUF9Q
-QVNTfQogICAgICAtIFNNVFBfRlJPTT0ke1NNVFBfRlJPTX0KICAgICAgLSBC
-QVNFX1VSTD0ke0JBU0VfVVJMfQogICAgbGFiZWxzOgogICAgICAtICJ0cmFl
-ZmlrLmVuYWJsZT10cnVlIgogICAgICAtICJ0cmFlZmlrLmh0dHAucm91dGVy
-cy5sYW5rb3BpbmctcHJldmlldy5ydWxlPUhvc3QoYGJldGEubGFua29waW5n
-LnNlYCkiCiAgICAgIC0gInRyYWVmaWsuaHR0cC5yb3V0ZXJzLmxhbmtvcGlu
-Zy1wcmV2aWV3LmVudHJ5cG9pbnRzPXdlYix3ZWJzZWN1cmUiCiAgICAgIC0g
-InRyYWVmaWsuaHR0cC5yb3V0ZXJzLmxhbmtvcGluZy1wcmV2aWV3LnRscy5j
-ZXJ0cmVzb2x2ZXI9bGV0c2VuY3J5cHQiCiAgICAgIC0gInRyYWVmaWsuaHR0
-cC5zZXJ2aWNlcy5sYW5rb3BpbmctcHJldmlldy5sb2FkYmFsYW5jZXIuc2Vy
-dmVyLnBvcnQ9MzAwMCIKICAgIGhlYWx0aGNoZWNrOgogICAgICB0ZXN0OiBb
-IkNNRCIsICJub2RlIiwgIi1lIiwgImZldGNoKCdodHRwOi8vbG9jYWxob3N0
-OjMwMDAvJykudGhlbihyID0+IHIub2sgPyBwcm9jZXNzLmV4aXQoMCkgOiBw
-cm9jZXNzLmV4aXQoMSkpLmNhdGNoKCgpID0+IHByb2Nlc3MuZXhpdCgxKSki
-XQogICAgICBpbnRlcnZhbDogMzBzCiAgICAgIHRpbWVvdXQ6IDEwcwogICAg
-ICByZXRyaWVzOiAzCiAgICAgIHN0YXJ0X3BlcmlvZDogNDBzCg==
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.preview
+    container_name: lankoping-preview
+    restart: always
+    expose:
+      - "3000"
+    environment:
+      - PORT=3000
+      - NITRO_HOST=0.0.0.0
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - SMTP_FROM=${SMTP_FROM}
+      - BASE_URL=${BASE_URL}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lankoping-preview.rule=Host(`beta.lankoping.se`)"
+      - "traefik.http.routers.lankoping-preview.entrypoints=web,websecure"
+      - "traefik.http.routers.lankoping-preview.tls.certresolver=letsencrypt"
+      - "traefik.http.services.lankoping-preview.loadbalancer.server.port=3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

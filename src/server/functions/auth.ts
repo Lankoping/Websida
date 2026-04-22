@@ -1,607 +1,430 @@
-'use server'
-import { createServerFn } from '@tanstack/react-start'
-import { getDb } from '../db/runtime'
-import { users, activityLogs, tickets, passwordResetTokens } from '../db/schema'
-import { eq, inArray, or, sql } from 'drizzle-orm'
-import { z } from 'zod'
-import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
-import { randomBytes } from 'node:crypto'
-import {
-  enforceDemoOwnUserScope,
-  getDemoAccountEmails,
-  isDemoTesterUser,
-  requireOrganizerUser,
-  requireStaffUser,
-} from '../lib/access'
-import { hashPassword, isHashedPassword, verifyPassword } from '../lib/password'
-import { writeActivityLog, deleteActivityLogsForUser } from './logs'
-import { sendEmail } from '../lib/email'
-
-export const loginFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => z.object({ email: z.string(), passwordHash: z.string() }).parse(data))
-  .handler(async ({ data }) => {
-    const db = await getDb()
-
-    const user = await db.select().from(users).where(eq(users.email, data.email)).limit(1)
-    if (!user || user.length === 0) {
-      throw new Error('User not found')
-    }
-
-    if (user[0].role !== 'organizer' && user[0].role !== 'volunteer') {
-      throw new Error('Account type not allowed')
-    }
-
-    if (user[0].active === false) {
-      throw new Error('Account is locked')
-    }
-
-    if (!verifyPassword(data.passwordHash, user[0].passwordHash)) {
-      throw new Error('Invalid password') 
-    }
-
-    // Upgrade legacy plaintext password rows after successful login.
-    if (!isHashedPassword(user[0].passwordHash)) {
-      await db
-        .update(users)
-        .set({ passwordHash: hashPassword(data.passwordHash) })
-        .where(eq(users.id, user[0].id))
-    }
-
-    // Set a session cookie
-    setCookie('session', user[0].id.toString(), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-      path: '/',
-    })
-
-    await writeActivityLog({
-      actorUserId: user[0].id,
-      actorRole: user[0].role,
-      action: 'auth.login',
-      entityType: 'session',
-      details: { email: user[0].email },
-    })
-
-    return { success: true, user: user[0] }
-  })
-
-export const logoutFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => z.object({}).parse(data ?? {}))
-  .handler(async () => {
-    const userId = getCookie('session')
-    if (userId) {
-      const db = await getDb()
-      const user = await db.select().from(users).where(eq(users.id, parseInt(userId))).limit(1)
-      if (user[0]) {
-        await writeActivityLog({
-          actorUserId: user[0].id,
-          actorRole: user[0].role,
-          action: 'auth.logout',
-          entityType: 'session',
-        })
-      }
-    }
-
-    deleteCookie('session', { path: '/' })
-    return { success: true }
-  })
-
-export const getSessionFn = createServerFn({ method: "GET" })
-  .handler(async () => {
-    const userId = getCookie('session')
-    if (!userId) return null
-
-    const db = await getDb()
-    const user = await db.select().from(users).where(eq(users.id, parseInt(userId))).limit(1)
-    if (!user[0] || (user[0].role !== 'organizer' && user[0].role !== 'volunteer') || user[0].active === false) return null
-    return {
-      ...user[0],
-      isDemoTester: isDemoTesterUser(user[0]),
-    }
-  })
-
-export const getUsersFn = createServerFn({ method: "GET" })
-  .handler(async () => {
-    const currentUser = await requireOrganizerUser()
-    const db = await getDb()
-
-    if (isDemoTesterUser(currentUser)) {
-      return [currentUser]
-    }
-
-    return await db.select().from(users)
-  })
-
-export const createUserFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
-    z
-      .object({
-        email: z.string().email(),
-        password: z.string().optional(),
-        name: z.string().optional(),
-        role: z.enum(['organizer', 'volunteer']).default('volunteer'),
-      })
-      .parse(data),
-  )
-  .handler(async ({ data }) => {
-    const currentUser = await requireOrganizerUser()
-    const db = await getDb()
-
-    if (isDemoTesterUser(currentUser)) {
-      throw new Error('Forbidden in demo mode')
-    }
-
-    const existing = await db.select().from(users).where(eq(users.email, data.email)).limit(1)
-    if (existing.length > 0) {
-      throw new Error('Email already exists')
-    }
-
-    // If no password provided, generate a random one
-    const initialPassword = data.password || randomBytes(16).toString('hex')
-
-    const created = await db
-      .insert(users)
-      .values({
-        email: data.email,
-        passwordHash: hashPassword(initialPassword),
-        name: data.name,
-        role: data.role,
-        active: true,
-      })
-      .returning()
-
-    let resetToken = null
-    let emailSent = false
-    let emailError = null
-    if (!data.password) {
-      // Generate a reset token
-      resetToken = randomBytes(32).toString('hex')
-      const expiresAt = new Date()
-      expiresAt.setDate(expiresAt.getDate() + 7) // Token valid for 7 days
-
-      await db.insert(passwordResetTokens).values({
-        userId: created[0].id,
-        token: resetToken,
-        expiresAt,
-      })
-
-      // Send email
-      const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
-      const resetLink = `${baseUrl}/login?userid=${created[0].id}&token=${resetToken}&makepassword=true`
-      
-      const userName = data.name || 'Användare'
-      const adminName = currentUser.name || 'En administratör'
-      
-      const emailText = `Hej! ${userName}\n${adminName} har begärt att du skapar ett Länköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
-      
-      const emailHtml = `
-        <p>Hej! ${userName}</p>
-        <p>${adminName} har begärt att du skapar ett Länköping-konto.</p>
-        <p><a href="${resetLink}">Klicka här för att skapa ditt lösenord</a></p>
-        <p>Eller kopiera och klistra in denna länk i din webbläsare:<br/>
-        ${resetLink}</p>
-      `
-
-      try {
-        emailSent = await sendEmail({
-          to: data.email,
-          subject: 'Ditt Länköping-konto',
-          text: emailText,
-          html: emailHtml,
-        })
-        if (!emailSent) {
-          emailError = 'Misslyckades att skicka e-post. Kontrollera SMTP-inställningarna.'
-        }
-      } catch (e: any) {
-        emailSent = false
-        emailError = e.message || 'Ett okänt fel inträffade vid e-postutskick.'
-      }
-    }
-
-    await writeActivityLog({
-      actorUserId: currentUser.id,
-      actorRole: currentUser.role,
-      action: 'user.create',
-      entityType: 'user',
-      entityId: created[0].id,
-      details: {
-        email: created[0].email,
-        role: created[0].role,
-        generatedPassword: !data.password,
-        emailSent,
-        emailError,
-      },
-    })
-
-    return {
-      user: created[0],
-      resetToken,
-      emailSent,
-      emailError,
-    }
-  })
-
-export const sendResetLinkFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
-    z.object({
-      userId: z.number(),
-    }).parse(data)
-  )
-  .handler(async ({ data }) => {
-    const currentUser = await requireOrganizerUser()
-    const db = await getDb()
-
-    if (isDemoTesterUser(currentUser)) {
-      throw new Error('Forbidden in demo mode')
-    }
-
-    const targetUser = await db.select().from(users).where(eq(users.id, data.userId)).limit(1)
-    if (!targetUser[0]) {
-      throw new Error('User not found')
-    }
-
-    // Delete old tokens for this user
-    await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, data.userId))
-
-    // Generate a new reset token
-    const resetToken = randomBytes(32).toString('hex')
-    const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + 7) // Token valid for 7 days
-
-    await db.insert(passwordResetTokens).values({
-      userId: targetUser[0].id,
-      token: resetToken,
-      expiresAt,
-    })
-
-    // Send email
-    const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
-    const resetLink = `${baseUrl}/login?userid=${targetUser[0].id}&token=${resetToken}&makepassword=true`
-    
-    const userName = targetUser[0].name || 'Användare'
-    const adminName = currentUser.name || 'En administratör'
-    
-    const emailText = `Hej! ${userName}\n${adminName} har begärt att du sätter ett nytt lösenord för ditt Länköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
-    
-    const emailHtml = `
-      <p>Hej! ${userName}</p>
-      <p>${adminName} har begärt att du sätter ett nytt lösenord för ditt Länköping-konto.</p>
-      <p><a href="${resetLink}">Klicka här för att skapa ditt lösenord</a></p>
-      <p>Eller kopiera och klistra in denna länk i din webbläsare:<br/>
-      ${resetLink}</p>
-    `
-
-    let emailSent = false
-    let emailError = null
-
-    try {
-      emailSent = await sendEmail({
-        to: targetUser[0].email,
-        subject: 'Återställ ditt lösenord för Länköping.se',
-        text: emailText,
-        html: emailHtml,
-      })
-      if (!emailSent) {
-        emailError = 'Misslyckades att skicka e-post. Kontrollera SMTP-inställningarna.'
-      }
-    } catch (e: any) {
-      emailSent = false
-      emailError = e.message || 'Ett okänt fel inträffade vid e-postutskick.'
-    }
-
-    await writeActivityLog({
-      actorUserId: currentUser.id,
-      actorRole: currentUser.role,
-      action: 'user.password_reset_link_sent',
-      entityType: 'user',
-      entityId: targetUser[0].id,
-      details: {
-        email: targetUser[0].email,
-        emailSent,
-        emailError,
-      },
-    })
-
-    if (!emailSent) {
-      throw new Error(emailError || 'Failed to send email')
-    }
-
-    return { success: true, resetLink }
-  })
-
-export const changePasswordFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
-    z.object({
-      userId: z.number(),
-      newPassword: z.string().min(1),
-    }).parse(data)
-  )
-  .handler(async ({ data }) => {
-    const currentUser = await requireStaffUser()
-    const db = await getDb()
-
-    enforceDemoOwnUserScope(currentUser, data.userId)
-
-    const targetUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, data.userId))
-      .limit(1)
-
-    if (!targetUser[0]) {
-      throw new Error('User not found')
-    }
-
-    if (currentUser.role !== 'organizer' && currentUser.id !== targetUser[0].id) {
-      throw new Error('Forbidden: Cannot change another account password')
-    }
-
-    await db
-      .update(users)
-      .set({ passwordHash: hashPassword(data.newPassword) })
-      .where(eq(users.id, data.userId))
-
-    await writeActivityLog({
-      actorUserId: currentUser.id,
-      actorRole: currentUser.role,
-      action: 'user.password.change',
-      entityType: 'user',
-      entityId: data.userId,
-      details: {
-        selfService: currentUser.id === data.userId,
-      },
-    })
-
-    return { success: true }
-  })
-
-export const deleteUserFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
-    z.object({
-      userId: z.number(),
-    }).parse(data)
-  )
-  .handler(async ({ data }) => {
-    const currentUser = await requireOrganizerUser()
-    const db = await getDb()
-
-    if (isDemoTesterUser(currentUser)) {
-      throw new Error('Forbidden in demo mode')
-    }
-
-    if (currentUser.id === data.userId) {
-      throw new Error('Forbidden: Cannot delete yourself')
-    }
-
-    const targetUser = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, data.userId))
-      .limit(1)
-
-    if (!targetUser[0]) {
-      throw new Error('User not found')
-    }
-
-    try {
-      // Null out or delete all foreign key references to this user before deletion
-
-      // Tickets issued or scanned by this user
-      await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))
-      await db.update(tickets).set({ scannedBy: null }).where(eq(tickets.scannedBy, data.userId))
-
-      // Password reset tokens
-      await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, data.userId))
-
-      // Handle tables that might exist in the database but aren't in schema.ts anymore
-      // This is a fallback in case the DROP TABLE statements in init.ts didn't execute properly
-      try {
-        await db.execute(sql`UPDATE avgangs_requests SET reviewed_by = NULL WHERE reviewed_by = ${data.userId}`)
-      } catch (e) {
-        // Ignore if table doesn't exist
-      }
-      
-      try {
-        await db.execute(sql`UPDATE stadgar SET updated_by = NULL WHERE updated_by = ${data.userId}`)
-      } catch (e) {
-        // Ignore if table doesn't exist
-      }
-
-      try {
-        await db.execute(sql`DELETE FROM organization_members WHERE user_id = ${data.userId}`)
-      } catch (e) {
-        // Ignore if table doesn't exist
-      }
-
-      try {
-        await db.execute(sql`DELETE FROM agreements WHERE created_by = ${data.userId}`)
-      } catch (e) {
-        // Ignore if table doesn't exist
-      }
-
-      // Activity logs - delete logs where this user was the actor using the dedicated function
-      await deleteActivityLogsForUser(data.userId)
-
-      // Delete user
-      await db
-        .delete(users)
-        .where(eq(users.id, data.userId))
-
-      // Log the deletion (using current user as actor, not the deleted user)
-      await writeActivityLog({
-        actorUserId: currentUser.id,
-        actorRole: currentUser.role,
-        action: 'user.delete',
-        entityType: 'user',
-        entityId: data.userId,
-        details: {
-          email: targetUser[0]?.email ?? null,
-        },
-      })
-
-      return { success: true }
-    } catch (error) {
-      console.error(`Failed to delete user where user ID ${data.userId}`, error)
-      throw new Error(`Failed to delete user: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    }
-  })
-
-export const lockUserFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) =>
-    z.object({
-      userId: z.number(),
-    }).parse(data)
-  )
-  .handler(async ({ data }) => {
-    const currentUser = await requireOrganizerUser()
-    const db = await getDb()
-
-    if (isDemoTesterUser(currentUser)) {
-      throw new Error('Forbidden in demo mode')
-    }
-
-    if (currentUser.id === data.userId) throw new Error('Forbidden: Cannot lock yourself')
-
-    await db.update(users).set({ active: false }).where(eq(users.id, data.userId))
-
-    await writeActivityLog({
-      actorUserId: currentUser.id,
-      actorRole: currentUser.role,
-      action: 'user.lock',
-      entityType: 'user',
-      entityId: data.userId,
-    })
-
-    return { success: true }
-  })
-
-export const updateProfileFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) =>
-    z.object({
-      name: z.string().min(1).max(120),
-    }).parse(data)
-  )
-  .handler(async ({ data }) => {
-    const currentUser = await requireStaffUser()
-    const db = await getDb()
-    const updated = await db
-      .update(users)
-      .set({ name: data.name })
-      .where(eq(users.id, currentUser.id))
-      .returning()
-
-    await writeActivityLog({
-      actorUserId: currentUser.id,
-      actorRole: currentUser.role,
-      action: 'profile.update',
-      entityType: 'user',
-      entityId: currentUser.id,
-      details: { name: data.name },
-    })
-
-    return updated[0]
-  })
-
-export const updateUserFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) =>
-    z.object({
-      userId: z.number(),
-      name: z.string().min(1).max(120),
-      role: z.enum(['organizer', 'volunteer']),
-      active: z.boolean(),
-    }).parse(data)
-  )
-  .handler(async ({ data }) => {
-    const currentUser = await requireOrganizerUser()
-    const db = await getDb()
-
-    if (isDemoTesterUser(currentUser)) {
-      enforceDemoOwnUserScope(currentUser, data.userId)
-      throw new Error('Forbidden in demo mode')
-    }
-
-    if (currentUser.id === data.userId && data.role !== 'organizer') {
-      throw new Error('You cannot remove your own organizer access')
-    }
-
-    const updated = await db
-      .update(users)
-      .set({
-        name: data.name,
-        role: data.role,
-        active: data.active,
-      })
-      .where(eq(users.id, data.userId))
-      .returning()
-
-    await writeActivityLog({
-      actorUserId: currentUser.id,
-      actorRole: currentUser.role,
-      action: 'user.update',
-      entityType: 'user',
-      entityId: data.userId,
-      details: {
-        role: data.role,
-        active: data.active,
-      },
-    })
-
-    return updated[0]
-  })
-
-export const getDemoAccountsFn = createServerFn({ method: 'GET' })
-  .handler(async () => {
-    const currentUser = await requireOrganizerUser()
-    const db = await getDb()
-
-    if (isDemoTesterUser(currentUser)) {
-      return [currentUser]
-    }
-
-    const demoEmails = getDemoAccountEmails()
-    if (demoEmails.length === 0) {
-      return []
-    }
-
-    return await db.select().from(users).where(inArray(users.email, demoEmails))
-  })
-
-export const setDemoAccountsActiveFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) => z.object({ active: z.boolean() }).parse(data))
-  .handler(async ({ data }) => {
-    const currentUser = await requireOrganizerUser()
-    const db = await getDb()
-
-    if (isDemoTesterUser(currentUser)) {
-      throw new Error('Forbidden in demo mode')
-    }
-
-    const demoEmails = getDemoAccountEmails()
-    if (demoEmails.length === 0) {
-      return { success: true, updatedCount: 0 }
-    }
-
-    const updated = await db
-      .update(users)
-      .set({ active: data.active })
-      .where(inArray(users.email, demoEmails))
-      .returning()
-
-    await writeActivityLog({
-      actorUserId: currentUser.id,
-      actorRole: currentUser.role,
-      action: data.active ? 'demo_accounts.enable' : 'demo_accounts.disable',
-      entityType: 'user',
-      details: {
-        emails: demoEmails,
-        count: updated.length,
-      },
-    })
-
-    return {
-      success: true,
-      updatedCount: updated.length,
-      demoAccounts: updated,
-    }
-  })
+J3VzZSBzZXJ2ZXInCmltcG9ydCB7IGNyZWF0ZVNlcnZlckZuIH0gZnJvbSAn
+QHRhbnN0YWNrL3JlYWN0LXN0YXJ0JwppbXBvcnQgeyBnZXREYiB9IGZyb20g
+Jy4uL2RiL3J1bnRpbWUnCmltcG9ydCB7IHVzZXJzLCBhY3Rpdml0eUxvZ3Ms
+IHRpY2tldHMsIHBhc3N3b3JkUmVzZXRUb2tlbnMgfSBmcm9tICcuLi9kYi9z
+Y2hlbWEnCmltcG9ydCB7IGVxLCBpbkFycmF5LCBhbmQsIGd0ZSwgb3IsIHNx
+bCB9IGZyb20gJ2RyaXp6bGUtb3JtJwppbXBvcnQgeyB6IH0gZnJvbSAnem9k
+JwppbXBvcnQgeyBzZXRDb29raWUsIGdldENvb2tpZSwgZGVsZXRlQ29va2ll
+IH0gZnJvbSAnQHRhbnN0YWNrL3JlYWN0LXN0YXJ0L3NlcnZlcicKaW1wb3J0
+IHsgcmFuZG9tQnl0ZXMgfSBmcm9tICdub2RlOmNyeXB0bycKaW1wb3J0IHsK
+ICBlbmZvcmNlRGVtb093blVzZXJTY29wZSwKICBnZXREZW1vQWNjb3VudEVt
+YWlscywKICBpc0RlbW9UZXN0ZXJVc2VyLAogIHJlcXVpcmVPcmdhbml6ZXJV
+c2VyLAogIHJlcXVpcmVTdGFmZlVzZXIsCn0gZnJvbSAnLi4vbGliL2FjY2Vz
+cycKaW1wb3J0IHsgaGFzaFBhc3N3b3JkLCBpc0hhc2hlZFBhc3N3b3JkLCB2
+ZXJpZnlQYXNzd29yZCB9IGZyb20gJy4uL2xpYi9wYXNzd29yZCcKaW1wb3J0
+IHsgd3JpdGVBY3Rpdml0eUxvZywgZGVsZXRlQWN0aXZpdHlMb2dzRm9yVXNl
+ciB9IGZyb20gJy4vbG9ncycKaW1wb3J0IHsgc2VuZEVtYWlsIH0gZnJvbSAn
+Li4vbGliL2VtYWlsJwoKZXhwb3J0IGNvbnN0IGxvZ2luRm4gPSBjcmVhdGVT
+ZXJ2ZXJGbih7IG1ldGhvZDogIlBPU1QiIH0pCiAgLmlucHV0VmFsaWRhdG9y
+KChkYXRhOiB1bmtub3duKSA9PiB6Lm9iamVjdCh7IGVtYWlsOiB6LnN0cmlu
+ZygpLCBwYXNzd29yZEhhc2g6IHouc3RyaW5nKCkgfSkucGFyc2UoZGF0YSkp
+CiAgLmhhbmRsZXIoYXN5bmMgKHsgZGF0YSB9KSA9PiB7CiAgICBjb25zdCBk
+YiA9IGF3YWl0IGdldERiKCkKCiAgICBjb25zdCB1c2VyID0gYXdhaXQgZGIu
+c2VsZWN0KCkuZnJvbSh1c2Vycykud2hlcmUoZXEodXNlcnMuZW1haWwsIGRh
+dGEuZW1haWwpKS5saW1pdCgxKQogICAgaWYgKCF1c2VyIHx8IHVzZXIubGVu
+Z3RoID09PSAwKSB7CiAgICAgIHRocm93IG5ldyBFcnJvcignVXNlciBub3Qg
+Zm91bmQnKQogICAgfQoKICAgIGlmICh1c2VyWzBdLnJvbGUgIT09ICdvcmdh
+bml6ZXInICYmIHVzZXJbMF0ucm9sZSAhPT0gJ3ZvbHVudGVlcicpIHsKICAg
+ICAgdGhyb3cgbmV3IEVycm9yKCdBY2NvdW50IHR5cGUgbm90IGFsbG93ZWQn
+KQogICAgfQoKICAgIGlmICh1c2VyWzBdLmFjdGl2ZSA9PT0gZmFsc2UpIHsK
+ICAgICAgdGhyb3cgbmV3IEVycm9yKCdBY2NvdW50IGlzIGxvY2tlZCcpCiAg
+ICB9CgogICAgaWYgKCF2ZXJpZnlQYXNzd29yZChkYXRhLnBhc3N3b3JkSGFz
+aCwgdXNlclswXS5wYXNzd29yZEhhc2gpKSB7CiAgICAgIHRocm93IG5ldyBF
+cnJvcignSW52YWxpZCBwYXNzd29yZCcpIAogICAgfQoKICAgIC8vIFVwZ3Jh
+ZGUgbGVnYWN5IHBsYWludGV4dCBwYXNzd29yZCByb3dzIGFmdGVyIHN1Y2Nl
+c3NmdWwgbG9naW4uCiAgICBpZiAoIWlzSGFzaGVkUGFzc3dvcmQodXNlclsw
+XS5wYXNzd29yZEhhc2gpKSB7CiAgICAgIGF3YWl0IGRiCiAgICAgICAgLnVw
+ZGF0ZSh1c2VycykKICAgICAgICAuc2V0KHsgcGFzc3dvcmRIYXNoOiBoYXNo
+UGFzc3dvcmQoZGF0YS5wYXNzd29yZEhhc2gpIH0pCiAgICAgICAgLndoZXJl
+KGVxKHVzZXJzLmlkLCB1c2VyWzBdLmlkKSkKICAgIH0KCiAgICAvLyBTZXQg
+YSBzZXNzaW9uIGNvb2tpZQogICAgc2V0Q29va2llKCdzZXNzaW9uJywgdXNl
+clswXS5pZC50b1N0cmluZygpLCB7CiAgICAgIGh0dHBPbmx5OiB0cnVlLAog
+ICAgICBzZWN1cmU6IHByb2Nlc3MuZW52Lk5PREVfRU5WID09PSAncHJvZHVj
+dGlvbicsCiAgICAgIG1heEFnZTogNjAgKiA2MCAqIDI0ICogNywgLy8gMSB3
+ZWVrCiAgICAgIHBhdGg6ICcvJywKICAgIH0pCgogICAgYXdhaXQgd3JpdGVB
+Y3Rpdml0eUxvZyh7CiAgICAgIGFjdG9yVXNlcklkOiB1c2VyWzBdLmlkLAog
+ICAgICBhY3RvclJvbGU6IHVzZXJbMF0ucm9sZSwKICAgICAgYWN0aW9uOiAn
+YXV0aC5sb2dpbicsCiAgICAgIGVudGl0eVR5cGU6ICdzZXNzaW9uJywKICAg
+ICAgZGV0YWlsczogeyBlbWFpbDogdXNlclswXS5lbWFpbCB9LAogICAgfSkK
+CiAgICByZXR1cm4geyBzdWNjZXNzOiB0cnVlLCB1c2VyOiB1c2VyWzBdIH0K
+ICB9KQoKZXhwb3J0IGNvbnN0IGxvZ291dEZuID0gY3JlYXRlU2VydmVyRm4o
+eyBtZXRob2Q6ICJQT1NUIiB9KQogIC5pbnB1dFZhbGlkYXRvcigoZGF0YTog
+dW5rbm93bikgPT4gei5vYmplY3Qoe30pLnBhcnNlKGRhdGEgPz8ge30pKQog
+IC5oYW5kbGVyKGFzeW5jICgpID0+IHsKICAgIGNvbnN0IHVzZXJJZCA9IGdl
+dENvb2tpZSgnc2Vzc2lvbicpCiAgICBpZiAodXNlcklkKSB7CiAgICAgIGNv
+bnN0IGRiID0gYXdhaXQgZ2V0RGIoKQogICAgICBjb25zdCB1c2VyID0gYXdh
+aXQgZGIuc2VsZWN0KCkuZnJvbSh1c2Vycykud2hlcmUoZXEodXNlcnMuaWQs
+IHBhcnNlSW50KHVzZXJJZCkpKS5saW1pdCgxKQogICAgICBpZiAodXNlclsw
+XSkgewogICAgICAgIGF3YWl0IHdyaXRlQWN0aXZpdHlMb2coewogICAgICAg
+ICAgYWN0b3JVc2VySWQ6IHVzZXJbMF0uaWQsCiAgICAgICAgICBhY3RvclJv
+bGU6IHVzZXJbMF0ucm9sZSwKICAgICAgICAgIGFjdGlvbjogJ2F1dGgubG9n
+b3V0JywKICAgICAgICAgIGVudGl0eVR5cGU6ICdzZXNzaW9uJywKICAgICAg
+ICB9KQogICAgICB9CiAgICB9CgogICAgZGVsZXRlQ29va2llKCdzZXNzaW9u
+JywgeyBwYXRoOiAnLycgfSkKICAgIHJldHVybiB7IHN1Y2Nlc3M6IHRydWUg
+fQogIH0pCgpleHBvcnQgY29uc3QgZ2V0U2Vzc2lvbkZuID0gY3JlYXRlU2Vy
+dmVyRm4oeyBtZXRob2Q6ICJHRVQiIH0pCiAgLmhhbmRsZXIoYXN5bmMgKCkg
+PT4gewogICAgY29uc3QgdXNlcklkID0gZ2V0Q29va2llKCdzZXNzaW9uJykK
+ICAgIGlmICghdXNlcklkKSByZXR1cm4gbnVsbAoKICAgIGNvbnN0IGRiID0g
+YXdhaXQgZ2V0RGIoKQogICAgY29uc3QgdXNlciA9IGF3YWl0IGRiLnNlbGVj
+dCgpLmZyb20odXNlcnMpLndoZXJlKGVxKHVzZXJzLmlkLCBwYXJzZUludCh1
+c2VySWQpKSkubGltaXQoMSkKICAgIGlmICghdXNlclswXSB8fCAodXNlclsw
+XS5yb2xlICE9PSAnb3JnYW5pemVyJyAmJiB1c2VyWzBdLnJvbGUgIT09ICd2
+b2x1bnRlZXInKSB8fCB1c2VyWzBdLmFjdGl2ZSA9PT0gZmFsc2UpIHJldHVy
+biBudWxsCiAgICByZXR1cm4gewogICAgICAuLi51c2VyWzBdLAogICAgICBpc0Rl
+bW9UZXN0ZXI6IGlzRGVtb1Rlc3RlclVzZXIodXNlclswXSksCiAgICB9CiAg
+fSkKCmV4cG9ydCBjb25zdCBnZXRVc2Vyc0ZuID0gY3JlYXRlU2VydmVyRm4o
+eyBtZXRob2Q6ICJHRVQiIH0pCiAgLmhhbmRsZXIoYXN5bmMgKCkgPT4gewog
+ICAgY29uc3QgY3VycmVudFVzZXIgPSBhd2FpdCByZXF1aXJlT3JnYW5pemVy
+VXNlcigpCiAgICBjb25zdCBkYiA9IGF3YWl0IGdldERiKCkKCiAgICBpZiAo
+aXNEZW1vVGVzdGVyVXNlcihjdXJyZW50VXNlcikpIHsKICAgICAgcmV0dXJu
+IFtjdXJyZW50VXNlcl0KICAgIH0KCiAgICByZXR1cm4gYXdhaXQgZGIuc2Vs
+ZWN0KCkuZnJvbSh1c2VycykKICB9KQoKZXhwb3J0IGNvbnN0IGNyZWF0ZVVz
+ZXJGbiA9IGNyZWF0ZVNlcnZlckZuKHsgbWV0aG9kOiAiUE9TVCIgfSkKICAu
+aW5wdXRWYWxpZGF0b3IoKGRhdGE6IHVua25vd24pID0+CiAgICB6CiAgICAg
+IC5vYmplY3QoewogICAgICAgIGVtYWlsOiB6LnN0cmluZygpLmVtYWlsKCks
+CiAgICAgICAgcGFzc3dvcmQ6IHouc3RyaW5nKCkub3B0aW9uYWwoKSwKICAg
+ICAgICBuYW1lOiB6LnN0cmluZygpLm9wdGlvbmFsKCksCiAgICAgICAgcm9s
+ZTogei5lbnVtKFsnb3JnYW5pemVyJywgJ3ZvbHVudGVlciddKS5kZWZhdWx0
+KCd2b2x1bnRlZXInKSwKICAgICAgfSkKICAgICAgLnBhcnNlKGRhdGEpLAog
+ICkKICAuaGFuZGxlcihhc3luYyAoeyBkYXRhIH0pID0+IHsKICAgIGNvbnN0
+IGN1cnJlbnRVc2VyID0gYXdhaXQgcmVxdWlyZU9yZ2FuaXplclVzZXIoKQog
+ICAgY29uc3QgZGIgPSBhd2FpdCBnZXREYigpCgogICAgaWYgKGlzRGVtb1Rl
+c3RlclVzZXIoY3VycmVudFVzZXIpKSB7CiAgICAgIHRocm93IG5ldyBFcnJv
+cignRm9yYmlkZGVuIGluIGRlbW8gbW9kZScpCiAgICB9CgogICAgY29uc3Qg
+ZXhpc3RpbmcgPSBhd2FpdCBkYi5zZWxlY3QoKS5mcm9tKHVzZXJzKS53aGVy
+ZShlcSh1c2Vycy5lbWFpbCwgZGF0YS5lbWFpbCkpLmxpbWl0KDEpCiAgICBp
+ZiAoZXhpc3RpbmcubGVuZ3RoID4gMCkgewogICAgICB0aHJvdyBuZXcgRXJy
+b3IoJ0VtYWlsIGFscmVhZHkgZXhpc3RzJykKICAgIH0KCiAgICAvLyBJZiBu
+byBwYXNzd29yZCBwcm92aWRlZCwgZ2VuZXJhdGUgYSByYW5kb20gb25lCiAg
+ICBjb25zdCBpbml0aWFsUGFzc3dvcmQgPSBkYXRhLnBhc3N3b3JkIHx8IHJh
+bmRvbUJ5dGVzKDE2KS50b1N0cmluZygnaGV4JykKCiAgICBjb25zdCBjcmVh
+dGVkID0gYXdhaXQgZGIKICAgICAgLmluc2VydCh1c2VycykKICAgICAgLnZh
+bHVlcyh7CiAgICAgICAgZW1haWw6IGRhdGEuZW1haWwsCiAgICAgICAgcGFz
+c3dvcmRIYXNoOiBoYXNoUGFzc3dvcmQoaW5pdGlhbFBhc3N3b3JkKSwKICAg
+ICAgICBuYW1lOiBkYXRhLm5hbWUsCiAgICAgICAgcm9sZTogZGF0YS5yb2xl
+LAogICAgICAgIGFjdGl2ZTogdHJ1ZSwKICAgICAgfSkKICAgICAgLnJldHVy
+bmluZygpCgogICAgbGV0IHJlc2V0VG9rZW4gPSBudWxsCiAgICBsZXQgZW1h
+aWxTZW50ID0gZmFsc2UKICAgIGxldCBlbWFpbEVycm9yID0gbnVsbAogICAg
+aWYgKCFkYXRhLnBhc3N3b3JkKSB7CiAgICAgIC8vIEdlbmVyYXRlIGEgcmVz
+ZXQgdG9rZW4KICAgICAgcmVzZXRUb2tlbiA9IHJhbmRvbUJ5dGVzKDMyKS50
+b1N0cmluZygnaGV4JykKICAgICAgY29uc3QgZXhwaXJlc0F0ID0gbmV3IERh
+dGUoKQogICAgICBleHBpcmVzQXQuc2V0RGF0ZShleHBpcmVzQXQuZ2V0RGF0
+ZSgpICsgNykgLy8gVG9rZW4gdmFsaWQgZm9yIDcgZGF5cwoKICAgICAgYXdh
+aXQgZGIuaW5zZXJ0KHBhc3N3b3JkUmVzZXRUb2tlbnMpLnZhbHVlcyh7CiAg
+ICAgICAgdXNlcklkOiBjcmVhdGVkWzBdLmlkLAogICAgICAgIHRva2VuOiBy
+ZXNldFRva2VuLAogICAgICAgIGV4cGlyZXNBdCwKICAgICAgfSkKCiAgICAg
+IC8vIFNlbmQgZW1haWwKICAgICAgY29uc3QgYmFzZVVybCA9IHByb2Nlc3Mu
+ZW52LkJBU0VfVVJMIHx8ICdodHRwczovL2xhbmtvcGluZy5zZScKICAgICAg
+Y29uc3QgcmVzZXRMaW5rID0gYCR7YmFzZVVybH0vbG9naW4/dXNlcmlkPSR7
+Y3JlYXRlZFswXS5pZH0mdG9rZW49JHtyZXNldFRva2VufSZtYWtlcGFzc3dv
+cmQ9dHJ1ZWAKICAgICAgCiAgICAgIGNvbnN0IHVzZXJOYW1lID0gZGF0YS5u
+YW1lIHx8ICdBbnbDpG5kYXJlJwogICAgICBjb25zdCBhZG1pbk5hbWUgPSBj
+dXJyZW50VXNlci5uYW1lIHx8ICdFbiBhZG1pbmlzdHJhdMO2cicKICAgICAg
+CiAgICAgIGNvbnN0IGVtYWlsVGV4dCA9IGBIZWohICR7dXNlck5hbWV9XG4k
+e2FkbWluTmFtZX0gaGFyIGJlZ8OkcnQgYXR0IGR1IHNrYXBhciBldHQgTMOk
+bmvDtnBpbmcta29udG8uXG5cbkfDpSB0aWxsIGbDtmxqYW5kZSBsw6RuayBm
+w7ZyIGF0dCBza2FwYSBkaXR0IGzDtnNlbm9yZDpcbiR7cmVzZXRMaW5rfWAK
+ICAgICAgCiAgICAgIGNvbnN0IGVtYWlsSHRtbCA9IGAKICAgICAgICA8cD5I
+ZWohICR7dXNlck5hbWV9PC9wPgogICAgICAgIDxwPiR7YWRtaW5OYW1lfSBo
+YXIgYmVnw6RydCBhdHQgZHUgc2thcGFyIGV0dCBMw6Rua8O2cGluZy1rb250
+by48L3A+CiAgICAgICAgPHA+PGEgaHJlZj0iJHtyZXNldExpbmt9Ij5LbGlj
+a2Eow6RyIGbDtnIgYXR0IHNrYXBhIGRpdHQgbMO2c2Vub3JkPC9hPjwvcD4K
+ICAgICAgICA8cD5FbGxlciBrb3BpZXJhIG9jaCBrbGlzdHJhIGluIGRlbm5h
+IGzDpG5rIGkgZGluIHdlYmJsw6RzYXJlOjxici8+CiAgICAgICAgJHtyZXNl
+dExpbmt9PC9wPgogICAgICBgCgogICAgICB0cnkgewogICAgICAgIGVtYWls
+U2VudCA9IGF3YWl0IHNlbmRFbWFpbCh7CiAgICAgICAgICB0bzogZGF0YS5l
+bWFpbCwKICAgICAgICAgIHN1YmplY3Q6ICdEaXR0IEzDpG5rw7ZwaW5nLWtv
+bnRvJywKICAgICAgICAgIHRleHQ6IGVtYWlsVGV4dCwKICAgICAgICAgIGh0
+bWw6IGVtYWlsSHRtbCwKICAgICAgICB9KQogICAgICAgIGlmICghZW1haWxT
+ZW50KSB7CiAgICAgICAgICBlbWFpbEVycm9yID0gJ01pc3NseWNrYWRlcyBh
+dHQgc2tpY2thIGUtcG9zdC4gS29udHJvbGxlcmEgU01UUC1pbnN0w6RsbG5p
+bmdhcm5hLicKICAgICAgICB9CiAgICAgIH0gY2F0Y2ggKGU6IGFueSkgewog
+ICAgICAgIGVtYWlsU2VudCA9IGZhbHNlCiAgICAgICAgZW1haWxFcnJvciA9
+IGUubWVzc2FnZSB8fCAnRXR0IG9rw6RudCBmZWwgaW50csOkZmZhZGUgdmlk
+IGUtcG9zdHV0c2tpY2suJwogICAgICB9CiAgICB9CgogICAgYXdhaXQgd3Jp
+dGVBY3Rpdml0eUxvZyh7CiAgICAgIGFjdG9yVXNlcklkOiBjdXJyZW50VXNl
+ci5pZCwKICAgICAgYWN0b3JSb2xlOiBjdXJyZW50VXNlci5yb2xlLAogICAg
+ICBhY3Rpb246ICd1c2VyLmNyZWF0ZScsCiAgICAgIGVudGl0eVR5cGU6ICd1
+c2VyJywKICAgICAgZW50aXR5SWQ6IGNyZWF0ZWRbMF0uaWQsCiAgICAgIGRl
+dGFpbHM6IHsKICAgICAgICBlbWFpbDogY3JlYXRlZFswXS5lbWFpbCwKICAg
+ICAgICByb2xlOiBjcmVhdGVkWzBdLnJvbGUsCiAgICAgICAgZ2VuZXJhdGVk
+UGFzc3dvcmQ6ICFkYXRhLnBhc3N3b3JkLAogICAgICAgIGVtYWlsU2VudCwK
+ICAgICAgICBlbWFpbEVycm9yLAogICAgICB9LAogICAgfSkKCiAgICByZXR1
+cm4gewogICAgICB1c2VyOiBjcmVhdGVkWzBdLAogICAgICByZXNldFRva2Vu
+LAogICAgICBlbWFpbFNlbnQsCiAgICAgIGVtYWlsRXJyb3IsCiAgICB9CiAg
+fSkKCmV4cG9ydCBjb25zdCBzZW5kUmVzZXRMaW5rRm4gPSBjcmVhdGVTZXJ2
+ZXJGbih7IG1ldGhvZDogIlBPU1QiIH0pCiAgLmlucHV0VmFsaWRhdG9yKChk
+YXRhOiB1bmtub3duKSA9PgogICAgei5vYmplY3QoewogICAgICB1c2VySWQ6
+IHoubnVtYmVyKCksCiAgICB9KS5wYXJzZShkYXRhKQogICkKICAuaGFuZGxl
+cihhc3luYyAoeyBkYXRhIH0pID0+IHsKICAgIGNvbnN0IGN1cnJlbnRVc2Vy
+ID0gYXdhaXQgcmVxdWlyZU9yZ2FuaXplclVzZXIoKQogICAgY29uc3QgZGIg
+PSBhd2FpdCBnZXREYigpCgogICAgaWYgKGlzRGVtb1Rlc3RlclVzZXIoY3Vy
+cmVudFVzZXIpKSB7CiAgICAgIHRocm93IG5ldyBFcnJvcignRm9yYmlkZGVu
+IGluIGRlbW8gbW9kZScpCiAgICB9CgogICAgY29uc3QgdGFyZ2V0VXNlciA9
+IGF3YWl0IGRiLnNlbGVjdCgpLmZyb20odXNlcnMpLndoZXJlKGVxKHVzZXJz
+LmlkLCBkYXRhLnVzZXJJZCkpLmxpbWl0KDEpCiAgICBpZiAoIXRhcmdldFVz
+ZXJbMF0pIHsKICAgICAgdGhyb3cgbmV3IEVycm9yKCdVc2VyIG5vdCBmb3Vu
+ZCcpCiAgICB9CgogICAgLy8gRGVsZXRlIG9sZCB0b2tlbnMgZm9yIHRoaXMg
+dXNlcgogICAgYXdhaXQgZGIuZGVsZXRlKHBhc3N3b3JkUmVzZXRUb2tlbnMp
+LndoZXJlKGVxKHBhc3N3b3JkUmVzZXRUb2tlbnMudXNlcklkLCBkYXRhLnVz
+ZXJJZCkpCgogICAgLy8gR2VuZXJhdGUgYSBuZXcgcmVzZXQgdG9rZW4KICAg
+IGNvbnN0IHJlc2V0VG9rZW4gPSByYW5kb21CeXRlcygzMikudG9TdHJpbmco
+J2hleCcpCiAgICBjb25zdCBleHBpcmVzQXQgPSBuZXcgRGF0ZSgpCiAgICBl
+eHBpcmVzQXQuc2V0RGF0ZShleHBpcmVzQXQuZ2V0RGF0ZSgpICsgNykgLy8g
+VG9rZW4gdmFsaWQgZm9yIDcgZGF5cwoKICAgIGF3YWl0IGRiLmluc2VydChw
+YXNzd29yZFJlc2V0VG9rZW5zKS52YWx1ZXMoewogICAgICB1c2VySWQ6IHRh
+cmdldFVzZXJbMF0uaWQsCiAgICAgIHRva2VuOiByZXNldFRva2VuLAogICAg
+ICBleHBpcmVzQXQsCiAgICB9KQoKICAgIC8vIFNlbmQgZW1haWwKICAgIGNv
+bnN0IGJhc2VVcmwgPSBwcm9jZXNzLmVudi5CQVNFX1VSTCB8fCAnaHR0cHM6
+Ly9sYW5rb3Bpbmcuc2UnCiAgICBjb25zdCByZXNldExpbmsgPSBgJHtiYXNl
+VXJsfS9sb2dpbj91c2VyaWQ9JHt0YXJnZXRVc2VyWzBdLmlkfSZ0b2tlbj0k
+e3Jlc2V0VG9rZW59Jm1ha2VwYXNzd29yZD10cnVlYAogICAgCiAgICBjb25z
+dCB1c2VyTmFtZSA9IHRhcmdldFVzZXJbMF0ubmFtZSB8fCAnQW52w6RuZGFy
+ZScKICAgIGNvbnN0IGFkbWluTmFtZSA9IGN1cnJlbnRVc2VyLm5hbWUgfHwg
+J0VuIGFkbWluaXN0cmF0w7ZyJwogICAgCiAgICBjb25zdCBlbWFpbFRleHQg
+PSBgSGVqISAke3VzZXJOYW1lfVxuJHthZG1pbk5hbWV9IGhhciBiZWfDpHJ0
+IGF0dCBkdSBzw6R0dGVyIGV0dCBueXR0IGzDtnNlbm9yZCBmw7ZyIGRpdHQg
+TMOkbmvDtnBpbmcta29udG8uXG5cbkfDpSB0aWxsIGbDtmxqYW5kZSBsw6Ru
+ayBmw7ZyIGF0dCBza2FwYSBkaXR0IGzDtnNlbm9yZDpcbiR7cmVzZXRMaW5r
+fWAKICAgIAogICAgY29uc3QgZW1haWxIdG1sID0gYAogICAgICA8cD5IZWoh
+ICR7dXNlck5hbWV9PC9wPgogICAgICA8cD4ke2FkbWluTmFtZX0gaGFyIGJl
+Z8OkcnQgYXR0IGR1IHPDpHR0ZXIgZXR0IG55dHQgbMO2c2Vub3JkIGbDtnIg
+ZGl0dCBMw6Rua8O2cGluZy1rb250by48L3A+CiAgICAgIDxwPjxhIGhyZWY9
+IiR7cmVzZXRMaW5rfSI+S2xpY2thIGjDpHIgZsO2ciBhdHQgc2thcGEgZGl0
+dCBsw7ZzZW5vcmQ8L2E+PC9wPgogICAgICA8cD5FbGxlciBrb3BpZXJhIG9j
+aCBrbGlzdHJhIGluIGRlbm5hIGzDpG5rIGkgZGluIHdlYmJsw6RzYXJlOjxi
+ci8+CiAgICAgICR7cmVzZXRMaW5rfTwvcD4KICAgIGAKCiAgICBsZXQgZW1h
+aWxTZW50ID0gZmFsc2UKICAgIGxldCBlbWFpbEVycm9yID0gbnVsbAoKICAg
+IHRyeSB7CiAgICAgIGVtYWlsU2VudCA9IGF3YWl0IHNlbmRFbWFpbCh7CiAg
+ICAgICAgdG86IHRhcmdldFVzZXJbMF0uZW1haWwsCiAgICAgICAgc3ViamVj
+dDogJ8OFdGVyc3TDpGxsIGRpdHQgbMO2c2Vub3JkIGbDtnIgTMOkbmvDtnBp
+bmcuc2UnLAogICAgICAgIHRleHQ6IGVtYWlsVGV4dCwKICAgICAgICBodG1s
+OiBlbWFpbEh0bWwsCiAgICAgIH0pCiAgICAgIGlmICghZW1haWxTZW50KSB7
+CiAgICAgICAgZW1haWxFcnJvciA9ICdNaXNzbHlja2FkZXMgYXR0IHNraWNr
+YSBlLXBvc3QuIEtvbnRyb2xsZXJhIFNNVFAtaW5zdMOkbGxuaW5nYXJuYS4n
+CiAgICAgIH0KICAgIH0gY2F0Y2ggKGU6IGFueSkgewogICAgICBlbWFpbFNl
+bnQgPSBmYWxzZQogICAgICBlbWFpbEVycm9yID0gZS5tZXNzYWdlIHx8ICdF
+dHQgb2vDpG50IGZlbCBpbnRyw6RmZmFkZSB2aWQgZS1wb3N0dXRza2ljay4n
+CiAgICB9CgogICAgYXdhaXQgd3JpdGVBY3Rpdml0eUxvZyh7CiAgICAgIGFj
+dG9yVXNlcklkOiBjdXJyZW50VXNlci5pZCwKICAgICAgYWN0b3JSb2xlOiBj
+dXJyZW50VXNlci5yb2xlLAogICAgICBhY3Rpb246ICd1c2VyLnBhc3N3b3Jk
+X3Jlc2V0X2xpbmtfc2VudCcsCiAgICAgIGVudGl0eVR5cGU6ICd1c2VyJywK
+ICAgICAgZW50aXR5SWQ6IHRhcmdldFVzZXJbMF0uaWQsCiAgICAgIGRldGFp
+bHM6IHsKICAgICAgICBlbWFpbDogdGFyZ2V0VXNlclswXS5lbWFpbCwKICAg
+ICAgICBlbWFpbFNlbnQsCiAgICAgICAgZW1haWxFcnJvciwKICAgICAgfSwK
+ICAgIH0pCgogICAgaWYgKCFlbWFpbFNlbnQpIHsKICAgICAgdGhyb3cgbmV3
+IEVycm9yKGVtYWlsRXJyb3IgfHwgJ0ZhaWxlZCB0byBzZW5kIGVtYWlsJykK
+ICAgIH0KCiAgICByZXR1cm4geyBzdWNjZXNzOiB0cnVlLCByZXNldExpbmsg
+fQogIH0pCgpleHBvcnQgY29uc3QgcmVzZXRQYXNzd29yZFdpdGhUb2tlbkZu
+ID0gY3JlYXRlU2VydmVyRm4oeyBtZXRob2Q6ICJQT1NUIiB9KQogIC5pbnB1
+dFZhbGlkYXRvcigoZGF0YTogdW5rbm93bikgPT4KICAgIHoub2JqZWN0KHsK
+ICAgICAgdXNlcklkOiB6Lm51bWJlcigpLAogICAgICB0b2tlbjogei5zdHJp
+bmcoKSwKICAgICAgbmV3UGFzc3dvcmQ6IHouc3RyaW5nKCkubWluKDEpLAog
+ICAgfSkucGFyc2UoZGF0YSkKICApCiAgLmhhbmRsZXIoYXN5bmMgKHsgZGF0
+YSB9KSA9PiB7CiAgICBjb25zdCBkYiA9IGF3YWl0IGdldERiKCkKCiAgICBj
+b25zdCB0b2tlblJlY29yZCA9IGF3YWl0IGRiCiAgICAgIC5zZWxlY3QoKQog
+ICAgICAuZnJvbShwYXNzd29yZFJlc2V0VG9rZW5zKQogICAgICAud2hlcmUo
+CiAgICAgICAgYW5kKAogICAgICAgICAgZXEocGFzc3dvcmRSZXNldFRva2Vu
+cy51c2VySWQsIGRhdGEudXNlcklkKSwKICAgICAgICAgIGVxKHBhc3N3b3Jk
+UmVzZXRUb2tlbnMudG9rZW4sIGRhdGEudG9rZW4pLAogICAgICAgICAgZ3Rl
+KHBhc3N3b3JkUmVzZXRUb2tlbnMuZXhwaXJlc0F0LCBuZXcgRGF0ZSgpKQog
+ICAgICAgICkKICAgICAgKQogICAgICAubGltaXQoMSkKCiAgICBpZiAoIXRv
+a2VuUmVjb3JkWzBdKSB7CiAgICAgIHRocm93IG5ldyBFcnJvcignT2dpbHRp
+ZyBlbGxlciB1dGfDpW5nZW4gbMOkbmsuIFbDpG5saWdlbiBiZWfDpHIgZW4g
+bnkgbMOkbmsuJykKICAgIH0KCiAgICBhd2FpdCBkYgogICAgICAudXBkYXRl
+KHVzZXJzKQogICAgICAuc2V0KHsgcGFzc3dvcmRIYXNoOiBoYXNoUGFzc3dv
+cmQoZGF0YS5uZXdQYXNzd29yZCkgfSkKICAgICAgLndoZXJlKGVxKHVzZXJz
+LmlkLCBkYXRhLnVzZXJJZCkpCgogICAgYXdhaXQgZGIKICAgICAgLmRlbGV0
+ZShwYXNzd29yZFJlc2V0VG9rZW5zKQogICAgICAud2hlcmUoZXEocGFzc3dv
+cmRSZXNldFRva2Vucy51c2VySWQsIGRhdGEudXNlcklkKSkKCiAgICBhd2Fp
+dCB3cml0ZUFjdGl2aXR5TG9nKHsKICAgICAgYWN0b3JVc2VySWQ6IGRhdGEu
+dXNlcklkLAogICAgICBhY3RvclJvbGU6ICd2b2x1bnRlZXInLCAvLyBGYWxs
+YmFjaywgd2UgZG9uJ3QgaGF2ZSB0aGUgcm9sZSBoZXJlIGVhc2lseQogICAg
+ICBhY3Rpb246ICd1c2VyLnBhc3N3b3JkLnJlc2V0X3dpdGhfdG9rZW4nLAog
+ICAgICBlbnRpdHlUeXBlOiAndXNlcicsCiAgICAgIGVudGl0eUlkOiBkYXRh
+LnVzZXJJZCwKICAgIH0pCgogICAgcmV0dXJuIHsgc3VjY2VzczogdHJ1ZSB9
+CiAgfSkKCmV4cG9ydCBjb25zdCBjaGFuZ2VQYXNzd29yZEZuID0gY3JlYXRl
+U2VydmVyRm4oeyBtZXRob2Q6ICJQT1NUIiB9KQogIC5pbnB1dFZhbGlkYXRv
+cigoZGF0YTogdW5rbm93bikgPT4KICAgIHoub2JqZWN0KHsKICAgICAgdXNl
+cklkOiB6Lm51bWJlcigpLAogICAgICBuZXdQYXNzd29yZDogei5zdHJpbmco
+KS5taW4oMSksCiAgICB9KS5wYXJzZShkYXRhKQogICkKICAuaGFuZGxlcihh
+c3luYyAoeyBkYXRhIH0pID0+IHsKICAgIGNvbnN0IGN1cnJlbnRVc2VyID0g
+YXdhaXQgcmVxdWlyZVN0YWZmVXNlcigpCiAgICBjb25zdCBkYiA9IGF3YWl0
+IGdldERiKCkKCiAgICBlbmZvcmNlRGVtb093blVzZXJTY29wZShjdXJyZW50
+VXNlciwgZGF0YS51c2VySWQpCgogICAgY29uc3QgdGFyZ2V0VXNlciA9IGF3
+YWl0IGRiCiAgICAgIC5zZWxlY3QoKQogICAgICAuZnJvbSh1c2VycykKICAg
+ICAgLndoZXJlKGVxKHVzZXJzLmlkLCBkYXRhLnVzZXJJZCkpCiAgICAgIC5s
+aW1pdCgxKQoKICAgIGlmICghdGFyZ2V0VXNlclswXSkgewogICAgICB0aHJv
+dyBuZXcgRXJyb3IoJ1VzZXIgbm90IGZvdW5kJykKICAgIH0KCiAgICBpZiAo
+Y3VycmVudFVzZXIucm9sZSAhPT0gJ29yZ2FuaXplcicgJiYgY3VycmVudFVz
+ZXIuaWQgIT09IHRhcmdldFVzZXJbMF0uaWQpIHsKICAgICAgdGhyb3cgbmV3
+IEVycm9yKCdGb3JiaWRkZW46IENhbm5vdCBjaGFuZ2UgYW5vdGhlciBhY2Nv
+dW50IHBhc3N3b3JkJykKICAgIH0KCiAgICBhd2FpdCBkYgogICAgICAudXBk
+YXRlKHVzZXJzKQogICAgICAuc2V0KHsgcGFzc3dvcmRIYXNoOiBoYXNoUGFz
+c3dvcmQoZGF0YS5uZXdQYXNzd29yZCkgfSkKICAgICAgLndoZXJlKGVxKHVz
+ZXJzLmlkLCBkYXRhLnVzZXJJZCkpCgogICAgYXdhaXQgd3JpdGVBY3Rpdml0
+eUxvZyh7CiAgICAgIGFjdG9yVXNlcklkOiBjdXJyZW50VXNlci5pZCwKICAg
+ICAgYWN0b3JSb2xlOiBjdXJyZW50VXNlci5yb2xlLAogICAgICBhY3Rpb246
+ICd1c2VyLnBhc3N3b3JkLmNoYW5nZScsCiAgICAgIGVudGl0eVR5cGU6ICd1
+c2VyJywKICAgICAgZW50aXR5SWQ6IGRhdGEudXNlcklkLAogICAgICBkZXRh
+aWxzOiB7CiAgICAgICAgc2VsZlNlcnZpY2U6IGN1cnJlbnRVc2VyLmlkID09
+PSBkYXRhLnVzZXJJZCwKICAgICAgfSwKICAgIH0pCgogICAgcmV0dXJuIHsg
+c3VjY2VzczogdHJ1ZSB9CiAgfSkKCmV4cG9ydCBjb25zdCBkZWxldGVVc2Vy
+Rm4gPSBjcmVhdGVTZXJ2ZXJGbih7IG1ldGhvZDogIlBPU1QiIH0pCiAgLmlu
+cHV0VmFsaWRhdG9yKChkYXRhOiB1bmtub3duKSA9PgogICAgei5vYmplY3Qo
+ewogICAgICB1c2VySWQ6IHoubnVtYmVyKCksCiAgICB9KS5wYXJzZShkYXRh
+KQogICkKICAuaGFuZGxlcihhc3luYyAoeyBkYXRhIH0pID0+IHsKICAgIGNv
+bnN0IGN1cnJlbnRVc2VyID0gYXdhaXQgcmVxdWlyZU9yZ2FuaXplclVzZXIo
+KQogICAgY29uc3QgZGIgPSBhd2FpdCBnZXREYigpCgogICAgaWYgKGlzRGVt
+b1Rlc3RlclVzZXIoY3VycmVudFVzZXIpKSB7CiAgICAgIHRocm93IG5ldyBF
+cnJvcignRm9yYmlkZGVuIGluIGRlbW8gbW9kZScpCiAgICB9CgogICAgaWYg
+KGN1cnJlbnRVc2VyLmlkID09PSBkYXRhLnVzZXJJZCkgewogICAgICB0aHJv
+dyBuZXcgRXJyb3IoJ0ZvcmJpZGRlbjogQ2Fubm90IGRlbGV0ZSB5b3Vyc2Vs
+ZicpCiAgICB9CgogICAgY29uc3QgdGFyZ2V0VXNlciA9IGF3YWl0IGRiCiAg
+ICAgIC5zZWxlY3QoKQogICAgICAuZnJvbSh1c2VycykKICAgICAgLndoZXJl
+KGVxKHVzZXJzLmlkLCBkYXRhLnVzZXJJZCkpCiAgICAgIC5saW1pdCgxKQoK
+ICAgIGlmICghdGFyZ2V0VXNlclswXSkgewogICAgICB0aHJvdyBuZXcgRXJy
+b3IoJ1VzZXIgbm90IGZvdW5kJykKICAgIH0KCiAgICB0cnkgewogICAgICAv
+LyBOdWxsIG91dCBvciBkZWxldGUgYWxsIGZvcmVpZ24ga2V5IHJlZmVyZW5j
+ZXMgdG8gdGhpcyB1c2VyIGJlZm9yZSBkZWxldGlvbgoKICAgICAgLy8gVGlj
+a2V0cyBpc3N1ZWQgb3Igc2Nhbm5lZCBieSB0aGlzIHVzZXIKICAgICAgYXdh
+aXQgZGIudXBkYXRlKHRpY2tldHMpLnNldCh7IGlzc3VlZEJ5OiBudWxsIH0p
+LndoZXJlKGVxKHRpY2tldHMuaXNzdWVkQnksIGRhdGEudXNlcklkKSkKICAg
+ICAgYXdhaXQgZGIudXBkYXRlKHRpY2tldHMpLnNldCh7IHNjYW5uZWRCeTog
+bnVsbCB9KS53aGVyZShlcSh0aWNrZXRzLnNjYW5uZWRCeSwgZGF0YS51c2Vy
+SWQpKQoKICAgICAgLy8gUGFzc3dvcmQgcmVzZXQgdG9rZW5zCiAgICAgIGF3
+YWl0IGRiLmRlbGV0ZShwYXNzd29yZFJlc2V0VG9rZW5zKS53aGVyZShlcShw
+YXNzd29yZFJlc2V0VG9rZW5zLnVzZXJJZCwgZGF0YS51c2VySWQpKQoKICAg
+ICAgLy8gSGFuZGxlIHRhYmxlcyB0aGF0IG1pZ2h0IGV4aXN0IGluIHRoZSBk
+YXRhYmFzZSBidXQgYXJlbid0IGluIHNjaGVtYS50cyBhbnltb3JlCiAgICAg
+IC8vIFRoaXMgaXMgYSBmYWxsYmFjayBpbiBjYXNlIHRoZSBEUk9QIFRBQkxF
+IHN0YXRlbWVudHMgaW4gaW5pdC50cyBkaWRuJ3QgZXhlY3V0ZSBwcm9wZXJs
+eQogICAgICB0cnkgewogICAgICAgIGF3YWl0IGRiLmV4ZWN1dGUoc3FsYFVQ
+REFURSBhdmdhbmdzX3JlcXVlc3RzIFNFVCByZXZpZXdlZF9ieSA9IE5VTEwg
+V0hFUkUgcmV2aWV3ZWRfYnkgPSAke2RhdGEudXNlcklkfWApCiAgICAgIH0g
+Y2F0Y2ggKGUpIHsKICAgICAgICAvLyBJZ25vcmUgaWYgdGFibGUgZG9lc24n
+dCBleGlzdAogICAgICB9CiAgICAgIAogICAgICB0cnkgewogICAgICAgIGF3
+YWl0IGRiLmV4ZWN1dGUoc3FsYFVQREFURSBzdGFkZ2FyIFNFVCB1cGRhdGVk
+X2J5ID0gTlVMTCBXSEVSRSB1cGRhdGVkX2J5ID0gJHtkYXRhLnVzZXJJZH1g
+KQogICAgICB9IGNhdGNoIChlKSB7CiAgICAgICAgLy8gSWdub3JlIGlmIHRh
+YmxlIGRvZXNuJ3QgZXhpc3QKICAgICAgfQoKICAgICAgdHJ5IHsKICAgICAg
+ICBhd2FpdCBkYi5leGVjdXRlKHNxbGBERUxFVEUgRlJPTSBvcmdhbml6YXRp
+b25fbWVtYmVycyBXSEVSRSB1c2VyX2lkID0gJHtkYXRhLnVzZXJJZH1gKQog
+ICAgICB9IGNhdGNoIChlKSB7CiAgICAgICAgLy8gSWdub3JlIGlmIHRhYmxl
+IGRvZXNuJ3QgZXhpc3QKICAgICAgfQoKICAgICAgdHJ5IHsKICAgICAgICBh
+d2FpdCBkYi5leGVjdXRlKHNxbGBERUxFVEUgRlJPTSBhZ3JlZW1lbnRzIFdI
+RVJFIGNyZWF0ZWRfYnkgPSAke2RhdGEudXNlcklkfWApCiAgICAgIH0gY2F0
+Y2ggKGUpIHsKICAgICAgICAvLyBJZ25vcmUgaWYgdGFibGUgZG9lc24ndCBl
+eGlzdAogICAgICB9CgogICAgICAvLyBBY3Rpdml0eSBsb2dzIC0gZGVsZXRl
+IGxvZ3Mgd2hlcmUgdGhpcyB1c2VyIHdhcyB0aGUgYWN0b3IgdXNpbmcgdGhl
+IGRlZGljYXRlZCBmdW5jdGlvbgogICAgICBhd2FpdCBkZWxldGVBY3Rpdml0
+eUxvZ3NGb3JVc2VyKGRhdGEudXNlcklkKQoKICAgICAgLy8gRGVsZXRlIHVz
+ZXIKICAgICAgYXdhaXQgZGIKICAgICAgICAuZGVsZXRlKHVzZXJzKQogICAg
+ICAgIC53aGVyZShlcSh1c2Vycy5pZCwgZGF0YS51c2VySWQpKQoKICAgICAg
+Ly8gTG9nIHRoZSBkZWxldGlvbiAodXNpbmcgY3VycmVudCB1c2VyIGFzIGFj
+dG9yLCBub3QgdGhlIGRlbGV0ZWQgdXNlcikKICAgICAgYXdhaXQgd3JpdGVB
+Y3Rpdml0eUxvZyh7CiAgICAgICAgYWN0b3JVc2VySWQ6IGN1cnJlbnRVc2Vy
+LmlkLAogICAgICAgIGFjdG9yUm9sZTogY3VycmVudFVzZXIucm9sZSwKICAg
+ICAgICBhY3Rpb246ICd1c2VyLmRlbGV0ZScsCiAgICAgICAgZW50aXR5VHlw
+ZTogJ3VzZXInLAogICAgICAgIGVudGl0eUlkOiBkYXRhLnVzZXJJZCwKICAg
+ICAgICBkZXRhaWxzOiB7CiAgICAgICAgICBlbWFpbDogdGFyZ2V0VXNlclsw
+XT8uZW1haWwgPz8gbnVsbCwKICAgICAgICB9LAogICAgICB9KQoKICAgICAg
+cmV0dXJuIHsgc3VjY2VzczogdHJ1ZSB9CiAgICB9IGNhdGNoIChlcnJvcikg
+ewogICAgICBjb25zb2xlLmVycm9yKGBGYWlsZWQgdG8gZGVsZXRlIHVzZXIg
+d2hlcmUgdXNlciBJRCAke2RhdGEudXNlcklkfWAsIGVycm9yKQogICAgICB0
+aHJvdyBuZXcgRXJyb3IoYEZhaWxlZCB0byBkZWxldGUgdXNlcjogJHtlcnJv
+ciBpbnN0YW5jZW9mIEVycm9yID8gZXJyb3IubWVzc2FnZSA6ICdVbmtub3du
+IGVycm9yJ31gKQogICAgfQogIH0pCgpleHBvcnQgY29uc3QgbG9ja1VzZXJG
+biA9IGNyZWF0ZVNlcnZlckZuKHsgbWV0aG9kOiAiUE9TVCIgfSkKICAuaW5w
+dXRWYWxpZGF0b3IoKGRhdGE6IHVua25vd24pID0+CiAgICB6Lm9iamVjdCh7
+CiAgICAgIHVzZXJJZDogei5udW1iZXIoKSwKICAgIH0pLnBhcnNlKGRhdGEp
+CiAgKQogIC5oYW5kbGVyKGFzeW5jICh7IGRhdGEgfSkgPT4gewogICAgY29u
+c3QgY3VycmVudFVzZXIgPSBhd2FpdCByZXF1aXJlT3JnYW5pemVyVXNlcigp
+CiAgICBjb25zdCBkYiA9IGF3YWl0IGdldERiKCkKCiAgICBpZiAoaXNEZW1v
+VGVzdGVyVXNlcihjdXJyZW50VXNlcikpIHsKICAgICAgdGhyb3cgbmV3IEVy
+cm9yKCdGb3JiaWRkZW4gaW4gZGVtbyBtb2RlJykKICAgIH0KCiAgICBpZiAo
+Y3VycmVudFVzZXIuaWQgPT09IGRhdGEudXNlcklkKSB0aHJvdyBuZXcgRXJy
+b3IoJ0ZvcmJpZGRlbjogQ2Fubm90IGxvY2sgeW91cnNlbGYnKQoKICAgIGF3
+YWl0IGRiLnVwZGF0ZSh1c2Vycykuc2V0KHsgYWN0aXZlOiBmYWxzZSB9KS53
+aGVyZShlcSh1c2Vycy5pZCwgZGF0YS51c2VySWQpKQoKICAgIGF3YWl0IHdy
+aXRlQWN0aXZpdHlMb2coewogICAgICBhY3RvclVzZXJJZDogY3VycmVudFVz
+ZXIuaWQsCiAgICAgIGFjdG9yUm9sZTogY3VycmVudFVzZXIucm9sZSwKICAg
+ICAgYWN0aW9uOiAndXNlci5sb2NrJywKICAgICAgZW50aXR5VHlwZTogJ3Vz
+ZXInLAogICAgICBlbnRpdHlJZDogZGF0YS51c2VySWQsCiAgICB9KQoKICAg
+IHJldHVybiB7IHN1Y2Nlc3M6IHRydWUgfQogIH0pCgpleHBvcnQgY29uc3Qg
+dXBkYXRlUHJvZmlsZUZuID0gY3JlYXRlU2VydmVyRm4oeyBtZXRob2Q6ICdQ
+T1NUJyB9KQogIC5pbnB1dFZhbGlkYXRvcigoZGF0YTogdW5rbm93bikgPT4K
+ICAgIHoub2JqZWN0KHsKICAgICAgbmFtZTogei5zdHJpbmcoKS5taW4oMSku
+bWF4KDEyMCksCiAgICB9KS5wYXJzZShkYXRhKQogICkKICAuaGFuZGxlcihh
+c3luYyAoeyBkYXRhIH0pID0+IHsKICAgIGNvbnN0IGN1cnJlbnRVc2VyID0g
+YXdhaXQgcmVxdWlyZVN0YWZmVXNlcigpCiAgICBjb25zdCBkYiA9IGF3YWl0
+IGdldERiKCkKICAgIGNvbnN0IHVwZGF0ZWQgPSBhd2FpdCBkYgogICAgICAu
+dXBkYXRlKHVzZXJzKQogICAgICAuc2V0KHsgbmFtZTogZGF0YS5uYW1lIH0p
+CiAgICAgIC53aGVyZShlcSh1c2Vycy5pZCwgY3VycmVudFVzZXIuaWQpKQog
+ICAgICAucmV0dXJuaW5nKCkKCiAgICBhd2FpdCB3cml0ZUFjdGl2aXR5TG9n
+KHsKICAgICAgYWN0b3JVc2VySWQ6IGN1cnJlbnRVc2VyLmlkLAogICAgICBh
+Y3RvclJvbGU6IGN1cnJlbnRVc2VyLnJvbGUsCiAgICAgIGFjdGlvbjogJ3By
+b2ZpbGUudXBkYXRlJywKICAgICAgZW50aXR5VHlwZTogJ3VzZXInLAogICAg
+ICBlbnRpdHlJZDogY3VycmVudFVzZXIuaWQsCiAgICAgIGRldGFpbHM6IHsg
+bmFtZTogZGF0YS5uYW1lIH0sCiAgICB9KQoKICAgIHJldHVybiB1cGRhdGVk
+WzBdCiAgfSkKCmV4cG9ydCBjb25zdCB1cGRhdGVVc2VyRm4gPSBjcmVhdGVT
+ZXJ2ZXJGbih7IG1ldGhvZDogJ1BPU1QnIH0pCiAgLmlucHV0VmFsaWRhdG9y
+KChkYXRhOiB1bmtub3duKSA9PgogICAgei5vYmplY3QoewogICAgICB1c2Vy
+SWQ6IHoubnVtYmVyKCksCiAgICAgIG5hbWU6IHouc3RyaW5nKCkubWluKDEp
+Lm1heCgxMjApLAogICAgICByb2xlOiB6LmVudW0oWydvcmdhbml6ZXInLCAn
+dm9sdW50ZWVyJ10pLAogICAgICBhY3RpdmU6IHouYm9vbGVhbigpLAogICAg
+fSkucGFyc2UoZGF0YSkKICApCiAgLmhhbmRsZXIoYXN5bmMgKHsgZGF0YSB9
+KSA9PiB7CiAgICBjb25zdCBjdXJyZW50VXNlciA9IGF3YWl0IHJlcXVpcmVP
+cmdhbml6ZXJVc2VyKCkKICAgIGNvbnN0IGRiID0gYXdhaXQgZ2V0RGIoKQoK
+ICAgIGlmIChpc0RlbW9UZXN0ZXJVc2VyKGN1cnJlbnRVc2VyKSkgewogICAg
+  ZW5mb3JjZURlbW9Pd25Vc2VyU2NvcGUoY3VycmVudFVzZXIsIGRhdGEudXNl
+cklkKQogICAgICB0aHJvdyBuZXcgRXJyb3IoJ0ZvcmJpZGRlbiBpbiBkZW1v
+IG1vZGUnKQogICAgfQoKICAgIGlmIChjdXJyZW50VXNlci5pZCA9PT0gZGF0
+YS51c2VySWQgJiYgZGF0YS5yb2xlICE9PSAnb3JnYW5pemVyJykgewogICAg
+ICB0aHJvdyBuZXcgRXJyb3IoJ1lvdSBjYW5ub3QgcmVtb3ZlIHlvdXIgb3du
+IG9yZ2FuaXplciBhY2Nlc3MnKQogICAgfQoKICAgIGNvbnN0IHVwZGF0ZWQg
+PSBhd2FpdCBkYgogICAgICAudXBkYXRlKHVzZXJzKQogICAgICAuc2V0KHsK
+ICAgICAgICBuYW1lOiBkYXRhLm5hbWUsCiAgICAgICAgcm9sZTogZGF0YS5y
+b2xlLAogICAgICAgIGFjdGl2ZTogZGF0YS5hY3RpdmUsCiAgICAgIH0pCiAg
+ICAgIC53aGVyZShlcSh1c2Vycy5pZCwgZGF0YS51c2VySWQpKQogICAgICAu
+cmV0dXJuaW5nKCkKCiAgICBhd2FpdCB3cml0ZUFjdGl2aXR5TG9nKHsKICAg
+ICAgYWN0b3JVc2VySWQ6IGN1cnJlbnRVc2VyLmlkLAogICAgICBhY3RvclJv
+bGU6IGN1cnJlbnRVc2VyLnJvbGUsCiAgICAgIGFjdGlvbjogJ3VzZXIudXBk
+YXRlJywKICAgICAgZW50aXR5VHlwZTogJ3VzZXInLAogICAgICBlbnRpdHlJ
+ZDogZGF0YS51c2VySWQsCiAgICAgIGRldGFpbHM6IHsKICAgICAgICByb2xl
+OiBkYXRhLnJvbGUsCiAgICAgICAgYWN0aXZlOiBkYXRhLmFjdGl2ZSwKICAg
+ICAgfSwKICAgIH0pCgogICAgcmV0dXJuIHVwZGF0ZWRbMF0KICB9KQoKZXhw
+b3J0IGNvbnN0IGdldERlbW9BY2NvdW50c0ZuID0gY3JlYXRlU2VydmVyRm4o
+eyBtZXRob2Q6ICdHRVQnIH0pCiAgLmhhbmRsZXIoYXN5bmMgKCkgPT4gewog
+ICAgY29uc3QgY3VycmVudFVzZXIgPSBhd2FpdCByZXF1aXJlT3JnYW5pemVy
+VXNlcigpCiAgICBjb25zdCBkYiA9IGF3YWl0IGdldERiKCkKCiAgICBpZiAo
+aXNEZW1vVGVzdGVyVXNlcihjdXJyZW50VXNlcikpIHsKICAgICAgcmV0dXJu
+IFtjdXJyZW50VXNlcl0KICAgIH0KCiAgICBjb25zdCBkZW1vRW1haWxzID0g
+Z2V0RGVtb0FjY291bnRFbWFpbHMoKQogICAgaWYgKGRlbW9FbWFpbHMubGVu
+Z3RoID09PSAwKSB7CiAgICAgIHJldHVybiBbXQogICAgfQoKICAgIHJldHVy
+biBhd2FpdCBkYi5zZWxlY3QoKS5mcm9tKHVzZXJzKS53aGVyZShpbkFycmF5
+KHVzZXJzLmVtYWlsLCBkZW1vRW1haWxzKSkKICB9KQoKZXhwb3J0IGNvbnN0
+IHNldERlbW9BY2NvdW50c0FjdGl2ZUZuID0gY3JlYXRlU2VydmVyRm4oeyBt
+ZXRob2Q6ICdQT1NUJyB9KQogIC5pbnB1dFZhbGlkYXRvcigoZGF0YTogdW5r
+bm93bikgPT4gei5vYmplY3QoeyBhY3RpdmU6IHouYm9vbGVhbigpIH0pLnBh
+cnNlKGRhdGEpKQogIC5oYW5kbGVyKGFzeW5jICh7IGRhdGEgfSkgPT4gewog
+ICAgY29uc3QgY3VycmVudFVzZXIgPSBhd2FpdCByZXF1aXJlT3JnYW5pemVy
+VXNlcigpCiAgICBjb25zdCBkYiA9IGF3YWl0IGdldERiKCkKCiAgICBpZiAo
+aXNEZW1vVGVzdGVyVXNlcihjdXJyZW50VXNlcikpIHsKICAgICAgdGhyb3cg
+bmV3IEVycm9yKCdGb3JiaWRkZW4gaW4gZGVtbyBtb2RlJykKICAgIH0KCiAg
+ICBjb25zdCBkZW1vRW1haWxzID0gZ2V0RGVtb0FjY291bnRFbWFpbHMoKQog
+ICAgaWYgKGRlbW9FbWFpbHMubGVuZ3RoID09PSAwKSB7CiAgICAgIHJldHVy
+biB7IHN1Y2Nlc3M6IHRydWUsIHVwZGF0ZWRDb3VudDogMCB9CiAgICB9Cgog
+ICAgY29uc3QgdXBkYXRlZCA9IGF3YWl0IGRiCiAgICAgIC51cGRhdGUodXNl
+cnMpCiAgICAgIC5zZXQoeyBhY3RpdmU6IGRhdGEuYWN0aXZlIH0pCiAgICAg
+IC53aGVyZShpbkFycmF5KHVzZXJzLmVtYWlsLCBkZW1vRW1haWxzKSkKICAg
+ICAgLnJldHVybmluZygpCgogICAgYXdhaXQgd3JpdGVBY3Rpdml0eUxvZyh7
+CiAgICAgIGFjdG9yVXNlcklkOiBjdXJyZW50VXNlci5pZCwKICAgICAgYWN0
+b3JSb2xlOiBjdXJyZW50VXNlci5yb2xlLAogICAgICBhY3Rpb246IGRhdGEu
+YWN0aXZlID8gJ2RlbW9fYWNjb3VudHMuZW5hYmxlJyA6ICdkZW1vX2FjY291
+bnRzLmRpc2FibGUnLAogICAgICBlbnRpdHlUeXBlOiAndXNlcicsCiAgICAg
+IGRldGFpbHM6IHsKICAgICAgICBlbWFpbHM6IGRlbW9FbWFpbHMsCiAgICAg
+ICAgY291bnQ6IHVwZGF0ZWQubGVuZ3RoLAogICAgICB9LAogICAgfSkKCiAg
+ICByZXR1cm4gewogICAgICBzdWNjZXNzOiB0cnVlLAogICAgICB1cGRhdGVk
+Q291bnQ6IHVwZGF0ZWQubGVuZ3RoLAogICAgICBkZW1vQWNjb3VudHM6IHVw
+ZGF0ZWQsCiAgICB9CiAgfSkK

@@ -26,6 +26,7 @@ export const events = pgTable('events', {
   location: text('location'),
   image: text('image'),
   published: boolean('published').default(false).notNull(),
+  finished: boolean('finished').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })

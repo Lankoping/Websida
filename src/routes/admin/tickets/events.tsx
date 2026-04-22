@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { getEventsFn, createEventFn, deleteEventFn } from '../../../server/functions/tickets'
+import { getEventsFn, createEventFn, deleteEventFn, updateEventStatusFn } from '../../../../server/functions/tickets'
 import { useState } from 'react'
-import { Plus, Trash2, Calendar as CalendarIcon, Save, ArrowLeft, MapPin } from 'lucide-react'
+import { Plus, Trash2, Calendar as CalendarIcon, Save, ArrowLeft, MapPin, CheckCircle } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/admin/tickets/events')({
@@ -23,6 +23,7 @@ function EventsAdmin() {
     location: '',
     image: '',
     published: false,
+    finished: false,
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,7 +39,8 @@ function EventsAdmin() {
         date: '', 
         location: '', 
         image: '', 
-        published: false 
+        published: false,
+        finished: false
       })
       await router.invalidate()
     } catch (err) {
@@ -58,6 +60,16 @@ function EventsAdmin() {
         console.error(err)
         alert('Kunde inte radera event.')
       }
+    }
+  }
+
+  const handleToggleFinished = async (id: number, currentStatus: boolean) => {
+    try {
+      await updateEventStatusFn({ data: { eventId: id, finished: !currentStatus } })
+      await router.invalidate()
+    } catch (err) {
+      console.error(err)
+      alert('Kunde inte uppdatera eventets status.')
     }
   }
 
@@ -148,6 +160,17 @@ function EventsAdmin() {
               />
               <label htmlFor="published" className="text-sm text-muted-foreground">Publicera direkt</label>
             </div>
+            
+            <div className="flex items-center gap-3">
+              <input 
+                type="checkbox" 
+                id="finished"
+                checked={formData.finished}
+                onChange={(e) => setFormData(prev => ({ ...prev, finished: e.target.checked }))}
+                className="accent-primary w-4 h-4"
+              />
+              <label htmlFor="finished" className="text-sm text-muted-foreground">Markera som avslutat (för data-rensning)</label>
+            </div>
 
             <button 
               type="submit" 
@@ -176,6 +199,11 @@ function EventsAdmin() {
                     ) : (
                       <span className="text-[9px] bg-secondary text-muted-foreground px-2 py-0.5 uppercase font-bold tracking-wider">Utkast</span>
                     )}
+                    {event.finished && (
+                      <span className="text-[9px] bg-blue-100 text-blue-700 px-2 py-0.5 uppercase font-bold tracking-wider flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" /> Avslutat
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
                     <span className="flex items-center gap-1">
@@ -193,12 +221,27 @@ function EventsAdmin() {
                   )}
                 </div>
               </div>
-              <button 
-                onClick={() => handleDelete(event.id)}
-                className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all ml-4 opacity-0 group-hover:opacity-100"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => handleToggleFinished(event.id, event.finished)}
+                  className={`p-2 transition-all ml-4 flex items-center gap-1 text-xs uppercase tracking-wider font-medium ${
+                    event.finished 
+                      ? 'text-blue-600 hover:text-blue-800 hover:bg-blue-50' 
+                      : 'text-muted-foreground hover:text-blue-600 hover:bg-blue-50'
+                  }`}
+                  title={event.finished ? "Markera som pågående" : "Markera som avslutat"}
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  {event.finished ? 'Avslutat' : 'Markera Avslutat'}
+                </button>
+                <button 
+                  onClick={() => handleDelete(event.id)}
+                  className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all opacity-0 group-hover:opacity-100"
+                  title="Radera"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           ))}
           {events.length === 0 && (

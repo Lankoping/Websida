@@ -2,7 +2,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '../db/runtime'
 import { tickets, posts, ticketTypes, events, users } from '../db/schema'
-import { eq, and, lt } from 'drizzle-orm'
+import { eq, and, lt, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { getCookie } from '@tanstack/react-start/server'
 import { nanoid } from 'nanoid'
@@ -31,6 +31,7 @@ export const createEventFn = createServerFn({ method: "POST" })
       location: z.string().optional(),
       image: z.string().optional(),
       published: z.boolean().default(false),
+      finished: z.boolean().default(false),
     }).parse(data)
   )
   .handler(async ({ data }) => {
@@ -48,6 +49,34 @@ export const createEventFn = createServerFn({ method: "POST" })
       entityType: 'event',
       entityId: result[0].id,
       details: { title: result[0].title },
+    })
+
+    return result[0]
+  })
+
+export const updateEventStatusFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({
+      eventId: z.number(),
+      finished: z.boolean(),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const admin = await checkAdmin()
+    const db = await getDb()
+    
+    const result = await db.update(events)
+      .set({ finished: data.finished, updatedAt: new Date() })
+      .where(eq(events.id, data.eventId))
+      .returning()
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'event.status.update',
+      entityType: 'event',
+      entityId: data.eventId,
+      details: { finished: data.finished },
     })
 
     return result[0]
@@ -395,16 +424,26 @@ export const cleanupOldTicketsFn = createServerFn({ method: "POST" })
     const admin = await requireStaffUser()
     const db = await getDb()
     
-    // Anonymize tickets older than 1 year
-    const oneYearAgo = new Date()
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+    // Anonymize tickets 30 days after the event has ended AND the event is marked as finished
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
     
-    await db.update(tickets)
-      .set({ 
-        participantName: 'Anonymized', 
-        participantEmail: 'anonymized@example.com' 
-      })
-      .where(and(eq(tickets.status, 'used'), lt(tickets.createdAt, oneYearAgo)))
+    // Find events that are finished AND older than 30 days
+    const oldEvents = await db.select({ id: events.id })
+      .from(events)
+      .where(and(eq(events.finished, true), lt(events.date, thirtyDaysAgo)))
+      
+    const oldEventIds = oldEvents.map(e => e.id)
+
+    if (oldEventIds.length > 0) {
+      const eventIdsList = oldEventIds.join(',')
+      await db.execute(sql`
+        UPDATE tickets 
+        SET participant_name = 'Anonymized', participant_email = 'anonymized@example.com'
+        WHERE event_id IN (${sql.raw(eventIdsList)}) 
+        AND participant_name != 'Anonymized'
+      `)
+    }
       
     await writeActivityLog({
       actorUserId: admin.id,

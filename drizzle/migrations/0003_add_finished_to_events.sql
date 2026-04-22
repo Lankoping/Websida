@@ -1,0 +1,1 @@
+ALTER TABLE "events" ADD COLUMN "finished" boolean DEFAULT false NOT NULL;

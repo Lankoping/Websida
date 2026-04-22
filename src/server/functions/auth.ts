@@ -1,7 +1,7 @@
 'use server'
 import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '../db/runtime'
-import { users, activityLogs, posts, tickets } from '../db/schema'
+import { users, activityLogs, tickets } from '../db/schema'
 import { eq, inArray, or } from 'drizzle-orm'
 import { z } from 'zod'
 import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
@@ -236,9 +236,6 @@ export const deleteUserFn = createServerFn({ method: "POST" })
     }
 
     // Null out all foreign key references to this user before deletion
-
-    // Posts authored by this user
-    await db.update(posts).set({ authorId: null }).where(eq(posts.authorId, data.userId))
 
     // Tickets issued or scanned by this user
     await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))

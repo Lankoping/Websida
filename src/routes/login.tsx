@@ -16,9 +16,9 @@ function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await loginFn({ data: { email, passwordHash: password } }) // Simplified hash
+      const res = await loginFn({ data: { email, passwordHash: password } })
       if (res.success) {
-        router.navigate({ to: '/admin' }) // Use router.navigate instead of window.location.href
+        router.navigate({ to: '/admin' })
       }
     } catch (err: any) {
       console.error('Login error:', err)
@@ -27,8 +27,8 @@ function Login() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
-      <div className="w-full max-w-md p-8 bg-card border border-border rounded">
+    <div className="flex items-center justify-center min-h-screen bg-background text-foreground p-6">
+      <div className="w-full max-w-sm bg-card border border-border rounded-lg shadow-sm p-8">
         <div className="text-center mb-8">
           <h1 className="font-display text-4xl tracking-wide text-foreground mb-2">Inloggning</h1>
           <p className="text-xs text-muted-foreground tracking-widest uppercase">Lankoping Admin</p>
@@ -73,9 +73,9 @@ function Login() {
               required
             />
             <span>
-              Jag accepterar vår{' '}
+              Jag accepterar vår {' '}
               <a href="/privacy" className="text-primary hover:underline transition-colors">datapolicy</a>
-              {' '}och användarvillkor.
+              {' '} och användarvillkor.
             </span>
           </label>
 

@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { getEventsFn, createEventFn, deleteEventFn, updateEventStatusFn } from '../../../../server/functions/tickets'
+import { getEventsFn, createEventFn, deleteEventFn, updateEventStatusFn } from '../../../server/functions/tickets'
 import { useState } from 'react'
 import { Plus, Trash2, Calendar as CalendarIcon, Save, ArrowLeft, MapPin, CheckCircle } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'

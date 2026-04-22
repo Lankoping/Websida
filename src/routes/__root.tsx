@@ -11,6 +11,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from 'next-themes'
 import { CookieBanner } from '@/components/cookie-banner'
+import { SidebarProvider } from '@/components/ui/sidebar'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -101,7 +102,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
           <HtmlLangSync />
-          {children}
+          <SidebarProvider>
+            {children}
+          </SidebarProvider>
           <CookieBanner />
           <Toaster />
         </ThemeProvider>

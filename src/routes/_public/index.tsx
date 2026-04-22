@@ -1,126 +1,135 @@
-import { ComingSoon } from '@/components/coming-soon'
-import { createFileRoute } from '@tanstack/react-router'
-import { getPostsFn } from '../../server/functions/posts'
-
-export const Route = createFileRoute('/_public/')({
-  loader: async () => {
-    try {
-      const [blogs, news] = await Promise.all([
-        getPostsFn({ data: 'blog' }),
-        getPostsFn({ data: 'news' }),
-      ])
-
-      return {
-        latestBlog: blogs[0] ?? null,
-        latestNews: news[0] ?? null,
-      }
-    } catch (error) {
-      console.error('[v0] Error loading homepage data:', error)
-      return {
-        latestBlog: null,
-        latestNews: null,
-      }
-    }
-  },
-  component: Index,
-})
-
-function Index() {
-  const { latestBlog, latestNews } = Route.useLoaderData()
-
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <ComingSoon locale="sv" />
-
-      <section className="w-full bg-background border-t border-border">
-        <div className="mx-auto max-w-6xl px-6 py-24 flex flex-col items-center justify-center text-center">
-          <div className="group max-w-2xl text-center flex flex-col items-center">
-            <div className="relative w-full h-64 overflow-hidden rounded-lg mb-8">
-              <img src="https://www.interkultur.com/fileadmin/_processed_/0/2/csm_N-1-20220616-NicoleOlssen_37fb01bd34.jpg" alt="Strykjärnet Norrköping" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20"></div>
-            </div>
-            <h3 className="font-bold text-2xl tracking-wider mb-4 text-foreground">NORRKÖPING</h3>
-            <p className="text-muted-foreground text-lg leading-relaxed">Vårt första event kommer att hållas i Norrköping, Östergötland med modern utrustning och snabbt internet.</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="w-full bg-background border-t border-border">
-        <div className="mx-auto max-w-6xl px-6 py-20 flex flex-col items-center justify-center">
-          <div className="mb-12 text-center flex flex-col items-center">
-            <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Senaste</p>
-            <h2 className="font-bold text-3xl md:text-4xl text-foreground">Blogg & Nyheter</h2>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 w-full max-w-4xl">
-            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/20 flex flex-col items-center">
-              <div className="flex items-center gap-3 mb-6 justify-center">
-                <div className="w-2 h-2 bg-primary" />
-                <span className="text-xs font-medium tracking-widest text-primary uppercase">Blogg</span>
-              </div>
-              {latestBlog ? (
-                <>
-                  <h3 className="font-bold text-xl md:text-2xl text-foreground mb-3 text-center">
-                    {latestBlog.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4 text-center">
-                    {latestBlog.createdAt ? new Date(latestBlog.createdAt).toLocaleDateString('sv-SE') : ''}
-                  </p>
-                  <p className="text-muted-foreground leading-relaxed mb-6 text-center">
-                    {latestBlog.excerpt || 'Läs senaste blogginlägget.'}
-                  </p>
-                  <div className="flex justify-center">
-                    <a 
-                      className="inline-flex items-center text-sm font-medium text-primary hover:text-foreground transition-colors" 
-                      href={`/blogs/${latestBlog.slug}`}
-                    >
-                      Läs mer
-                      <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </a>
-                  </div>
-                </>
-              ) : (
-                <p className="text-muted-foreground text-center">Ingen blogg publicerad än.</p>
-              )}
-            </article>
-
-            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/20 flex flex-col items-center">
-              <div className="flex items-center gap-3 mb-6 justify-center">
-                <div className="w-2 h-2 bg-primary" />
-                <span className="text-xs font-medium tracking-widest text-primary uppercase">Nyhet</span>
-              </div>
-              {latestNews ? (
-                <>
-                  <h3 className="font-bold text-xl md:text-2xl text-foreground mb-3 text-center">
-                    {latestNews.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4 text-center">
-                    {latestNews.createdAt ? new Date(latestNews.createdAt).toLocaleDateString('sv-SE') : ''}
-                  </p>
-                  <p className="text-muted-foreground leading-relaxed mb-6 text-center">
-                    {latestNews.excerpt || 'Läs senaste nyheten.'}
-                  </p>
-                  <div className="flex justify-center">
-                    <a 
-                      className="inline-flex items-center text-sm font-medium text-primary hover:text-foreground transition-colors" 
-                      href={`/nyheter/${latestNews.slug}`}
-                    >
-                      Läs mer
-                      <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </a>
-                  </div>
-                </>
-              ) : (
-                <p className="text-muted-foreground text-center">Ingen nyhet publicerad än.</p>
-              )}
-            </article>
-          </div>
-        </div>
-      </section>
-    </div>
-  )
-}
+aW1wb3J0IHsgQ29taW5nU29vbiB9IGZyb20gJ0AvY29tcG9uZW50cy9jb21p
+bmctc29vbicKaW1wb3J0IHsgY3JlYXRlRmlsZVJvdXRlIH0gZnJvbSAnQHRh
+bnN0YWNrL3JlYWN0LXJvdXRlcicKaW1wb3J0IHsgZ2V0UG9zdHNGbiB9IGZy
+b20gJy4uLy4uL3NlcnZlci9mdW5jdGlvbnMvcG9zdHMnCgpleHBvcnQgY29u
+c3QgUm91dGUgPSBjcmVhdGVGaWxlUm91dGUoJy9fcHVibGljLycpKHsKICBs
+b2FkZXI6IGFzeW5jICgpID0+IHsKICAgIHRyeSB7CiAgICAgIGNvbnN0IFti
+bG9ncywgbmV3c10gPSBhd2FpdCBQcm9taXNlLmFsbChbCiAgICAgICAgZ2V0
+UG9zdHNGbih7IGRhdGE6ICdibG9nJyB9KSwKICAgICAgICBnZXRQb3N0c0Zu
+KHsgZGF0YTogJ25ld3MnIH0pLAogICAgICBdKQoKICAgICAgcmV0dXJuIHsK
+ICAgICAgICBsYXRlc3RCbG9nOiBibG9nc1swXSA/PyBudWxsLAogICAgICAg
+IGxhdGVzdE5ld3M6IG5ld3NbMF0gPz8gbnVsbCwKICAgICAgfQogICAgfSBj
+YXRjaCAoZXJyb3IpIHsKICAgICAgY29uc29sZS5lcnJvcignW3YwXSBFcnJv
+ciBsb2FkaW5nIGhvbWVwYWdlIGRhdGE6JywgZXJyb3IpCiAgICAgIHJldHVy
+biB7CiAgICAgICAgbGF0ZXN0QmxvZzogbnVsbCwKICAgICAgICBsYXRlc3RO
+ZXdzOiBudWxsLAogICAgICB9CiAgICB9CiAgfSwKICBjb21wb25lbnQ6IElu
+ZGV4LAp9KQoKZnVuY3Rpb24gSW5kZXgoKSB7CiAgY29uc3QgeyBsYXRlc3RC
+bG9nLCBsYXRlc3ROZXdzIH0gPSBSb3V0ZS51c2VMb2FkZXJEYXRhKCkKCiAg
+cmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGZsZXgtY29sIGl0
+ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciB3LWZ1bGwiPgogICAgICA8Q29t
+aW5nU29vbiBsb2NhbGU9InN2IiAvPgoKICAgICAgPHNlY3Rpb24gY2xhc3NO
+YW1lPSJ3LWZ1bGwgYmctYmFja2dyb3VuZCBib3JkZXItdCBib3JkZXItYm9y
+ZGVyIj4KICAgICAgICA8ZGl2IGNsYXNzTmFtZT0ibXgtYXV0byBtYXgtdy02
+eGwgcHgtNiBweS0yNCBmbGV4IGZsZXgtY29sIGl0ZW1zLWNlbnRlciBqdXN0
+aWZ5LWNlbnRlciB0ZXh0LWNlbnRlciI+CiAgICAgICAgICA8ZGl2IGNsYXNz
+TmFtZT0iZ3JvdXAgbWF4LXctMnhsIHRleHQtY2VudGVyIGZsZXggZmxleC1j
+b2wgaXRlbXMtY2VudGVyIj4KICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9
+InJlbGF0aXZlIHctZnVsbCBoLTY0IG92ZXJmbG93LWhpZGRlbiByb3VuZGVk
+LWxnIG1iLTgiPgogICAgICAgICAgICAgIDxpbWcgc3JjPSJodHRwczovL3d3
+dy5pbnRlcmt1bHR1ci5jb20vZmlsZWFkbWluL19wcm9jZXNzZWRfLzAvMi9j
+c21fTi0xLTIwMjIwNjE2LU5pY29sZU9sc3Nlbl8zN2ZiMDFiZDM0LmpwZyIg
+YWx0PSJTdHJ5a2rDpHJuZXQgTm9ycmvDtnBpbmciIGNsYXNzTmFtZT0idy1m
+dWxsIGgtZnVsbCBvYmplY3QtY292ZXIiIC8+CiAgICAgICAgICAgICAgPGRp
+diBjbGFzc05hbWU9ImFic29sdXRlIGluc2V0LTAgZmxleCBpdGVtcy1jZW50
+ZXIganVzdGlmeS1jZW50ZXIgYmctYmxhY2svMjAiPjwvZGl2PgogICAgICAg
+ICAgICA8L2Rpdj4KICAgICAgICAgICAgPGgzIGNsYXNzTmFtZT0iZm9udC1i
+b2xkIHRleHQtMnhsIHRyYWNraW5nLXdpZGVyIG1iLTQgdGV4dC1mb3JlZ3Jv
+dW5kIj5OT1JSS8OWUElORzwvaDM+CiAgICAgICAgICAgIDxwIGNsYXNzTmFt
+ZT0idGV4dC1tdXRlZC1mb3JlZ3JvdW5kIHRleHQtbGcgbGVhZGluZy1yZWxh
+eGVkIj5Ww6VydCBmw7Zyc3RhIGV2ZW50IGtvbW1lciBhdHQgaMOlbGxhcyBp
+IE5vcnJrw7ZwaW5nLCDDlnN0ZXJnw7Z0bGFuZCBtZWQgbW9kZXJuIHV0cnVz
+dG5pbmcgb2NoIHNuYWJidCBpbnRlcm5ldC48L3A+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgPC9zZWN0aW9uPgoKICAg
+ICAgPHNlY3Rpb24gY2xhc3NOYW1lPSJ3LWZ1bGwgYmctYmFja2dyb3VuZCBi
+b3JkZXItdCBib3JkZXItYm9yZGVyIj4KICAgICAgICA8ZGl2IGNsYXNzTmFt
+ZT0ibXgtYXV0byBtYXgtdy02eGwgcHgtNiBweS0yMCBmbGV4IGZsZXgtY29s
+IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciI+CiAgICAgICAgICA8ZGl2
+IGNsYXNzTmFtZT0ibWItMTIgdGV4dC1jZW50ZXIgZmxleCBmbGV4LWNvbCBp
+dGVtcy1jZW50ZXIiPgogICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQt
+c20gZm9udC1tZWRpdW0gdHJhY2tpbmctd2lkZXN0IHRleHQtcHJpbWFyeSB1
+cHBlcmNhc2UgbWItMyI+U2VuYXN0ZTwvcD4KICAgICAgICAgICAgPGgyIGNs
+YXNzTmFtZT0iZm9udC1ib2xkIHRleHQtM3hsIG1kOnRleHQtNHhsIHRleHQt
+Zm9yZWdyb3VuZCI+QmxvZ2cgJiBOeWhldGVyPC9oMj4KICAgICAgICAgIDwv
+ZGl2PgoKICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJncmlkIGdhcC04IG1k
+OmdyaWQtY29scy0yIHctZnVsbCBtYXgtdy00eGwiPgogICAgICAgICAgICA8
+YXJ0aWNsZSBjbGFzc05hbWU9Imdyb3VwIGJvcmRlciBib3JkZXItYm9yZGVy
+IGJnLWNhcmQgcC04IHRyYW5zaXRpb24tYWxsIGhvdmVyOmJvcmRlci1wcmlt
+YXJ5LzIwIGZsZXggZmxleC1jb2wgaXRlbXMtY2VudGVyIj4KICAgICAgICAg
+ICAgICA8ZGl2IGNsYXNzTmFtZT0iZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTMg
+bWItNiBqdXN0aWZ5LWNlbnRlciI+CiAgICAgICAgICAgICAgICA8ZGl2IGNs
+YXNzTmFtZT0idy0yIGgtMiBiZy1wcmltYXJ5IiAvPgogICAgICAgICAgICAg
+ICAgPHNwYW4gY2xhc3NOYW1lPSJ0ZXh0LXhzIGZvbnQtbWVkaXVtIHRyYWNr
+aW5nLXdpZGVzdCB0ZXh0LXByaW1hcnkgdXBwZXJjYXNlIj5CbG9nZzwvc3Bh
+bj4KICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICB7bGF0ZXN0
+QmxvZyA/ICgKICAgICAgICAgICAgICAgIDw+CiAgICAgICAgICAgICAgICAg
+IDxoMyBjbGFzc05hbWU9ImZvbnQtYm9sZCB0ZXh0LXhsIG1kOnRleHQtMnhs
+IHRleHQtZm9yZWdyb3VuZCBtYi0zIHRleHQtY2VudGVyIj4KICAgICAgICAg
+ICAgICAgICAgICB7bGF0ZXN0QmxvZy50aXRsZX0KICAgICAgICAgICAgICAg
+ICAgPC9oMz4KICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0
+LXNtIHRleHQtbXV0ZWQtZm9yZWdyb3VuZCBtYi00IHRleHQtY2VudGVyIj4K
+ICAgICAgICAgICAgICAgICAgICB7bGF0ZXN0QmxvZy5jcmVhdGVkQXQgPyBu
+ZXcgRGF0ZShsYXRlc3RCbG9nLmNyZWF0ZWRBdCkudG9Mb2NhbGVEYXRlU3Ry
+aW5nKCdzdi1TRScpIDogJyd9CiAgICAgICAgICAgICAgICAgIDwvcD4KICAg
+ICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPSJ0ZXh0LW11dGVkLWZvcmVn
+cm91bmQgbGVhZGluZy1yZWxheGVkIG1iLTYgdGV4dC1jZW50ZXIiPgogICAg
+ICAgICAgICAgICAgICAgIHtsYXRlc3RCbG9nLmV4Y2VycHQgfHwgJ0zDpHMg
+c2VuYXN0ZSBibG9nZ2lubMOkZ2dldC4nfQogICAgICAgICAgICAgICAgICA8
+L3A+CiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGp1
+c3RpZnktY2VudGVyIj4KICAgICAgICAgICAgICAgICAgICA8YSAKICAgICAg
+ICAgICAgICAgICAgICAgIGNsYXNzTmFtZT0iaW5saW5lLWZsZXggaXRlbXMt
+Y2VudGVyIHRleHQtc20gZm9udC1tZWRpdW0gdGV4dC1wcmltYXJ5IGhvdmVy
+OnRleHQtZm9yZWdyb3VuZCB0cmFuc2l0aW9uLWNvbG9ycyIgCiAgICAgICAg
+ICAgICAgICAgICAgICBocmVmPXtgL2Jsb2dzLyR7bGF0ZXN0QmxvZy5zbHVn
+fWB9CiAgICAgICAgICAgICAgICAgICAgPgogICAgICAgICAgICAgICAgICAg
+ICAgTMOkcyBtZXIKICAgICAgICAgICAgICAgICAgICAgIDxzdmcgY2xhc3NO
+YW1lPSJ3LTQgaC00IG1sLTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iY3VycmVu
+dENvbG9yIiB2aWV3Qm94PSIwIDAgMjQgMjQiPgogICAgICAgICAgICAgICAg
+ICAgICAgICA8cGF0aCBzdHJva2VMaW5lY2FwPSJyb3VuZCIgc3Ryb2tlTGlu
+ZWpvaW49InJvdW5kIiBzdHJva2VXaWR0aD17Mn0gZD0iTTE3IDhsNCA0bTAg
+MGwtNCA0bTQtNEgzIiAvPgogICAgICAgICAgICAgICAgICAgICAgPC9zdmc+
+CiAgICAgICAgICAgICAgICAgICAgPC9hPgogICAgICAgICAgICAgICAgICA8
+L2Rpdj4KICAgICAgICAgICAgICAgIDwvPgogICAgICAgICAgICAgICkgOiAo
+CiAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRleHQtbXV0ZWQtZm9y
+ZWdyb3VuZCB0ZXh0LWNlbnRlciI+SW5nZW4gYmxvZ2cgcHVibGljZXJhZCDD
+pG4uPC9wPgogICAgICAgICAgICAgICl9CiAgICAgICAgICAgIDwvYXJ0aWNs
+ZT4KCiAgICAgICAgICAgIDxhcnRpY2xlIGNsYXNzTmFtZT0iZ3JvdXAgYm9y
+ZGVyIGJvcmRlci1ib3JkZXIgYmctY2FyZCBwLTggdHJhbnNpdGlvbi1hbGwg
+aG92ZXI6Ym9yZGVyLXByaW1hcnkvMjAgZmxleCBmbGV4LWNvbCBpdGVtcy1j
+ZW50ZXIiPgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJmbGV4IGl0
+ZW1zLWNlbnRlciBnYXAtMyBtYi02IGp1c3RpZnktY2VudGVyIj4KICAgICAg
+ICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJ3LTIgaC0yIGJnLXByaW1hcnki
+IC8+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9InRleHQteHMg
+Zm9udC1tZWRpdW0gdHJhY2tpbmctd2lkZXN0IHRleHQtcHJpbWFyeSB1cHBl
+cmNhc2UiPk55aGV0PC9zcGFuPgogICAgICAgICAgICAgIDwvZGl2PgogICAg
+ICAgICAgICAgIHtsYXRlc3ROZXdzID8gKAogICAgICAgICAgICAgICAgPD4K
+ICAgICAgICAgICAgICAgICAgPGgzIGNsYXNzTmFtZT0iZm9udC1ib2xkIHRl
+eHQteGwgbWQ6dGV4dC0yeGwgdGV4dC1mb3JlZ3JvdW5kIG1iLTMgdGV4dC1j
+ZW50ZXIiPgogICAgICAgICAgICAgICAgICAgIHtsYXRlc3ROZXdzLnRpdGxl
+fQogICAgICAgICAgICAgICAgICA8L2gzPgogICAgICAgICAgICAgICAgICA8
+cCBjbGFzc05hbWU9InRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kIG1i
+LTQgdGV4dC1jZW50ZXIiPgogICAgICAgICAgICAgICAgICAgIHtsYXRlc3RO
+ZXdzLmNyZWF0ZWRBdCA/IG5ldyBEYXRlKGxhdGVzdE5ld3MuY3JlYXRlZEF0
+KS50b0xvY2FsZURhdGVTdHJpbmcoJ3N2LVNFJykgOiAnJ30KICAgICAgICAg
+ICAgICAgICAgPC9wPgogICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9
+InRleHQtbXV0ZWQtZm9yZWdyb3VuZCBsZWFkaW5nLXJlbGF4ZWQgbWItNiB0
+ZXh0LWNlbnRlciI+CiAgICAgICAgICAgICAgICAgICAge2xhdGVzdE5ld3Mu
+ZXhjZXJwdCB8fCAnTMOkcyBzZW5hc3RlIG55aGV0ZW4uJ30KICAgICAgICAg
+ICAgICAgICAgPC9wPgogICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFt
+ZT0iZmxleCBqdXN0aWZ5LWNlbnRlciI+CiAgICAgICAgICAgICAgICAgICAg
+PGEgCiAgICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9ImlubGluZS1m
+bGV4IGl0ZW1zLWNlbnRlciB0ZXh0LXNtIGZvbnQtbWVkaXVtIHRleHQtcHJp
+bWFyeSBob3Zlcjp0ZXh0LWZvcmVncm91bmQgdHJhbnNpdGlvbi1jb2xvcnMi
+IAogICAgICAgICAgICAgICAgICAgICAgaHJlZj17YC9ueWhldGVyLyR7bGF0
+ZXN0TmV3cy5zbHVnfWB9CiAgICAgICAgICAgICAgICAgICAgPgogICAgICAg
+ICAgICAgICAgICAgICAgTMOkcyBtZXIKICAgICAgICAgICAgICAgICAgICAg
+IDxzdmcgY2xhc3NOYW1lPSJ3LTQgaC00IG1sLTIiIGZpbGw9Im5vbmUiIHN0
+cm9rZT0iY3VycmVudENvbG9yIiB2aWV3Qm94PSIwIDAgMjQgMjQiPgogICAg
+ICAgICAgICAgICAgICAgICAgICA8cGF0aCBzdHJva2VMaW5lY2FwPSJyb3Vu
+ZCIgc3Ryb2tlTGluZWpvaW49InJvdW5kIiBzdHJva2VXaWR0aD17Mn0gZD0i
+TTE3IDhsNCA0bTAgMGwtNCA0bTQtNEgzIiAvPgogICAgICAgICAgICAgICAg
+ICAgICAgPC9zdmc+CiAgICAgICAgICAgICAgICAgICAgPC9hPgogICAgICAg
+ICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDwvPgogICAgICAg
+ICAgICAgICkgOiAoCiAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9InRl
+eHQtbXV0ZWQtZm9yZWdyb3VuZCB0ZXh0LWNlbnRlciI+SW5nZW4gbnloZXQg
+cHVibGljZXJhZCDDpG4uPC9wPgogICAgICAgICAgICAgICl9CiAgICAgICAg
+ICAgIDwvYXJ0aWNsZT4KICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2
+PgogICAgICA8L3NlY3Rpb24+CiAgICA8L2Rpdj4KICApCn0K

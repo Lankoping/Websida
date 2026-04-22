@@ -212,7 +212,6 @@ function AdminLayout() {
 
           {/* Navigation */}
           <nav className="flex-1 py-4 overflow-y-auto">
-            {/* Main Section */}
             <div className="mb-6">
               <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Huvudmeny</p>
               {isOrganizer && !isDemoTester && (
@@ -223,7 +222,6 @@ function AdminLayout() {
               )}
             </div>
 
-            {/* Content Management */}
             {isOrganizer && (
               <div className="mb-6">
                 <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Innehåll</p>
@@ -236,7 +234,6 @@ function AdminLayout() {
               </div>
             )}
 
-            {/* Management */}
             <div className="mb-6">
               <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Hantering</p>
               {isOrganizer && (
@@ -244,18 +241,16 @@ function AdminLayout() {
               )}
             </div>
 
-            {/* Events & Tickets */}
             <div className="mb-6">
               <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Event</p>
               <NavGroup label="Biljetter" icon={<Ticket className="w-5 h-5" />} defaultOpen={isTicketsPath}>
                 <SubNavItem href="/admin/tickets" label="Översikt" />
-                <SubNavItem href="/admin/tickets/events" label="Evenemang" />
+                <SubNavItem href="/tickets/events" label="Evenemang" />
                 <SubNavItem href="/admin/tickets/types" label="Biljetttyper" />
                 <SubNavItem href="/admin/tickets/new" label="Utfärda biljett" />
               </NavGroup>
             </div>
 
-            {/* System */}
             {isOrganizer && (
               <div className="mb-6">
                 <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">System</p>
@@ -269,7 +264,7 @@ function AdminLayout() {
             <div className="p-4 bg-secondary/50 rounded">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-display text-lg">
+                  <span className="text-primary-foreground font-display text-sm">
                     {(user.name || 'A').charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -301,9 +296,7 @@ function AdminLayout() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header */}
         <header className="sticky top-0 z-30 h-16 bg-card border-b border-border px-4 lg:px-6 flex items-center justify-between gap-4">
-          {/* Left: Mobile menu + Breadcrumb */}
           <div className="flex items-center gap-4">
             <button
               onClick={() => setMobileNavOpen(true)}
@@ -324,7 +317,6 @@ function AdminLayout() {
             </div>
           </div>
 
-          {/* Right: Actions */}
           <div className="flex items-center gap-3">
             <a
               href="/"
@@ -411,7 +403,6 @@ function AdminLayout() {
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="flex-1 p-4 lg:p-8 overflow-y-auto">
           <Outlet />
         </main>

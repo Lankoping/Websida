@@ -16,10 +16,14 @@ export const getDbStatsFn = createServerFn({ method: 'GET' })
       const tableStats: Record<string, number> = {}
 
       for (const table of tables) {
-        const result = await db.execute(sql.raw(`SELECT COUNT(*) as count FROM ${table}`))
-        const count = parseInt(result[0]?.count as string || '0', 10)
-        tableStats[table] = count
-        totalRows += count
+        try {
+          const result = await db.execute(sql.raw(`SELECT COUNT(*) as count FROM ${table}`))
+          const count = parseInt(result[0]?.count as string || '0', 10)
+          tableStats[table] = count
+          totalRows += count
+        } catch (e) {
+          tableStats[table] = 0
+        }
       }
 
       // Check migration status (basic check if __drizzle_migrations exists and has entries)
@@ -54,5 +58,48 @@ export const getDbStatsFn = createServerFn({ method: 'GET' })
         outOfSync: true,
         error: 'Kunde inte hämta databasstatistik'
       }
+    }
+  })
+
+export const runDeepScanFn = createServerFn({ method: 'POST' })
+  .handler(async () => {
+    await requireOrganizerUser()
+    const db = await getDb()
+    
+    try {
+      const expectedTables = ['users', 'events', 'tickets', 'ticket_types', 'activity_logs', 'password_reset_tokens']
+      const missingTables: string[] = []
+      
+      for (const table of expectedTables) {
+        try {
+          // Just try to select 1 row to see if the table exists
+          await db.execute(sql.raw(`SELECT 1 FROM ${table} LIMIT 1`))
+        } catch (e) {
+          missingTables.push(table)
+        }
+      }
+      
+      // Also check if the finished column exists on events
+      let missingFinishedColumn = false
+      try {
+        await db.execute(sql`SELECT finished FROM events LIMIT 1`)
+      } catch (e) {
+        missingFinishedColumn = true
+      }
+
+      const isOutOfSync = missingTables.length > 0 || missingFinishedColumn
+
+      return {
+        success: true,
+        isOutOfSync,
+        missingTables,
+        missingFinishedColumn,
+        message: isOutOfSync 
+          ? `Databasen är ur synk. Saknade tabeller: ${missingTables.join(', ') || 'Inga'}. Saknar 'finished' kolumn: ${missingFinishedColumn ? 'Ja' : 'Nej'}`
+          : 'Databasen är helt synkroniserad med schemat.'
+      }
+    } catch (error) {
+      console.error('Deep scan failed:', error)
+      throw new Error('Kunde inte genomföra djupskanning av databasen.')
     }
   })

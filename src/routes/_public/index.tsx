@@ -39,33 +39,6 @@ function Index() {
     <>
       <ComingSoon locale="sv" heroData={heroData} infoSectionsData={infoSectionsData} />
 
-      {/* Cities of Östergötland Section */}
-      <section className="bg-background border-t border-border">
-        <div className="mx-auto max-w-6xl px-6 py-20">
-          <div className="mb-12">
-            <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Upptäck</p>
-            <h2 className="font-display text-4xl md:text-5xl text-foreground">Städer i Östergötland</h2>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-1">
-            {/* Norrköping Card */}
-            <article className="group border border-border bg-card p-8 transition-all hover:border-primary/50">
-              <img 
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaoLCZsAIYEk4sJGANU9T5_zkxZBwWi5Fmcg&s" 
-                alt="Norrköping industrial landscape" 
-                className="w-full h-48 object-cover mb-6 rounded-sm" 
-              />
-              <h3 className="font-display text-2xl md:text-3xl text-foreground mb-3">
-                Norrk&ouml;ping
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Vi kör alla våra lan i norrköping när området
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
       {/* Latest Content Section */}
       <section className="bg-background border-t border-border">
         <div className="mx-auto max-w-6xl px-6 py-20">

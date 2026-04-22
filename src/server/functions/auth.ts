@@ -262,6 +262,12 @@ export const deleteUserFn = createServerFn({ method: "POST" })
         // Ignore if table doesn't exist
       }
 
+      try {
+        await db.execute(sql`DELETE FROM agreements WHERE created_by = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
+
       // Activity logs - delete logs where this user was the actor using the dedicated function
       await deleteActivityLogsForUser(data.userId)
 

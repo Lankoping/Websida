@@ -1,23 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft, ShieldAlert, MessageSquareText } from 'lucide-react'
-import { getPageBySlugFn } from '../../server/functions/cms'
 
 export const Route = createFileRoute('/_public/rules')({
-  loader: async () => {
-    try {
-      const rulesPage = await getPageBySlugFn({ data: 'rules' })
-      return { rulesPage }
-    } catch (error) {
-      console.error('[v0] Error loading rules page:', error)
-      return { rulesPage: null }
-    }
-  },
   component: RulesPage,
 })
 
 function RulesPage() {
-  const { rulesPage } = Route.useLoaderData()
-
   // Fallback content if database is empty
   const fallbackEventRules = [
     'Ingen alkohol eller droger. Det är inte tillåtet att ta med, använda eller sälja droger eller andra berusningsmedel under eventet.',

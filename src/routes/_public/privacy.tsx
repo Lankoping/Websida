@@ -1,23 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft, ShieldCheck, Info, Clock } from 'lucide-react'
-import { getPageBySlugFn } from '../../server/functions/cms'
 
 export const Route = createFileRoute('/_public/privacy')({
-  loader: async () => {
-    try {
-      const privacyPage = await getPageBySlugFn({ data: 'privacy' })
-      return { privacyPage }
-    } catch (error) {
-      console.error('[v0] Error loading privacy page:', error)
-      return { privacyPage: null }
-    }
-  },
   component: PrivacyPage,
 })
 
 function PrivacyPage() {
-  const { privacyPage } = Route.useLoaderData()
-
   const collectionItems = [
     { 
       title: 'E-postadress', 
@@ -69,7 +57,7 @@ function PrivacyPage() {
           <div className="space-y-4">
             {collectionItems.map((item) => (
               <div 
-                key={item.id || item.title} 
+                key={item.title} 
                 className="flex gap-4 p-4 border border-border bg-card hover:border-primary/20 transition-colors"
               >
                 <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-secondary">

@@ -1,33 +1,7 @@
 'use client'
 
 import { Link } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
-import { getHeroContentFn, getInfoSectionsFn } from '@/server/functions/cms'
 import * as Icons from 'lucide-react'
-
-// Map icon names to lucide-react components
-function getIconByName(iconName: string) {
-  const iconMap: Record<string, React.ComponentType<any>> = {
-    MapPin: Icons.MapPin,
-    Users: Icons.Users,
-    Gamepad2: Icons.Gamepad2,
-    Crown: Icons.Crown,
-    Code: Icons.Code,
-    Heart: Icons.Heart,
-    Star: Icons.Star,
-    Zap: Icons.Zap,
-    Shield: Icons.Shield,
-    Target: Icons.Target,
-    Trophy: Icons.Trophy,
-    Flame: Icons.Flame,
-  }
-  return iconMap[iconName] || null
-}
-
-interface ComingSoonProps {
-  heroData?: Awaited<ReturnType<typeof getHeroContentFn>> | null
-  infoSectionsData?: Awaited<ReturnType<typeof getInfoSectionsFn>> | null
-}
 
 const fallbackContent = {
   eyebrow: 'LAN-Event i Norrkoping',
@@ -38,26 +12,14 @@ const fallbackContent = {
   teamLabel: 'Team',
   privacyLabel: 'Integritet',
   rights: 'Alla rättigheter förbehållna',
+  primaryButtonText: 'Regler',
+  primaryButtonLink: 'https://discord.gg/h8wuaqyBwT',
+  secondaryButtonText: '',
+  secondaryButtonLink: 'https://www.youtube.com/@LANKPNG',
 }
 
-export function ComingSoon({ heroData, infoSectionsData }: ComingSoonProps) {
-  const content = {
-    eyebrow: heroData?.eyebrow || fallbackContent.eyebrow,
-    headline: heroData?.headline || fallbackContent.headline,
-    tagline: heroData?.tagline || fallbackContent.tagline,
-    description: heroData?.description || fallbackContent.description,
-    primaryButtonText: heroData?.primaryButtonText || fallbackContent.rulesLabel,
-    primaryButtonLink: heroData?.primaryButtonLink || 'https://discord.gg/h8wuaqyBwT',
-    secondaryButtonText: heroData?.secondaryButtonText,
-    secondaryButtonLink: heroData?.secondaryButtonLink || 'https://www.youtube.com/@LANKPNG',
-    rulesLabel: fallbackContent.rulesLabel,
-    teamLabel: fallbackContent.teamLabel,
-    privacyLabel: fallbackContent.privacyLabel,
-    rights: fallbackContent.rights,
-  }
-  
-  const infoSections = infoSectionsData || []
-
+export function ComingSoon() {
+  const content = fallbackContent
   
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -140,34 +102,6 @@ export function ComingSoon({ heroData, infoSectionsData }: ComingSoonProps) {
             )}
           </div>
         </section>
-
-        {/* Info Section */}
-        {infoSections.length > 0 && (
-          <section className="border-t border-border">
-            <div className="max-w-6xl mx-auto px-6 py-24">
-              <div className="grid md:grid-cols-3 gap-12">
-                {infoSections.map((section) => {
-                  const IconComponent = getIconByName(section.icon)
-                  const title = section.title
-                  const desc = section.description
-                  
-                  return (
-                    <div key={section.id}>
-                      <div className="relative w-full h-48 overflow-hidden rounded-lg mb-4">
-                        <img src="https://images.unsplash.com/photo-1577717903323-b67e7c85859d?auto=format&fit=crop&q=80&w=800" alt="Norrköping" className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                          {IconComponent ? <IconComponent className="w-8 h-8 text-white" /> : null}
-                        </div>
-                      </div>
-                      <h3 className="font-bold text-lg tracking-wider mb-2 text-foreground">{title.toUpperCase()}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </section>
-        )}
       </main>
 
       {/* Footer - stays at bottom */}

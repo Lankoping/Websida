@@ -20,6 +20,11 @@ RUN rm -f src/routeTree.gen.ts && npm run build:docker
 FROM base AS release
 WORKDIR /app
 COPY --from=build /app/.output ./.output
+COPY --from=build /app/package.json ./
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/drizzle.config.ts ./
+COPY --from=build /app/drizzle ./drizzle
+COPY --from=build /app/scripts ./scripts
 
 # Expose the port the app runs on
 EXPOSE 3000

@@ -29,6 +29,24 @@ async function dropUnusedTables() {
   }
 }
 
+async function ensureRequiredTables() {
+  try {
+    const db = await getDb()
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS password_reset_tokens (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        token TEXT NOT NULL UNIQUE,
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL
+      )
+    `)
+    console.log('✅ Ensured required tables exist')
+  } catch (error) {
+    console.error('⚠️  Failed to ensure required tables', error)
+  }
+}
+
 export async function initializeServer() {
   if (initialized) {
     console.log('⚠️  Server already initialized, skipping...')
@@ -42,6 +60,7 @@ export async function initializeServer() {
   initialized = true
 
   await dropUnusedTables()
+  await ensureRequiredTables()
   await runRetentionPurge()
 
   if (!purgeInterval) {

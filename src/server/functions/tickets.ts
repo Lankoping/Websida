@@ -8,6 +8,7 @@ import { getCookie } from '@tanstack/react-start/server'
 import { nanoid } from 'nanoid'
 import { isDemoTesterUser, requireStaffUser } from '../lib/access'
 import { writeActivityLog } from './logs'
+import { sendEmail } from '../lib/email'
 
 async function checkAdmin() {
   const user = await requireStaffUser()
@@ -201,6 +202,44 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
     })
 
     return newTicket[0]
+  })
+
+export const resendTicketEmailFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => z.object({ ticketId: z.number() }).parse(data))
+  .handler(async ({ data }) => {
+    const admin = await checkAdmin()
+    const db = await getDb()
+    const ticket = await db.select().from(tickets).where(eq(tickets.id, data.ticketId)).limit(1)
+    if (!ticket[0]) throw new Error('Ticket not found')
+    
+    const event = await db.select().from(events).where(eq(events.id, ticket[0].eventId)).limit(1)
+    const eventTitle = event[0]?.title || 'Event'
+
+    const emailHtml = `
+      <p>Hej ${ticket[0].participantName}!</p>
+      <p>Här är din biljett för ${eventTitle}.</p>
+      <p>Biljettkod: <b>${ticket[0].ticketCode}</b></p>
+      <p><a href="${process.env.BASE_URL || 'https://lankoping.se'}/biljett/${ticket[0].ticketCode}">Visa biljett</a></p>
+    `
+
+    const sent = await sendEmail({
+      to: ticket[0].participantEmail,
+      subject: `Din biljett för ${eventTitle}`,
+      text: `Hej ${ticket[0].participantName}! Din biljettkod för ${eventTitle} är ${ticket[0].ticketCode}.`,
+      html: emailHtml,
+    })
+
+    if (!sent) throw new Error('Failed to send email')
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.email.resend',
+      entityType: 'ticket',
+      entityId: ticket[0].id,
+    })
+
+    return { success: true }
   })
 
 export const updateTicketStatusFn = createServerFn({ method: "POST" })

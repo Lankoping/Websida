@@ -2,7 +2,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '../db/runtime'
 import { users, activityLogs, tickets, passwordResetTokens } from '../db/schema'
-import { eq, inArray, or, sql } from 'drizzle-orm'
+import { eq, inArray, and, gte, or, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
 import { randomBytes } from 'node:crypto'
@@ -308,6 +308,53 @@ export const sendResetLinkFn = createServerFn({ method: "POST" })
     }
 
     return { success: true, resetLink }
+  })
+
+export const resetPasswordWithTokenFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({
+      userId: z.number(),
+      token: z.string(),
+      newPassword: z.string().min(1),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const db = await getDb()
+
+    const tokenRecord = await db
+      .select()
+      .from(passwordResetTokens)
+      .where(
+        and(
+          eq(passwordResetTokens.userId, data.userId),
+          eq(passwordResetTokens.token, data.token),
+          gte(passwordResetTokens.expiresAt, new Date())
+        )
+      )
+      .limit(1)
+
+    if (!tokenRecord[0]) {
+      throw new Error('Ogiltig eller utgången länk. Vänligen begär en ny länk.')
+    }
+
+    await db
+      .update(users)
+      .set({ passwordHash: hashPassword(data.newPassword) })
+      .where(eq(users.id, data.userId))
+
+    await db
+      .delete(passwordResetTokens)
+      .where(eq(passwordResetTokens.userId, data.userId))
+
+    await writeActivityLog({
+      actorUserId: data.userId,
+      actorRole: 'volunteer', // Fallback, we don't have the role here easily
+      action: 'user.password.reset_with_token',
+      entityType: 'user',
+      entityId: data.userId,
+    })
+
+    return { success: true }
   })
 
 export const changePasswordFn = createServerFn({ method: "POST" })

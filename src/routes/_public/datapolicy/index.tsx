@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft, ShieldCheck, Info, Clock } from 'lucide-react'
 
-export const Route = createFileRoute('/_public/privacy')({
+export const Route = createFileRoute('/_public/datapolicy/')({
   component: PrivacyPage,
 })
 
@@ -21,7 +21,6 @@ function PrivacyPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
       <header className="border-b border-border">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -32,7 +31,6 @@ function PrivacyPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-16">
-        {/* Page Header */}
         <div className="mb-16">
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Datapolicy</p>
           <h1 className="font-bold text-3xl md:text-5xl text-foreground mb-4">Integritet</h1>
@@ -41,7 +39,6 @@ function PrivacyPage() {
           </p>
         </div>
 
-        {/* Data Collection Section */}
         <section className="mb-16">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-10 h-10 flex items-center justify-center bg-secondary">
@@ -72,7 +69,6 @@ function PrivacyPage() {
           </div>
         </section>
 
-        {/* Why We Collect Section */}
         <section className="mb-16">
           <h2 className="font-display text-2xl text-foreground mb-6">Varför samlar vi in detta?</h2>
           <div className="space-y-4 text-muted-foreground leading-relaxed">
@@ -82,7 +78,6 @@ function PrivacyPage() {
           </div>
         </section>
 
-        {/* After Event Section */}
         <section className="mb-16">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 flex items-center justify-center bg-secondary">
@@ -94,23 +89,22 @@ function PrivacyPage() {
           <div className="space-y-6 text-muted-foreground leading-relaxed">
             <p>
               Om allt är grönt (inga regelbrott) så tas dina personuppgifter bort från våra servrar.
-              Det innebär att de lagras <strong className="text-foreground">max 30 dagar</strong> efter avslutat event.
+              Det innebär att de lagras <strong>max 30 dagar</strong> efter avslutat event.
             </p>
             
             <div className="p-6 border border-primary/30 bg-primary/5">
               <h3 className="font-bold text-lg text-primary mb-3">Information som vi inte tar bort</h3>
               <p className="text-foreground/80">
-                Vi tar bort all information såsom vi inte behöver behålla den. Exempelvis om du har brutit mot eventets regler så sparar vi den informationen.
+                Vi tar bort all information som vi inte behöver behålla den. Exempelvis om du har brutit mot eventets regler så sparar vi den informationen.
                 Detta betyder att du kan bli portad från framtida events.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Footer */}
         <footer className="pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
-            © 2026 Länköping.se — Din integritet är viktig för oss.
+            © 2026 Länköping.se • Din integritet är viktig för oss.
           </p>
         </footer>
       </main>

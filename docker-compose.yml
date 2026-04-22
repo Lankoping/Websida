@@ -14,6 +14,12 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - SMTP_FROM=${SMTP_FROM}
+      - BASE_URL=${BASE_URL}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.lankoping-web.rule=Host(`lankoping.se`) || Host(`www.lankoping.se`)"

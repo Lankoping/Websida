@@ -3,7 +3,6 @@ import { getSessionFn, logoutFn, updateProfileFn } from '../server/functions/aut
 import { useState } from 'react'
 import {
   LayoutDashboard,
-  FileText,
   Users,
   LogOut,
   Settings,
@@ -11,7 +10,6 @@ import {
   History,
   ChevronDown,
   ChevronRight,
-  Palette,
   Menu,
   X,
   ExternalLink
@@ -40,10 +38,7 @@ export const Route = createFileRoute('/admin')({
     const isDemoTester = Boolean((user as { isDemoTester?: boolean }).isDemoTester)
     const isContentManagementPath =
       location.pathname === '/admin' ||
-      location.pathname === '/admin/' ||
-      location.pathname === '/admin/posts' ||
-      location.pathname === '/admin/new' ||
-      location.pathname.startsWith('/admin/edit/')
+      location.pathname === '/admin/'
 
     if (isDemoTester && isContentManagementPath) {
       throw redirect({ to: '/admin/users' })
@@ -181,7 +176,6 @@ function AdminLayout() {
 
   const roleLabel = user.role === 'organizer' ? 'Organisatör' : 'Volontär'
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : ''
-  const isCmsPath = currentPath.startsWith('/admin/cms')
   const isTicketsPath = currentPath.startsWith('/admin/tickets')
 
   return (
@@ -218,23 +212,7 @@ function AdminLayout() {
               {isOrganizer && !isDemoTester && (
                 <NavItem href="/admin" label="Översikt" icon={<LayoutDashboard className="w-5 h-5" />} />
               )}
-              {isOrganizer && !isDemoTester && (
-                <NavItem href="/admin/posts" label="Inlägg" icon={<FileText className="w-5 h-5" />} />
-              )}
             </div>
-
-            {/* Content Management */}
-            {isOrganizer && (
-              <div className="mb-6">
-                <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Innehåll</p>
-                <NavGroup label="CMS" icon={<Palette className="w-5 h-5" />} defaultOpen={isCmsPath}>
-                  <SubNavItem href="/admin/cms" label="Översikt" />
-                  <SubNavItem href="/admin/cms/pages" label="Sidor" />
-                  <SubNavItem href="/admin/cms/navigation" label="Navigation" />
-                  <SubNavItem href="/admin/cms/settings" label="Inställningar" />
-                </NavGroup>
-              </div>
-            )}
 
             {/* Management */}
             <div className="mb-6">
@@ -317,7 +295,6 @@ function AdminLayout() {
               <span className="text-muted">/</span>
               <span className="text-foreground font-medium">
                 {currentPath === '/admin' || currentPath === '/admin/' ? 'Översikt' :
-                 currentPath.includes('/cms') ? 'CMS' :
                  currentPath.includes('/users') ? 'Användare' :
                  currentPath.includes('/tickets') ? 'Biljetter' : 'Sida'}
               </span>

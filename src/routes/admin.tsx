@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect, useRouter } from '@tanstack/react-router'
-import { getSessionFn, logoutFn, updateProfileFn } from '../server/functions/auth'
 import { useState } from 'react'
+import { getSessionFn, logoutFn, updateProfileFn } from '../server/functions/auth'
 import {
   LayoutDashboard,
   FileText,
@@ -71,7 +71,7 @@ function NavItem({ href, label, icon, badge, isActive }: NavItemProps) {
   return (
     <a
       href={href}
-      className={`flex items-center gap-3 px-3 py-2.5 text-sm transition-all duration-200 ${
+      className={`flex items-center gap-3 px-3 py-3 text-sm transition-all duration-200 ${
         active
           ? 'bg-primary/10 text-primary font-medium border-l-2 border-primary -ml-[2px] pl-[14px]'
           : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
@@ -104,7 +104,7 @@ function NavGroup({ label, icon, children, defaultOpen = false }: NavGroupProps)
     <div className="space-y-0.5">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all duration-200"
+        className="w-full flex items-center gap-3 px-3 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all duration-200"
       >
         <span className="w-5 h-5 text-muted-foreground">{icon}</span>
         <span className="flex-1 text-left">{label}</span>
@@ -286,14 +286,6 @@ function AdminLayout() {
         </div>
       </aside>
 
-      {/* Mobile Overlay */}
-      {mobileNavOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-sm lg:hidden"
-          onClick={() => setMobileNavOpen(false)}
-        />
-      )}
-
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         <header className="sticky top-0 z-30 h-16 bg-card border-b border-border px-4 lg:px-6 flex items-center justify-between gap-4">
@@ -326,85 +318,13 @@ function AdminLayout() {
               <ExternalLink className="w-4 h-4" />
               Visa sida
             </a>
-            
-            <div className="relative">
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 p-1.5 hover:bg-secondary/50 rounded transition-colors"
-              >
-                <div className="w-8 h-8 bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-display text-sm">
-                    {(user.name || 'A').charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              </button>
-
-              {userMenuOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-64 bg-card border border-border rounded shadow-lg py-2 z-50">
-                    <div className="px-4 py-3 border-b border-border">
-                      <p className="text-sm font-medium text-foreground">{user.name || 'Namnlös'}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
-                      <p className="text-xs text-muted-foreground mt-1">ID: {user.id}</p>
-                    </div>
-                    
-                    <div className="p-2">
-                      {editingName ? (
-                        <div className="px-2 py-2 space-y-2">
-                          <input
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full px-3 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-                            placeholder="Ange namn"
-                          />
-                          <div className="flex gap-2">
-                            <button
-                              onClick={handleSaveName}
-                              disabled={savingName}
-                              className="flex-1 px-3 py-1.5 text-xs font-medium text-primary-foreground bg-primary rounded hover:bg-primary/90 disabled:opacity-50"
-                            >
-                              {savingName ? 'Sparar...' : 'Spara'}
-                            </button>
-                            <button
-                              onClick={() => { setEditingName(false); setName(user.name || '') }}
-                              className="px-3 py-1.5 text-xs font-medium text-muted-foreground border border-border rounded hover:bg-secondary/50"
-                            >
-                              Avbryt
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => setEditingName(true)}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded transition-colors"
-                        >
-                          <Settings className="w-4 h-4" />
-                          Redigera profil
-                        </button>
-                      )}
-                    </div>
-                    
-                    <div className="border-t border-border p-2">
-                      <button
-                        onClick={handleLogout}
-                        disabled={loggingOut}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 rounded transition-colors disabled:opacity-50"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        {loggingOut ? 'Loggar ut...' : 'Logga ut'}
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
           </div>
         </header>
 
-        <main className="flex-1 p-4 lg:p-8 overflow-y-auto">
-          <Outlet />
+        <main className="flex-1 p-4 lg:p-8 overflow-y-auto w-full">
+          <div className="max-w-7xl mx-auto w-full">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

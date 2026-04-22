@@ -10,6 +10,7 @@ import appCss from '../styles.css?url'
 import type { QueryClient } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from 'next-themes'
+import { CookieConsent } from '@/components/cookie-consent'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -100,6 +101,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
           {children}
+          <CookieConsent />
           <Toaster />
         </ThemeProvider>
         <Scripts />

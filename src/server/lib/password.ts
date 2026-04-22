@@ -34,7 +34,7 @@ export function hashPassword(password: string) {
     N: SCRYPT_N,
     r: SCRYPT_R,
     p: SCRYPT_P,
-    maxmem: 128 * SCRYPT_N * SCRYPT_R * SCRYPT_P + KEY_LENGTH, // Fixed maxmem calculation
+    maxmem: 1024 * 1024 * 1024, // 1GB limit to prevent memory limit errors
   })
 
   return `scrypt$${SCRYPT_N}$${SCRYPT_R}$${SCRYPT_P}$${salt}$${digest.toString('base64')}`
@@ -52,7 +52,7 @@ export function verifyPassword(password: string, storedPassword: string) {
     N: parsed.n,
     r: parsed.r,
     p: parsed.p,
-    maxmem: 128 * parsed.n * parsed.r * parsed.p + KEY_LENGTH, // Fixed maxmem calculation
+    maxmem: 1024 * 1024 * 1024, // 1GB limit to prevent memory limit errors
   })
 
   const expected = Buffer.from(parsed.digestBase64, 'base64')

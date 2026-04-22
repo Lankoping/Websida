@@ -236,7 +236,7 @@ export const deleteUserFn = createServerFn({ method: "POST" })
     }
 
     try {
-      // Null out all foreign key references to this user before deletion
+      // Null out or delete all foreign key references to this user before deletion
 
       // Tickets issued or scanned by this user
       await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))
@@ -251,6 +251,12 @@ export const deleteUserFn = createServerFn({ method: "POST" })
       
       try {
         await db.execute(sql`UPDATE stadgar SET updated_by = NULL WHERE updated_by = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
+
+      try {
+        await db.execute(sql`DELETE FROM organization_members WHERE user_id = ${data.userId}`)
       } catch (e) {
         // Ignore if table doesn't exist
       }

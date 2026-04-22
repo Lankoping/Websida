@@ -1,10 +1,11 @@
 'use server'
 import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '../db/runtime'
-import { users, activityLogs, tickets } from '../db/schema'
-import { eq, inArray, or } from 'drizzle-orm'
+import { users, activityLogs, tickets, passwordResetTokens } from '../db/schema'
+import { eq, inArray, or, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
+import { randomBytes } from 'node:crypto'
 import {
   enforceDemoOwnUserScope,
   getDemoAccountEmails,
@@ -13,7 +14,8 @@ import {
   requireStaffUser,
 } from '../lib/access'
 import { hashPassword, isHashedPassword, verifyPassword } from '../lib/password'
-import { writeActivityLog } from './logs'
+import { writeActivityLog, deleteActivityLogsForUser } from './logs'
+import { sendEmail } from '../lib/email'
 
 export const loginFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ email: z.string(), passwordHash: z.string() }).parse(data))
@@ -116,7 +118,7 @@ export const createUserFn = createServerFn({ method: "POST" })
     z
       .object({
         email: z.string().email(),
-        password: z.string().min(1),
+        password: z.string().optional(),
         name: z.string().optional(),
         role: z.enum(['organizer', 'volunteer']).default('volunteer'),
       })
@@ -135,16 +137,67 @@ export const createUserFn = createServerFn({ method: "POST" })
       throw new Error('Email already exists')
     }
 
+    // If no password provided, generate a random one
+    const initialPassword = data.password || randomBytes(16).toString('hex')
+
     const created = await db
       .insert(users)
       .values({
         email: data.email,
-        passwordHash: hashPassword(data.password),
+        passwordHash: hashPassword(initialPassword),
         name: data.name,
         role: data.role,
         active: true,
       })
       .returning()
+
+    let resetToken = null
+    let emailSent = false
+    let emailError = null
+    if (!data.password) {
+      // Generate a reset token
+      resetToken = randomBytes(32).toString('hex')
+      const expiresAt = new Date()
+      expiresAt.setDate(expiresAt.getDate() + 7) // Token valid for 7 days
+
+      await db.insert(passwordResetTokens).values({
+        userId: created[0].id,
+        token: resetToken,
+        expiresAt,
+      })
+
+      // Send email
+      const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
+      const resetLink = `${baseUrl}/login?userid=${created[0].id}&token=${resetToken}&makepassword=true`
+      
+      const userName = data.name || 'Användare'
+      const adminName = currentUser.name || 'En administratör'
+      
+      const emailText = `Hej! ${userName}\n${adminName} har begärt att du skapar ett Länköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
+      
+      const emailHtml = `
+        <p>Hej! ${userName}</p>
+        <p>${adminName} har begärt att du skapar ett Länköping-konto.</p>
+        <p><a href="${resetLink}">Klicka här för att skapa ditt lösenord</a></p>
+        <p>Eller kopiera och klistra in denna länk i din webbläsare:<br/>
+        ${resetLink}</p>
+      `
+
+      try {
+        emailSent = await sendEmail({
+          to: data.email,
+          subject: 'Ditt Länköping-konto',
+          text: emailText,
+          html: emailHtml,
+        })
+        if (!emailSent) {
+          emailError = 'Misslyckades att skicka e-post. Kontrollera SMTP-inställningarna.'
+        }
+      } catch (e: any) {
+        emailSent = false
+        emailError = e.message || 'Ett okänt fel inträffade vid e-postutskick.'
+      }
+    }
 
     await writeActivityLog({
       actorUserId: currentUser.id,
@@ -155,10 +208,106 @@ export const createUserFn = createServerFn({ method: "POST" })
       details: {
         email: created[0].email,
         role: created[0].role,
+        generatedPassword: !data.password,
+        emailSent,
+        emailError,
       },
     })
 
-    return created[0]
+    return {
+      user: created[0],
+      resetToken,
+      emailSent,
+      emailError,
+    }
+  })
+
+export const sendResetLinkFn = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) =>
+    z.object({
+      userId: z.number(),
+    }).parse(data)
+  )
+  .handler(async ({ data }) => {
+    const currentUser = await requireOrganizerUser()
+    const db = await getDb()
+
+    if (isDemoTesterUser(currentUser)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
+    const targetUser = await db.select().from(users).where(eq(users.id, data.userId)).limit(1)
+    if (!targetUser[0]) {
+      throw new Error('User not found')
+    }
+
+    // Delete old tokens for this user
+    await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, data.userId))
+
+    // Generate a new reset token
+    const resetToken = randomBytes(32).toString('hex')
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + 7) // Token valid for 7 days
+
+    await db.insert(passwordResetTokens).values({
+      userId: targetUser[0].id,
+      token: resetToken,
+      expiresAt,
+    })
+
+    // Send email
+    const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
+    const resetLink = `${baseUrl}/login?userid=${targetUser[0].id}&token=${resetToken}&makepassword=true`
+    
+    const userName = targetUser[0].name || 'Användare'
+    const adminName = currentUser.name || 'En administratör'
+    
+    const emailText = `Hej! ${userName}\n${adminName} har begärt att du sätter ett nytt lösenord för ditt Länköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
+    
+    const emailHtml = `
+      <p>Hej! ${userName}</p>
+      <p>${adminName} har begärt att du sätter ett nytt lösenord för ditt Länköping-konto.</p>
+      <p><a href="${resetLink}">Klicka här för att skapa ditt lösenord</a></p>
+      <p>Eller kopiera och klistra in denna länk i din webbläsare:<br/>
+      ${resetLink}</p>
+    `
+
+    let emailSent = false
+    let emailError = null
+
+    try {
+      emailSent = await sendEmail({
+        to: targetUser[0].email,
+        subject: 'Återställ ditt lösenord för Länköping.se',
+        text: emailText,
+        html: emailHtml,
+      })
+      if (!emailSent) {
+        emailError = 'Misslyckades att skicka e-post. Kontrollera SMTP-inställningarna.'
+      }
+    } catch (e: any) {
+      emailSent = false
+      emailError = e.message || 'Ett okänt fel inträffade vid e-postutskick.'
+    }
+
+    await writeActivityLog({
+      actorUserId: currentUser.id,
+      actorRole: currentUser.role,
+      action: 'user.password_reset_link_sent',
+      entityType: 'user',
+      entityId: targetUser[0].id,
+      details: {
+        email: targetUser[0].email,
+        emailSent,
+        emailError,
+      },
+    })
+
+    if (!emailSent) {
+      throw new Error(emailError || 'Failed to send email')
+    }
+
+    return { success: true, resetLink }
   })
 
 export const changePasswordFn = createServerFn({ method: "POST" })
@@ -235,33 +384,67 @@ export const deleteUserFn = createServerFn({ method: "POST" })
       throw new Error('User not found')
     }
 
-    // Null out all foreign key references to this user before deletion
+    try {
+      // Null out or delete all foreign key references to this user before deletion
 
-    // Tickets issued or scanned by this user
-    await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))
-    await db.update(tickets).set({ scannedBy: null }).where(eq(tickets.scannedBy, data.userId))
+      // Tickets issued or scanned by this user
+      await db.update(tickets).set({ issuedBy: null }).where(eq(tickets.issuedBy, data.userId))
+      await db.update(tickets).set({ scannedBy: null }).where(eq(tickets.scannedBy, data.userId))
 
-    // Activity logs - delete logs where this user was the actor (actorUserId is NOT NULL)
-    await db.delete(activityLogs).where(eq(activityLogs.actorUserId, data.userId))
+      // Password reset tokens
+      await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, data.userId))
 
-    // Delete user
-    await db
-      .delete(users)
-      .where(eq(users.id, data.userId))
+      // Handle tables that might exist in the database but aren't in schema.ts anymore
+      // This is a fallback in case the DROP TABLE statements in init.ts didn't execute properly
+      try {
+        await db.execute(sql`UPDATE avgangs_requests SET reviewed_by = NULL WHERE reviewed_by = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
+      
+      try {
+        await db.execute(sql`UPDATE stadgar SET updated_by = NULL WHERE updated_by = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
 
-    // Log the deletion (using current user as actor, not the deleted user)
-    await writeActivityLog({
-      actorUserId: currentUser.id,
-      actorRole: currentUser.role,
-      action: 'user.delete',
-      entityType: 'user',
-      entityId: data.userId,
-      details: {
-        email: targetUser[0]?.email ?? null,
-      },
-    })
+      try {
+        await db.execute(sql`DELETE FROM organization_members WHERE user_id = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
 
-    return { success: true }
+      try {
+        await db.execute(sql`DELETE FROM agreements WHERE created_by = ${data.userId}`)
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
+
+      // Activity logs - delete logs where this user was the actor using the dedicated function
+      await deleteActivityLogsForUser(data.userId)
+
+      // Delete user
+      await db
+        .delete(users)
+        .where(eq(users.id, data.userId))
+
+      // Log the deletion (using current user as actor, not the deleted user)
+      await writeActivityLog({
+        actorUserId: currentUser.id,
+        actorRole: currentUser.role,
+        action: 'user.delete',
+        entityType: 'user',
+        entityId: data.userId,
+        details: {
+          email: targetUser[0]?.email ?? null,
+        },
+      })
+
+      return { success: true }
+    } catch (error) {
+      console.error(`Failed to delete user where user ID ${data.userId}`, error)
+      throw new Error(`Failed to delete user: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   })
 
 export const lockUserFn = createServerFn({ method: "POST" })

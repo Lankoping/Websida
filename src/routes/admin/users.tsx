@@ -7,9 +7,9 @@ import {
   deleteUserFn,
   getSessionFn,
   updateUserFn,
-  getDemoAccountsFn,
-  setDemoAccountsActiveFn,
+  sendResetLinkFn,
 } from '../../server/functions/auth'
+import { Copy, Mail, AlertCircle, CheckCircle2 } from 'lucide-react'
 
 export const Route = createFileRoute('/admin/users')({
   beforeLoad: async () => {
@@ -22,7 +22,6 @@ export const Route = createFileRoute('/admin/users')({
     return {
       users: await getUsersFn(),
       currentUser: await getSessionFn(),
-      demoAccounts: await getDemoAccountsFn(),
     }
   },
   component: AdminUsers,
@@ -30,30 +29,38 @@ export const Route = createFileRoute('/admin/users')({
 
 function AdminUsers() {
   const router = useRouter()
-  const { users, currentUser, demoAccounts } = Route.useLoaderData()
+  const { users, currentUser } = Route.useLoaderData()
+  
+  // Create user state
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [role, setRole] = useState<'organizer' | 'volunteer'>('volunteer')
   const [error, setError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const [createdUserLink, setCreatedUserLink] = useState<{name: string, email: string, link: string, emailSent: boolean, emailError?: string | null} | null>(null)
 
+  // Search state
   const [searchQuery, setSearchQuery] = useState('')
 
+  // Change password state
   const [changingPasswordId, setChangingPasswordId] = useState<number | null>(null)
   const [newPassword, setNewPassword] = useState('')
   const [changePasswordError, setChangePasswordError] = useState('')
   const [isChangingPassword, setIsChangingPassword] = useState(false)
 
+  // Edit user state
   const [isDeletingId, setIsDeletingId] = useState<number | null>(null)
   const [editingUserId, setEditingUserId] = useState<number | null>(null)
   const [editingName, setEditingName] = useState('')
   const [editingRole, setEditingRole] = useState<'organizer' | 'volunteer'>('volunteer')
   const [editingActive, setEditingActive] = useState(true)
   const [isUpdatingId, setIsUpdatingId] = useState<number | null>(null)
+  
   const [copiedId, setCopiedId] = useState<number | null>(null)
-  const [isTogglingDemo, setIsTogglingDemo] = useState(false)
-  const [demoToggleError, setDemoToggleError] = useState('')
+  
+  // Resend email state
+  const [isResendingId, setIsResendingId] = useState<number | null>(null)
 
   const handleChangePassword = async (userId: number, e: React.FormEvent) => {
     e.preventDefault()
@@ -88,8 +95,24 @@ function AdminUsers() {
     e.preventDefault()
     setError('')
     setIsSaving(true)
+    setCreatedUserLink(null)
     try {
-      await createUserFn({ data: { email, password, name: name || undefined, role } })
+      const result = await createUserFn({ data: { email, password: password || undefined, name: name || undefined, role } })
+      
+      if (result.resetToken) {
+        // Generate the reset link
+        const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+        const resetLink = `${baseUrl}/login?userid=${result.user.id}&token=${result.resetToken}&makepassword=true`
+        
+        setCreatedUserLink({
+          name: result.user.name || 'Användare',
+          email: result.user.email,
+          link: resetLink,
+          emailSent: result.emailSent || false,
+          emailError: result.emailError
+        })
+      }
+
       setEmail('')
       setPassword('')
       setName('')
@@ -102,10 +125,27 @@ function AdminUsers() {
     }
   }
 
+  const handleResendEmail = async (userId: number) => {
+    setIsResendingId(userId)
+    try {
+      const result = await sendResetLinkFn({ data: { userId } })
+      alert('E-post med återställningslänk har skickats!')
+    } catch (err: any) {
+      alert(`Kunde inte skicka e-post: ${err?.message || 'Okänt fel'}`)
+    } finally {
+      setIsResendingId(null)
+    }
+  }
+
   const handleCopyId = async (userId: number) => {
     await navigator.clipboard.writeText(String(userId))
     setCopiedId(userId)
     window.setTimeout(() => setCopiedId(null), 1500)
+  }
+
+  const handleCopyLink = async (link: string) => {
+    await navigator.clipboard.writeText(link)
+    alert('Länk kopierad till urklipp!')
   }
 
   const handleStartEdit = (user: (typeof users)[number]) => {
@@ -130,19 +170,6 @@ function AdminUsers() {
     }
   }
 
-  const handleSetDemoAccountsActive = async (active: boolean) => {
-    setDemoToggleError('')
-    setIsTogglingDemo(true)
-    try {
-      await setDemoAccountsActiveFn({ data: { active } })
-      await router.invalidate()
-    } catch (err: any) {
-      setDemoToggleError(err?.message || 'Kunde inte uppdatera demo-konton')
-    } finally {
-      setIsTogglingDemo(false)
-    }
-  }
-
   const filteredUsers = users.filter(user => {
     const q = searchQuery.toLowerCase()
     return (
@@ -151,11 +178,6 @@ function AdminUsers() {
       user.role?.toLowerCase().includes(q)
     )
   })
-
-  const hasDemoAccounts = demoAccounts.length > 0
-  const activeDemoCount = demoAccounts.filter((a) => a.active !== false).length
-  const inactiveDemoCount = demoAccounts.length - activeDemoCount
-  const isAnyDemoActive = activeDemoCount > 0
 
   return (
     <div className="space-y-6">
@@ -166,110 +188,116 @@ function AdminUsers() {
         </p>
       </div>
 
-      {/* Demo accounts */}
-      <div className="bg-card border border-border p-5 rounded">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <p className="text-sm font-medium text-foreground">Demo-konton</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Aktiva: {activeDemoCount} · Inaktiva: {inactiveDemoCount}
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <button
-              type="button"
-              onClick={() => handleSetDemoAccountsActive(false)}
-              disabled={isTogglingDemo || !hasDemoAccounts || !isAnyDemoActive}
-              className="px-4 py-2 text-sm border border-red-200 text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-40"
-            >
-              {isTogglingDemo ? 'Arbetar...' : 'Inaktivera demo'}
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSetDemoAccountsActive(true)}
-              disabled={isTogglingDemo || !hasDemoAccounts || isAnyDemoActive}
-              className="px-4 py-2 text-sm border border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded transition-colors disabled:opacity-40"
-            >
-              {isTogglingDemo ? 'Arbetar...' : 'Aktivera demo'}
-            </button>
-          </div>
-        </div>
-        <div className="mt-4 space-y-2">
-          {demoAccounts.map((account) => (
-            <div key={account.id} className="flex flex-wrap items-center justify-between gap-2 p-3 border border-border bg-background rounded">
-              <div>
-                <p className="text-sm text-foreground font-medium">{account.name || 'Demo-konto'}</p>
-                <p className="text-xs text-muted-foreground font-mono">{account.email}</p>
-              </div>
-              <span className={`px-2 py-0.5 text-xs font-medium rounded border ${account.active === false ? 'border-red-200 text-red-600 bg-red-50' : 'border-emerald-200 text-emerald-700 bg-emerald-50'}`}>
-                {account.active === false ? 'Inaktivt' : 'Aktivt'}
-              </span>
-            </div>
-          ))}
-          {!hasDemoAccounts && <p className="text-sm text-muted-foreground">Inga demo-konton hittades.</p>}
-          {demoToggleError && <p className="text-red-500 text-sm">{demoToggleError}</p>}
-        </div>
-      </div>
-
       {/* Create user */}
-      <form onSubmit={handleCreateUser} className="bg-card border border-border p-5 rounded">
-        <h3 className="font-medium text-foreground mb-4">Skapa ny användare</h3>
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div>
-            <label className="block text-xs text-muted-foreground mb-1.5">E-post</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="namn@exempel.se"
-              className="w-full p-2.5 bg-background border border-border rounded text-foreground text-sm placeholder:text-muted-foreground outline-none focus:border-primary/60 transition-colors font-mono"
-              required
-            />
+      <div className="bg-card border border-border p-5 rounded">
+        <form onSubmit={handleCreateUser}>
+          <h3 className="font-medium text-foreground mb-4">Skapa ny användare</h3>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div>
+              <label className="block text-xs text-muted-foreground mb-1.5">E-post</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="namn@exempel.se"
+                className="w-full p-2.5 bg-background border border-border rounded text-foreground text-sm placeholder:text-muted-foreground outline-none focus:border-primary/60 transition-colors font-mono"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-muted-foreground mb-1.5">Lösenord (Frivilligt)</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Lämna tomt för att generera en länk"
+                className="w-full p-2.5 bg-background border border-border rounded text-foreground text-sm placeholder:text-muted-foreground outline-none focus:border-primary/60 transition-colors font-mono"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-muted-foreground mb-1.5">Namn</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Visningsnamn (frivilligt)"
+                className="w-full p-2.5 bg-background border border-border rounded text-foreground text-sm placeholder:text-muted-foreground outline-none focus:border-primary/60 transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-muted-foreground mb-1.5">Behörighet</label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value as 'organizer' | 'volunteer')}
+                className="w-full p-2.5 bg-background border border-border rounded text-foreground text-sm outline-none focus:border-primary/60 transition-colors"
+              >
+                <option value="volunteer">Volontär</option>
+                <option value="organizer">Organisatör</option>
+              </select>
+            </div>
+            <div className="lg:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between pt-3 border-t border-border gap-3">
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="px-5 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded hover:bg-primary/90 transition-colors disabled:opacity-50 w-full sm:w-auto"
+              >
+                {isSaving ? 'Skapar...' : 'Skapa användare'}
+              </button>
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+            </div>
           </div>
-          <div>
-            <label className="block text-xs text-muted-foreground mb-1.5">Lösenord</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full p-2.5 bg-background border border-border rounded text-foreground text-sm placeholder:text-muted-foreground outline-none focus:border-primary/60 transition-colors font-mono"
-              required
-            />
+        </form>
+
+        {/* Success message with reset link */}
+        {createdUserLink && (
+          <div className={`mt-6 p-4 border rounded-md ${createdUserLink.emailSent ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-amber-500/30 bg-amber-500/10'}`}>
+            <h4 className={`flex items-center gap-2 font-medium mb-2 ${createdUserLink.emailSent ? 'text-emerald-600' : 'text-amber-600'}`}>
+              {createdUserLink.emailSent ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+              Användare skapad utan lösenord
+            </h4>
+            {createdUserLink.emailSent ? (
+              <p className="text-sm text-foreground/80 mb-4">
+                Ett e-postmeddelande har skickats till användaren med instruktioner för att sätta sitt lösenord. Du kan också kopiera länken nedan om det behövs.
+              </p>
+            ) : (
+              <div className="mb-4">
+                <p className="text-sm text-foreground/80 mb-2">
+                  Kunde inte skicka e-post automatiskt. Skicka följande meddelande till användaren så att de kan sätta sitt lösenord:
+                </p>
+                {createdUserLink.emailError && (
+                  <p className="text-xs text-red-500 bg-red-500/10 p-2 rounded border border-red-500/20">
+                    Fel: {createdUserLink.emailError}
+                  </p>
+                )}
+              </div>
+            )}
+            <div className="p-3 bg-background border border-border rounded text-sm font-mono text-muted-foreground whitespace-pre-wrap">
+              Hej {createdUserLink.name}!{'\n\n'}
+              {currentUser?.name || 'En administratör'} har begärt att du skapar ett Länköping-konto.{'\n\n'}
+              Gå till följande länk för att skapa ditt lösenord:{'\n'}
+              {createdUserLink.link}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <button 
+                onClick={() => handleCopyLink(createdUserLink.link)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-secondary text-foreground text-xs font-medium rounded hover:bg-secondary/80 transition-colors"
+              >
+                <Copy className="w-3 h-3" />
+                Kopiera länk
+              </button>
+              {!createdUserLink.emailSent && (
+                <a 
+                  href={`mailto:${createdUserLink.email}?subject=Ditt Länköping-konto&body=Hej ${createdUserLink.name}!%0D%0A%0D%0A${currentUser?.name || 'En administratör'} har begärt att du skapar ett Länköping-konto.%0D%0A%0D%0AGå till följande länk för att skapa ditt lösenord:%0D%0A${encodeURIComponent(createdUserLink.link)}`}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-medium rounded hover:bg-primary/90 transition-colors"
+                >
+                  <Mail className="w-3 h-3" />
+                  Skicka e-post manuellt
+                </a>
+              )}
+            </div>
           </div>
-          <div>
-            <label className="block text-xs text-muted-foreground mb-1.5">Namn</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Visningsnamn (frivilligt)"
-              className="w-full p-2.5 bg-background border border-border rounded text-foreground text-sm placeholder:text-muted-foreground outline-none focus:border-primary/60 transition-colors"
-            />
-          </div>
-          <div>
-            <label className="block text-xs text-muted-foreground mb-1.5">Behörighet</label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value as 'organizer' | 'volunteer')}
-              className="w-full p-2.5 bg-background border border-border rounded text-foreground text-sm outline-none focus:border-primary/60 transition-colors"
-            >
-              <option value="volunteer">Volontär</option>
-              <option value="organizer">Organisatör</option>
-            </select>
-          </div>
-          <div className="lg:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between pt-3 border-t border-border gap-3">
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="px-5 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded hover:bg-primary/90 transition-colors disabled:opacity-50 w-full sm:w-auto"
-            >
-              {isSaving ? 'Skapar...' : 'Skapa användare'}
-            </button>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-          </div>
-        </div>
-      </form>
+        )}
+      </div>
 
       {/* Search */}
       <div className="relative">
@@ -318,6 +346,16 @@ function AdminUsers() {
                     className="px-3 py-1.5 text-xs border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 rounded transition-colors"
                   >
                     Byt lösenord
+                  </button>
+                )}
+                {user.id !== currentUser?.id && (
+                  <button
+                    type="button"
+                    onClick={() => handleResendEmail(user.id)}
+                    disabled={isResendingId === user.id}
+                    className="px-3 py-1.5 text-xs border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 rounded transition-colors disabled:opacity-50"
+                  >
+                    {isResendingId === user.id ? 'Skickar...' : 'Skicka inbjudan'}
                   </button>
                 )}
                 {user.id !== currentUser?.id && (

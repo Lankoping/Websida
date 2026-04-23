@@ -1,5 +1,5 @@
 'use server'
-import { createServerFn } from '@tanstack/react-start'
+import { createServerFn } from '@tanstack/start'
 import { getDb } from '../db/runtime'
 import { sql } from 'drizzle-orm'
 import { requireOrganizerUser } from '../lib/access'

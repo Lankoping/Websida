@@ -1,7 +1,7 @@
 'use server'
 
-import { createServerFn } from '@tanstack/react-start'
-import { getRequestHeader } from '@tanstack/react-start/server'
+import { createServerFn } from '@tanstack/start'
+import { getRequestHeader } from '@tanstack/start/server'
 
 function isSwedishRequest() {
   const country =

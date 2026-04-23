@@ -5,14 +5,14 @@ WORKDIR /app
 # Install dependencies in a separate stage for caching
 FROM base AS install
 COPY package.json package-lock.json ./
+# Install all dependencies (including devDependencies)
 RUN npm install --legacy-peer-deps
 
 # Build the application
-FROM base AS build
-COPY --from=install /app/node_modules ./node_modules
+FROM install AS build
 COPY . .
 ENV FOR_SITES=true
-# Remove any pre-existing generated route tree — tanstackStart() plugin
+# Remove any pre-existing generated route tree — tanstackStart()
 # will auto-generate it synchronously during vite build
 RUN rm -f src/routeTree.gen.ts && npm run build:docker
 

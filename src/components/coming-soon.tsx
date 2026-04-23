@@ -12,7 +12,7 @@ const fallbackContent = {
   teamLabel: 'Team',
   privacyLabel: 'Integritet',
   rights: 'Alla rättigheter förbehållna',
-  primaryButtonText: 'Regler',
+  primaryButtonText: 'Discord',
   primaryButtonLink: 'https://discord.gg/h8wuaqyBwT',
   secondaryButtonText: '',
   secondaryButtonLink: 'https://www.youtube.com/@LANKPNG',

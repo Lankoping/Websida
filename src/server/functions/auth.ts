@@ -39,7 +39,6 @@ export const loginFn = createServerFn({ method: 'POST' })
       throw new Error('Invalid password') 
     }
 
-    // Upgrade legacy plaintext password rows after successful login.
     if (!isHashedPassword(user[0].passwordHash)) {
       await db
         .update(users)
@@ -47,11 +46,10 @@ export const loginFn = createServerFn({ method: 'POST' })
         .where(eq(users.id, user[0].id))
     }
 
-    // Set a session cookie
     setCookie('session', user[0].id.toString(), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60 * 24 * 7,
       path: '/',
     })
 
@@ -137,7 +135,6 @@ export const createUserFn = createServerFn({ method: 'POST' })
       throw new Error('Email already exists')
     }
 
-    // If no password provided, generate a random one
     const initialPassword = data.password || randomBytes(16).toString('hex')
 
     const created = await db
@@ -155,10 +152,9 @@ export const createUserFn = createServerFn({ method: 'POST' })
     let emailSent = false
     let emailError = null
     if (!data.password) {
-      // Generate a reset token
       resetToken = randomBytes(32).toString('hex')
       const expiresAt = new Date()
-      expiresAt.setDate(expiresAt.getDate() + 7) // Token valid for 7 days
+      expiresAt.setDate(expiresAt.getDate() + 7)
 
       await db.insert(passwordResetTokens).values({
         userId: created[0].id,
@@ -166,7 +162,6 @@ export const createUserFn = createServerFn({ method: 'POST' })
         expiresAt,
       })
 
-      // Send email
       const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
       const resetLink = `${baseUrl}/login?userid=${created[0].id}&token=${resetToken}&makepassword=true`
       
@@ -244,13 +239,11 @@ export const sendResetLinkFn = createServerFn({ method: 'POST' })
       throw new Error('User not found')
     }
 
-    // Delete old tokens for this user
     await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, data.userId))
 
-    // Generate a new reset token
     const resetToken = randomBytes(32).toString('hex')
     const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + 7) // Token valid for 7 days
+    expiresAt.setDate(expiresAt.getDate() + 7)
 
     await db.insert(passwordResetTokens).values({
       userId: targetUser[0].id,
@@ -258,7 +251,6 @@ export const sendResetLinkFn = createServerFn({ method: 'POST' })
       expiresAt,
     })
 
-    // Send email
     const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
     const resetLink = `${baseUrl}/login?userid=${targetUser[0].id}&token=${resetToken}&makepassword=true`
     
@@ -354,7 +346,7 @@ export const resetPasswordWithTokenFn = createServerFn({ method: 'POST' })
 
     await writeActivityLog({
       actorUserId: data.userId,
-      actorRole: 'volunteer', // Fallback, we don't have the role here easily
+      actorRole: 'volunteer',
       action: 'user.password.reset_with_token',
       entityType: 'user',
       entityId: data.userId,
@@ -438,10 +430,6 @@ export const deleteUserFn = createServerFn({ method: 'POST' })
     }
 
     try {
-      // Null out or delete all foreign key references to this user before deletion
-
-      // Tickets issued or scanned by this user
-      // Anonymize instead of nullifying where possible for GDPR compliance
       await db.update(tickets)
         .set({ 
           participantName: 'Anonymized', 
@@ -454,44 +442,30 @@ export const deleteUserFn = createServerFn({ method: 'POST' })
         .set({ scannedBy: null })
         .where(eq(tickets.scannedBy, data.userId))
 
-      // Password reset tokens
       await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, data.userId))
 
-      // Handle tables that might exist in the database but aren't in schema.ts anymore
-      // This is a fallback in case the DROP TABLE statements in init.ts didn't execute properly
       try {
         await db.execute(sql`UPDATE avgangs_requests SET reviewed_by = NULL WHERE reviewed_by = ${data.userId}`)
-      } catch (e) {
-        // Ignore if table doesn't exist
-      }
+      } catch (e) {}
       
       try {
         await db.execute(sql`UPDATE stadgar SET updated_by = NULL WHERE updated_by = ${data.userId}`)
-      } catch (e) {
-        // Ignore if table doesn't exist
-      }
+      } catch (e) {}
 
       try {
         await db.execute(sql`DELETE FROM organization_members WHERE user_id = ${data.userId}`)
-      } catch (e) {
-        // Ignore if table doesn't exist
-      }
+      } catch (e) {}
 
       try {
         await db.execute(sql`DELETE FROM agreements WHERE created_by = ${data.userId}`)
-      } catch (e) {
-        // Ignore if table doesn't exist
-      }
+      } catch (e) {}
 
-      // Activity logs - delete logs where this user was the actor using the dedicated function
       await deleteActivityLogsForUser(data.userId)
 
-      // Delete user
       await db
         .delete(users)
         .where(eq(users.id, data.userId))
 
-      // Log the deletion (using current user as actor, not the deleted user)
       await writeActivityLog({
         actorUserId: currentUser.id,
         actorRole: currentUser.role,

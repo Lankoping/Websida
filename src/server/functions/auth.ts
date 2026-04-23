@@ -1,10 +1,10 @@
 'use server'
-import { createServerFn } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '../db/runtime'
 import { users, activityLogs, tickets, passwordResetTokens } from '../db/schema'
 import { eq, inArray, and, gte, or, sql } from 'drizzle-orm'
 import { z } from 'zod'
-import { setCookie, getCookie, deleteCookie } from '@tanstack/react-router/server'
+import { setCookie, getCookie, deleteCookie } from '@tanstack/start/server'
 import { randomBytes } from 'node:crypto'
 import {
   enforceDemoOwnUserScope,
@@ -17,7 +17,7 @@ import { hashPassword, isHashedPassword, verifyPassword } from '../lib/password'
 import { writeActivityLog, deleteActivityLogsForUser } from './logs'
 import { sendEmail } from '../lib/email'
 
-export const loginFn = createServerFn({ method: "POST" })
+export const loginFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => z.object({ email: z.string(), passwordHash: z.string() }).parse(data))
   .handler(async ({ data }) => {
     const db = await getDb()
@@ -66,7 +66,7 @@ export const loginFn = createServerFn({ method: "POST" })
     return { success: true, user: user[0] }
   })
 
-export const logoutFn = createServerFn({ method: "POST" })
+export const logoutFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => z.object({}).parse(data ?? {}))
   .handler(async () => {
     const userId = getCookie('session')
@@ -87,7 +87,7 @@ export const logoutFn = createServerFn({ method: "POST" })
     return { success: true }
   })
 
-export const getSessionFn = createServerFn({ method: "GET" })
+export const getSessionFn = createServerFn({ method: 'GET' })
   .handler(async () => {
     const userId = getCookie('session')
     if (!userId) return null
@@ -101,7 +101,7 @@ export const getSessionFn = createServerFn({ method: "GET" })
     }
   })
 
-export const getUsersFn = createServerFn({ method: "GET" })
+export const getUsersFn = createServerFn({ method: 'GET' })
   .handler(async () => {
     const currentUser = await requireOrganizerUser()
     const db = await getDb()
@@ -113,7 +113,7 @@ export const getUsersFn = createServerFn({ method: "GET" })
     return await db.select().from(users)
   })
 
-export const createUserFn = createServerFn({ method: "POST" })
+export const createUserFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
     z
       .object({
@@ -225,7 +225,7 @@ export const createUserFn = createServerFn({ method: "POST" })
     }
   })
 
-export const sendResetLinkFn = createServerFn({ method: "POST" })
+export const sendResetLinkFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
     z.object({
       userId: z.number(),
@@ -316,7 +316,7 @@ export const sendResetLinkFn = createServerFn({ method: "POST" })
     return { success: true, resetLink }
   })
 
-export const resetPasswordWithTokenFn = createServerFn({ method: "POST" })
+export const resetPasswordWithTokenFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
     z.object({
       userId: z.number(),
@@ -363,7 +363,7 @@ export const resetPasswordWithTokenFn = createServerFn({ method: "POST" })
     return { success: true }
   })
 
-export const changePasswordFn = createServerFn({ method: "POST" })
+export const changePasswordFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
     z.object({
       userId: z.number(),
@@ -409,7 +409,7 @@ export const changePasswordFn = createServerFn({ method: "POST" })
     return { success: true }
   })
 
-export const deleteUserFn = createServerFn({ method: "POST" })
+export const deleteUserFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
     z.object({
       userId: z.number(),
@@ -510,7 +510,7 @@ export const deleteUserFn = createServerFn({ method: "POST" })
     }
   })
 
-export const lockUserFn = createServerFn({ method: "POST" })
+export const lockUserFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
     z.object({
       userId: z.number(),

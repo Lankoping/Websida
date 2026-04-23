@@ -9,8 +9,15 @@ import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin'
 const forSites = process.env?.FOR_SITES === 'true'
 
 const config = defineConfig({
+  resolve: {
+    conditions: ['react-server', 'node', 'import', 'module', 'browser', 'default'],
+  },
   plugins: [
-    tanstackStart(),
+    tanstackStart({
+      importProtection: {
+        enabled: false,
+      },
+    }),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],

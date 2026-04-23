@@ -1,10 +1,10 @@
 'use server'
-import { createServerFn } from '@tanstack/react-start'
+import { createServerFn } from '@tanstack/react-router'
 import { getDb } from '../db/runtime'
 import { tickets, posts, ticketTypes, events, users } from '../db/schema'
 import { eq, and, lt, sql } from 'drizzle-orm'
 import { z } from 'zod'
-import { getCookie } from '@tanstack/react-start/server'
+import { getCookie } from '@tanstack/react-router/server'
 import { nanoid } from 'nanoid'
 import { isDemoTesterUser, requireStaffUser } from '../lib/access'
 import { writeActivityLog } from './logs'
@@ -283,23 +283,33 @@ export const resendTicketEmailFn = createServerFn({ method: "POST" })
     const event = await db.select().from(events).where(eq(events.id, ticket[0].eventId)).limit(1)
     const eventTitle = event[0]?.title || 'Event'
     const eventDate = event[0]?.date ? new Date(event[0].date).toLocaleDateString('sv-SE') : 'Okänt datum'
+    const ticketLink = `${process.env.BASE_URL || 'https://lankoping.se'}/biljett/${ticket[0].ticketCode}`
 
     const emailHtml = `
-      <p>Hej ${ticket[0].participantName}!</p>
-      <p>Här är din biljett för ${eventTitle}.</p>
-      <ul>
-        <li><b>Namn:</b> ${ticket[0].participantName}</li>
-        <li><b>Datum:</b> ${eventDate}</li>
-        <li><b>Kostnad:</b> ${ticket[0].pricePaid} SEK</li>
-        <li><b>Biljettkod:</b> ${ticket[0].ticketCode}</li>
-      </ul>
-      <p><a href="${process.env.BASE_URL || 'https://lankoping.se'}/biljett/${ticket[0].ticketCode}">Visa biljett</a></p>
-    `
+      <div style="font-family: sans-serif; max-w-xl mx-auto; background-color: #100E0C; color: #F0E8D8; padding: 2rem; border-radius: 8px; border: 1px solid rgba(192, 74, 42, 0.2);">
+        <h2 style="color: #C04A2A; text-transform: uppercase; letter-spacing: 0.1em; font-size: 14px; margin-bottom: 1rem;">Lankoping Biljett</h2>
+        <h1 style="font-size: 24px; margin-bottom: 1.5rem;">Din biljett till ${eventTitle}</h1>
+        <p style="margin-bottom: 1rem;">Hej <strong>${ticket[0].participantName}</strong>!</p>
+        <p style="margin-bottom: 1.5rem;">Här är din biljett för det kommande eventet.</p>
+        
+        <div style="background-color: rgba(192, 74, 42, 0.05); border: 1px solid rgba(192, 74, 42, 0.1); padding: 1.5rem; border-radius: 4px; margin-bottom: 1.5rem;">
+          <p style="margin: 0 0 0.5rem 0;"><strong>Namn:</strong> ${ticket[0].participantName}</p>
+          <p style="margin: 0 0 0.5rem 0;"><strong>Datum:</strong> ${eventDate}</p>
+          <p style="margin: 0 0 0.5rem 0;"><strong>Kostnad:</strong> ${ticket[0].pricePaid} SEK</p>
+          <p style="margin: 0;"><strong>Biljettkod:</strong> <span style="font-family: monospace; background-color: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;">${ticket[0].ticketCode}</span></p>
+        </div>
+        
+        <a href="${ticketLink}" style="display: inline-block; background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Visa digital biljett</a>
+        
+        <p style="font-size: 12px; color: rgba(240, 232, 216, 0.6); margin-bottom: 0.5rem;">Ha biljetten redo i mobilen när du kommer till entrén.</p>
+        <p style="font-size: 12px; color: rgba(240, 232, 216, 0.6); margin-bottom: 0.5rem;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare:</p>
+        <p style="font-size: 12px; color: #C04A2A; word-break: break-all;">${ticketLink}</p>
+      </div>`
 
     const sent = await sendEmail({
       to: ticket[0].participantEmail,
       subject: `Din biljett för ${eventTitle}`,
-      text: `Hej ${ticket[0].participantName}! Din biljettkod för ${eventTitle} (${eventDate}) är ${ticket[0].ticketCode}. Kostnad: ${ticket[0].pricePaid} SEK.`,
+      text: `Hej ${ticket[0].participantName}! Din biljettkod för ${eventTitle} (${eventDate}) är ${ticket[0].ticketCode}. Kostnad: ${ticket[0].pricePaid} SEK. Visa biljetten här: ${ticketLink}`,
       html: emailHtml,
     })
 
@@ -338,7 +348,7 @@ export const updateTicketStatusFn = createServerFn({ method: "POST" })
     const updated = await db.update(tickets)
       .set({ 
         status: data.status, 
-        scannedAt: scanDate,
+        scannedAt: scanDate, 
         scannedBy: data.status === 'used' ? admin.id : null,
         updatedAt: new Date() 
       })

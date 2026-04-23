@@ -59,7 +59,7 @@ export const getDbStatsFn = createServerFn({ method: 'GET' })
         tableStats: {},
         migrationsCount: 0,
         outOfSync: true,
-        error: 'Kunde inte hämta databasstatistik'
+        error: 'Kund inte hämta databasstatistik'
       }
     }
   })
@@ -103,6 +103,6 @@ export const runDeepScanFn = createServerFn({ method: 'POST' })
       }
     } catch (error) {
       console.error('Deep scan failed:', error)
-      throw new Error('Kunde inte genomföra djupskanning av databasen.')
+      throw new Error('Kund inte genomföra djupskanning av databasen.')
     }
   })

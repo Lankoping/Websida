@@ -1,5 +1,5 @@
 'use server'
-import { createServerFn } from '@tanstack/react-start'
+import { createServerFn } from '@tanstack/start'
 import { getDb } from '../db/runtime'
 import { tickets, events, ticketTypes } from '../db/schema'
 import { eq, and, sql } from 'drizzle-orm'

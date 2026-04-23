@@ -1,10 +1,10 @@
 'use server'
-import { createServerFn } from '@tanstack/react-start'
+import { createServerFn } from '@tanstack/react-router'
 import { getDb } from '../db/runtime'
 import { users, activityLogs, tickets, passwordResetTokens } from '../db/schema'
 import { eq, inArray, and, gte, or, sql } from 'drizzle-orm'
 import { z } from 'zod'
-import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
+import { setCookie, getCookie, deleteCookie } from '@tanstack/react-router/server'
 import { randomBytes } from 'node:crypto'
 import {
   enforceDemoOwnUserScope,
@@ -173,20 +173,23 @@ export const createUserFn = createServerFn({ method: "POST" })
       const userName = data.name || 'Användare'
       const adminName = currentUser.name || 'En administratör'
       
-      const emailText = `Hej! ${userName}\n${adminName} har begärt att du skapar ett Länköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
+      const emailText = `Hej! ${userName}\n${adminName} har begärt att du skapar ett Linköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
       
       const emailHtml = `
-        <p>Hej! ${userName}</p>
-        <p>${adminName} har begärt att du skapar ett Länköping-konto.</p>
-        <p><a href="${resetLink}">Klicka här för att skapa ditt lösenord</a></p>
-        <p>Eller kopiera och klistra in denna länk i din webbläsare:<br/>
-        ${resetLink}</p>
-      `
+      <div style="font-family: sans-serif; max-w-xl mx-auto; background-color: #100E0C; color: #F0E8D8; padding: 2rem; border-radius: 8px; border: 1px solid rgba(192, 74, 42, 0.2);">
+        <h2 style="color: #C04A2A; text-transform: uppercase; letter-spacing: 0.1em; font-size: 14px; margin-bottom: 1rem;">Lankoping Admin</h2>
+        <h1 style="font-size: 24px; margin-bottom: 1.5rem;">Välkommen till Lankoping!</h1>
+        <p style="margin-bottom: 1rem;">Hej <strong>${userName}</strong>,</p>
+        <p style="margin-bottom: 1.5rem;">${adminName} har skapat ett konto åt dig på Lankoping.se. För att komma igång behöver du skapa ett lösenord.</p>
+        <a href="${resetLink}" style="display: inline-block; background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Skapa lösenord</a>
+        <p style="font-size: 12px; color: rgba(240, 232, 216, 0.6); margin-bottom: 0.5rem;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare:</p>
+        <p style="font-size: 12px; color: #C04A2A; word-break: break-all;">${resetLink}</p>
+      </div>`
 
       try {
         emailSent = await sendEmail({
           to: data.email,
-          subject: 'Ditt Länköping-konto',
+          subject: 'Ditt Lankoping-konto',
           text: emailText,
           html: emailHtml,
         })
@@ -262,15 +265,18 @@ export const sendResetLinkFn = createServerFn({ method: "POST" })
     const userName = targetUser[0].name || 'Användare'
     const adminName = currentUser.name || 'En administratör'
     
-    const emailText = `Hej! ${userName}\n${adminName} har begärt att du sätter ett nytt lösenord för ditt Länköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
+    const emailText = `Hej! ${userName}\n${adminName} har begärt att du sätter ett nytt lösenord för ditt Linköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
     
     const emailHtml = `
-      <p>Hej! ${userName}</p>
-      <p>${adminName} har begärt att du sätter ett nytt lösenord för ditt Länköping-konto.</p>
-      <p><a href="${resetLink}">Klicka här för att skapa ditt lösenord</a></p>
-      <p>Eller kopiera och klistra in denna länk i din webbläsare:<br/>
-      ${resetLink}</p>
-    `
+      <div style="font-family: sans-serif; max-w-xl mx-auto; background-color: #100E0C; color: #F0E8D8; padding: 2rem; border-radius: 8px; border: 1px solid rgba(192, 74, 42, 0.2);">
+        <h2 style="color: #C04A2A; text-transform: uppercase; letter-spacing: 0.1em; font-size: 14px; margin-bottom: 1rem;">Lankoping Admin</h2>
+        <h1 style="font-size: 24px; margin-bottom: 1.5rem;">Återställ Lösenord</h1>
+        <p style="margin-bottom: 1rem;">Hej <strong>${userName}</strong>,</p>
+        <p style="margin-bottom: 1.5rem;">${adminName} har begärt att du sätter ett nytt lösenord för ditt Lankoping-konto.</p>
+        <a href="${resetLink}" style="display: inline-block; background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Sätt nytt lösenord</a>
+        <p style="font-size: 12px; color: rgba(240, 232, 216, 0.6); margin-bottom: 0.5rem;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare:</p>
+        <p style="font-size: 12px; color: #C04A2A; word-break: break-all;">${resetLink}</p>
+      </div>`
 
     let emailSent = false
     let emailError = null
@@ -278,7 +284,7 @@ export const sendResetLinkFn = createServerFn({ method: "POST" })
     try {
       emailSent = await sendEmail({
         to: targetUser[0].email,
-        subject: 'Återställ ditt lösenord för Länköping.se',
+        subject: 'Återställ ditt lösenord för Lankoping.se',
         text: emailText,
         html: emailHtml,
       })

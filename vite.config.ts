@@ -9,6 +9,9 @@ import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin'
 const forSites = process.env?.FOR_SITES === 'true'
 
 const config = defineConfig({
+  resolve: {
+    conditions: ['react-server', 'node', 'import', 'module', 'browser', 'default'],
+  },
   plugins: [
     tanstackStart({
       importProtection: {

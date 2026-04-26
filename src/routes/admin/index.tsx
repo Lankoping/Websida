@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { getDbStatsFn, runDeepScanFn } from '../../server/functions/stats'
 import { Database, AlertTriangle, CheckCircle, Server, RefreshCw, Search } from 'lucide-react'
@@ -113,4 +114,15 @@ function AdminDashboard() {
       </div>
     </div>
   )
+=======
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/admin/')({
+  component: AdminIndexStub,
+})
+
+function AdminIndexStub() {
+  if (typeof window !== 'undefined') window.location.href = '/'
+  return null
+>>>>>>> Stashed changes
 }

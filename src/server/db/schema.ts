@@ -56,6 +56,37 @@ export const tickets = pgTable('tickets', {
   updatedAt: timestamp('updated_at').defaultNow(),
 })
 
+export const eventTicketTypes = pgTable('event_ticket_types', {
+  id: serial('id').primaryKey(),
+  eventId: integer('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
+  ticketTypeId: integer('ticket_type_id').notNull().references(() => ticketTypes.id, { onDelete: 'cascade' }),
+  maxQuantity: integer('max_quantity'),
+  enabled: boolean('enabled').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})
+
+export const companies = pgTable('companies', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  contactName: text('contact_name'),
+  contactEmail: text('contact_email'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})
+
+export const companyTicketPricing = pgTable('company_ticket_pricing', {
+  id: serial('id').primaryKey(),
+  companyId: integer('company_id').notNull().references(() => companies.id, { onDelete: 'cascade' }),
+  ticketTypeId: integer('ticket_type_id').notNull().references(() => ticketTypes.id, { onDelete: 'cascade' }),
+  thresholdQty: integer('threshold_qty').notNull(),
+  priceBelow: integer('price_below').notNull(),
+  priceAbove: integer('price_above').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})
+
 export const activityLogs = pgTable('activity_logs', {
   id: serial('id').primaryKey(),
   actorUserId: integer('actor_user_id').references(() => users.id).notNull(),

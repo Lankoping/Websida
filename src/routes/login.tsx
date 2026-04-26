@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { loginFn, resetPasswordWithTokenFn } from '../server/functions/auth'
@@ -183,4 +184,15 @@ function Login() {
       </div>
     </div>
   )
+=======
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/login')({
+  component: LoginStub,
+})
+
+function LoginStub() {
+  if (typeof window !== 'undefined') window.location.href = '/'
+  return null
+>>>>>>> Stashed changes
 }

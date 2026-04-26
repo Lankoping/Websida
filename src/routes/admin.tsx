@@ -12,7 +12,8 @@ import {
   ChevronRight,
   Menu,
   X,
-  ExternalLink
+  ExternalLink,
+  Building2,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/admin')({
@@ -36,9 +37,7 @@ export const Route = createFileRoute('/admin')({
     }
 
     const isDemoTester = Boolean((user as { isDemoTester?: boolean }).isDemoTester)
-    const isContentManagementPath =
-      location.pathname === '/admin' ||
-      location.pathname === '/admin/'
+    const isContentManagementPath = location.pathname === '/admin' || location.pathname === '/admin/'
 
     if (isDemoTester && isContentManagementPath) {
       throw redirect({ to: '/admin/users' })
@@ -75,9 +74,11 @@ function NavItem({ href, label, icon, badge, isActive }: NavItemProps) {
       <span className={`w-5 h-5 ${active ? 'text-primary' : 'text-muted-foreground'}`}>{icon}</span>
       <span className="flex-1">{label}</span>
       {badge != null && badge > 0 && (
-        <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full ${
-          active ? 'bg-primary text-primary-foreground' : 'bg-primary text-primary-foreground'
-        }`}>
+        <span
+          className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full ${
+            active ? 'bg-primary text-primary-foreground' : 'bg-primary text-primary-foreground'
+          }`}
+        >
           {badge > 99 ? '99+' : badge}
         </span>
       )}
@@ -105,11 +106,7 @@ function NavGroup({ label, icon, children, defaultOpen = false }: NavGroupProps)
         <span className="flex-1 text-left">{label}</span>
         {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
       </button>
-      {isOpen && (
-        <div className="ml-8 space-y-0.5 border-l border-border pl-3">
-          {children}
-        </div>
-      )}
+      {isOpen && <div className="ml-8 space-y-0.5 border-l border-border pl-3">{children}</div>}
     </div>
   )
 }
@@ -121,9 +118,7 @@ function SubNavItem({ href, label, badge }: { href: string; label: string; badge
     <a
       href={href}
       className={`flex items-center justify-between px-3 py-2 text-sm transition-all duration-200 ${
-        isActive
-          ? 'text-primary font-medium'
-          : 'text-muted-foreground hover:text-foreground'
+        isActive ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
       }`}
     >
       <span>{label}</span>
@@ -181,9 +176,11 @@ function AdminLayout() {
   return (
     <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out ${
-        mobileNavOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 lg:static lg:inset-auto`}>
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out ${
+          mobileNavOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 lg:static lg:inset-auto`}
+      >
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-5 border-b border-border">
@@ -208,7 +205,9 @@ function AdminLayout() {
           <nav className="flex-1 py-4 overflow-y-auto">
             {/* Main Section */}
             <div className="mb-6">
-              <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Huvudmeny</p>
+              <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
+                Huvudmeny
+              </p>
               {isOrganizer && !isDemoTester && (
                 <NavItem href="/admin" label="Översikt" icon={<LayoutDashboard className="w-5 h-5" />} />
               )}
@@ -216,7 +215,9 @@ function AdminLayout() {
 
             {/* Management */}
             <div className="mb-6">
-              <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Hantering</p>
+              <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
+                Hantering
+              </p>
               {isOrganizer && (
                 <NavItem href="/admin/users" label="Användare" icon={<Users className="w-5 h-5" />} />
               )}
@@ -229,6 +230,7 @@ function AdminLayout() {
                 <SubNavItem href="/admin/tickets" label="Översikt" />
                 <SubNavItem href="/admin/tickets/events" label="Evenemang" />
                 <SubNavItem href="/admin/tickets/types" label="Biljetttyper" />
+                <SubNavItem href="/admin/tickets/companies" label="Företag" />
                 <SubNavItem href="/admin/tickets/new" label="Utfärda biljett" />
               </NavGroup>
             </div>
@@ -236,7 +238,9 @@ function AdminLayout() {
             {/* System */}
             {isOrganizer && (
               <div className="mb-6">
-                <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">System</p>
+                <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
+                  System
+                </p>
                 <NavItem href="/admin/logs" label="Aktivitetslogg" icon={<History className="w-5 h-5" />} />
               </div>
             )}
@@ -281,7 +285,6 @@ function AdminLayout() {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
         <header className="sticky top-0 z-30 h-16 bg-card border-b border-border px-4 lg:px-6 flex items-center justify-between gap-4">
-          {/* Left: Mobile menu + Breadcrumb */}
           <div className="flex items-center gap-4">
             <button
               onClick={() => setMobileNavOpen(true)}
@@ -289,19 +292,24 @@ function AdminLayout() {
             >
               <Menu className="w-5 h-5" />
             </button>
-            
+
             <div className="hidden sm:flex items-center gap-2 text-sm">
-              <a href="/admin" className="text-muted-foreground hover:text-foreground transition-colors">Admin</a>
+              <a href="/admin" className="text-muted-foreground hover:text-foreground transition-colors">
+                Admin
+              </a>
               <span className="text-muted">/</span>
               <span className="text-foreground font-medium">
-                {currentPath === '/admin' || currentPath === '/admin/' ? 'Översikt' :
-                 currentPath.includes('/users') ? 'Användare' :
-                 currentPath.includes('/tickets') ? 'Biljetter' : 'Sida'}
+                {currentPath === '/admin' || currentPath === '/admin/'
+                  ? 'Översikt'
+                  : currentPath.includes('/users')
+                    ? 'Användare'
+                    : currentPath.includes('/tickets')
+                      ? 'Biljetter'
+                      : 'Sida'}
               </span>
             </div>
           </div>
 
-          {/* Right: Actions */}
           <div className="flex items-center gap-3">
             <a
               href="/"
@@ -311,7 +319,7 @@ function AdminLayout() {
               <ExternalLink className="w-4 h-4" />
               Visa sida
             </a>
-            
+
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -334,7 +342,7 @@ function AdminLayout() {
                       <p className="text-xs text-muted-foreground">{user.email}</p>
                       <p className="text-xs text-muted-foreground mt-1">ID: {user.id}</p>
                     </div>
-                    
+
                     <div className="p-2">
                       {editingName ? (
                         <div className="px-2 py-2 space-y-2">
@@ -353,7 +361,10 @@ function AdminLayout() {
                               {savingName ? 'Sparar...' : 'Spara'}
                             </button>
                             <button
-                              onClick={() => { setEditingName(false); setName(user.name || '') }}
+                              onClick={() => {
+                                setEditingName(false)
+                                setName(user.name || '')
+                              }}
                               className="px-3 py-1.5 text-xs font-medium text-muted-foreground border border-border rounded hover:bg-secondary/50"
                             >
                               Avbryt
@@ -370,7 +381,7 @@ function AdminLayout() {
                         </button>
                       )}
                     </div>
-                    
+
                     <div className="border-t border-border p-2">
                       <button
                         onClick={handleLogout}

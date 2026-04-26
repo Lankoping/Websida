@@ -1,7 +1,32 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { getTicketsFn, deleteTicketFn, updateTicketStatusFn, getEventsForTicketsFn, verifyTicketByCodeFn, resendTicketEmailFn } from '../../../server/functions/tickets'
+import {
+  getTicketsFn,
+  deleteTicketFn,
+  updateTicketStatusFn,
+  getEventsForTicketsFn,
+  verifyTicketByCodeFn,
+  resendTicketEmailFn,
+} from '../../../server/functions/tickets'
 import { useEffect, useState } from 'react'
-import { Plus, Trash2, CheckCircle, XCircle, Search, Ticket, Mail, User, Calendar, QrCode, Settings, Copy, Check, ShieldCheck, AlertTriangle, RefreshCw } from 'lucide-react'
+import {
+  Plus,
+  Trash2,
+  CheckCircle,
+  XCircle,
+  Search,
+  Ticket,
+  Mail,
+  User,
+  Calendar,
+  QrCode,
+  Settings,
+  Copy,
+  Check,
+  ShieldCheck,
+  AlertTriangle,
+  RefreshCw,
+  Building2,
+} from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { QRCodeSVG } from 'qrcode.react'
 
@@ -18,10 +43,7 @@ function formatStockholmTime(value: Date | string | null | undefined, fallback =
 
 export const Route = createFileRoute('/admin/tickets/')({
   loader: async () => {
-    const [tickets, events] = await Promise.all([
-      getTicketsFn(),
-      getEventsForTicketsFn()
-    ])
+    const [tickets, events] = await Promise.all([getTicketsFn(), getEventsForTicketsFn()])
     return { tickets, events }
   },
   component: TicketsAdmin,
@@ -32,7 +54,7 @@ function TicketsAdmin() {
   const router = useRouter()
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedTicket, setSelectedTicket] = useState<typeof tickets[0] | null>(null)
+  const [selectedTicket, setSelectedTicket] = useState<(typeof tickets)[0] | null>(null)
   const [copiedId, setCopiedId] = useState<number | null>(null)
   const [verificationResult, setVerificationResult] = useState<any>(null)
   const [verificationUrl, setVerificationUrl] = useState('')
@@ -45,7 +67,6 @@ function TicketsAdmin() {
   const handleManualVerification = async () => {
     const code = window.prompt('Ange biljettkod (t.ex. TKT-ABC123XY):')
     if (!code) return
-
     try {
       const res = await verifyTicketByCodeFn({ data: { code: code.trim().toUpperCase(), markAsUsed: true } })
       setVerificationResult(res)
@@ -98,10 +119,10 @@ function TicketsAdmin() {
   }
 
   const getEventTitle = (eventId: number) => {
-    return events.find(e => e.id === eventId)?.title || 'Okänt event'
+    return events.find((e) => e.id === eventId)?.title || 'Okänt event'
   }
 
-  const filteredTickets = tickets.filter(ticket => {
+  const filteredTickets = tickets.filter((ticket) => {
     const searchLower = searchQuery.toLowerCase()
     const eventTitle = getEventTitle(ticket.eventId).toLowerCase()
     return (
@@ -125,28 +146,35 @@ function TicketsAdmin() {
             <p className="text-muted-foreground mt-2">Utfärda och hantera biljetter för dina event.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button 
+            <button
               onClick={() => navigate({ to: '/admin/tickets/events' })}
               className="px-4 py-2.5 border border-border text-muted-foreground text-xs uppercase tracking-wider font-medium hover:text-foreground hover:border-primary/50 transition-all inline-flex items-center gap-2"
             >
               <Calendar className="w-4 h-4" />
               Events
             </button>
-            <button 
+            <button
               onClick={() => navigate({ to: '/admin/tickets/types' })}
               className="px-4 py-2.5 border border-border text-muted-foreground text-xs uppercase tracking-wider font-medium hover:text-foreground hover:border-primary/50 transition-all inline-flex items-center gap-2"
             >
               <Settings className="w-4 h-4" />
               Typer
             </button>
-            <button 
+            <button
+              onClick={() => navigate({ to: '/admin/tickets/companies' })}
+              className="px-4 py-2.5 border border-border text-muted-foreground text-xs uppercase tracking-wider font-medium hover:text-foreground hover:border-primary/50 transition-all inline-flex items-center gap-2"
+            >
+              <Building2 className="w-4 h-4" />
+              Företag
+            </button>
+            <button
               onClick={handleManualVerification}
               className="px-4 py-2.5 border border-border text-muted-foreground text-xs uppercase tracking-wider font-medium hover:text-foreground hover:border-primary/50 transition-all inline-flex items-center gap-2"
             >
               <Ticket className="w-4 h-4" />
               Ange Kod
             </button>
-            <button 
+            <button
               onClick={() => navigate({ to: '/admin/tickets/new' })}
               className="px-4 py-2.5 bg-primary text-primary-foreground text-xs uppercase tracking-wider font-medium hover:bg-primary/90 transition-all inline-flex items-center gap-2"
             >
@@ -160,9 +188,9 @@ function TicketsAdmin() {
       <div className="bg-card border border-border">
         <div className="p-4 border-b border-border">
           <div className="relative">
-            <input 
-              type="text" 
-              placeholder="Sök på namn, e-post, kod eller event..." 
+            <input
+              type="text"
+              placeholder="Sök på namn, e-post, kod eller event..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full p-3 pl-10 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all placeholder:text-muted-foreground"
@@ -179,7 +207,9 @@ function TicketsAdmin() {
                 <th className="p-4 text-[10px] uppercase tracking-widest font-medium text-muted-foreground">Deltagare</th>
                 <th className="p-4 text-[10px] uppercase tracking-widest font-medium text-muted-foreground">Typ & Pris</th>
                 <th className="p-4 text-[10px] uppercase tracking-widest font-medium text-muted-foreground">Status</th>
-                <th className="p-4 text-[10px] uppercase tracking-widest font-medium text-muted-foreground text-right">Åtgärder</th>
+                <th className="p-4 text-[10px] uppercase tracking-widest font-medium text-muted-foreground text-right">
+                  Åtgärder
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -193,8 +223,8 @@ function TicketsAdmin() {
                   <td className="p-4">
                     <div className="flex flex-col min-w-[120px]">
                       <span className="text-sm font-medium flex items-center gap-1.5 text-foreground">
-                       <User className="w-3 h-3 text-muted-foreground" />
-                       <span className="truncate">{ticket.participantName}</span>
+                        <User className="w-3 h-3 text-muted-foreground" />
+                        <span className="truncate">{ticket.participantName}</span>
                       </span>
                       <span className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
                         <Calendar className="w-3 h-3" />
@@ -204,18 +234,24 @@ function TicketsAdmin() {
                   </td>
                   <td className="p-4">
                     <div className="flex flex-col whitespace-nowrap">
-                      <span className="text-[10px] uppercase tracking-wider font-medium text-primary">{ticket.ticketType}</span>
+                      <span className="text-[10px] uppercase tracking-wider font-medium text-primary">
+                        {ticket.ticketType}
+                      </span>
                       <span className="text-sm font-mono text-foreground">{ticket.pricePaid} SEK</span>
                     </div>
                   </td>
                   <td className="p-4">
                     <div className="flex flex-col min-w-[100px]">
-                      <div className={`px-2 py-1 text-[10px] font-medium uppercase tracking-wider border mb-1 flex items-center justify-between transition-all ${
-                        ticket.status === 'valid' ? 'border-green-500/30 text-green-600 bg-green-50' :
-                        ticket.status === 'used' ? 'border-blue-500/30 text-blue-600 bg-blue-50' :
-                        'border-red-500/30 text-red-600 bg-red-50'
-                      }`}>
-                        <select 
+                      <div
+                        className={`px-2 py-1 text-[10px] font-medium uppercase tracking-wider border mb-1 flex items-center justify-between transition-all ${
+                          ticket.status === 'valid'
+                            ? 'border-green-500/30 text-green-600 bg-green-50'
+                            : ticket.status === 'used'
+                              ? 'border-blue-500/30 text-blue-600 bg-blue-50'
+                              : 'border-red-500/30 text-red-600 bg-red-50'
+                        }`}
+                      >
+                        <select
                           value={ticket.status}
                           onChange={(e) => handleUpdateStatus(ticket.id, e.target.value as any)}
                           className="bg-transparent outline-none cursor-pointer w-full"
@@ -241,33 +277,41 @@ function TicketsAdmin() {
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex justify-end gap-1">
-                      <button 
+                      <button
                         onClick={() => handleResendEmail(ticket.id)}
                         disabled={resendingId === ticket.id}
                         className={`p-2 transition-all flex items-center gap-1 ${
-                          resendingId === ticket.id ? 'text-muted-foreground' : 'text-muted-foreground hover:text-primary hover:bg-secondary'
+                          resendingId === ticket.id
+                            ? 'text-muted-foreground'
+                            : 'text-muted-foreground hover:text-primary hover:bg-secondary'
                         }`}
                         title="Skicka e-post igen"
                       >
-                        {resendingId === ticket.id ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                        {resendingId === ticket.id ? (
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Mail className="w-4 h-4" />
+                        )}
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleCopyLink(ticket.ticketCode, ticket.id)}
                         className={`p-2 transition-all flex items-center gap-1 ${
-                          copiedId === ticket.id ? 'text-green-600 bg-green-50' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                          copiedId === ticket.id
+                            ? 'text-green-600 bg-green-50'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                         }`}
                         title="Kopiera länk"
                       >
                         {copiedId === ticket.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                       </button>
-                      <button 
+                      <button
                         onClick={() => setSelectedTicket(ticket)}
                         className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
                         title="Visa QR"
                       >
                         <QrCode className="w-4 h-4" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleDelete(ticket.id)}
                         className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                         title="Radera"
@@ -290,15 +334,21 @@ function TicketsAdmin() {
         </div>
       </div>
 
+      {/* Verification modal */}
       {verificationResult && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-foreground/80 backdrop-blur-md" onClick={() => setVerificationResult(null)}>
-          <div className={`w-full max-w-sm p-8 bg-card border ${
-            !verificationResult.success || !verificationResult.checkingIn
-              ? 'border-destructive/30'
-              : 'border-green-500/30'
-          } relative overflow-hidden text-center`} onClick={e => e.stopPropagation()}>
-            
-            <button 
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-foreground/80 backdrop-blur-md"
+          onClick={() => setVerificationResult(null)}
+        >
+          <div
+            className={`w-full max-w-sm p-8 bg-card border ${
+              !verificationResult.success || !verificationResult.checkingIn
+                ? 'border-destructive/30'
+                : 'border-green-500/30'
+            } relative overflow-hidden text-center`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
               onClick={() => setVerificationResult(null)}
               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
             >
@@ -324,11 +374,15 @@ function TicketsAdmin() {
             </div>
 
             <h3 className="font-display text-2xl text-foreground mb-1">
-              {verificationResult.success 
-                ? (verificationResult.checkingIn ? 'Godkänd Incheckning' : (verificationResult.ticket.status === 'used' ? 'Biljett Redan Använd' : 'Biljett Ogiltig')) 
+              {verificationResult.success
+                ? verificationResult.checkingIn
+                  ? 'Godkänd Incheckning'
+                  : verificationResult.ticket.status === 'used'
+                    ? 'Biljett Redan Använd'
+                    : 'Biljett Ogiltig'
                 : 'Ogiltig Kod'}
             </h3>
-            
+
             {verificationResult.ticket && (
               <div className="mt-6 text-left space-y-4 border-t border-border pt-6">
                 <div>
@@ -349,7 +403,7 @@ function TicketsAdmin() {
               <p className="text-sm text-destructive mt-4">{verificationResult.message}</p>
             )}
 
-            <button 
+            <button
               onClick={() => setVerificationResult(null)}
               className="w-full mt-8 py-3 bg-primary text-primary-foreground text-xs uppercase tracking-widest font-medium hover:bg-primary/90 transition-all"
             >
@@ -359,16 +413,23 @@ function TicketsAdmin() {
         </div>
       )}
 
+      {/* QR modal */}
       {selectedTicket && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/80 backdrop-blur-sm" onClick={() => setSelectedTicket(null)}>
-          <div className="bg-card border border-border p-8 max-w-sm w-full relative" onClick={e => e.stopPropagation()}>
-            <button 
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/80 backdrop-blur-sm"
+          onClick={() => setSelectedTicket(null)}
+        >
+          <div
+            className="bg-card border border-border p-8 max-w-sm w-full relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
               onClick={() => setSelectedTicket(null)}
               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
             >
               <XCircle className="w-6 h-6" />
             </button>
-            
+
             <div className="text-center space-y-6">
               <div>
                 <h3 className="font-display text-xl text-foreground mb-1">{selectedTicket.participantName}</h3>
@@ -386,7 +447,7 @@ function TicketsAdmin() {
                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Skanna för att verifiera</p>
               </div>
 
-              <button 
+              <button
                 onClick={() => window.print()}
                 className="w-full py-3 bg-primary text-primary-foreground text-xs uppercase tracking-widest font-medium hover:bg-primary/90 transition-all"
               >

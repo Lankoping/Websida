@@ -28,14 +28,20 @@ export const sendEmail = async ({
   const transporter = nodemailer.createTransport({
     host,
     port,
-    secure: port === 465, // true for 465, false for other ports
+    secure: port === 465, // true for 465 (SSL), false for 587 (STARTTLS)
+    requireTLS: port === 587, // Force STARTTLS upgrade on port 587
     auth: {
       user,
       pass,
     },
+    tls: {
+      rejectUnauthorized: false, // Accept self-signed / internal certs
+    },
   })
 
   try {
+    // Verify connection before sending
+    await transporter.verify()
     const info = await transporter.sendMail({
       from,
       to,
@@ -43,10 +49,10 @@ export const sendEmail = async ({
       text,
       html,
     })
-    console.log('Message sent: %s', info.messageId)
+    console.log('Email sent to %s — messageId: %s', to, info.messageId)
     return true
-  } catch (error) {
-    console.error('Error sending email:', error)
+  } catch (error: any) {
+    console.error('Error sending email to %s: %s', to, error?.message || error)
     return false
   }
 }

@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { loginFn, resetPasswordWithTokenFn } from '../server/functions/auth'
@@ -92,7 +91,7 @@ function Login() {
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="••••••••" 
+                placeholder="••••••••"
                 className="w-full p-2.5 bg-background border border-border rounded text-foreground text-sm placeholder:text-muted-foreground outline-none focus:border-primary/60 transition-colors"
                 required
               />
@@ -184,15 +183,4 @@ function Login() {
       </div>
     </div>
   )
-=======
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/login')({
-  component: LoginStub,
-})
-
-function LoginStub() {
-  if (typeof window !== 'undefined') window.location.href = '/'
-  return null
->>>>>>> Stashed changes
 }

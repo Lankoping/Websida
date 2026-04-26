@@ -1,5 +1,5 @@
 'use server'
-import { createServerFn } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '../db/runtime'
 import { companies, companyTicketPricing, ticketTypes } from '../db/schema'
 import { eq, and } from 'drizzle-orm'

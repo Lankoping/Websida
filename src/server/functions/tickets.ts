@@ -1,440 +1,418 @@
-J3VzZSBzZXJ2ZXInCmltcG9ydCB7IGNyZWF0ZVNlcnZlckZuIH0gZnJvbSAn
-QHRhbnN0YWNrL3JlYWN0LXJvdXRlcicKaW1wb3J0IHsgZ2V0RGIgfSBmcm9t
-ICcuLi9kYi9ydW50aW1lJwppbXBvcnQgeyB0aWNrZXRzLCBwb3N0cywgdGlj
-a2V0VHlwZXMsIGV2ZW50cywgdXNlcnMgfSBmcm9tICcuLi9kYi9zY2hlbWEn
-CmltcG9ydCB7IGVxLCBhbmQsIGx0LCBzcWwgfSBmcm9tICdkcml6emxlLW9y
-bScKaW1wb3J0IHsgeiB9IGZyb20gJ3pvZCcKaW1wb3J0IHsgZ2V0Q29va2ll
-IH0gZnJvbSAnQHRhbnN0YWNrL3JlYWN0LXJvdXRlci9zZXJ2ZXInCmltcG9y
-dCB7IG5hbm9pZCB9IGZyb20gJ25hbm9pZCcKaW1wb3J0IHsgaXNEZW1vVGVz
-dGVyVXNlciwgcmVxdWlyZVN0YWZmVXNlciB9IGZyb20gJy4uL2xpYi9hY2Nl
-c3MnCmltcG9ydCB7IHdyaXRlQWN0aXZpdHlMb2cgfSBmcm9tICcuL2xvZ3Mn
-CmltcG9ydCB7IHNlbmRFbWFpbCB9IGZyb20gJy4uL2xpYi9lbWFpbCcKCmFz
-eW5jIGZ1bmN0aW9uIGNoZWNrQWRtaW4oKSB7CiAgY29uc3QgdXNlciA9IGF3
-YWl0IHJlcXVpcmVTdGFmZlVzZXIoKQogIHJldHVybiB1c2VyCn0KCmV4cG9y
-dCBjb25zdCBnZXRFdmVudHNGbiA9IGNyZWF0ZVNlcnZlckZuKHsgbWV0aG9k
-OiAnR0VUJyB9KQogIC5oYW5kbGVyKGFzeW5jICgpID0+IHsKICAgIGF3YWl0
-IGNoZWNrQWRtaW4oKQogICAgY29uc3QgZGIgPSBhd2FpdCBnZXREYigpCiAg
-ICByZXR1cm4gYXdhaXQgZGIuc2VsZWN0KCkuZnJvbShldmVudHMpCiAgfSkK
-CmV4cG9ydCBjb25zdCBjcmVhdGVFdmVudEZuID0gY3JlYXRlU2VydmVyRm4o
-eyBtZXRob2Q6ICJQT1NUIiB9KQogIC5pbnB1dFZhbGlkYXRvcigoZGF0YTog
-dW5rbm93bikgPT4KICAgIHoub2JqZWN0KHsKICAgICAgdGl0bGU6IHouc3Ry
-aW5nKCksCiAgICAgIGRlc2NyaXB0aW9uOiB6LnN0cmluZygpLm9wdGlvbmFs
-KCksCiAgICAgIGRhdGU6IHouc3RyaW5nKCksIC8vIFdlJ2xsIHBhcnNlIHRo
-aXMgYXMgYSBEYXRlIG9uIHRoZSBzZXJ2ZXIKICAgICAgbG9jYXRpb246IHou
-c3RyaW5nKCkub3B0aW9uYWwoKSwKICAgICAgaW1hZ2U6IHouc3RyaW5nKCku
-b3B0aW9uYWwoKSwKICAgICAgcHVibGlzaGVkOiB6LmJvb2xlYW4oKS5kZWZh
-dWx0KGZhbHNlKSwKICAgICAgZmluaXNoZWQ6IHouYm9vbGVhbigpLmRlZmF1
-bHQoZmFsc2UpLAogICAgfSkucGFyc2UoZGF0YSkKICApCiAgLmhhbmRsZXIo
-YXN5bmMgKHsgZGF0YSB9KSA9PiB7CiAgICBjb25zdCBhZG1pbiA9IGF3YWl0
-IGNoZWNrQWRtaW4oKQogICAgY29uc3QgZGIgPSBhd2FpdCBnZXREYigpCiAg
-ICBjb25zdCByZXN1bHQgPSBhd2FpdCBkYi5pbnNlcnQoZXZlbnRzKS52YWx1
-ZXMoewogICAgICAuLi5kYXRhLAogICAgICBkYXRlOiBuZXcgRGF0ZShkYXRh
-LmRhdGUpLAogICAgfSkucmV0dXJuaW5nKCkKCiAgICBhd2FpdCB3cml0ZUFj
-dGl2aXR5TG9nKHsKICAgICAgYWN0b3JVc2VySWQ6IGFkbWluLmlkLAogICAg
-ICBhY3RvclJvbGU6IGFkbWluLnJvbGUsCiAgICAgIGFjdGlvbjogJ2V2ZW50
-LmNyZWF0ZScsCiAgICAgIGVudGl0eVR5cGU6ICdldmVudCcsCiAgICAgIGVu
-dGl0eUlkOiByZXN1bHRbMF0uaWQsCiAgICAgIGRldGFpbHM6IHsgdGl0bGU6
-IHJlc3VsdFswXS50aXRsZSB9LAogICAgfSkKCiAgICByZXR1cm4gcmVzdWx0
-WzBdCiAgfSkKCmV4cG9ydCBjb25zdCB1cGRhdGVFdmVudEZuID0gY3JlYXRl
-U2VydmVyRm4oeyBtZXRob2Q6ICJQT1NUIiB9KQogIC5pbnB1dFZhbGlkYXRv
-cigoZGF0YTogdW5rbm93bikgPT4KICAgIHoub2JqZWN0KHsKICAgICAgaWQ6
-IHoubnVtYmVyKCksCiAgICAgIHRpdGxlOiB6LnN0cmluZygpLAogICAgICBk
-ZXNjcmlwdGlvbjogei5zdHJpbmcoKS5vcHRpb25hbCgpLAogICAgICBkYXRl
-OiB6LnN0cmluZygpLAogICAgICBsb2NhdGlvbjogei5zdHJpbmcoKS5vcHRp
-b25hbCgpLAogICAgICBpbWFnZTogei5zdHJpbmcoKS5vcHRpb25hbCgpLAog
-ICAgICBwdWJsaXNoZWQ6IHouYm9vbGVhbigpLmRlZmF1bHQoZmFsc2UpLAog
-ICAgICBmaW5pc2hlZDogei5ib29sZWFuKCkuZGVmYXVsdChmYWxzZSksCiAg
-ICB9KS5wYXJzZShkYXRhKQogICkKICAuaGFuZGxlcihhc3luYyAoeyBkYXRh
-IH0pID0+IHsKICAgIGNvbnN0IGFkbWluID0gYXdhaXQgY2hlY2tBZG1pbigp
-CiAgICBjb25zdCBkYiA9IGF3YWl0IGdldERiKCkKICAgIGNvbnN0IHsgaWQs
-IC4uLnVwZGF0ZURhdGEgfSA9IGRhdGEKICAgIAogICAgY29uc3QgcmVzdWx0
-ID0gYXdhaXQgZGIudXBkYXRlKGV2ZW50cykKICAgICAgLnNldCh7CiAgICAg
-ICAgLi4udXBkYXRlRGF0YSwKICAgICAgICBkYXRlOiBuZXcgRGF0ZSh1cGRh
-dGVEYXRhLmRhdGUpLAogICAgICAgIHVwZGF0ZWRBdDogbmV3IERhdGUoKQog
-ICAgICB9KQogICAgICAud2hlcmUoZXEoZXZlbnRzLmlkLCBpZCkpCiAgICAg
-IC5yZXR1cm5pbmcoKQoKICAgIGF3YWl0IHdyaXRlQWN0aXZpdHlMb2coewog
-ICAgICBhY3RvclVzZXJJZDogYWRtaW4uaWQsCiAgICAgIGFjdG9yUm9sZTog
-YWRtaW4ucm9sZSwKICAgICAgYWN0aW9uOiAnZXZlbnQudXBkYXRlJywKICAg
-ICAgZW50aXR5VHlwZTogJ2V2ZW50JywKICAgICAgZW50aXR5SWQ6IGlkLAog
-ICAgICBkZXRhaWxzOiB7IHRpdGxlOiByZXN1bHRbMF0udGl0bGUgfSwKICAg
-IH0pCgogICAgcmV0dXJuIHJlc3VsdFswXQogIH0pCgpleHBvcnQgY29uc3Qg
-dXBkYXRlRXZlbnRTdGF0dXNGbiA9IGNyZWF0ZVNlcnZlckZuKHsgbWV0aG9k
-OiAiUE9TVCIgfSkKICAuaW5wdXRWYWxpZGF0b3IoKGRhdGE6IHVua25vd24p
-ID0+CiAgICB6Lm9iamVjdCh7CiAgICAgIGV2ZW50SWQ6IHoubnVtYmVyKCks
-CiAgICAgIGZpbmlzaGVkOiB6LmJvb2xlYW4oKSwKICAgIH0pLnBhcnNlKGRh
-dGEpCiAgKQogIC5oYW5kbGVyKGFzeW5jICh7IGRhdGEgfSkgPT4gewogICAg
-Y29uc3QgYWRtaW4gPSBhd2FpdCBjaGVja0FkbWluKCkKICAgIGNvbnN0IGRi
-ID0gYXdhaXQgZ2V0RGIoKQogICAgCiAgICBjb25zdCByZXN1bHQgPSBhd2Fp
-dCBkYi51cGRhdGUoZXZlbnRzKQogICAgICAuc2V0KHsgZmluaXNoZWQ6IGRh
-dGEuZmluaXNoZWQsIHVwZGF0ZWRBdDogbmV3IERhdGUoKSB9KQogICAgICAu
-d2hlcmUoZXEoZXZlbnRzLmlkLCBkYXRhLmV2ZW50SWQpKQogICAgICAucmV0
-dXJuaW5nKCkKCiAgICBhd2FpdCB3cml0ZUFjdGl2aXR5TG9nKHsKICAgICAg
-YWN0b3JVc2VySWQ6IGFkbWluLmlkLAogICAgICBhY3RvclJvbGU6IGFkbWlu
-LnJvbGUsCiAgICAgIGFjdGlvbjogJ2V2ZW50LnN0YXR1cy51cGRhdGUnLAog
-ICAgICBlbnRpdHlUeXBlOiAnZXZlbnQnLAogICAgICBlbnRpdHlJZDogZGF0
-YS5ldmVudElkLAogICAgICBkZXRhaWxzOiB7IGZpbmlzaGVkOiBkYXRhLmZp
-bmlzaGVkIH0sCiAgICB9KQoKICAgIHJldHVybiByZXN1bHRbMF0KICB9KQoK
-ZXhwb3J0IGNvbnN0IGRlbGV0ZUV2ZW50Rm4gPSBjcmVhdGVTZXJ2ZXJGbih7
-IG1ldGhvZDogIlBPU1QiIH0pCiAgLmlucHV0VmFsaWRhdG9yKChkYXRhOiB1
-bmtub3duKSA9PiB6Lm51bWJlcigpLnBhcnNlKGRhdGEpKQogIC5oYW5kbGVy
-KGFzeW5jICh7IGRhdGE6IGlkIH0pID0+IHsKICAgIGNvbnN0IGFkbWluID0g
-YXdhaXQgY2hlY2tBZG1pbigpCiAgICBjb25zdCBkYiA9IGF3YWl0IGdldERi
-KCkKICAgIGF3YWl0IGRiLmRlbGV0ZShldmVudHMpLndoZXJlKGVxKGV2ZW50
-cy5pZCwgaWQpKQoKICAgIGF3YWl0IHdyaXRlQWN0aXZpdHlMb2coewogICAg
-ICBhY3RvclVzZXJJZDogYWRtaW4uaWQsCiAgICAgIGFjdG9yUm9sZTogYWRt
-aW4ucm9sZSwKICAgICAgYWN0aW9uOiAnZXZlbnQuZGVsZXRlJywKICAgICAg
-ZW50aXR5VHlwZTogJ2V2ZW50JywKICAgICAgZW50aXR5SWQ6IGlkLAogICAg
-fSkKCiAgICByZXR1cm4geyBzdWNjZXNzOiB0cnVlIH0KICB9KQoKZXhwb3J0
-IGNvbnN0IGdldFRpY2tldFR5cGVzRm4gPSBjcmVhdGVTZXJ2ZXJGbih7IG1l
-dGhvZDogJ0dFVCcgfSkKICAuaGFuZGxlcihhc3luYyAoKSA9PiB7CiAgICBh
-d2FpdCBjaGVja0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdhaXQgZ2V0RGIo
-KQogICAgcmV0dXJuIGF3YWl0IGRiLnNlbGVjdCgpLmZyb20odGlja2V0VHlw
-ZXMpCiAgfSkKCmV4cG9ydCBjb25zdCBjcmVhdGVUaWNrZXRUeXBlRm4gPSBj
-cmVhdGVTZXJ2ZXJGbih7IG1ldGhvZDogIlBPU1QiIH0pCiAgLmlucHV0VmFs
-aWRhdG9yKChkYXRhOiB1bmtub3duKSA9PgogICAgei5vYmplY3QoewogICAg
-ICBuYW1lOiB6LnN0cmluZygpLAogICAgICBwcmljZTogei5udW1iZXIoKSwK
-ICAgICAgZGVzY3JpcHRpb246IHouc3RyaW5nKCkub3B0aW9uYWwoKSwKICAg
-IH0pLnBhcnNlKGRhdGEpCiAgKQogIC5oYW5kbGVyKGFzeW5jICh7IGRhdGEg
-fSkgPT4gewogICAgY29uc3QgYWRtaW4gPSBhd2FpdCBjaGVja0FkbWluKCkK
-ICAgIGNvbnN0IGRiID0gYXdhaXQgZ2V0RGIoKQogICAgY29uc3QgcmVzdWx0
-ID0gYXdhaXQgZGIuaW5zZXJ0KHRpY2tldFR5cGVzKS52YWx1ZXMoZGF0YSku
-cmV0dXJuaW5nKCkKCiAgICBhd2FpdCB3cml0ZUFjdGl2aXR5TG9nKHsKICAg
-ICAgYWN0b3JVc2VySWQ6IGFkbWluLmlkLAogICAgICBhY3RvclJvbGU6IGFk
-bWluLnJvbGUsCiAgICAgIGFjdGlvbjogJ3RpY2tldF90eXBlLmNyZWF0ZScs
-CiAgICAgIGVudGl0eVR5cGU6ICd0aWNrZXRfdHlwZScsCiAgICAgIGVudGl0
-eUlkOiByZXN1bHRbMF0uaWQsCiAgICAgIGRldGFpbHM6IHsgbmFtZTogcmVz
-dWx0WzBdLm5hbWUgfSwKICAgIH0pCgogICAgcmV0dXJuIHJlc3VsdFswXQog
-IH0pCgpleHBvcnQgY29uc3QgZGVsZXRlVGlja2V0VHlwZUZuID0gY3JlYXRl
-U2VydmVyRm4oeyBtZXRob2Q6ICJQT1NUIiB9KQogIC5pbnB1dFZhbGlkYXRv
-cigoZGF0YTogdW5rbm93bikgPT4gei5udW1iZXIoKS5wYXJzZShkYXRhKSkK
-ICAuaGFuZGxlcihhc3luYyAoeyBkYXRhOiBpZCB9KSA9PiB7CiAgICBjb25z
-dCBhZG1pbiA9IGF3YWl0IGNoZWNrQWRtaW4oKQogICAgY29uc3QgZGIgPSBh
-d2FpdCBnZXREYigpCiAgICBhd2FpdCBkYi5kZWxldGUodGlja2V0VHlwZXMp
-LndoZXJlKGVxKHRpY2tldFR5cGVzLmlkLCBpZCkpCgogICAgYXdhaXQgd3Jp
-dGVBY3Rpdml0eUxvZyh7CiAgICAgIGFjdG9yVXNlcklkOiBhZG1pbi5pZCwK
-ICAgICAgYWN0b3JSb2xlOiBhZG1pbi5yb2xlLAogICAgICBhY3Rpb246ICd0
-aWNrZXRfdHlwZS5kZWxldGUnLAogICAgICBlbnRpdHlUeXBlOiAndGlja2V0
-X3R5cGUnLAogICAgICBlbnRpdHlJZDogaWQsCiAgICB9KQoKICAgIHJldHVy
-biB7IHN1Y2Nlc3M6IHRydWUgfQogIH0pCgpleHBvcnQgY29uc3QgZ2V0VGlj
-a2V0c0ZuID0gY3JlYXRlU2VydmVyRm4oeyBtZXRob2Q6ICdHRVQnIH0pCiAg
-LmhhbmRsZXIoYXN5bmMgKCkgPT4gewogICAgY29uc3QgYWRtaW4gPSBhd2Fp
-dCBjaGVja0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdhaXQgZ2V0RGIoKQog
-ICAgY29uc3QgYmFzZVF1ZXJ5ID0gZGIuc2VsZWN0KHsKICAgICAgaWQ6IHRp
-Y2tldHMuaWQsCiAgICAgIGV2ZW50SWQ6IHRpY2tldHMuZXZlbnRJZCwKICAg
-ICAgcGFydGljaXBhbnROYW1lOiB0aWNrZXRzLnBhcnRpY2lwYW50TmFtZSwK
-ICAgICAgcGFydGljaXBhbnRFbWFpbDogdGlja2V0cy5wYXJ0aWNpcGFudEVt
-YWlsLAogICAgICB0aWNrZXRUeXBlOiB0aWNrZXRzLnRpY2tldFR5cGUsCiAg
-ICAgIHByaWNlUGFpZDogdGlja2V0cy5wcmljZVBhaWQsCiAgICAgIHRpY2tl
-dENvZGU6IHRpY2tldHMudGlja2V0Q29kZSwKICAgICAgc3RhdHVzOiB0aWNr
-ZXRzLnN0YXR1cywKICAgICAgc2Nhbm5lZEF0OiB0aWNrZXRzLnNjYW5uZWRB
-dCwKICAgICAgc2Nhbm5lZEJ5OiB0aWNrZXRzLnNjYW5uZWRCeSwKICAgICAg
-c2Nhbm5lZEJ5TmFtZTogdXNlcnMubmFtZSwKICAgICAgaXNzdWVkQnk6IHRp
-Y2tldHMuaXNzdWVkQnksCiAgICAgIGNyZWF0ZWRBdDogdGlja2V0cy5jcmVh
-dGVkQXQsCiAgICAgIHVwZGF0ZWRBdDogdGlja2V0cy51cGRhdGVkQXQsCiAg
-ICB9KQogICAgLmZyb20odGlja2V0cykKICAgIC5sZWZ0Sm9pbih1c2Vycywg
-ZXEodGlja2V0cy5zY2FubmVkQnksIHVzZXJzLmlkKSkKCiAgICBpZiAoaXNE
-ZW1vVGVzdGVyVXNlcihhZG1pbikpIHsKICAgICAgcmV0dXJuIGF3YWl0IGJh
-c2VRdWVyeS53aGVyZShlcSh0aWNrZXRzLmlzc3VlZEJ5LCBhZG1pbi5pZCkp
-CiAgICB9CgogICAgcmV0dXJuIGF3YWl0IGJhc2VRdWVyeQogIH0pCgpleHBv
-cnQgY29uc3QgZ2V0VGlja2V0Rm4gPSBjcmVhdGVTZXJ2ZXJGbih7IG1ldGhv
-ZDogJ0dFVCcgfSkKICAuaW5wdXRWYWxpZGF0b3IoKGRhdGE6IHVua25vd24p
-ID0+IHouc3RyaW5nKCkucGFyc2UoZGF0YSkpCiAgLmhhbmRsZXIoYXN5bmMg
-KHsgZGF0YTogdGlja2V0SWQgfSkgPT4gewogICAgY29uc3QgYWRtaW4gPSBh
-d2FpdCBjaGVja0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdhaXQgZ2V0RGIo
-KQogICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgZGIuc2VsZWN0KCkuZnJvbSh0
-aWNrZXRzKS53aGVyZShlcSh0aWNrZXRzLmlkLCBwYXJzZUludCh0aWNrZXRJ
-ZCkpKS5saW1pdCgxKQogICAgaWYgKGlzRGVtb1Rlc3RlclVzZXIoYWRtaW4p
-ICYmIHJlc3VsdFswXSAmJiByZXN1bHRbMF0uaXNzdWVkQnkgIT09IGFkbWlu
-LmlkKSB7CiAgICAgIHRocm93IG5ldyBFcnJvcignRm9yYmlkZGVuIGluIGRl
-bW8gbW9kZScpCiAgICB9CiAgICByZXR1cm4gcmVzdWx0WzBdCiAgfSkKCmV4
-cG9ydCBjb25zdCBpc3N1ZVRpY2tldEZuID0gY3JlYXRlU2VydmVyRm4oeyBt
-ZXRob2Q6ICJQT1NUIiB9KQogIC5pbnB1dFZhbGlkYXRvcigoZGF0YTogdW5r
-bm93bikgPT4KICAgIHoub2JqZWN0KHsKICAgICAgZXZlbnRJZDogei5udW1i
-ZXIoKSwKICAgICAgcGFydGljaXBhbnROYW1lOiB6LnN0cmluZygpLAogICAg
-ICBwYXJ0aWNpcGFudEVtYWlsOiB6LnN0cmluZygpLmVtYWlsKCksCiAgICAg
-IHRpY2tldFR5cGU6IHouc3RyaW5nKCksCiAgICAgIHByaWNlUGFpZDogei5u
-dW1iZXIoKSwKICAgIH0pLnBhcnNlKGRhdGEpCiAgKQogIC5oYW5kbGVyKGFz
-eW5jICh7IGRhdGEgfSkgPT4gewogICAgY29uc3QgYWRtaW4gPSBhd2FpdCBj
-aGVja0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdhaXQgZ2V0RGIoKQogICAg
-CiAgICBjb25zdCB0aWNrZXRDb2RlID0gYFRLVC0ke25hbm9pZCg4KS50b1Vw
-cGVyQ2FzZSgpfWAKICAgIAogICAgY29uc3QgbmV3VGlja2V0ID0gYXdhaXQg
-ZGIuaW5zZXJ0KHRpY2tldHMpLnZhbHVlcyh7CiAgICAgIGV2ZW50SWQ6IGRh
-dGEuZXZlbnRJZCwKICAgICAgcGFydGljaXBhbnROYW1lOiBkYXRhLnBhcnRp
-Y2lwYW50TmFtZSwKICAgICAgcGFydGljaXBhbnRFbWFpbDogZGF0YS5wYXJ0
-aWNpcGFudEVtYWlsLAogICAgICB0aWNrZXRUeXBlOiBkYXRhLnRpY2tldFR5
-cGUsCiAgICAgIHByaWNlUGFpZDogZGF0YS5wcmljZVBhaWQsCiAgICAgIHRp
-Y2tldENvZGUsCiAgICAgIGlzc3VlZEJ5OiBhZG1pbi5pZCwKICAgIH0pLnJl
-dHVybmluZygpCgogICAgYXdhaXQgd3JpdGVBY3Rpdml0eUxvZyh7CiAgICAg
-IGFjdG9yVXNlcklkOiBhZG1pbi5pZCwKICAgICAgYWN0b3JSb2xlOiBhZG1p
-bi5yb2xlLAogICAgICBhY3Rpb246ICd0aWNrZXQuaXNzdWUnLAogICAgICBl
-bnRpdHlUeXBlOiAndGlja2V0JywKICAgICAgZW50aXR5SWQ6IG5ld1RpY2tl
-dFswXS5pZCwKICAgICAgZGV0YWlsczogewogICAgICAgIGNvZGU6IG5ld1Rp
-Y2tldFswXS50aWNrZXRDb2RlLAogICAgICAgIGV2ZW50SWQ6IG5ld1RpY2tld
-FswXS5ldmVudElkLAogICAgICB9LAogICAgfSkKCiAgICAvLyBXZSBhbHNv
-IHdhbnQgdG8gc2VuZCB0aGUgb3JkZXIgY29uZmlybWF0aW9uIGVtYWlsIHdo
-ZW4gYSB0aWNrZXQgaXMgaXNzdWVkCiAgICB0cnkgewogICAgICBjb25zdCBl
-dmVudCA9IGF3YWl0IGRiLnNlbGVjdCgpLmZyb20oZXZlbnRzKS53aGVyZShl
-cShldmVudHMuaWQsIGRhdGEuZXZlbnRJZCkpLmxpbWl0KDEpCiAgICAgIGNv
-bnN0IGV2ZW50VGl0bGUgPSBldmVudFswXT8udGl0bGUgfHwgJ0V2ZW50Jwog
-ICAgICBjb25zdCBldmVudERhdGUgPSBldmVudFswXT8uZGF0ZSA/IG5ldyBE
-YXRlKGV2ZW50WzBdLmRhdGUpLnRvTG9jYWxlRGF0ZVN0cmluZygnc3YtU0Un
-KSA6ICdPa8OkbnQgZGF0dW0nCiAgICAgIGNvbnN0IHRpY2tldExpbmsgPSBg
-JHtwcm9jZXNzLmVudi5CQVNFX1VSTCB8fCAnaHR0cHM6Ly9sYW5rb3Bpbmcu
-c2UnfS9iaWxqZXR0LyR7dGlja2V0Q29kZX1gCiAgICAgIAogICAgICBjb25z
-dCBlbWFpbEh0bWwgPSBgCiAgICAgICAgPGRpdiBzdHlsZT0iZm9udC1mYW1p
-bHk6IHNhbnMtc2VyaWY7IG1heC13LXhsIG14LWF1dG87IGJhY2tncm91bmQt
-Y29sb3I6ICMxMDBFMEM7IGNvbG9yOiAjRjBFOEQ4OyBwYWRkaW5nOiAycmVt
-OyBib3JkZXItcmFkaXVzOiA4cHg7IGJvcmRlcjogMXB4IHNvbGlkIHJnYmEo
-MTkyLCA3NCwgNDIsIDAuMik7Ij4KICAgICAgICAgIDxoMiBzdHlsZT0iY29s
-b3I6ICNDMDRBMkE7IHRleHQtdHJhbnNmb3JtOiB1cHBlcmNhc2U7IGxldHRl
-ci1zcGFjaW5nOiAwLjFlbTsgZm9udC1zaXplOiAxNHB4OyBtYXJnaW4tYm90
-dG9tOiAxcmVtOyI+TGFua29waW5nIEJpbGpldHQ8L2gyPgogICAgICAgICAg
-PGgxIHN0eWxlPSJmb250LXNpemU6IDI0cHg7IG1hcmdpbi1ib3R0b206IDEu
-NXJlbTsiPkRpbiBiaWxqZXR0IHRpbGwgJHtldmVudFRpdGxlfTwvaDE+CiAg
-ICAgICAgICA8cCBzdHlsZT0ibWFyZ2luLWJvdHRvbTogMXJlbTsiPkhlaiA8
-c3Ryb25nPiR7ZGF0YS5wYXJ0aWNpcGFudE5hbWV9PC9zdHJvbmc+ITwvcD4K
-ICAgICAgICAgIDxwIHN0eWxlPSJtYXJnaW4tYm90dG9tOiAxLjVyZW07Ij5I
-w6RyIMOkciBkaW4gYmlsamV0dCBmw7ZyIGRldCBrb21tYW5kZSBldmVudGV0
-LjwvcD4KICAgICAgICAgIAogICAgICAgICAgPGRpdiBzdHlsZT0iYmFja2dy
-b3VuZC1jb2xvcjogcmdiYSgxOTIsIDc0LCA0MiwgMC4wNSk7IGJvcmRlcjog
-MXB4IHNvbGlkIHJnYmEoMTkyLCA3NCwgNDIsIDAuMSk7IHBhZGRpbmc6IDEu
-NXJlbTsgYm9yZGVyLXJhZGl1czogNHB4OyBtYXJnaW4tYm90dG9tOiAxLjVy
-ZW07Ij4KICAgICAgICAgICAgPHAgc3R5bGU9Im1hcmdpbjogMCAwIDAuNXJl
-bSAwOyI+PHN0cm9uZz5OYW1uOjwvc3Ryb25nPiAke2RhdGEucGFydGljaXBh
-bnROYW1lfTwvcD4KICAgICAgICAgICAgPHAgc3R5bGU9Im1hcmdpbjogMCAw
-IDAuNXJlbSAwOyI+PHN0cm9uZz5EYXR1bTo8L3N0cm9uZz4gJHtldmVudERh
-dGV9PC9wPgogICAgICAgICAgICA8cCBzdHlsZT0ibWFyZ2luOiAwIDAgMC41
-cmVtIDA7Ij48c3Ryb25nPktvc3RuYWQ6PC9zdHJvbmc+ICR7ZGF0YS5wcmlj
-ZVBhaWR9IFNFSzwvcD4KICAgICAgICAgICAgPHAgc3R5bGU9Im1hcmdpbjog
-MDsiPjxzdHJvbmc+QmlsamV0dGtvZDo8L3N0cm9uZz4gPHNwYW4gc3R5bGU9
-ImZvbnQtZmFtaWx5OiBtb25vc3BhY2U7IGJhY2tncm91bmQtY29sb3I6IHJn
-YmEoMCwwLDAsMC4zKTsgcGFkZGluZzogMnB4IDZweDsgYm9yZGVyLXJhZGl1
-czogNHB4OyI+JHt0aWNrZXRDb2RlfTwvc3Bhbj48L3A+CiAgICAgICAgICA8
-L2Rpdj4KICAgICAgICAgIAogICAgICAgICAgPGEgaHJlZj0iJHt0aWNrZXRM
-aW5rfSIgc3R5bGU9ImRpc3BsYXk6IGlubGluZS1ibG9jazsgYmFja2dyb3Vu
-ZC1jb2xvcjogI0MwNEEyQTsgY29sb3I6IHdoaXRlOyBwYWRkaW5nOiAxMnB4
-IDI0cHg7IHRleHQtZGVjb3JhdGlvbjogbm9uZTsgYm9yZGVyLXJhZGl1czog
-NHB4OyBmb250LXdlaWdodDogYm9sZDsgdGV4dC10cmFuc2Zvcm06IHVwcGVy
-Y2FzZTsgbGV0dGVyLXNwYWNpbmc6IDAuMDVlbTsgbWFyZ2luLWJvdHRvbTog
-MS41cmVtOyI+VmlzYSBkaWdpdGFsIGJpbGpldHQ8L2E+CiAgICAgICAgICAK
-ICAgICAgICAgIDxwIHN0eWxlPSJmb250LXNpemU6IDEycHg7IGNvbG9yOiBy
-Z2JhKDI0MCwgMjMyLCAyMTYsIDAuNik7IG1hcmdpbi1ib3R0b206IDAuNXJl
-bTsiPkhhIGJpbGpldHRlbiByZWRvIGkgbW9iaWxlbiBuw6RyIGR1IGtvbW1l
-ciB0aWxsIGVudHLDqW4uPC9wPgogICAgICAgICAgPHAgc3R5bGU9ImZvbnQt
-c2l6ZTogMTJweDsgY29sb3I6IHJnYmEoMjQwLCAyMzIsIDIxNiwgMC42KTsg
-bWFyZ2luLWJvdHRvbTogMC41cmVtOyI+T20ga25hcHBlbiBpbnRlIGZ1bmdl
-cmFyLCBrb3BpZXJhIG9jaCBrbGlzdHJhIGluIGRlbm5hIGzDpG5rIGkgZGlu
-IHdlYmJsw6RzYXJlOjwvcD4KICAgICAgICAgIDxwIHN0eWxlPSJmb250LXNp
-emU6IDEycHg7IGNvbG9yOiAjQzA0QTJBOyB3b3JkLWJyZWFrOiBicmVhay1h
-bGw7Ij4ke3RpY2tldExpbmt9PC9wPgogICAgICAgIDwvZGl2PmAKICAgICAg
-CiAgICAgIGF3YWl0IHNlbmRFbWFpbCh7CiAgICAgICAgdG86IGRhdGEucGFy
-dGljaXBhbnRFbWFpbCwKICAgICAgICBzdWJqZWN0OiBgRGluIGJpbGpldHQg
-ZsO2ciAke2V2ZW50VGl0bGV9YCwKICAgICAgICB0ZXh0OiBgSGVqICR7ZGF0
-YS5wYXJ0aWNpcGFudE5hbWV9ISBEaW4gYmlsamV0dGtvZCBmw7ZyICR7ZXZl
-bnRUaXRsZX0gKCR7ZXZlbnREYXRlfSkgw6RyICR7dGlja2V0Q29kZX0uIEtv
-c3RuYWQ6ICR7ZGF0YS5wcmljZVBhaWR9IFNFSy4gVmlzYSBiaWxqZXR0ZW4g
-aMOhcjogJHt0aWNrZXRMaW5rfWAsCiAgICAgICAgaHRtbDogZW1haWxIdG1s
-LAogICAgICB9KQogICAgfSBjYXRjaCAoZSkgewogICAgICBjb25zb2xlLmVy
-cm9yKCdGYWlsZWQgdG8gc2VuZCB0aWNrZXQgZW1haWwgb24gaXNzdWUnLCBl
-KQogICAgfQoKICAgIHJldHVybiBuZXdUaWNrZXRbMF0KICB9KQoKZXhwb3J0
-IGNvbnN0IHJlc2VuZFRpY2tldEVtYWlsRm4gPSBjcmVhdGVTZXJ2ZXJGbih7
-IG1ldGhvZDogIlBPU1QiIH0pCiAgLmlucHV0VmFsaWRhdG9yKChkYXRhOiB1
-bmtub3duKSA9PiB6Lm9iamVjdCh7IHRpY2tldElkOiB6Lm51bWJlcigpIH0p
-LnBhcnNlKGRhdGEpKQogIC5oYW5kbGVyKGFzeW5jICh7IGRhdGEgfSkgPT4g
-ewogICAgY29uc3QgYWRtaW4gPSBhd2FpdCBjaGVja0FkbWluKCkKICAgIGNv
-bnN0IGRiID0gYXdhaXQgZ2V0RGIoKQogICAgY29uc3QgdGlja2V0ID0gYXdh
-aXQgZGIuc2VsZWN0KCkuZnJvbSh0aWNrZXRzKS53aGVyZShlcSh0aWNrZXRz
-LmlkLCBkYXRhLnRpY2tldElkKSkubGltaXQoMSkKICAgIGlmICghdGlja2V0
-WzBdKSB0aHJvdyBuZXcgRXJyb3IoJ1RpY2tldCBub3QgZm91bmQnKQogICAg
-CiAgICBjb25zdCBldmVudCA9IGF3YWl0IGRiLnNlbGVjdCgpLmZyb20oZXZl
-bnRzKS53aGVyZShlcShldmVudHMuaWQsIHRpY2tldFswXS5ldmVudElkKSku
-bGltaXQoMSkKICAgIGNvbnN0IGV2ZW50VGl0bGUgPSBldmVudFswXT8udGl0
-bGUgfHwgJ0V2ZW50JwogICAgY29uc3QgZXZlbnREYXRlID0gZXZlbnRbMF0/
-LmRhdGUgPyBuZXcgRGF0ZShldmVudFswXS5kYXRlKS50b0xvY2FsZURhdGVT
-dHJpbmcoJ3N2LVNFJykgOiAnT2vDpG50IGRhdHVtJwogICAgY29uc3QgdGlj
-a2V0TGluayA9IGAke3Byb2Nlc3MuZW52LkJBU0VfVVJMIHx8ICdodHRwczov
-L2xhbmtvcGluZy5zZSd9L2JpbGpldHQvJHt0aWNrZXRbMF0udGlja2V0Q29k
-ZX1gCgogICAgY29uc3QgZW1haWxIdG1sID0gYAogICAgICA8ZGl2IHN0eWxl
-PSJmb250LWZhbWlseTogc2Fucy1zZXJpZjsgbWF4LXcteGwgbXgtYXV0bzsg
-YmFja2dyb3VuZC1jb2xvcjogIzEwMEUwQzsgY29sb3I6ICNGMEU4RDg7IHBh
-ZGRpbmc6IDJyZW07IGJvcmRlci1yYWRpdXM6IDhweDsgYm9yZGVyOiAxcHgg
-c29saWQgcmdiYSgxOTIsIDc0LCA0MiwgMC4yKTsiPgogICAgICAgIDxoMiBz
-dHlsZT0iY29sb3I6ICNDMDRBMkE7IHRleHQtdHJhbnNmb3JtOiB1cHBlcmNh
-c2U7IGxldHRlci1zcGFjaW5nOiAwLjFlbTsgZm9udC1zaXplOiAxNHB4OyBt
-YXJnaW4tYm90dG9tOiAxcmVtOyI+TGFua29waW5nIEJpbGpldHQ8L2gyPgog
-ICAgICAgIDxoMSBzdHlsZT0iZm9udC1zaXplOiAyNHB4OyBtYXJnaW4tYm90
-dG9tOiAxLjVyZW07Ij5EaW4gYmlsamV0dCB0aWxsICR7ZXZlbnRUaXRsZX08
-L2gxPgogICAgICAgIDxwIHN0eWxlPSJtYXJnaW4tYm90dG9tOiAxcmVtOyI+
-SGVqIDxzdHJvbmc+JHt0aWNrZXRbMF0ucGFydGljaXBhbnROYW1lfTwvc3Ry
-b25nPiE8L3A+CiAgICAgICAgPHAgc3R5bGU9Im1hcmdpbi1ib3R0b206IDEu
-NXJlbTsiPkjDpHIgw6RyIGRpbiBiaWxqZXR0IGbDtnIgZGV0IGtvbW1hbmRl
-IGV2ZW50ZXQuPC9wPgogICAgICAgIAogICAgICAgIDxkaXYgc3R5bGU9ImJh
-Y2tncm91bmQtY29sb3I6IHJnYmEoMTkyLCA3NCwgNDIsIDAuMDUpOyBib3Jk
-ZXI6IDFweCBzb2xpZCByZ2JhKDE5MiwgNzQsIDQyLCAwLjEpOyBwYWRkaW5n
-OiAxLjVyZW07IGJvcmRlci1yYWRpdXM6IDRweDsgbWFyZ2luLWJvdHRvbTog
-MS41cmVtOyI+CiAgICAgICAgICA8cCBzdHlsZT0ibWFyZ2luOiAwIDAgMC41
-cmVtIDA7Ij48c3Ryb25nPk5hbW46PC9zdHJvbmc+ICR7dGlja2V0WzBdLnBh
-cnRpY2lwYW50TmFtZX08L3A+CiAgICAgICAgICA8cCBzdHlsZT0ibWFyZ2lu
-OiAwIDAgMC41cmVtIDA7Ij48c3Ryb25nPkRhdHVtOjwvc3Ryb25nPiAke2V2
-ZW50RGF0ZX08L3A+CiAgICAgICAgICA8cCBzdHlsZT0ibWFyZ2luOiAwIDAg
-MC41cmVtIDA7Ij48c3Ryb25nPktvc3RuYWQ6PC9zdHJvbmc+ICR7dGlja2V0
-WzBdLnByaWNlUGFpZH0gU0VNPC9wPgogICAgICAgICAgPHAgc3R5bGU9Im1h
-cmdpbjogMDsiPjxzdHJvbmc+QmlsamV0dGtvZDo8L3N0cm9uZz4gPHNwYW4g
-c3R5bGU9ImZvbnQtZmFtaWx5OiBtb25vc3BhY2U7IGJhY2tncm91bmQtY29s
-b3I6IHJnYmEoMCwwLDAsMC4zKTsgcGFkZGluZzogMnB4IDZweDsgYm9yZGVy
-LXJhZGl1czogNHB4OyI+JHt0aWNrZXRbMF0udGlja2V0Q29kZX08L3NwYW4+
-PC9wPgogICAgICAgIDwvZGl2PgogICAgICAgIAogICAgICAgIDxhIGhyZWY9
-IiR7dGlja2V0TGlua30iIHN0eWxlPSJkaXNwbGF5OiBpbmxpbmUtYmxvY2s7
-IGJhY2tncm91bmQtY29sb3I6ICNDMDRBMkE7IGNvbG9yOiB3aGl0ZTsgcGFk
-ZGluZzogMTJweCAyNHB4OyB0ZXh0LWRlY29yYXRpb246IG5vbmU7IGJvcmRl
-ci1yYWRpdXM6IDRweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHRleHQtdHJhbnNm
-b3JtOiB1cHBlcmNhc2U7IGxldHRlci1zcGFjaW5nOiAwLjA1ZW07IG1hcmdp
-bi1ib3R0b206IDEuNXJlbTsiPlZpc2EgZGlnaXRhbCBiaWxqZXR0PC9hPgog
-ICAgICAgIAogICAgICAgIDxwIHN0eWxlPSJmb250LXNpemU6IDEycHg7IGNv
-bG9yOiByZ2JhKDI0MCwgMjMyLCAyMTYsIDAuNik7IG1hcmdpbi1ib3R0b206
-IDAuNXJlbTsiPkhhIGJpbGpldHRlbiByZWRvIGkgbW9iaWxlbiBuw6RyIGR1
-IGtvbW1lciB0aWxsIGVudHLDqW4uPC9wPgogICAgICAgIDxwIHN0eWxlPSJm
-b250LXNpemU6IDEycHg7IGNvbG9yOiByZ2JhKDI0MCwgMjMyLCAyMTYsIDAu
-Nik7IG1hcmdpbi1ib3R0b206IDAuNXJlbTsiPk9tIGtuYXBwZW4gaW50ZSBm
-dW5nZXJhciwga29waWVyYSBvY2gga2xpc3RyYSBpbiBkZW5uYSBsw6RuayBp
-IGRpbiB3ZWJibMOkc2FyZTo8L3A+CiAgICAgICAgPHAgc3R5bGU9ImZvbnQt
-c2l6ZTogMTJweDsgY29sb3I6ICNDMDRBMkE7IHdvcmQtYnJlYWs6IGJyZWFr
-LWFsbDsiPiR7dGlja2V0TGlua308L3A+CiAgICAgIDwvZGl2PmAKCiAgICBj
-b25zdCBzZW50ID0gYXdhaXQgc2VuZEVtYWlsKHsKICAgICAgdG86IHRpY2tl
-dFswXS5wYXJ0aWNpcGFudEVtYWlsLAogICAgICBzdWJqZWN0OiBgRGluIGJp
-bGpldHQgZsO2ciAke2V2ZW50VGl0bGV9YCwKICAgICAgdGV4dDogYEhlaiAk
-e3RpY2tldFswXS5wYXJ0aWNpcGFudE5hbWV9ISBEaW4gYmlsamV0dGtvZCBm
-w7ZyICR7ZXZlbnRUaXRsZX0gKCR7ZXZlbnREYXRlfSkgw6RyICR7dGlja2V0
-WzBdLnRpY2tldENvZGV9LiBLb3N0bmFkOiAke3RpY2tldFswXS5wcmljZVBh
-aWR9IFNFSy4gVmlzYSBiaWxqZXR0ZW4gaMOhcjogJHt0aWNrZXRMaW5rfWAs
-CiAgICAgIGh0bWw6IGVtYWlsSHRtbCwKICAgIH0pCgogICAgaWYgKCFzZW50
-KSB0aHJvdyBuZXcgRXJyb3IoJ0ZhaWxlZCB0byBzZW5kIGVtYWlsJykKCiAg
-ICBhd2FpdCB3cml0ZUFjdGl2aXR5TG9nKHsKICAgICAgYWN0b3JVc2VySWQ6
-IGFkbWluLmlkLAogICAgICBhY3RvclJvbGU6IGFkbWluLnJvbGUsCiAgICAg
-IGFjdGlvbjogJ3RpY2tldC5lbWFpbC5yZXNlbmQnLAogICAgICBlbnRpdHlU
-eXBlOiAndGlja2V0JywKICAgICAgZW50aXR5SWQ6IHRpY2tldFswXS5pZCwK
-ICAgIH0pCgogICAgcmV0dXJuIHsgc3VjY2VzczogdHJ1ZSB9CiAgfSkKCmV4
-cG9ydCBjb25zdCB1cGRhdGVUaWNrZXRTdGF0dXNGbiA9IGNyZWF0ZVNlcnZl
-ckZuKHsgbWV0aG9kOiAiUE9TVCIgfSkKICAuaW5wdXRWYWxpZGF0b3IoKGRh
-dGE6IHVua25vd24pID0+CiAgICB6Lm9iamVjdCh7CiAgICAgIHRpY2tldElk
-OiB6Lm51bWJlcigpLAogICAgICBzdGF0dXM6IHouZW51bShbJ3ZhbGlkJywg
-J3VzZWQnLCAnY2FuY2VsbGVkJ10pLAogICAgfSkucGFyc2UoZGF0YSkKICAp
-CiAgLmhhbmRsZXIoYXN5bmMgKHsgZGF0YSB9KSA9PiB7CiAgICBjb25zdCBh
-ZG1pbiA9IGF3YWl0IGNoZWNrQWRtaW4oKQogICAgY29uc3QgZGIgPSBhd2Fp
-dCBnZXREYigpCgogICAgaWYgKGlzRGVtb1Rlc3RlclVzZXIoYWRtaW4pKSB7
-CiAgICAgIGNvbnN0IGV4aXN0aW5nID0gYXdhaXQgZGIuc2VsZWN0KCkuZnJv
-bSh0aWNrZXRzKS53aGVyZShlcSh0aWNrZXRzLmlkLCBkYXRhLnRpY2tldElk
-KSkubGltaXQoMSkKICAgICAgaWYgKCFleGlzdGluZ1swXSB8fCBleGlzdGlu
-Z1swXS5pc3N1ZWRCeSAhPT0gYWRtaW4uaWQpIHsKICAgICAgICB0aHJvdyBu
-ZXcgRXJyb3IoJ0ZvcmJpZGRlbiBpbiBkZW1vIG1vZGUnKQogICAgICB9CiAg
-ICB9CgogICAgY29uc3Qgc2NhbkRhdGUgPSBkYXRhLnN0YXR1cyA9PT0gJ3Vz
-ZWQnID8gbmV3IERhdGUoKSA6IG51bGwKICAgIGNvbnN0IHVwZGF0ZWQgPSBh
-d2FpdCBkYi51cGRhdGUodGlja2V0cykKICAgICAgLnNldCh7IAogICAgICAg
-IHN0YXR1czogZGF0YS5zdGF0dXMsIAogICAgICAgIHNjYW5uZWRBdDogc2Nh
-bkRhdGUsIAogICAgICAgIHNjYW5uZWRCeTogZGF0YS5zdGF0dXMgPT09ICd1
-c2VkJyA/IGFkbWluLmlkIDogbnVsbCwKICAgICAgICB1cGRhdGVkQXQ6IG5l
-dyBEYXRlKCkgCiAgICAgIH0pCiAgICAgIC53aGVyZShlcSh0aWNrZXRzLmlk
-LCBkYXRhLnRpY2tldElkKSkKICAgICAgLnJldHVybmluZygpCgogICAgYXdh
-aXQgd3JpdGVBY3Rpdml0eUxvZyh7CiAgICAgIGFjdG9yVXNlcklkOiBhZG1p
-bi5pZCwKICAgICAgYWN0b3JSb2xlOiBhZG1pbi5yb2xlLAogICAgICBhY3Rp
-b246ICd0aWNrZXQuc3RhdHVzLnVwZGF0ZScsCiAgICAgIGVudGl0eVR5cGU6
-ICd0aWNrZXQnLAogICAgICBlbnRpdHlJZDogZGF0YS50aWNrZXRJZCwKICAg
-ICAgZGV0YWlsczogeyBzdGF0dXM6IGRhdGEuc3RhdHVzIH0sCiAgICB9KQoK
-ICAgIHJldHVybiB1cGRhdGVkWzBdCiAgfSkKCmV4cG9ydCBjb25zdCBkZWxl
-dGVUaWNrZXRGbiA9IGNyZWF0ZVNlcnZlckZuKHsgbWV0aG9kOiAnUE9TVCcg
-fSkKICAuaW5wdXRWYWxpZGF0b3IoKGRhdGE6IHVua25vd24pID0+IHoubnVt
-YmVyKCkucGFyc2UoZGF0YSkpCiAgLmhhbmRsZXIoYXN5bmMgKHsgZGF0YTog
-dGlja2V0SWQgfSkgPT4gewogICAgY29uc3QgYWRtaW4gPSBhd2FpdCBjaGVj
-a0FkbWluKCkKICAgIGNvbnN0IGRiID0gYXdhaXQgZ2V0RGIoKQoKICAgIGlm
-IChpc0RlbW9UZXN0ZXJVc2VyKGFkbWluKSkgewogICAgICBjb25zdCBleGlz
-dGluZyA9IGF3YWl0IGRiLnNlbGVjdCgpLmZyb20odGlja2V0cykud2hlcmUo
-ZXEodGlja2V0cy5pZCwgdGlja2V0SWQpKS5saW1pdCgxKQogICAgICBpZiAo
-IWV4aXN0aW5nWzBdIHx8IGV4aXN0aW5nWzBdLmlzc3VlZEJ5ICE9PSBhZG1p
-bi5pZCkgewogICAgICAgIHRocm93IG5ldyBFcnJvcignRm9yYmlkZGVuIGlu
-IGRlbW8gbW9kZScpCiAgICAgIH0KICAgIH0KCiAgICBhd2FpdCBkYi5kZWxl
-dGUodGlja2V0cykud2hlcmUoZXEodGlja2V0cy5pZCwgdGlja2V0SWQpKQoK
-ICAgIGF3YWl0IHdyaXRlQWN0aXZpdHlMb2coewogICAgICBhY3RvclVzZXJJ
-ZDogYWRtaW4uaWQsCiAgICAgIGFjdG9yUm9sZTogYWRtaW4ucm9sZSwKICAg
-ICAgYWN0aW9uOiAndGlja2V0LmRlbGV0ZScsCiAgICAgIGVudGl0eVR5cGU6
-ICd0aWNrZXQnLAogICAgICBlbnRpdHlJZDogdGlja2V0SWQsCiAgICB9KQoK
-ICAgIHJldHVybiB7IHN1Y2Nlc3M6IHRydWUgfQogIH0pCgpleHBvcnQgY29u
-c3QgdmVyaWZ5VGlja2V0QnlDb2RlRm4gPSBjcmVhdGVTZXJ2ZXJGbih7IG1l
-dGhvZDogIlBPU1QiIH0pCiAgLmlucHV0VmFsaWRhdG9yKChkYXRhOiB1bmtu
-b3duKSA9PgogICAgei5vYmplY3QoewogICAgICBjb2RlOiB6LnN0cmluZygp
-LAogICAgICBtYXJrQXNVc2VkOiB6LmJvb2xlYW4oKS5kZWZhdWx0KHRydWUp
-LAogICAgfSkucGFyc2UoZGF0YSkKICApCiAgLmhhbmRsZXIoYXN5bmMgKHsg
-ZGF0YTogeyBjb2RlLCBtYXJrQXNVc2VkIH0gfSkgPT4gewogICAgY29uc3Qg
-ZGIgPSBhd2FpdCBnZXREYigpCiAgICAvLyBUcnkgdG8gZ2V0IGFkbWluSWQg
-aWYgdGhleSdyZSBsb2dnZWQgaW4KICAgIGxldCBhZG1pbklkOiBudW1iZXIg
-fCBudWxsID0gbnVsbAogICAgbGV0IGFkbWluUm9sZTogJ29yZ2FuaXplcicg
-fCAndm9sdW50ZWVyJyB8IG51bGwgPSBudWxsCiAgICBsZXQgZGVtb1Jlc3Ry
-aWN0ZWQgPSBmYWxzZQogICAgdHJ5IHsKICAgICAgY29uc3QgYWRtaW4gPSBh
-d2FpdCBjaGVja0FkbWluKCkKICAgICAgYWRtaW5JZCA9IGFkbWluLmlkCiAg
-ICAgIGFkbWluUm9sZSA9IGFkbWluLnJvbGUKICAgICAgZGVtb1Jlc3RyaWN0
-ZWQgPSBpc0RlbW9UZXN0ZXJVc2VyKGFkbWluKQogICAgfSBjYXRjaCAoZSkg
-ewogICAgICAvLyBOb3QgbG9nZ2VkIGluIG9yIG5vdCBhZG1pbiwgdGhhdCdz
-IGZpbmUgZm9yIHB1YmxpYyB2ZXJpZmljYXRpb24KICAgIH0KCiAgICBjb25z
-dCByZXN1bHQgPSBhd2FpdCBkYi5zZWxlY3QoKS5mcm9tKHRpY2tldHMpLndo
-ZXJlKGVxKHRpY2tldHMudGlja2V0Q29kZSwgY29kZSkpLmxpbWl0KDEpCiAg
-ICBpZiAocmVzdWx0Lmxlbmd0aCA+PT0gMCkgcmV0dXJuIHsgc3VjY2Vzczog
-ZmFsc2UsIG1lc3NhZ2U6ICdPZ2lsdGlnIGJpbGpldHRrb2QnIH0KICAgIAog
-ICAgY29uc3QgdGlja2V0ID0gcmVzdWx0WzBdCgogICAgaWYgKGRlbW9SZXN0
-cmljdGVkICYmIGFkbWluSWQgJiYgdGlja2V0Lmlzc3VlZEJ5ICE9PSBhZG1p
-bklkKSB7CiAgICAgIHRocm93IG5ldyBFcnJvcignRm9yYmlkZGVuIGluIGRl
-bW8gbW9kZScpCiAgICB9CgogICAgbGV0IGNoZWNraW5nSW4gPSBmYWxzZQog
-ICAgCiAgICAvLyBJZiB0aWNrZXQgaXMgdmFsaWQsIG1hcmsgaXQgYXMgdXNl
-ZCBhbmQgcmVjb3JkIHNjYW4gdGltZSBPTkxZIGlmIG1hcmtBc1VzZWQgaXMg
-dHJ1ZQogICAgaWYgKHRpY2tldC5zdGF0dXMgPT09ICd2YWxpZCcgJiYgbWFy
-a0FzVXNlZCkgewogICAgICBjaGVja2luZ0luID0gdHJ1ZQogICAgICBjb25z
-dCBzY2FuRGF0ZSA9IG5ldyBEYXRlKCkKICAgICAgYXdhaXQgZGIudXBkYXRl
-KHRpY2tldHMpCiAgICAgICAgLnNldCh7IAogICAgICAgICAgc3RhdHVzOiAn
-dXNlZCcsIAogICAgICAgICAgc2Nhbm5lZEF0OiBzY2FuRGF0ZSwgCiAgICAg
-ICAgICBzY2FubmVkQnk6IGFkbWluSWQsCiAgICAgICAgICB1cGRhdGVkQXQ6
-IHNjYW5EYXRlIAogICAgICAgIH0pCiAgICAgICAgLndoZXJlKGVxKHRpY2tl
-dHMuaWQsIHRpY2tldC5pZCkpCgogICAgICBpZiAoYWRtaW5JZCAmJiBhZG1p
-blJvbGUpIHsKICAgICAgICBhd2FpdCB3cml0ZUFjdGl2aXR5TG9nKHsKICAg
-ICAgICAgIGFjdG9yVXNlcklkOiBhZG1pbklkLAogICAgICAgICAgYWN0b3JS
-b2xlOiBhZG1pblJvbGUsCiAgICAgICAgICBhY3Rpb246ICd0aWNrZXQudmVy
-aWZ5LmNoZWNraW4nLAogICAgICAgICAgZW50aXR5VHlwZTogJ3RpY2tldCcs
-CiAgICAgICAgICBlbnRpdHlJZDogdGlja2V0LmlkLAogICAgICAgICAgZGV0
-YWlsczogeyBjb2RlIH0sCiAgICAgICAgfSkKICAgICAgfQogICAgICAKICAg
-ICAgLy8gVXBkYXRlIGxvY2FsIG9iamVjdCBmb3IgcmVzcG9uc2UKICAgICAg
-dGlja2V0LnN0YXR1cyA9ICd1c2VkJwogICAgICB0aWNrZXQuc2Nhbm5lZEF0
-ID0gc2NhbkRhdGUKICAgICAgdGlja2V0LnNjYW5uZWRCeSA9IGFkbWluSWQK
-ICAgIH0KCiAgICAvLyBBbHNvIGdldCBldmVudCBkZXRhaWxzIGZyb20gdGhl
-IGV2ZW50cyB0YWJsZQogICAgY29uc3QgZXZlbnQgPSBhd2FpdCBkYi5zZWxl
-Y3QoKS5mcm9tKGV2ZW50cykud2hlcmUoZXEoZXZlbnRzLmlkLCB0aWNrZXQu
-ZXZlbnRJZCkpLmxpbWl0KDEpCiAgICAKICAgIHJldHVybiB7IAogICAgICBz
-dWNjZXNzOiB0cnVlLCAKICAgICAgdGlja2V0LCAKICAgICAgZXZlbnQ6IGV2
-ZW50WzBdIHx8IG51bGwsCiAgICAgIGNoZWNraW5nSW4KICAgIH0KICB9KQoK
-ZXhwb3J0IGNvbnN0IGdldEV2ZW50c0ZvclRpY2tldHNGbiA9IGNyZWF0ZVNl
-cnZlckZuKHsgbWV0aG9kOiAnR0VUJyB9KQogIC5oYW5kbGVyKGFzeW5jICgp
-ID0+IHsKICAgIGF3YWl0IGNoZWNrQWRtaW4oKQogICAgY29uc3QgZGIgPSBh
-d2FpdCBnZXREYigpCiAgICByZXR1cm4gYXdhaXQgZGIuc2VsZWN0KCkuZnJv
-bShldmVudHMpCiAgfSkKCmV4cG9ydCBjb25zdCBjbGVhbnVwT2xkVGlja2V0
-c0ZuID0gY3JlYXRlU2VydmVyRm4oeyBtZXRob2Q6ICJQT1NUIiB9KQogIC5o
-YW5kbGVyKGFzeW5jICgpID0+IHsKICAgIGNvbnN0IGFkbWluID0gYXdhaXQg
-cmVxdWlyZVN0YWZmVXNlcigpCiAgICBjb25zdCBkYiA9IGF3YWl0IGdldERi
-KCkKICAgIAogICAgLy8gQW5vbnltaXplIHRpY2tldHMgMzAgZGF5cyBhZnRl
-ciB0aGUgZXZlbnQgaGFzIGVuZGVkIEFORCB0aGUgZXZlbnQgaXMgbWFya2Vk
-IGFzIGZpbmlzaGVkCiAgICBjb25zdCB0aGlydHlEYXlzQWdvID0gbmV3IERh
-dGUoKQogICAgdGhpcnR5RGF5c0Fnby5zZXREYXRlKHRoaXJ0eURheXNBZ28u
-Z2V0RGF0ZSgpIC0gMzApCiAgICAKICAgIC8vIEZpbmQgZXZlbnRzIHRoYXQg
-YXJlIGZpbmlzaGVkIEFORCBvbGRlciB0aGFuIDMwIGRheXMKICAgIGNvbnN0
-IG9sZEV2ZW50cyA9IGF3YWl0IGRiLnNlbGVjdCh7IGlkOiBldmVudHMuaWQg
-fSkKICAgICAgLmZyb20oZXZlbnRzKQogICAgICAud2hlcmUoYW5kKGVxKGV2
-ZW50cy5maW5pc2hlZCwgdHJ1ZSksIGx0KGV2ZW50cy5kYXRlLCB0aGlydHlE
-YXlzQWdvKSkpCiAgICAgIAogICAgY29uc3Qgb2xkRXZlbnRJZHMgPSBvbGRF
-dmVudHMubWFwKGUgPT4gZS5pZCkKCiAgICBpZiAob2xkRXZlbnRJZHMubGVu
-Z3RoID4gMCkgewogICAgICBjb25zdCBldmVudElkc0xpc3QgPSBvbGRFdmVu
-dElkcy5qb2luKCcsJykKICAgICAgYXdhaXQgZGIuZXhlY3V0ZShzcWxgCiAg
-ICAgICAgVVBEQVRFIHRpY2tldHMgCiAgICAgICAgU0VUIHBhcnRpY2lwYW50
-X25hbWUgPSAnQW5vbnltaXplZCcsIHBhcnRpY2lwYW50X2VtYWlsID0gJ2Fu
-b255bWl6ZWRAZXhhbXBsZS5jb20nCiAgICAgICAgV0hFUkUgZXZlbnRfaWQg
-SU4gKCR7c3FsLnJhdyhldmVudElkc0xpc3QpfSkgCiAgICAgICAgQU5EIHBh
-cnRpY2lwYW50X25hbWUgIT0gJ0Fub255bWl6ZWQnCiAgICAgIGApCiAgICB9
-CiAgICAgIAogICAgYXdhaXQgd3JpdGVBY3Rpdml0eUxvZyh7CiAgICAgIGFj
-dG9yVXNlcklkOiBhZG1pbi5pZCwKICAgICAgYWN0b3JSb2xlOiBhZG1pbi5y
-b2xlLAogICAgICBhY3Rpb246ICd0aWNrZXQuY2xlYW51cC5hbm9ueW1pemUn
-LAogICAgICBlbnRpdHlUeXBlOiAndGlja2V0JywKICAgIH0pCiAgICAgIAog
-ICAgcmV0dXJuIHsgc3VjY2VzczogdHJ1ZSB9CiAgfSkK
+'use server'
+import { createServerFn } from '@tanstack/react-start'
+import { getDb } from '../db/runtime'
+import { tickets, users, eventTicketTypes, ticketTypes, companies, companyTicketPricing } from '../db/schema'
+import { eq, inArray, and, desc, asc, sql } from 'drizzle-orm'
+import { z } from 'zod'
+import { writeActivityLog } from './logs'
+import { isDemoTesterUser, requireOrganizerUser, requireStaffUser } from '../lib/access'
+
+export const getTicketsFn = createServerFn({ method: 'GET' }).handler(async () => {
+  await requireStaffUser()
+  const db = await getDb()
+  return await db
+    .select({
+      id: tickets.id,
+      ticketCode: tickets.ticketCode,
+      eventId: tickets.eventId,
+      ticketType: tickets.ticketType,
+      status: tickets.status,
+      participantName: tickets.participantName,
+      participantEmail: tickets.participantEmail,
+      participantPhone: tickets.participantPhone,
+      participantCompany: tickets.participantCompany,
+      participantDietary: tickets.participantDietary,
+      participantOther: tickets.participantOther,
+      pricePaid: tickets.pricePaid,
+      paymentStatus: tickets.paymentStatus,
+      paymentMethod: tickets.paymentMethod,
+      paymentReference: tickets.paymentReference,
+      issuedBy: tickets.issuedBy,
+      scannedAt: tickets.scannedAt,
+      scannedBy: tickets.scannedBy,
+      createdAt: tickets.createdAt,
+      updatedAt: tickets.updatedAt,
+      issuedByName: users.name,
+    })
+    .from(tickets)
+    .leftJoin(users, eq(tickets.issuedBy, users.id))
+    .orderBy(desc(tickets.createdAt))
+})
+
+export const getTicketDetailsFn = createServerFn({ method: 'GET' })
+  .inputValidator((data: unknown) => z.number().parse(data))
+  .handler(async ({ data: ticketId }) => {
+    await requireStaffUser()
+    const db = await getDb()
+    const result = await db
+      .select({
+        id: tickets.id,
+        ticketCode: tickets.ticketCode,
+        eventId: tickets.eventId,
+        ticketType: tickets.ticketType,
+        status: tickets.status,
+        participantName: tickets.participantName,
+        participantEmail: tickets.participantEmail,
+        participantPhone: tickets.participantPhone,
+        participantCompany: tickets.participantCompany,
+        participantDietary: tickets.participantDietary,
+        participantOther: tickets.participantOther,
+        pricePaid: tickets.pricePaid,
+        paymentStatus: tickets.paymentStatus,
+        paymentMethod: tickets.paymentMethod,
+        paymentReference: tickets.paymentReference,
+        issuedBy: tickets.issuedBy,
+        scannedAt: tickets.scannedAt,
+        scannedBy: tickets.scannedBy,
+        createdAt: tickets.createdAt,
+        updatedAt: tickets.updatedAt,
+        issuedByName: users.name,
+      })
+      .from(tickets)
+      .leftJoin(users, eq(tickets.issuedBy, users.id))
+      .where(eq(tickets.id, ticketId))
+      .limit(1)
+
+    if (result.length === 0) return null
+
+    const ticket = result[0]
+    let scannedByName = null
+
+    if (ticket.scannedBy) {
+      const scanner = await db.select({ name: users.name }).from(users).where(eq(users.id, ticket.scannedBy)).limit(1)
+      if (scanner.length > 0) {
+        scannedByName = scanner[0].name
+      }
+    }
+
+    return { ...ticket, scannedByName }
+  })
+
+export const issueTicketFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        eventId: z.number(),
+        ticketType: z.string(),
+        participantName: z.string().min(1),
+        participantEmail: z.string().email(),
+        participantPhone: z.string().optional(),
+        participantCompany: z.string().optional(),
+        participantDietary: z.string().optional(),
+        participantOther: z.string().optional(),
+        pricePaid: z.number().min(0),
+        paymentStatus: z.enum(['pending', 'paid', 'refunded']).default('paid'),
+        paymentMethod: z.string().optional(),
+        paymentReference: z.string().optional(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const admin = await requireStaffUser()
+    const db = await getDb()
+
+    if (isDemoTesterUser(admin)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
+    const ticketCode =
+      Math.random().toString(36).substring(2, 6).toUpperCase() +
+      '-' +
+      Math.random().toString(36).substring(2, 6).toUpperCase()
+
+    const result = await db
+      .insert(tickets)
+      .values({
+        ...data,
+        ticketCode,
+        status: 'valid',
+        issuedBy: admin.id,
+      })
+      .returning()
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.issue',
+      entityType: 'ticket',
+      entityId: result[0].id,
+      details: {
+        ticketCode,
+        ticketType: data.ticketType,
+        participantEmail: data.participantEmail,
+      },
+    })
+
+    return result[0]
+  })
+
+export const updateTicketFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        id: z.number(),
+        participantName: z.string().min(1),
+        participantEmail: z.string().email(),
+        participantPhone: z.string().optional(),
+        participantCompany: z.string().optional(),
+        participantDietary: z.string().optional(),
+        participantOther: z.string().optional(),
+        paymentStatus: z.enum(['pending', 'paid', 'refunded']),
+        paymentMethod: z.string().optional(),
+        paymentReference: z.string().optional(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const admin = await requireStaffUser()
+    const db = await getDb()
+
+    if (isDemoTesterUser(admin)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
+    const { id, ...updateData } = data
+    const result = await db
+      .update(tickets)
+      .set({ ...updateData, updatedAt: new Date() })
+      .where(eq(tickets.id, id))
+      .returning()
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.update',
+      entityType: 'ticket',
+      entityId: id,
+    })
+
+    return result[0]
+  })
+
+export const verifyTicketFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => z.object({ ticketCode: z.string() }).parse(data))
+  .handler(async ({ data }) => {
+    let adminId: number | null = null
+    let adminRole: 'organizer' | 'volunteer' | null = null
+    try {
+      const admin = await requireStaffUser()
+      adminId = admin.id
+      adminRole = admin.role
+    } catch {
+      // Public verification — no logged-in user, still allowed
+    }
+
+    const db = await getDb()
+    const result = await db
+      .select({
+        id: tickets.id,
+        ticketCode: tickets.ticketCode,
+        eventId: tickets.eventId,
+        ticketType: tickets.ticketType,
+        status: tickets.status,
+        participantName: tickets.participantName,
+        participantEmail: tickets.participantEmail,
+        participantPhone: tickets.participantPhone,
+        participantCompany: tickets.participantCompany,
+        participantDietary: tickets.participantDietary,
+        participantOther: tickets.participantOther,
+        pricePaid: tickets.pricePaid,
+        scannedAt: tickets.scannedAt,
+        scannedBy: tickets.scannedBy,
+      })
+      .from(tickets)
+      .where(eq(tickets.ticketCode, data.ticketCode))
+      .limit(1)
+
+    if (result.length === 0) {
+      return { valid: false, message: 'Biljetten hittades inte.' }
+    }
+
+    const ticket = result[0]
+
+    if (ticket.status === 'used') {
+      return { valid: false, message: 'Biljetten är redan använd.', ticket }
+    }
+    if (ticket.status === 'cancelled') {
+      return { valid: false, message: 'Biljetten är makulerad.', ticket }
+    }
+
+    // Mark as used
+    const scanDate = new Date()
+    await db
+      .update(tickets)
+      .set({ status: 'used', scannedAt: scanDate, scannedBy: adminId, updatedAt: scanDate })
+      .where(eq(tickets.id, ticket.id))
+
+    if (adminId && adminRole) {
+      await writeActivityLog({
+        actorUserId: adminId,
+        actorRole: adminRole,
+        action: 'ticket.verify.checkin',
+        entityType: 'ticket',
+        entityId: ticket.id,
+      })
+    }
+
+    return { valid: true, message: 'Biljetten är giltig och har nu markerats som använd.', ticket }
+  })
+
+export const cancelTicketFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => z.number().parse(data))
+  .handler(async ({ data: ticketId }) => {
+    const admin = await requireOrganizerUser()
+    const db = await getDb()
+
+    if (isDemoTesterUser(admin)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
+    await db.update(tickets).set({ status: 'cancelled', updatedAt: new Date() }).where(eq(tickets.id, ticketId))
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.cancel',
+      entityType: 'ticket',
+      entityId: ticketId,
+    })
+
+    return { success: true }
+  })
+
+export const restoreTicketFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => z.number().parse(data))
+  .handler(async ({ data: ticketId }) => {
+    const admin = await requireOrganizerUser()
+    const db = await getDb()
+
+    if (isDemoTesterUser(admin)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
+    await db
+      .update(tickets)
+      .set({ status: 'valid', scannedAt: null, scannedBy: null, updatedAt: new Date() })
+      .where(eq(tickets.id, ticketId))
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.restore',
+      entityType: 'ticket',
+      entityId: ticketId,
+    })
+
+    return { success: true }
+  })
+
+export const deleteTicketFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => z.number().parse(data))
+  .handler(async ({ data: ticketId }) => {
+    const admin = await requireOrganizerUser()
+    const db = await getDb()
+
+    if (isDemoTesterUser(admin)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
+    await db.delete(tickets).where(eq(tickets.id, ticketId))
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.delete',
+      entityType: 'ticket',
+      entityId: ticketId,
+    })
+
+    return { success: true }
+  })
+
+export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        eventId: z.number(),
+        tickets: z.array(
+          z.object({
+            ticketType: z.string(),
+            participantName: z.string().min(1),
+            participantEmail: z.string().email(),
+            participantPhone: z.string().optional(),
+            participantCompany: z.string().optional(),
+            participantDietary: z.string().optional(),
+            participantOther: z.string().optional(),
+            pricePaid: z.number().min(0),
+            paymentStatus: z.enum(['pending', 'paid', 'refunded']).default('paid'),
+            paymentMethod: z.string().optional(),
+            paymentReference: z.string().optional(),
+          }),
+        ),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const admin = await requireStaffUser()
+    const db = await getDb()
+
+    if (isDemoTesterUser(admin)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
+    const newTickets = data.tickets.map((t) => ({
+      ...t,
+      eventId: data.eventId,
+      ticketCode:
+        Math.random().toString(36).substring(2, 6).toUpperCase() +
+        '-' +
+        Math.random().toString(36).substring(2, 6).toUpperCase(),
+      status: 'valid' as const,
+      issuedBy: admin.id,
+    }))
+
+    const result = await db.insert(tickets).values(newTickets).returning()
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.issue.bulk',
+      entityType: 'ticket',
+      details: {
+        count: result.length,
+        eventId: data.eventId,
+      },
+    })
+
+    return result
+  })
+
+export const getTicketTypesForEventFn = createServerFn({ method: 'GET' })
+  .inputValidator((data: unknown) => z.number().parse(data))
+  .handler(async ({ data: eventId }) => {
+    await requireStaffUser()
+    const db = await getDb()
+
+    // 1. Get all enabled ticket types for this event
+    const activeTypes = await db
+      .select({
+        ticketTypeId: eventTicketTypes.ticketTypeId,
+        name: ticketTypes.name,
+        price: ticketTypes.price,
+        maxQuantity: eventTicketTypes.maxQuantity,
+      })
+      .from(eventTicketTypes)
+      .innerJoin(ticketTypes, eq(eventTicketTypes.ticketTypeId, ticketTypes.id))
+      .where(and(eq(eventTicketTypes.eventId, eventId), eq(eventTicketTypes.enabled, true)))
+
+    // 2. Get all companies and their custom pricing rules
+    const allCompanies = await db.select().from(companies).orderBy(asc(companies.name))
+    const allPricingRules = await db.select().from(companyTicketPricing)
+
+    // 3. Build the response structure
+    return {
+      ticketTypes: activeTypes,
+      companies: allCompanies,
+      pricingRules: allPricingRules,
+    }
+  })

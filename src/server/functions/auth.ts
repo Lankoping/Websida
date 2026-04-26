@@ -4,7 +4,7 @@ import { getDb } from '../db/runtime'
 import { users, activityLogs, tickets, passwordResetTokens } from '../db/schema'
 import { eq, inArray, and, gte, or, sql } from 'drizzle-orm'
 import { z } from 'zod'
-import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start'
+import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
 import { randomBytes } from 'node:crypto'
 import {
   enforceDemoOwnUserScope,

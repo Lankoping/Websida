@@ -1,9 +1,10 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { getDataPolicyPathFn } from '../server/functions/policy'
+import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/datapolicy')({
-  beforeLoad: async () => {
-    const target = await getDataPolicyPathFn()
-    throw redirect({ to: target })
-  },
+  component: DatapolicyStub,
 })
+
+function DatapolicyStub() {
+  if (typeof window !== 'undefined') window.location.href = '/'
+  return null
+}

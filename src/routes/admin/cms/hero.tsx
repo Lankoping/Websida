@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/admin/tickets/scan')({
-  component: AdminTicketsScanStub,
+export const Route = createFileRoute('/admin/cms/hero')({
+  component: AdminCmsHeroStub,
 })
 
-function AdminTicketsScanStub() {
+function AdminCmsHeroStub() {
   if (typeof window !== 'undefined') window.location.href = '/'
   return null
 }

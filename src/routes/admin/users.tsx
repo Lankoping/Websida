@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import {
@@ -474,4 +475,15 @@ function AdminUsers() {
       </div>
     </div>
   )
+=======
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/admin/users')({
+  component: AdminUsersStub,
+})
+
+function AdminUsersStub() {
+  if (typeof window !== 'undefined') window.location.href = '/'
+  return null
+>>>>>>> Stashed changes
 }

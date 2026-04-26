@@ -1,10 +1,10 @@
 'use server'
-import { createServerFn } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '../db/runtime'
 import { users, activityLogs, tickets, passwordResetTokens } from '../db/schema'
 import { eq, inArray, and, gte, or, sql } from 'drizzle-orm'
 import { z } from 'zod'
-import { setCookie, getCookie, deleteCookie } from '@tanstack/react-router/server'
+import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start'
 import { randomBytes } from 'node:crypto'
 import {
   enforceDemoOwnUserScope,
@@ -176,7 +176,7 @@ export const createUserFn = createServerFn({ method: "POST" })
       const emailText = `Hej! ${userName}\n${adminName} har begärt att du skapar ett Linköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
       
       const emailHtml = `
-      <div style="font-family: sans-serif; max-w-xl mx-auto; background-color: #100E0C; color: #F0E8D8; padding: 2rem; border-radius: 8px; border: 1px solid rgba(192, 74, 42, 0.2);">
+      <div style="font-family: sans-serif; max-width: xl mx-auto; background-color: #100E0C; color: #F0E8D8; padding: 2rem; border-radius: 8px; border: 1px solid rgba(192, 74, 42, 0.2);">
         <h2 style="color: #C04A2A; text-transform: uppercase; letter-spacing: 0.1em; font-size: 14px; margin-bottom: 1rem;">Lankoping Admin</h2>
         <h1 style="font-size: 24px; margin-bottom: 1.5rem;">Välkommen till Lankoping!</h1>
         <p style="margin-bottom: 1rem;">Hej <strong>${userName}</strong>,</p>
@@ -268,7 +268,7 @@ export const sendResetLinkFn = createServerFn({ method: "POST" })
     const emailText = `Hej! ${userName}\n${adminName} har begärt att du sätter ett nytt lösenord för ditt Linköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
     
     const emailHtml = `
-      <div style="font-family: sans-serif; max-w-xl mx-auto; background-color: #100E0C; color: #F0E8D8; padding: 2rem; border-radius: 8px; border: 1px solid rgba(192, 74, 42, 0.2);">
+      <div style="font-family: sans-serif; max-width: xl mx-auto; background-color: #100E0C; color: #F0E8D8; padding: 2rem; border-radius: 8px; border: 1px solid rgba(192, 74, 42, 0.2);">
         <h2 style="color: #C04A2A; text-transform: uppercase; letter-spacing: 0.1em; font-size: 14px; margin-bottom: 1rem;">Lankoping Admin</h2>
         <h1 style="font-size: 24px; margin-bottom: 1.5rem;">Återställ Lösenord</h1>
         <p style="margin-bottom: 1rem;">Hej <strong>${userName}</strong>,</p>

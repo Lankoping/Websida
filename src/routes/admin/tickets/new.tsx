@@ -43,6 +43,7 @@ function NewTicket() {
     ticketTypeId: '',
     participantName: '',
     participantEmail: '',
+    participantCompany: '',
     pricePaid: '',
     issuanceType: 'private' as 'company' | 'private',
     ticketCount: 1,
@@ -159,10 +160,6 @@ function NewTicket() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.eventId || !form.participantName || !form.participantEmail || !form.ticketTypeId) return
-    if (form.issuanceType === 'company' && !form.companyId) {
-      setError('Välj ett företag')
-      return
-    }
     
     setIsSubmitting(true)
     setError('')
@@ -172,7 +169,7 @@ function NewTicket() {
           eventId: parseInt(form.eventId),
           participantName: form.participantName.trim(),
           participantEmail: form.participantEmail.trim().toLowerCase(),
-          participantCompany: selectedCompany?.name || undefined,
+          participantCompany: form.participantCompany.trim() || (selectedCompany?.name || undefined),
           ticketType: selectedType?.name || 'Standard',
           pricePaid: form.pricePaid !== '' ? parseInt(form.pricePaid) : 0,
           issuanceType: form.issuanceType,
@@ -203,8 +200,7 @@ function NewTicket() {
     form.ticketTypeId &&
     form.participantName.trim() &&
     form.participantEmail.trim() &&
-    form.participantEmail.includes('@') &&
-    (form.issuanceType === 'private' || (form.issuanceType === 'company' && form.companyId))
+    form.participantEmail.includes('@')
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -349,14 +345,13 @@ function NewTicket() {
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-foreground flex items-center gap-2">
                   <Building2 className="w-3 h-3 text-primary" />
-                  Företag *
+                  Företag (Registrerat)
                 </label>
                 <select
                   name="companyId"
                   value={form.companyId}
                   onChange={(e) => handleCompanyChange(e.target.value)}
                   className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
-                  required={form.issuanceType === 'company'}
                   disabled={!form.eventId || isLoadingEventData}
                 >
                   <option value="">
@@ -366,7 +361,7 @@ function NewTicket() {
                         ? 'Laddar...' 
                         : companies.length === 0 
                           ? 'Inga företag finns upplagda' 
-                          : 'Välj företag...'}
+                          : 'Välj företag (frivilligt)...'}
                   </option>
                   {companies.map((company) => (
                     <option key={company.id} value={company.id}>
@@ -401,18 +396,16 @@ function NewTicket() {
             onChange={(e) => handleTypeChange(e.target.value)}
             className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
             required
-            disabled={!form.eventId || isLoadingEventData || availableTicketTypes.length === 0 || (form.issuanceType === 'company' && !form.companyId)}
+            disabled={!form.eventId || isLoadingEventData || availableTicketTypes.length === 0}
           >
             <option value="">
               {!form.eventId 
                 ? 'Välj event först...' 
                 : isLoadingEventData 
                   ? 'Laddar...' 
-                  : form.issuanceType === 'company' && !form.companyId 
-                    ? 'Välj företag först...' 
-                    : availableTicketTypes.length === 0 
-                      ? 'Inga biljettyper tillgängliga' 
-                      : 'Välj biljettyp...'}
+                  : availableTicketTypes.length === 0 
+                    ? 'Inga biljettyper tillgängliga' 
+                    : 'Välj biljettyp...'}
             </option>
             {availableTicketTypes.map((tt) => (
               <option key={tt.ticketTypeId} value={tt.ticketTypeId}>
@@ -458,6 +451,21 @@ function NewTicket() {
                 onChange={(e) => setForm((prev) => ({ ...prev, participantEmail: e.target.value }))}
                 className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all placeholder:text-muted-foreground"
                 required
+              />
+            </div>
+            
+            <div className="space-y-1.5 sm:col-span-2">
+              <label className="text-xs font-medium text-foreground flex items-center gap-2">
+                <Building2 className="w-3 h-3 text-primary" />
+                Organisation / Företag (Frivilligt)
+              </label>
+              <input
+                type="text"
+                name="participantCompany"
+                placeholder="Ex. Företaget AB"
+                value={form.participantCompany}
+                onChange={(e) => setForm((prev) => ({ ...prev, participantCompany: e.target.value }))}
+                className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all placeholder:text-muted-foreground"
               />
             </div>
           </div>

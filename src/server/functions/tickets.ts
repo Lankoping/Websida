@@ -118,6 +118,40 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
       throw new Error('Forbidden in demo mode')
     }
 
+    // Enforce maxQuantity if the ticket type has a limit
+    const ticketTypeRecord = await db.select().from(ticketTypes).where(eq(ticketTypes.name, data.ticketType)).limit(1)
+    if (ticketTypeRecord.length > 0) {
+      const eventTicketTypeRecord = await db
+        .select()
+        .from(eventTicketTypes)
+        .where(
+          and(
+            eq(eventTicketTypes.eventId, data.eventId),
+            eq(eventTicketTypes.ticketTypeId, ticketTypeRecord[0].id)
+          )
+        )
+        .limit(1)
+        
+      if (eventTicketTypeRecord.length > 0 && eventTicketTypeRecord[0].maxQuantity !== null) {
+        // Count how many valid tickets of this type have been issued for this event
+        const existingTickets = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(tickets)
+          .where(
+            and(
+              eq(tickets.eventId, data.eventId),
+              eq(tickets.ticketType, data.ticketType),
+              eq(tickets.status, 'valid')
+            )
+          )
+          
+        const currentCount = Number(existingTickets[0]?.count || 0)
+        if (currentCount + data.ticketCount > eventTicketTypeRecord[0].maxQuantity) {
+          throw new Error(`Kan inte utfärda ${data.ticketCount} biljetter. Endast ${eventTicketTypeRecord[0].maxQuantity - currentCount} biljetter av typen "${data.ticketType}" finns kvar.`)
+        }
+      }
+    }
+
     const ticketCode =
       Math.random().toString(36).substring(2, 6).toUpperCase() +
       '-' +
@@ -363,6 +397,46 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
 
     if (isDemoTesterUser(admin)) {
       throw new Error('Forbidden in demo mode')
+    }
+
+    // Enforce maxQuantity for bulk tickets
+    const ticketCountsByType: Record<string, number> = {}
+    for (const t of data.tickets) {
+      ticketCountsByType[t.ticketType] = (ticketCountsByType[t.ticketType] || 0) + 1
+    }
+
+    for (const [typeName, requestedCount] of Object.entries(ticketCountsByType)) {
+      const ticketTypeRecord = await db.select().from(ticketTypes).where(eq(ticketTypes.name, typeName)).limit(1)
+      if (ticketTypeRecord.length > 0) {
+        const eventTicketTypeRecord = await db
+          .select()
+          .from(eventTicketTypes)
+          .where(
+            and(
+              eq(eventTicketTypes.eventId, data.eventId),
+              eq(eventTicketTypes.ticketTypeId, ticketTypeRecord[0].id)
+            )
+          )
+          .limit(1)
+          
+        if (eventTicketTypeRecord.length > 0 && eventTicketTypeRecord[0].maxQuantity !== null) {
+          const existingTickets = await db
+            .select({ count: sql<number>`count(*)` })
+            .from(tickets)
+            .where(
+              and(
+                eq(tickets.eventId, data.eventId),
+                eq(tickets.ticketType, typeName),
+                eq(tickets.status, 'valid')
+              )
+            )
+            
+          const currentCount = Number(existingTickets[0]?.count || 0)
+          if (currentCount + requestedCount > eventTicketTypeRecord[0].maxQuantity) {
+            throw new Error(`Kan inte utfärda ${requestedCount} biljetter av typen "${typeName}". Endast ${eventTicketTypeRecord[0].maxQuantity - currentCount} biljetter finns kvar.`)
+          }
+        }
+      }
     }
 
     const newTickets = data.tickets.map((t) => ({

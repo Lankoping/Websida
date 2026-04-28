@@ -157,32 +157,33 @@ export const createUserFn = createServerFn({ method: "POST" })
     if (!data.password) {
       // Generate a reset token
       resetToken = randomBytes(32).toString('hex')
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
 
       await db.insert(passwordResetTokens).values({
         userId: created[0].id,
         token: resetToken,
-        expiresAt: sql`now() + interval '7 days'`,
+        expiresAt: expiresAt,
       })
 
       // Send email
       const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
-      const resetLink = `${baseUrl}/login?userid=${created[0].id}&token=${resetToken}&makepassword=true`
+      const resetLink = \`\${baseUrl}/login?userid=\${created[0].id}&token=\${resetToken}&makepassword=true\`
       
       const userName = data.name || 'Användare'
       const adminName = currentUser.name || 'En administratör'
       
-      const emailText = `Hej! ${userName}\n${adminName} har begärt att du skapar ett Linköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
+      const emailText = \`Hej! \${userName}\\n\${adminName} har begärt att du skapar ett Lanköping-konto.\\n\\nGå till följande länk för att skapa ditt lösenord:\\n\${resetLink}\`
       
-      const emailHtml = `
+      const emailHtml = \`
       <div style="font-family: sans-serif; max-width: xl mx-auto; background-color: #100E0C; color: #F0E8D8; padding: 2rem; border-radius: 8px; border: 1px solid rgba(192, 74, 42, 0.2);">
         <h2 style="color: #C04A2A; text-transform: uppercase; letter-spacing: 0.1em; font-size: 14px; margin-bottom: 1rem;">Lankoping Admin</h2>
         <h1 style="font-size: 24px; margin-bottom: 1.5rem;">Välkommen till Lankoping!</h1>
-        <p style="margin-bottom: 1rem;">Hej <strong>${userName}</strong>,</p>
-        <p style="margin-bottom: 1.5rem;">${adminName} har skapat ett konto åt dig på Lankoping.se. För att komma igång behöver du skapa ett lösenord.</p>
-        <a href="${resetLink}" style="display: inline-block; background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Skapa lösenord</a>
+        <p style="margin-bottom: 1rem;">Hej <strong>\${userName}</strong>,</p>
+        <p style="margin-bottom: 1.5rem;">\${adminName} har skapat ett konto åt dig på Lankoping.se. För att komma igång behöver du skapa ett lösenord.</p>
+        <a href="\${resetLink}" style="display: inline-block; background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Skapa lösenord</a>
         <p style="font-size: 12px; color: rgba(240, 232, 216, 0.6); margin-bottom: 0.5rem;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare:</p>
-        <p style="font-size: 12px; color: #C04A2A; word-break: break-all;">${resetLink}</p>
-      </div>`
+        <p style="font-size: 12px; color: #C04A2A; word-break: break-all;">\${resetLink}</p>
+      </div>\`
 
       try {
         emailSent = await sendEmail({
@@ -242,37 +243,35 @@ export const sendResetLinkFn = createServerFn({ method: "POST" })
       throw new Error('User not found')
     }
 
-    // Delete old tokens for this user
-    await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, data.userId))
-
     // Generate a new reset token
     const resetToken = randomBytes(32).toString('hex')
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
 
     await db.insert(passwordResetTokens).values({
       userId: targetUser[0].id,
       token: resetToken,
-      expiresAt: sql`now() + interval '7 days'`,
+      expiresAt: expiresAt,
     })
 
     // Send email
     const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
-    const resetLink = `${baseUrl}/login?userid=${targetUser[0].id}&token=${resetToken}&makepassword=true`
+    const resetLink = \`\${baseUrl}/login?userid=\${targetUser[0].id}&token=\${resetToken}&makepassword=true\`
     
     const userName = targetUser[0].name || 'Användare'
     const adminName = currentUser.name || 'En administratör'
     
-    const emailText = `Hej! ${userName}\n${adminName} har begärt att du sätter ett nytt lösenord för ditt Linköping-konto.\n\nGå till följande länk för att skapa ditt lösenord:\n${resetLink}`
+    const emailText = \`Hej! \${userName}\\n\${adminName} har begärt att du sätter ett nytt lösenord för ditt Lanköping-konto.\\n\\nGå till följande länk för att skapa ditt lösenord:\\n\${resetLink}\`
     
-    const emailHtml = `
+    const emailHtml = \`
       <div style="font-family: sans-serif; max-width: xl mx-auto; background-color: #100E0C; color: #F0E8D8; padding: 2rem; border-radius: 8px; border: 1px solid rgba(192, 74, 42, 0.2);">
         <h2 style="color: #C04A2A; text-transform: uppercase; letter-spacing: 0.1em; font-size: 14px; margin-bottom: 1rem;">Lankoping Admin</h2>
         <h1 style="font-size: 24px; margin-bottom: 1.5rem;">Återställ Lösenord</h1>
-        <p style="margin-bottom: 1rem;">Hej <strong>${userName}</strong>,</p>
-        <p style="margin-bottom: 1.5rem;">${adminName} har begärt att du sätter ett nytt lösenord för ditt Lankoping-konto.</p>
-        <a href="${resetLink}" style="display: inline-block; background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Sätt nytt lösenord</a>
+        <p style="margin-bottom: 1rem;">Hej <strong>\${userName}</strong>,</p>
+        <p style="margin-bottom: 1.5rem;">\${adminName} har begärt att du sätter ett nytt lösenord för ditt Lankoping-konto.</p>
+        <a href="\${resetLink}" style="display: inline-block; background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Sätt nytt lösenord</a>
         <p style="font-size: 12px; color: rgba(240, 232, 216, 0.6); margin-bottom: 0.5rem;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare:</p>
-        <p style="font-size: 12px; color: #C04A2A; word-break: break-all;">${resetLink}</p>
-      </div>`
+        <p style="font-size: 12px; color: #C04A2A; word-break: break-all;">\${resetLink}</p>
+      </div>\`
 
     let emailSent = false
     let emailError = null
@@ -330,7 +329,7 @@ export const resetPasswordWithTokenFn = createServerFn({ method: "POST" })
         and(
           eq(passwordResetTokens.userId, data.userId),
           eq(passwordResetTokens.token, data.token),
-          gte(passwordResetTokens.expiresAt, sql`now()`)
+          gte(passwordResetTokens.expiresAt, new Date())
         )
       )
       .limit(1)
@@ -456,25 +455,25 @@ export const deleteUserFn = createServerFn({ method: "POST" })
       // Handle tables that might exist in the database but aren't in schema.ts anymore
       // This is a fallback in case the DROP TABLE statements in init.ts didn't execute properly
       try {
-        await db.execute(sql`UPDATE avgangs_requests SET reviewed_by = NULL WHERE reviewed_by = ${data.userId}`)
+        await db.execute(sql\`UPDATE avgangs_requests SET reviewed_by = NULL WHERE reviewed_by = \${data.userId}\`)
       } catch (e) {
         // Ignore if table doesn't exist
       }
       
       try {
-        await db.execute(sql`UPDATE stadgar SET updated_by = NULL WHERE updated_by = ${data.userId}`)
+        await db.execute(sql\`UPDATE stadgar SET updated_by = NULL WHERE updated_by = \${data.userId}\`)
       } catch (e) {
         // Ignore if table doesn't exist
       }
 
       try {
-        await db.execute(sql`DELETE FROM organization_members WHERE user_id = ${data.userId}`)
+        await db.execute(sql\`DELETE FROM organization_members WHERE user_id = \${data.userId}\`)
       } catch (e) {
         // Ignore if table doesn't exist
       }
 
       try {
-        await db.execute(sql`DELETE FROM agreements WHERE created_by = ${data.userId}`)
+        await db.execute(sql\`DELETE FROM agreements WHERE created_by = \${data.userId}\`)
       } catch (e) {
         // Ignore if table doesn't exist
       }
@@ -501,8 +500,8 @@ export const deleteUserFn = createServerFn({ method: "POST" })
 
       return { success: true }
     } catch (error) {
-      console.error(`Failed to delete user where user ID ${data.userId}`, error)
-      throw new Error(`Failed to delete user: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      console.error(\`Failed to delete user where user ID \${data.userId}\`, error)
+      throw new Error(\`Failed to delete user: \${error instanceof Error ? error.message : 'Unknown error'}\`)
     }
   })
 

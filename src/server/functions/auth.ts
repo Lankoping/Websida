@@ -455,25 +455,25 @@ export const deleteUserFn = createServerFn({ method: "POST" })
       // Handle tables that might exist in the database but aren't in schema.ts anymore
       // This is a fallback in case the DROP TABLE statements in init.ts didn't execute properly
       try {
-        await db.execute(sql\`UPDATE avgangs_requests SET reviewed_by = NULL WHERE reviewed_by = \${data.userId}\`)
+        await db.execute(sql`UPDATE avgangs_requests SET reviewed_by = NULL WHERE reviewed_by = ${data.userId}`)
       } catch (e) {
         // Ignore if table doesn't exist
       }
       
       try {
-        await db.execute(sql\`UPDATE stadgar SET updated_by = NULL WHERE updated_by = \${data.userId}\`)
+        await db.execute(sql`UPDATE stadgar SET updated_by = NULL WHERE updated_by = ${data.userId}`)
       } catch (e) {
         // Ignore if table doesn't exist
       }
 
       try {
-        await db.execute(sql\`DELETE FROM organization_members WHERE user_id = \${data.userId}\`)
+        await db.execute(sql`DELETE FROM organization_members WHERE user_id = ${data.userId}`)
       } catch (e) {
         // Ignore if table doesn't exist
       }
 
       try {
-        await db.execute(sql\`DELETE FROM agreements WHERE created_by = \${data.userId}\`)
+        await db.execute(sql`DELETE FROM agreements WHERE created_by = ${data.userId}`)
       } catch (e) {
         // Ignore if table doesn't exist
       }
@@ -500,8 +500,8 @@ export const deleteUserFn = createServerFn({ method: "POST" })
 
       return { success: true }
     } catch (error) {
-      console.error(\`Failed to delete user where user ID \${data.userId}\`, error)
-      throw new Error(\`Failed to delete user: \${error instanceof Error ? error.message : 'Unknown error'}\`)
+      console.error(`Failed to delete user where user ID ${data.userId}`, error)
+      throw new Error(`Failed to delete user: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   })
 

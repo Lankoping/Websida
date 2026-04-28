@@ -157,13 +157,11 @@ export const createUserFn = createServerFn({ method: "POST" })
     if (!data.password) {
       // Generate a reset token
       resetToken = randomBytes(32).toString('hex')
-      const expiresAt = new Date()
-      expiresAt.setDate(expiresAt.getDate() + 7) // Token valid for 7 days
 
       await db.insert(passwordResetTokens).values({
         userId: created[0].id,
         token: resetToken,
-        expiresAt,
+        expiresAt: sql`now() + interval '7 days'`,
       })
 
       // Send email
@@ -249,13 +247,11 @@ export const sendResetLinkFn = createServerFn({ method: "POST" })
 
     // Generate a new reset token
     const resetToken = randomBytes(32).toString('hex')
-    const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + 7) // Token valid for 7 days
 
     await db.insert(passwordResetTokens).values({
       userId: targetUser[0].id,
       token: resetToken,
-      expiresAt,
+      expiresAt: sql`now() + interval '7 days'`,
     })
 
     // Send email
@@ -334,7 +330,7 @@ export const resetPasswordWithTokenFn = createServerFn({ method: "POST" })
         and(
           eq(passwordResetTokens.userId, data.userId),
           eq(passwordResetTokens.token, data.token),
-          gte(passwordResetTokens.expiresAt, new Date())
+          gte(passwordResetTokens.expiresAt, sql`now()`)
         )
       )
       .limit(1)

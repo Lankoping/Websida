@@ -113,7 +113,7 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
       if (eventTicketTypeRecord.length > 0 && eventTicketTypeRecord[0].maxQuantity !== null) {
         // Count how many valid tickets of this type have been issued for this event
         const existingTickets = await db
-          .select({ count: sql<number>\`count(*)\` })
+          .select({ count: sql<number>`count(*)` })
           .from(tickets)
           .where(
             and(
@@ -125,7 +125,7 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
           
         const currentCount = Number(existingTickets[0]?.count || 0)
         if (currentCount + data.ticketCount > eventTicketTypeRecord[0].maxQuantity) {
-          throw new Error(\`Kan inte utfärda \${data.ticketCount} biljetter. Endast \${eventTicketTypeRecord[0].maxQuantity - currentCount} biljetter av typen "\${data.ticketType}" finns kvar.\`)
+          throw new Error(`Kan inte utfärda ${data.ticketCount} biljetter. Endast ${eventTicketTypeRecord[0].maxQuantity - currentCount} biljetter av typen "${data.ticketType}" finns kvar.`)
         }
       }
     }
@@ -156,28 +156,28 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
     const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
 
     for (const ticket of result) {
-      const ticketUrl = \`\${baseUrl}/biljett/\${ticket.ticketCode}\`
-      const emailHtml = \`
+      const ticketUrl = `${baseUrl}/biljett/${ticket.ticketCode}`
+      const emailHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
           <h2 style="color: #333;">Här är din biljett!</h2>
-          <p>Hej \${ticket.participantName},</p>
-          <p>Här är din biljett för <strong>\${event[0]?.title || 'Eventet'}</strong>.</p>
+          <p>Hej ${ticket.participantName},</p>
+          <p>Här är din biljett för <strong>${event[0]?.title || 'Eventet'}</strong>.</p>
           <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; border: 1px solid #ddd;">
-            <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">\${ticket.ticketCode}</p>
+            <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">${ticket.ticketCode}</p>
           </div>
           <p>Du kan visa din biljett och QR-kod genom att klicka på knappen nedan:</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="\${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
+            <a href="${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
           </div>
-          <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>\${ticketUrl}</p>
+          <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>${ticketUrl}</p>
         </div>
-      \`
+      `
 
       try {
         await sendEmail({
           to: ticket.participantEmail,
-          subject: \`Din biljett till \${event[0]?.title || 'Eventet'}\`,
-          text: \`Här är din biljettkod: \${ticket.ticketCode}. Visa din biljett här: \${ticketUrl}\`,
+          subject: `Din biljett till ${event[0]?.title || 'Eventet'}`,
+          text: `Här är din biljettkod: ${ticket.ticketCode}. Visa din biljett här: ${ticketUrl}`,
           html: emailHtml,
         })
       } catch (e) {
@@ -421,7 +421,7 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
           
         if (eventTicketTypeRecord.length > 0 && eventTicketTypeRecord[0].maxQuantity !== null) {
           const existingTickets = await db
-            .select({ count: sql<number>\`count(*)\` })
+            .select({ count: sql<number>`count(*)` })
             .from(tickets)
             .where(
               and(
@@ -433,7 +433,7 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
             
           const currentCount = Number(existingTickets[0]?.count || 0)
           if (currentCount + requestedCount > eventTicketTypeRecord[0].maxQuantity) {
-            throw new Error(\`Kan inte utfärda \${requestedCount} biljetter av typen "\${typeName}". Endast \${eventTicketTypeRecord[0].maxQuantity - currentCount} biljetter finns kvar.\`)
+            throw new Error(`Kan inte utfärda ${requestedCount} biljetter av typen "${typeName}". Endast ${eventTicketTypeRecord[0].maxQuantity - currentCount} biljetter finns kvar.`)
           }
         }
       }
@@ -467,27 +467,27 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
     const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
 
     for (const ticket of result) {
-      const ticketUrl = \`\${baseUrl}/biljett/\${ticket.ticketCode}\`
-      const emailHtml = \`
+      const ticketUrl = `${baseUrl}/biljett/${ticket.ticketCode}`
+      const emailHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
           <h2 style="color: #333;">Här är din biljett!</h2>
-          <p>Hej \${ticket.participantName},</p>
-          <p>Här är din biljett för <strong>\${event[0]?.title || 'Eventet'}</strong>.</p>
+          <p>Hej ${ticket.participantName},</p>
+          <p>Här är din biljett för <strong>${event[0]?.title || 'Eventet'}</strong>.</p>
           <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; border: 1px solid #ddd;">
-            <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">\${ticket.ticketCode}</p>
+            <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">${ticket.ticketCode}</p>
           </div>
           <p>Du kan visa din biljett och QR-kod genom att klicka på knappen nedan:</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="\${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
+            <a href="${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
           </div>
-          <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>\${ticketUrl}</p>
+          <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>${ticketUrl}</p>
         </div>
-      \`
+      `
       try {
         await sendEmail({
           to: ticket.participantEmail,
-          subject: \`Din biljett till \${event[0]?.title || 'Eventet'}\`,
-          text: \`Här är din biljettkod: \${ticket.ticketCode}. Visa din biljett här: \${ticketUrl}\`,
+          subject: `Din biljett till ${event[0]?.title || 'Eventet'}`,
+          text: `Här är din biljettkod: ${ticket.ticketCode}. Visa din biljett här: ${ticketUrl}`,
           html: emailHtml,
         })
       } catch (e) {
@@ -872,28 +872,28 @@ export const resendTicketEmailFn = createServerFn({ method: 'POST' })
     const event = await db.select({ title: events.title }).from(events).where(eq(events.id, ticket.eventId)).limit(1)
 
     const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
-    const ticketUrl = \`\${baseUrl}/biljett/\${ticket.ticketCode}\`
+    const ticketUrl = `${baseUrl}/biljett/${ticket.ticketCode}`
 
-    const emailHtml = \`
+    const emailHtml = `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
         <h2 style="color: #333;">Här är din biljett!</h2>
-        <p>Hej \${ticket.participantName},</p>
-        <p>Här är din biljett för <strong>\${event[0]?.title || 'Eventet'}</strong>.</p>
+        <p>Hej ${ticket.participantName},</p>
+        <p>Här är din biljett för <strong>${event[0]?.title || 'Eventet'}</strong>.</p>
         <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; border: 1px solid #ddd;">
-          <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">\${ticket.ticketCode}</p>
+          <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">${ticket.ticketCode}</p>
         </div>
         <p>Du kan visa din biljett och QR-kod genom att klicka på knappen nedan:</p>
         <div style="text-align: center; margin: 30px 0;">
-          <a href="\${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
+          <a href="${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
         </div>
-        <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>\${ticketUrl}</p>
+        <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>${ticketUrl}</p>
       </div>
-    \`
+    `
 
     const emailSent = await sendEmail({
       to: ticket.participantEmail,
-      subject: \`Din biljett till \${event[0]?.title || 'Eventet'}\`,
-      text: \`Här är din biljettkod: \${ticket.ticketCode}. Visa din biljett här: \${ticketUrl}\`,
+      subject: `Din biljett till ${event[0]?.title || 'Eventet'}`,
+      text: `Här är din biljettkod: ${ticket.ticketCode}. Visa din biljett här: ${ticketUrl}`,
       html: emailHtml,
     })
 

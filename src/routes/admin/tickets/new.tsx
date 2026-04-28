@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { getEventsFn, issueTicketFn } from '../../../server/functions/tickets'
-import { getTicketTypesForEventFn } from '../../../server/functions/tickets'
-import { useState, useEffect } from 'react'
+import { getEventsFn, issueTicketFn, getTicketTypesForEventFn } from '../../../server/functions/tickets'
+import { useState, useEffect, useMemo } from 'react'
 import {
   Ticket,
   Save,
@@ -88,7 +87,31 @@ function NewTicket() {
   const selectedEvent = events.find((e) => e.id === parseInt(form.eventId))
   const selectedCompany = companies.find((c) => c.id === parseInt(form.companyId))
 
+  // Filter ticket types based on selected company
+  const availableTicketTypes = useMemo(() => {
+    return ticketTypes.filter((tt) => {
+      if (form.issuanceType === 'company' && form.companyId) {
+        // Only show ticket types that have a pricing rule for the selected company
+        return pricingRules.some(
+          (rule) => rule.companyId === parseInt(form.companyId) && rule.ticketTypeId === tt.ticketTypeId
+        )
+      }
+      return true // If private or no company selected, show all
+    })
+  }, [ticketTypes, pricingRules, form.issuanceType, form.companyId])
+
+  // Reset ticket type if it's no longer available after company change
+  useEffect(() => {
+    if (form.ticketTypeId) {
+      const isAvailable = availableTicketTypes.some(tt => tt.ticketTypeId === parseInt(form.ticketTypeId))
+      if (!isAvailable) {
+        setForm(prev => ({ ...prev, ticketTypeId: '', pricePaid: '' }))
+      }
+    }
+  }, [availableTicketTypes, form.ticketTypeId])
+
   const calculatePrice = (typeId: string, compId: string, issuanceType: string) => {
+    if (!typeId) return ''
     const tt = ticketTypes.find((t) => t.ticketTypeId === parseInt(typeId))
     if (!tt) return ''
 
@@ -275,6 +298,7 @@ function NewTicket() {
             Event *
           </label>
           <select
+            name="eventId"
             value={form.eventId}
             onChange={(e) => handleEventChange(e.target.value)}
             className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
@@ -291,27 +315,6 @@ function NewTicket() {
             {activeEvents.length === 0 && (
               <option disabled value="">Inga aktiva event</option>
             )}
-          </select>
-        </div>
-
-        <div className="space-y-1.5">
-          <label className="text-xs font-medium text-foreground flex items-center gap-2">
-            <Tag className="w-3 h-3 text-primary" />
-            Biljettyp *
-          </label>
-          <select
-            value={form.ticketTypeId}
-            onChange={(e) => handleTypeChange(e.target.value)}
-            className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
-            required
-            disabled={!form.eventId || isLoadingEventData || ticketTypes.length === 0}
-          >
-            <option value="">{isLoadingEventData ? 'Laddar...' : 'Välj biljettyp...'}</option>
-            {ticketTypes.map((tt) => (
-              <option key={tt.ticketTypeId} value={tt.ticketTypeId}>
-                {tt.name} — {tt.price} SEK
-              </option>
-            ))}
           </select>
         </div>
 
@@ -351,13 +354,16 @@ function NewTicket() {
                   Företag *
                 </label>
                 <select
+                  name="companyId"
                   value={form.companyId}
                   onChange={(e) => handleCompanyChange(e.target.value)}
                   className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
                   required
                   disabled={!form.eventId || isLoadingEventData || companies.length === 0}
                 >
-                  <option value="">Välj företag...</option>
+                  <option value="">
+                    {!form.eventId ? 'Välj event först...' : isLoadingEventData ? 'Laddar...' : companies.length === 0 ? 'Inga företag finns' : 'Välj företag...'}
+                  </option>
                   {companies.map((company) => (
                     <option key={company.id} value={company.id}>
                       {company.name}
@@ -369,6 +375,7 @@ function NewTicket() {
                 <label className="text-xs font-medium text-foreground">Antal biljetter</label>
                 <input
                   type="number"
+                  name="ticketCount"
                   min="1"
                   value={form.ticketCount}
                   onChange={(e) => setForm(prev => ({ ...prev, ticketCount: parseInt(e.target.value) || 1 }))}
@@ -376,6 +383,43 @@ function NewTicket() {
                 />
               </div>
             </div>
+          )}
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-foreground flex items-center gap-2">
+            <Tag className="w-3 h-3 text-primary" />
+            Biljettyp *
+          </label>
+          <select
+            name="ticketTypeId"
+            value={form.ticketTypeId}
+            onChange={(e) => handleTypeChange(e.target.value)}
+            className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
+            required
+            disabled={!form.eventId || isLoadingEventData || availableTicketTypes.length === 0 || (form.issuanceType === 'company' && !form.companyId)}
+          >
+            <option value="">
+              {!form.eventId 
+                ? 'Välj event först...' 
+                : isLoadingEventData 
+                  ? 'Laddar...' 
+                  : form.issuanceType === 'company' && !form.companyId 
+                    ? 'Välj företag först...' 
+                    : availableTicketTypes.length === 0 
+                      ? 'Inga biljettyper tillgängliga' 
+                      : 'Välj biljettyp...'}
+            </option>
+            {availableTicketTypes.map((tt) => (
+              <option key={tt.ticketTypeId} value={tt.ticketTypeId}>
+                {tt.name} — {calculatePrice(String(tt.ticketTypeId), form.companyId, form.issuanceType)} SEK
+              </option>
+            ))}
+          </select>
+          {form.issuanceType === 'company' && form.companyId && availableTicketTypes.length === 0 && (
+            <p className="text-xs text-destructive mt-1">
+              Det valda företaget har inga prisregler uppsatta för detta event.
+            </p>
           )}
         </div>
 
@@ -393,6 +437,7 @@ function NewTicket() {
               </label>
               <input
                 type="text"
+                name="participantName"
                 placeholder="Anna Andersson"
                 value={form.participantName}
                 onChange={(e) => setForm((prev) => ({ ...prev, participantName: e.target.value }))}
@@ -408,6 +453,7 @@ function NewTicket() {
               </label>
               <input
                 type="email"
+                name="participantEmail"
                 placeholder="anna@example.se"
                 value={form.participantEmail}
                 onChange={(e) => setForm((prev) => ({ ...prev, participantEmail: e.target.value }))}
@@ -429,8 +475,9 @@ function NewTicket() {
             <div className="relative">
               <input
                 type="number"
+                name="pricePaid"
                 min="0"
-                placeholder={selectedType ? String(selectedType.price) : '0'}
+                placeholder={selectedType ? calculatePrice(String(selectedType.ticketTypeId), form.companyId, form.issuanceType) : '0'}
                 value={form.pricePaid}
                 onChange={(e) => setForm((prev) => ({ ...prev, pricePaid: e.target.value }))}
                 className="w-full p-3 pr-12 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all placeholder:text-muted-foreground"
@@ -439,12 +486,12 @@ function NewTicket() {
             </div>
             {selectedType && form.pricePaid === '' && (
               <p className="text-xs text-muted-foreground">
-                Standardpris: {selectedType.price} SEK. Lämna tomt för att använda standardpriset.
+                Standardpris: {calculatePrice(String(selectedType.ticketTypeId), form.companyId, form.issuanceType)} SEK. Lämna tomt för att använda standardpriset.
               </p>
             )}
             {form.issuanceType === 'company' && form.companyId && form.ticketTypeId && form.pricePaid === '' && (
                <p className="text-xs text-primary">
-                 Företagspris tillämpas automatiskt om en regel finns.
+                 Företagspris tillämpas automatiskt.
                </p>
             )}
           </div>

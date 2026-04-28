@@ -14,6 +14,7 @@ import {
   X,
   ExternalLink,
   Building2,
+  BookOpen,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/admin')({
@@ -229,7 +230,7 @@ function AdminLayout() {
               <NavGroup label="Biljetter" icon={<Ticket className="w-5 h-5" />} defaultOpen={isTicketsPath}>
                 <SubNavItem href="/admin/tickets" label="Översikt" />
                 <SubNavItem href="/admin/tickets/events" label="Evenemang" />
-                <SubNavItem href="/admin/tickets/types" label="Biljetttyper" />
+                <SubNavItem href="/admin/tickets/types" label="Biljettyper" />
                 <SubNavItem href="/admin/tickets/companies" label="Företag" />
                 <SubNavItem href="/admin/tickets/new" label="Utfärda biljett" />
               </NavGroup>
@@ -242,6 +243,7 @@ function AdminLayout() {
                   System
                 </p>
                 <NavItem href="/admin/logs" label="Aktivitetslogg" icon={<History className="w-5 h-5" />} />
+                <NavItem href="/admin/guides" label="Guider" icon={<BookOpen className="w-5 h-5" />} />
               </div>
             )}
           </nav>

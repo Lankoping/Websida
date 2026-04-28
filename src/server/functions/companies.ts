@@ -101,9 +101,7 @@ export const getCompanyPricingFn = createServerFn({ method: 'GET' })
         id: companyTicketPricing.id,
         companyId: companyTicketPricing.companyId,
         ticketTypeId: companyTicketPricing.ticketTypeId,
-        thresholdQty: companyTicketPricing.thresholdQty,
-        priceBelow: companyTicketPricing.priceBelow,
-        priceAbove: companyTicketPricing.priceAbove,
+        price: companyTicketPricing.price,
         ticketTypeName: ticketTypes.name,
         ticketTypePrice: ticketTypes.price,
       })
@@ -118,9 +116,7 @@ export const upsertCompanyPricingFn = createServerFn({ method: 'POST' })
       .object({
         companyId: z.number(),
         ticketTypeId: z.number(),
-        thresholdQty: z.number().min(1),
-        priceBelow: z.number().min(0),
-        priceAbove: z.number().min(0),
+        price: z.number().min(0),
       })
       .parse(data),
   )
@@ -142,9 +138,7 @@ export const upsertCompanyPricingFn = createServerFn({ method: 'POST' })
       await db
         .update(companyTicketPricing)
         .set({
-          thresholdQty: data.thresholdQty,
-          priceBelow: data.priceBelow,
-          priceAbove: data.priceAbove,
+          price: data.price,
           updatedAt: new Date(),
         })
         .where(eq(companyTicketPricing.id, existing[0].id))

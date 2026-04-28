@@ -29,7 +29,7 @@ export function CookieConsent() {
           <p className="text-sm text-muted-foreground leading-relaxed">
             Vi använder cookies för att förbättra din upplevelse på vår webbplats, analysera trafik och anpassa innehåll. Genom att fortsätta använda webbplatsen godkänner du vår användning av cookies.
             {' '}
-            <Link to="/datapolicy/se" className="text-primary hover:underline">
+            <Link to="/datapolicy" className="text-primary hover:underline">
               Läs mer i vår datapolicy
             </Link>.
           </p>

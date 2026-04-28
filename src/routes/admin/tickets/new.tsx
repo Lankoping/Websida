@@ -93,20 +93,12 @@ function NewTicket() {
   const selectedEvent = events.find((e) => e.id === parseInt(form.eventId))
   const selectedCompany = companies.find((c) => c.id === parseInt(form.companyId))
 
-  // Filter ticket types based on selected company
+  // Allow all ticket types for the event, regardless of company pricing rules
   const availableTicketTypes = useMemo(() => {
-    return (ticketTypes || []).filter((tt) => {
-      if (form.issuanceType === 'company' && form.companyId) {
-        // Only show ticket types that have a pricing rule for the selected company
-        return (pricingRules || []).some(
-          (rule) => rule.companyId === parseInt(form.companyId) && rule.ticketTypeId === tt.ticketTypeId
-        )
-      }
-      return true // If private or no company selected, show all
-    })
-  }, [ticketTypes, pricingRules, form.issuanceType, form.companyId])
+    return ticketTypes || []
+  }, [ticketTypes])
 
-  // Reset ticket type if it's no longer available after company change
+  // Reset ticket type if it's no longer available after event change
   useEffect(() => {
     if (form.ticketTypeId) {
       const isAvailable = availableTicketTypes.some(tt => tt.ticketTypeId === parseInt(form.ticketTypeId))
@@ -409,7 +401,7 @@ function NewTicket() {
             onChange={(e) => handleTypeChange(e.target.value)}
             className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
             required
-            disabled={!form.eventId || isLoadingEventData || (form.issuanceType === 'company' && !form.companyId)}
+            disabled={!form.eventId || isLoadingEventData || availableTicketTypes.length === 0 || (form.issuanceType === 'company' && !form.companyId)}
           >
             <option value="">
               {!form.eventId 
@@ -419,7 +411,7 @@ function NewTicket() {
                   : form.issuanceType === 'company' && !form.companyId 
                     ? 'Välj företag först...' 
                     : availableTicketTypes.length === 0 
-                      ? (form.issuanceType === 'company' ? 'Företaget saknar prisregler' : 'Inga biljettyper tillgängliga') 
+                      ? 'Inga biljettyper tillgängliga' 
                       : 'Välj biljettyp...'}
             </option>
             {availableTicketTypes.map((tt) => (
@@ -428,11 +420,6 @@ function NewTicket() {
               </option>
             ))}
           </select>
-          {form.issuanceType === 'company' && form.companyId && availableTicketTypes.length === 0 && (
-            <p className="text-xs text-destructive mt-1">
-              Det valda företaget har inga prisregler uppsatta för detta event. De kan därför inte köpa några biljetter.
-            </p>
-          )}
         </div>
 
         <div className="border-t border-border pt-6">
@@ -503,7 +490,7 @@ function NewTicket() {
             )}
             {form.issuanceType === 'company' && form.companyId && form.ticketTypeId && form.pricePaid === '' && (
                <p className="text-xs text-primary">
-                 Företagspris tillämpas automatiskt.
+                 Företagspris tillämpas automatiskt om en prisregel finns, annars används standardpriset.
                </p>
             )}
           </div>

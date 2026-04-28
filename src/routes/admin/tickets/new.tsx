@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { getEventsFn, issueTicketFn } from '../../../server/functions/tickets'
-import { getAllTicketTypesFn, getAllEventTicketTypesFn } from '../../../server/functions/eventTicketTypes'
-import { useState } from 'react'
+import { getTicketTypesForEventFn } from '../../../server/functions/tickets'
+import { useState, useEffect } from 'react'
 import {
   Ticket,
   Save,
@@ -13,16 +13,15 @@ import {
   Tag,
   Plus,
   AlertCircle,
+  Building2,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/admin/tickets/new')({
   loader: async () => {
-    const [events, ticketTypes, eventTicketTypes] = await Promise.all([
+    const [events] = await Promise.all([
       getEventsFn(),
-      getAllTicketTypesFn(),
-      getAllEventTicketTypesFn(),
     ])
-    return { events, ticketTypes, eventTicketTypes }
+    return { events }
   },
   component: NewTicket,
 })
@@ -37,7 +36,7 @@ type SuccessInfo = {
 }
 
 function NewTicket() {
-  const { events, ticketTypes, eventTicketTypes } = Route.useLoaderData()
+  const { events } = Route.useLoaderData()
   const navigate = useNavigate()
 
   const defaultForm = {
@@ -48,43 +47,102 @@ function NewTicket() {
     pricePaid: '',
     issuanceType: 'private' as 'company' | 'private',
     ticketCount: 1,
+    companyId: '',
   }
   const [form, setForm] = useState(defaultForm)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [success, setSuccess] = useState<SuccessInfo | null>(null)
   const [error, setError] = useState('')
 
+  const [ticketTypes, setTicketTypes] = useState<any[]>([])
+  const [companies, setCompanies] = useState<any[]>([])
+  const [pricingRules, setPricingRules] = useState<any[]>([])
+  const [isLoadingEventData, setIsLoadingEventData] = useState(false)
+
   const activeEvents = events.filter((e) => !e.finished)
 
-  const getAvailableTypes = (eventId: string) => {
-    if (!eventId) return ticketTypes
-    const eid = parseInt(eventId)
-    const configured = eventTicketTypes.filter((ett) => ett.eventId === eid && ett.enabled)
-    if (configured.length === 0) return ticketTypes
-    const configuredIds = new Set(configured.map((c) => c.ticketTypeId))
-    return ticketTypes.filter((tt) => configuredIds.has(tt.id))
+  useEffect(() => {
+    async function loadEventData() {
+      if (!form.eventId) {
+        setTicketTypes([])
+        setCompanies([])
+        setPricingRules([])
+        return
+      }
+      setIsLoadingEventData(true)
+      try {
+        const data = await getTicketTypesForEventFn({ data: parseInt(form.eventId) })
+        setTicketTypes(data.ticketTypes)
+        setCompanies(data.companies)
+        setPricingRules(data.pricingRules)
+      } catch (err) {
+        console.error('Failed to load event data', err)
+      } finally {
+        setIsLoadingEventData(false)
+      }
+    }
+    loadEventData()
+  }, [form.eventId])
+
+  const selectedType = ticketTypes.find((tt) => tt.ticketTypeId === parseInt(form.ticketTypeId))
+  const selectedEvent = events.find((e) => e.id === parseInt(form.eventId))
+  const selectedCompany = companies.find((c) => c.id === parseInt(form.companyId))
+
+  const calculatePrice = (typeId: string, compId: string, issuanceType: string) => {
+    const tt = ticketTypes.find((t) => t.ticketTypeId === parseInt(typeId))
+    if (!tt) return ''
+
+    if (issuanceType === 'company' && compId) {
+      const rule = pricingRules.find(
+        (r) => r.companyId === parseInt(compId) && r.ticketTypeId === parseInt(typeId)
+      )
+      if (rule) {
+        return String(rule.price)
+      }
+    }
+    return String(tt.price)
   }
 
-  const availableTypes = getAvailableTypes(form.eventId)
-  const selectedType = ticketTypes.find((tt) => tt.id === parseInt(form.ticketTypeId))
-  const selectedEvent = events.find((e) => e.id === parseInt(form.eventId))
-
   const handleEventChange = (eventId: string) => {
-    setForm((prev) => ({ ...prev, eventId, ticketTypeId: '', pricePaid: '' }))
+    setForm((prev) => ({ ...prev, eventId, ticketTypeId: '', pricePaid: '', companyId: '' }))
   }
 
   const handleTypeChange = (ticketTypeId: string) => {
-    const tt = ticketTypes.find((t) => t.id === parseInt(ticketTypeId))
+    const newPrice = calculatePrice(ticketTypeId, form.companyId, form.issuanceType)
     setForm((prev) => ({
       ...prev,
       ticketTypeId,
-      pricePaid: tt ? String(tt.price) : prev.pricePaid,
+      pricePaid: newPrice,
+    }))
+  }
+
+  const handleIssuanceTypeChange = (issuanceType: 'company' | 'private') => {
+    const newPrice = calculatePrice(form.ticketTypeId, form.companyId, issuanceType)
+    setForm((prev) => ({
+      ...prev,
+      issuanceType,
+      companyId: issuanceType === 'private' ? '' : prev.companyId,
+      pricePaid: newPrice,
+    }))
+  }
+
+  const handleCompanyChange = (companyId: string) => {
+    const newPrice = calculatePrice(form.ticketTypeId, companyId, form.issuanceType)
+    setForm((prev) => ({
+      ...prev,
+      companyId,
+      pricePaid: newPrice,
     }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.eventId || !form.participantName || !form.participantEmail) return
+    if (!form.eventId || !form.participantName || !form.participantEmail || !form.ticketTypeId) return
+    if (form.issuanceType === 'company' && !form.companyId) {
+      setError('Välj ett företag')
+      return
+    }
+    
     setIsSubmitting(true)
     setError('')
     try {
@@ -93,6 +151,7 @@ function NewTicket() {
           eventId: parseInt(form.eventId),
           participantName: form.participantName.trim(),
           participantEmail: form.participantEmail.trim().toLowerCase(),
+          participantCompany: selectedCompany?.name || undefined,
           ticketType: selectedType?.name || 'Standard',
           pricePaid: form.pricePaid !== '' ? parseInt(form.pricePaid) : 0,
           issuanceType: form.issuanceType,
@@ -120,9 +179,11 @@ function NewTicket() {
 
   const isFormValid =
     form.eventId &&
+    form.ticketTypeId &&
     form.participantName.trim() &&
     form.participantEmail.trim() &&
-    form.participantEmail.includes('@')
+    form.participantEmail.includes('@') &&
+    (form.issuanceType === 'private' || (form.issuanceType === 'company' && form.companyId))
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -243,13 +304,12 @@ function NewTicket() {
             onChange={(e) => handleTypeChange(e.target.value)}
             className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
             required
-            disabled={!form.eventId && ticketTypes.length === 0}
+            disabled={!form.eventId || isLoadingEventData || ticketTypes.length === 0}
           >
-            <option value="">Välj biljettyp...</option>
-            {availableTypes.map((tt) => (
-              <option key={tt.id} value={tt.id}>
+            <option value="">{isLoadingEventData ? 'Laddar...' : 'Välj biljettyp...'}</option>
+            {ticketTypes.map((tt) => (
+              <option key={tt.ticketTypeId} value={tt.ticketTypeId}>
                 {tt.name} — {tt.price} SEK
-                {tt.description ? ` (${tt.description})` : ''}
               </option>
             ))}
           </select>
@@ -267,7 +327,7 @@ function NewTicket() {
                 name="issuanceType"
                 value="private"
                 checked={form.issuanceType === 'private'}
-                onChange={() => setForm(prev => ({ ...prev, issuanceType: 'private' }))}
+                onChange={() => handleIssuanceTypeChange('private')}
               />
               Privatperson
             </label>
@@ -277,21 +337,44 @@ function NewTicket() {
                 name="issuanceType"
                 value="company"
                 checked={form.issuanceType === 'company'}
-                onChange={() => setForm(prev => ({ ...prev, issuanceType: 'company' }))}
+                onChange={() => handleIssuanceTypeChange('company')}
               />
               Företag
             </label>
           </div>
+          
           {form.issuanceType === 'company' && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">Antal biljetter</label>
-              <input
-                type="number"
-                min="1"
-                value={form.ticketCount}
-                onChange={(e) => setForm(prev => ({ ...prev, ticketCount: parseInt(e.target.value) || 1 }))}
-                className="w-full p-3 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-foreground flex items-center gap-2">
+                  <Building2 className="w-3 h-3 text-primary" />
+                  Företag *
+                </label>
+                <select
+                  value={form.companyId}
+                  onChange={(e) => handleCompanyChange(e.target.value)}
+                  className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
+                  required
+                  disabled={!form.eventId || isLoadingEventData || companies.length === 0}
+                >
+                  <option value="">Välj företag...</option>
+                  {companies.map((company) => (
+                    <option key={company.id} value={company.id}>
+                      {company.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-foreground">Antal biljetter</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={form.ticketCount}
+                  onChange={(e) => setForm(prev => ({ ...prev, ticketCount: parseInt(e.target.value) || 1 }))}
+                  className="w-full p-3 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
+                />
+              </div>
             </div>
           )}
         </div>
@@ -358,6 +441,11 @@ function NewTicket() {
               <p className="text-xs text-muted-foreground">
                 Standardpris: {selectedType.price} SEK. Lämna tomt för att använda standardpriset.
               </p>
+            )}
+            {form.issuanceType === 'company' && form.companyId && form.ticketTypeId && form.pricePaid === '' && (
+               <p className="text-xs text-primary">
+                 Företagspris tillämpas automatiskt om en regel finns.
+               </p>
             )}
           </div>
         </div>

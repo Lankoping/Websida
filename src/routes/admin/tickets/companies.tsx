@@ -90,7 +90,7 @@ function CompaniesAdmin() {
       await router.invalidate()
     } catch (err) {
       console.error(err)
-      alert(`Kunde inte ${editingCompanyId ? 'uppdatera' : 'skapa'} företag.`)
+      alert(`Kunde inte ${editingCompanyId ? 'uppdatera' : 'skapa'} företaget.`)
     } finally {
       setIsSubmitting(false)
     }
@@ -189,7 +189,7 @@ function CompaniesAdmin() {
               Företag & Rabatter
             </h1>
             <p className="text-muted-foreground mt-2">
-              Hantera företag och deras bulkrabatter per biljettyp.
+              Hantera företag och deras specifika biljettpriser.
             </p>
           </div>
           <button
@@ -279,15 +279,11 @@ function CompaniesAdmin() {
             {/* Pricing info */}
             <div className="pt-4 border-t border-border">
               <p className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase mb-2">
-                Hur bulkpriser fungerar
+                Hur bulkrabatter fungerar
               </p>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Ange ett tröskelantal per biljettyp. De första X biljetterna kostar <em>pris under tröskel</em>, resterande kostar{' '}
-                <em>pris över tröskel</em>.
+                När du har skapat ett företag kan du klicka på det i listan för att ställa in specifika prisregler för olika biljettyper.
               </p>
-              <div className="mt-2 p-2 bg-secondary border border-border text-xs text-muted-foreground font-mono">
-                Exempel: 15 × 60 kr + 5 × 40 kr = 1 100 kr
-              </div>
             </div>
           </form>
         </div>
@@ -362,7 +358,7 @@ function CompaniesAdmin() {
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-[10px] font-medium tracking-widest text-primary uppercase flex items-center gap-2">
                         <Tag className="w-3 h-3" />
-                        Prisregler per biljettyp
+                        Prisregler
                       </p>
                       {availableTypes.length > 0 && (
                         <button
@@ -382,7 +378,7 @@ function CompaniesAdmin() {
                         {/* Existing pricing rules */}
                         {pricing.length === 0 && !showAddForm && (
                           <div className="border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-                            Inga prisregler tillagda ännu.
+                            Inga prisregler inlagda ännu.
                           </div>
                         )}
 
@@ -521,7 +517,7 @@ function CompaniesAdmin() {
 
                         {availableTypes.length === 0 && pricing.length > 0 && (
                           <p className="text-xs text-muted-foreground text-center mt-2">
-                            Alla biljettyper har prisregler tillagda.
+                            Alla biljettyper har prisregler inlagda.
                           </p>
                         )}
                       </>

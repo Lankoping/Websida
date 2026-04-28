@@ -25,21 +25,17 @@ type PricingRow = {
   id: number
   companyId: number
   ticketTypeId: number
-  thresholdQty: number
-  priceBelow: number
-  priceAbove: number
+  price: number
   ticketTypeName: string
   ticketTypePrice: number
 }
 
 type AddPricingForm = {
   ticketTypeId: string
-  thresholdQty: string
-  priceBelow: string
-  priceAbove: string
+  price: string
 }
 
-const emptyAddForm: AddPricingForm = { ticketTypeId: '', thresholdQty: '', priceBelow: '', priceAbove: '' }
+const emptyAddForm: AddPricingForm = { ticketTypeId: '', price: '' }
 
 function CompaniesAdmin() {
   const { companies, ticketTypes } = Route.useLoaderData()
@@ -136,7 +132,7 @@ function CompaniesAdmin() {
   }
 
   const handleAddPricing = async (companyId: number) => {
-    if (!addForm.ticketTypeId || !addForm.thresholdQty || !addForm.priceBelow || !addForm.priceAbove) {
+    if (!addForm.ticketTypeId || !addForm.price) {
       alert('Fyll i alla fält.')
       return
     }
@@ -146,9 +142,7 @@ function CompaniesAdmin() {
         data: {
           companyId,
           ticketTypeId: parseInt(addForm.ticketTypeId),
-          thresholdQty: parseInt(addForm.thresholdQty),
-          priceBelow: parseInt(addForm.priceBelow),
-          priceAbove: parseInt(addForm.priceAbove),
+          price: parseInt(addForm.price),
         },
       })
       await refreshPricing(companyId)
@@ -279,10 +273,10 @@ function CompaniesAdmin() {
             {/* Pricing info */}
             <div className="pt-4 border-t border-border">
               <p className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase mb-2">
-                Hur bulkrabatter fungerar
+                Hur företagspriser fungerar
               </p>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                När du har skapat ett företag kan du klicka på det i listan för att ställa in specifika prisregler för olika biljettyper.
+                När du har skapat ett företag kan du klicka på det i listan för att ställa in specifika priser för olika biljettyper.
               </p>
             </div>
           </form>
@@ -327,7 +321,7 @@ function CompaniesAdmin() {
                       className={`p-2 transition-all flex items-center gap-1 text-xs uppercase tracking-wider font-medium ${
                         isExpanded ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-primary hover:bg-primary/10'
                       }`}
-                      title="Hantera prisregler"
+                      title="Hantera priser"
                     >
                       <Tag className="w-4 h-4" />
                       {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
@@ -358,7 +352,7 @@ function CompaniesAdmin() {
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-[10px] font-medium tracking-widest text-primary uppercase flex items-center gap-2">
                         <Tag className="w-3 h-3" />
-                        Prisregler
+                        Företagspriser
                       </p>
                       {availableTypes.length > 0 && (
                         <button
@@ -366,7 +360,7 @@ function CompaniesAdmin() {
                           className="text-[10px] font-medium tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
                         >
                           <Plus className="w-3 h-3" />
-                          Lägg till regel
+                          Lägg till pris
                         </button>
                       )}
                     </div>
@@ -378,40 +372,30 @@ function CompaniesAdmin() {
                         {/* Existing pricing rules */}
                         {pricing.length === 0 && !showAddForm && (
                           <div className="border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-                            Inga prisregler inlagda ännu.
+                            Inga företagspriser inlagda ännu.
                           </div>
                         )}
 
                         {pricing.length > 0 && (
                           <div className="space-y-2 mb-3">
                             {/* Header */}
-                            <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-3 px-3 py-1">
+                            <div className="grid grid-cols-[1fr_auto_auto] gap-3 px-3 py-1">
                               <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Biljettyp</span>
-                              <span className="text-[10px] uppercase tracking-widest text-muted-foreground text-center w-20">Tröskel</span>
-                              <span className="text-[10px] uppercase tracking-widest text-muted-foreground text-center w-20">≤ Tröskel</span>
-                              <span className="text-[10px] uppercase tracking-widest text-muted-foreground text-center w-20">&gt; Tröskel</span>
+                              <span className="text-[10px] uppercase tracking-widest text-muted-foreground text-center w-24">Företagspris</span>
                               <span className="w-7" />
                             </div>
 
                             {pricing.map((rule) => (
                               <div
                                 key={rule.id}
-                                className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-3 items-center bg-background border border-border px-3 py-2.5"
+                                className="grid grid-cols-[1fr_auto_auto] gap-3 items-center bg-background border border-border px-3 py-2.5"
                               >
                                 <div>
                                   <span className="text-sm font-medium text-foreground">{rule.ticketTypeName}</span>
                                   <span className="text-xs text-muted-foreground ml-2">{rule.ticketTypePrice} SEK standard</span>
                                 </div>
-                                <div className="text-center w-20">
-                                  <span className="text-sm text-foreground font-mono">{rule.thresholdQty}</span>
-                                  <span className="text-[10px] text-muted-foreground block">st</span>
-                                </div>
-                                <div className="text-center w-20">
-                                  <span className="text-sm text-foreground font-mono">{rule.priceBelow}</span>
-                                  <span className="text-[10px] text-muted-foreground block">kr/st</span>
-                                </div>
-                                <div className="text-center w-20">
-                                  <span className="text-sm text-foreground font-mono">{rule.priceAbove}</span>
+                                <div className="text-center w-24">
+                                  <span className="text-sm text-foreground font-mono">{rule.price}</span>
                                   <span className="text-[10px] text-muted-foreground block">kr/st</span>
                                 </div>
                                 <button
@@ -430,7 +414,7 @@ function CompaniesAdmin() {
                         {showAddForm && availableTypes.length > 0 && (
                           <div className="border border-primary/30 bg-primary/5 p-4 space-y-3">
                             <p className="text-[10px] font-medium tracking-widest text-primary uppercase">
-                              Ny prisregel
+                              Nytt företagspris
                             </p>
 
                             <div className="space-y-1.5">
@@ -451,46 +435,18 @@ function CompaniesAdmin() {
                               </select>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-3">
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                                  Tröskelantal
-                                </label>
-                                <input
-                                  type="number"
-                                  min="1"
-                                  placeholder="15"
-                                  value={addForm.thresholdQty}
-                                  onChange={(e) => setAddForm((prev) => ({ ...prev, thresholdQty: e.target.value }))}
-                                  className="w-full p-2.5 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
-                                />
-                              </div>
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                                  Pris ≤ tröskel (kr)
-                                </label>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  placeholder="60"
-                                  value={addForm.priceBelow}
-                                  onChange={(e) => setAddForm((prev) => ({ ...prev, priceBelow: e.target.value }))}
-                                  className="w-full p-2.5 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
-                                />
-                              </div>
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                                  Pris &gt; tröskel (kr)
-                                </label>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  placeholder="40"
-                                  value={addForm.priceAbove}
-                                  onChange={(e) => setAddForm((prev) => ({ ...prev, priceAbove: e.target.value }))}
-                                  className="w-full p-2.5 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
-                                />
-                              </div>
+                            <div className="space-y-1.5">
+                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                Företagspris (kr)
+                              </label>
+                              <input
+                                type="number"
+                                min="0"
+                                placeholder="T.ex. 50"
+                                value={addForm.price}
+                                onChange={(e) => setAddForm((prev) => ({ ...prev, price: e.target.value }))}
+                                className="w-full p-2.5 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
+                              />
                             </div>
 
                             <div className="flex gap-2">
@@ -500,7 +456,7 @@ function CompaniesAdmin() {
                                 className="flex-1 px-4 py-2.5 bg-primary text-primary-foreground text-xs uppercase tracking-widest font-medium hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center gap-2 justify-center"
                               >
                                 <Save className="w-3 h-3" />
-                                {savingPricing ? 'Sparar...' : 'Spara regel'}
+                                {savingPricing ? 'Sparar...' : 'Spara pris'}
                               </button>
                               <button
                                 onClick={() => {
@@ -517,7 +473,7 @@ function CompaniesAdmin() {
 
                         {availableTypes.length === 0 && pricing.length > 0 && (
                           <p className="text-xs text-muted-foreground text-center mt-2">
-                            Alla biljettyper har prisregler inlagda.
+                            Alla biljettyper har priser inlagda.
                           </p>
                         )}
                       </>

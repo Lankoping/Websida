@@ -12,7 +12,6 @@ import {
   Tag,
   Plus,
   AlertCircle,
-  Building2,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/admin/tickets/new')({
@@ -43,7 +42,6 @@ function NewTicket() {
     ticketTypeId: '',
     participantName: '',
     participantEmail: '',
-    participantCompany: '',
     pricePaid: '',
     issuanceType: 'private' as 'company' | 'private',
     ticketCount: 1,
@@ -92,14 +90,11 @@ function NewTicket() {
 
   const selectedType = ticketTypes.find((tt) => tt.ticketTypeId === parseInt(form.ticketTypeId))
   const selectedEvent = events.find((e) => e.id === parseInt(form.eventId))
-  const selectedCompany = companies.find((c) => c.id === parseInt(form.companyId))
 
-  // Allow all ticket types for the event, regardless of company pricing rules
   const availableTicketTypes = useMemo(() => {
     return ticketTypes || []
   }, [ticketTypes])
 
-  // Reset ticket type if it's no longer available after event change
   useEffect(() => {
     if (form.ticketTypeId) {
       const isAvailable = availableTicketTypes.some(tt => tt.ticketTypeId === parseInt(form.ticketTypeId))
@@ -109,51 +104,51 @@ function NewTicket() {
     }
   }, [availableTicketTypes, form.ticketTypeId])
 
-  const calculatePrice = (typeId: string, compId: string, issuanceType: string) => {
-    if (!typeId) return ''
+  const calculateUnitPrice = (typeId: string, compId: string, issuanceType: string) => {
+    if (!typeId) return 0
     const tt = ticketTypes.find((t) => t.ticketTypeId === parseInt(typeId))
-    if (!tt) return ''
+    if (!tt) return 0
 
     if (issuanceType === 'company' && compId) {
       const rule = pricingRules.find(
         (r) => r.companyId === parseInt(compId) && r.ticketTypeId === parseInt(typeId)
       )
       if (rule) {
-        return String(rule.price)
+        return rule.price
       }
     }
-    return String(tt.price)
+    return tt.price
   }
+
+  const unitPrice = calculateUnitPrice(form.ticketTypeId, form.companyId, form.issuanceType)
+  const totalPrice = unitPrice * form.ticketCount
 
   const handleEventChange = (eventId: string) => {
     setForm((prev) => ({ ...prev, eventId, ticketTypeId: '', pricePaid: '', companyId: '' }))
   }
 
   const handleTypeChange = (ticketTypeId: string) => {
-    const newPrice = calculatePrice(ticketTypeId, form.companyId, form.issuanceType)
     setForm((prev) => ({
       ...prev,
       ticketTypeId,
-      pricePaid: newPrice,
+      pricePaid: '',
     }))
   }
 
   const handleIssuanceTypeChange = (issuanceType: 'company' | 'private') => {
-    const newPrice = calculatePrice(form.ticketTypeId, form.companyId, issuanceType)
     setForm((prev) => ({
       ...prev,
       issuanceType,
       companyId: issuanceType === 'private' ? '' : prev.companyId,
-      pricePaid: newPrice,
+      pricePaid: '',
     }))
   }
 
   const handleCompanyChange = (companyId: string) => {
-    const newPrice = calculatePrice(form.ticketTypeId, companyId, form.issuanceType)
     setForm((prev) => ({
       ...prev,
       companyId,
-      pricePaid: newPrice,
+      pricePaid: '',
     }))
   }
 
@@ -169,10 +164,8 @@ function NewTicket() {
           eventId: parseInt(form.eventId),
           participantName: form.participantName.trim(),
           participantEmail: form.participantEmail.trim().toLowerCase(),
-          participantCompany: form.participantCompany.trim() || (selectedCompany?.name || undefined),
           ticketType: selectedType?.name || 'Standard',
-          pricePaid: form.pricePaid !== '' ? parseInt(form.pricePaid) : 0,
-          issuanceType: form.issuanceType,
+          pricePaid: form.pricePaid !== '' ? parseInt(form.pricePaid) : totalPrice,
           ticketCount: form.ticketCount,
         },
       })
@@ -182,7 +175,7 @@ function NewTicket() {
         name: form.participantName.trim(),
         eventTitle: selectedEvent?.title || '',
         typeName: selectedType?.name || 'Standard',
-        pricePaid: form.pricePaid !== '' ? parseInt(form.pricePaid) : 0,
+        pricePaid: Math.round((form.pricePaid !== '' ? parseInt(form.pricePaid) : totalPrice) / form.ticketCount),
       })
       setForm((prev) => ({
         ...defaultForm,
@@ -250,7 +243,7 @@ function NewTicket() {
                 </p>
                 <p className="flex items-center gap-2">
                   <Calendar className="w-3 h-3" />
-                  {success.eventTitle} — {success.pricePaid} SEK
+                  {success.eventTitle} — {success.pricePaid} SEK / st
                 </p>
               </div>
               <div className="mt-3 flex gap-2">
@@ -313,10 +306,6 @@ function NewTicket() {
         </div>
 
         <div className="space-y-4">
-          <label className="text-xs font-medium text-foreground flex items-center gap-2">
-            <User className="w-3 h-3 text-primary" />
-            Utfärdande typ
-          </label>
           <div className="flex gap-4">
             <label className="flex items-center gap-2 text-sm">
               <input
@@ -344,7 +333,6 @@ function NewTicket() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-foreground flex items-center gap-2">
-                  <Building2 className="w-3 h-3 text-primary" />
                   Företag (Registrerat)
                 </label>
                 <select
@@ -383,6 +371,19 @@ function NewTicket() {
               </div>
             </div>
           )}
+          {form.issuanceType === 'private' && (
+            <div className="space-y-1.5 max-w-xs">
+              <label className="text-xs font-medium text-foreground">Antal biljetter</label>
+              <input
+                type="number"
+                name="ticketCount"
+                min="1"
+                value={form.ticketCount}
+                onChange={(e) => setForm(prev => ({ ...prev, ticketCount: parseInt(e.target.value) || 1 }))}
+                className="w-full p-3 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
+              />
+            </div>
+          )}
         </div>
 
         <div className="space-y-1.5">
@@ -409,7 +410,7 @@ function NewTicket() {
             </option>
             {availableTicketTypes.map((tt) => (
               <option key={tt.ticketTypeId} value={tt.ticketTypeId}>
-                {tt.name} — {calculatePrice(String(tt.ticketTypeId), form.companyId, form.issuanceType)} SEK
+                {tt.name} — {calculateUnitPrice(String(tt.ticketTypeId), form.companyId, form.issuanceType)} SEK / st
               </option>
             ))}
           </select>
@@ -453,21 +454,6 @@ function NewTicket() {
                 required
               />
             </div>
-            
-            <div className="space-y-1.5 sm:col-span-2">
-              <label className="text-xs font-medium text-foreground flex items-center gap-2">
-                <Building2 className="w-3 h-3 text-primary" />
-                Organisation / Företag (Frivilligt)
-              </label>
-              <input
-                type="text"
-                name="participantCompany"
-                placeholder="Ex. Företaget AB"
-                value={form.participantCompany}
-                onChange={(e) => setForm((prev) => ({ ...prev, participantCompany: e.target.value }))}
-                className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all placeholder:text-muted-foreground"
-              />
-            </div>
           </div>
         </div>
 
@@ -478,13 +464,13 @@ function NewTicket() {
           </div>
 
           <div className="space-y-1.5 max-w-xs">
-            <label className="text-xs font-medium text-foreground">Pris betalt (SEK)</label>
+            <label className="text-xs font-medium text-foreground">Totalt Pris betalt (SEK)</label>
             <div className="relative">
               <input
                 type="number"
                 name="pricePaid"
                 min="0"
-                placeholder={selectedType ? calculatePrice(String(selectedType.ticketTypeId), form.companyId, form.issuanceType) : '0'}
+                placeholder={String(totalPrice)}
                 value={form.pricePaid}
                 onChange={(e) => setForm((prev) => ({ ...prev, pricePaid: e.target.value }))}
                 className="w-full p-3 pr-12 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all placeholder:text-muted-foreground"
@@ -493,7 +479,7 @@ function NewTicket() {
             </div>
             {selectedType && form.pricePaid === '' && (
               <p className="text-xs text-muted-foreground">
-                Standardpris: {calculatePrice(String(selectedType.ticketTypeId), form.companyId, form.issuanceType)} SEK. Lämna tomt för att använda standardpriset.
+                Standardpris: {totalPrice} SEK ({unitPrice} kr x {form.ticketCount}). Lämna tomt för att använda standardpriset.
               </p>
             )}
             {form.issuanceType === 'company' && form.companyId && form.ticketTypeId && form.pricePaid === '' && (

@@ -20,14 +20,7 @@ export const getTicketsFn = createServerFn({ method: 'GET' }).handler(async () =
       status: tickets.status,
       participantName: tickets.participantName,
       participantEmail: tickets.participantEmail,
-      participantPhone: tickets.participantPhone,
-      participantCompany: tickets.participantCompany,
-      participantDietary: tickets.participantDietary,
-      participantOther: tickets.participantOther,
       pricePaid: tickets.pricePaid,
-      paymentStatus: tickets.paymentStatus,
-      paymentMethod: tickets.paymentMethod,
-      paymentReference: tickets.paymentReference,
       issuedBy: tickets.issuedBy,
       scannedAt: tickets.scannedAt,
       scannedBy: tickets.scannedBy,
@@ -54,14 +47,7 @@ export const getTicketDetailsFn = createServerFn({ method: 'GET' })
         status: tickets.status,
         participantName: tickets.participantName,
         participantEmail: tickets.participantEmail,
-        participantPhone: tickets.participantPhone,
-        participantCompany: tickets.participantCompany,
-        participantDietary: tickets.participantDietary,
-        participantOther: tickets.participantOther,
         pricePaid: tickets.pricePaid,
-        paymentStatus: tickets.paymentStatus,
-        paymentMethod: tickets.paymentMethod,
-        paymentReference: tickets.paymentReference,
         issuedBy: tickets.issuedBy,
         scannedAt: tickets.scannedAt,
         scannedBy: tickets.scannedBy,
@@ -97,15 +83,7 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
         ticketType: z.string(),
         participantName: z.string().min(1),
         participantEmail: z.string().email(),
-        participantPhone: z.string().optional(),
-        participantCompany: z.string().optional(),
-        participantDietary: z.string().optional(),
-        participantOther: z.string().optional(),
         pricePaid: z.number().min(0),
-        paymentStatus: z.enum(['pending', 'paid', 'refunded']).default('paid'),
-        paymentMethod: z.string().optional(),
-        paymentReference: z.string().optional(),
-        issuanceType: z.enum(['company', 'private']).default('private'),
         ticketCount: z.number().min(1).default(1),
       })
       .parse(data),
@@ -135,7 +113,7 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
       if (eventTicketTypeRecord.length > 0 && eventTicketTypeRecord[0].maxQuantity !== null) {
         // Count how many valid tickets of this type have been issued for this event
         const existingTickets = await db
-          .select({ count: sql<number>`count(*)` })
+          .select({ count: sql<number>\`count(*)\` })
           .from(tickets)
           .where(
             and(
@@ -147,25 +125,65 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
           
         const currentCount = Number(existingTickets[0]?.count || 0)
         if (currentCount + data.ticketCount > eventTicketTypeRecord[0].maxQuantity) {
-          throw new Error(`Kan inte utfärda ${data.ticketCount} biljetter. Endast ${eventTicketTypeRecord[0].maxQuantity - currentCount} biljetter av typen "${data.ticketType}" finns kvar.`)
+          throw new Error(\`Kan inte utfärda \${data.ticketCount} biljetter. Endast \${eventTicketTypeRecord[0].maxQuantity - currentCount} biljetter av typen "\${data.ticketType}" finns kvar.\`)
         }
       }
     }
 
-    const ticketCode =
-      Math.random().toString(36).substring(2, 6).toUpperCase() +
-      '-' +
-      Math.random().toString(36).substring(2, 6).toUpperCase()
+    const newTickets = []
+    for (let i = 0; i < data.ticketCount; i++) {
+      const ticketCode =
+        Math.random().toString(36).substring(2, 6).toUpperCase() +
+        '-' +
+        Math.random().toString(36).substring(2, 6).toUpperCase()
 
-    const result = await db
-      .insert(tickets)
-      .values({
-        ...data,
+      newTickets.push({
+        eventId: data.eventId,
+        ticketType: data.ticketType,
+        participantName: data.participantName,
+        participantEmail: data.participantEmail,
+        pricePaid: Math.round(data.pricePaid / data.ticketCount),
         ticketCode,
-        status: 'valid',
+        status: 'valid' as const,
         issuedBy: admin.id,
       })
-      .returning()
+    }
+
+    const result = await db.insert(tickets).values(newTickets).returning()
+
+    // Send emails
+    const event = await db.select({ title: events.title }).from(events).where(eq(events.id, data.eventId)).limit(1)
+    const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
+
+    for (const ticket of result) {
+      const ticketUrl = \`\${baseUrl}/biljett/\${ticket.ticketCode}\`
+      const emailHtml = \`
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+          <h2 style="color: #333;">Här är din biljett!</h2>
+          <p>Hej \${ticket.participantName},</p>
+          <p>Här är din biljett för <strong>\${event[0]?.title || 'Eventet'}</strong>.</p>
+          <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; border: 1px solid #ddd;">
+            <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">\${ticket.ticketCode}</p>
+          </div>
+          <p>Du kan visa din biljett och QR-kod genom att klicka på knappen nedan:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="\${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
+          </div>
+          <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>\${ticketUrl}</p>
+        </div>
+      \`
+
+      try {
+        await sendEmail({
+          to: ticket.participantEmail,
+          subject: \`Din biljett till \${event[0]?.title || 'Eventet'}\`,
+          text: \`Här är din biljettkod: \${ticket.ticketCode}. Visa din biljett här: \${ticketUrl}\`,
+          html: emailHtml,
+        })
+      } catch (e) {
+        console.error('Failed to send ticket email', e)
+      }
+    }
 
     await writeActivityLog({
       actorUserId: admin.id,
@@ -174,9 +192,10 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
       entityType: 'ticket',
       entityId: result[0].id,
       details: {
-        ticketCode,
+        ticketCode: result[0].ticketCode,
         ticketType: data.ticketType,
         participantEmail: data.participantEmail,
+        count: data.ticketCount,
       },
     })
 
@@ -190,13 +209,6 @@ export const updateTicketFn = createServerFn({ method: 'POST' })
         id: z.number(),
         participantName: z.string().min(1),
         participantEmail: z.string().email(),
-        participantPhone: z.string().optional(),
-        participantCompany: z.string().optional(),
-        participantDietary: z.string().optional(),
-        participantOther: z.string().optional(),
-        paymentStatus: z.enum(['pending', 'paid', 'refunded']),
-        paymentMethod: z.string().optional(),
-        paymentReference: z.string().optional(),
       })
       .parse(data),
   )
@@ -249,10 +261,6 @@ export const verifyTicketFn = createServerFn({ method: 'POST' })
         status: tickets.status,
         participantName: tickets.participantName,
         participantEmail: tickets.participantEmail,
-        participantPhone: tickets.participantPhone,
-        participantCompany: tickets.participantCompany,
-        participantDietary: tickets.participantDietary,
-        participantOther: tickets.participantOther,
         pricePaid: tickets.pricePaid,
         scannedAt: tickets.scannedAt,
         scannedBy: tickets.scannedBy,
@@ -376,15 +384,7 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
             ticketType: z.string(),
             participantName: z.string().min(1),
             participantEmail: z.string().email(),
-            participantPhone: z.string().optional(),
-            participantCompany: z.string().optional(),
-            participantDietary: z.string().optional(),
-            participantOther: z.string().optional(),
             pricePaid: z.number().min(0),
-            paymentStatus: z.enum(['pending', 'paid', 'refunded']).default('paid'),
-            paymentMethod: z.string().optional(),
-            paymentReference: z.string().optional(),
-            issuanceType: z.enum(['company', 'private']).default('private'),
             ticketCount: z.number().min(1).default(1),
           }),
         ),
@@ -402,7 +402,7 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
     // Enforce maxQuantity for bulk tickets
     const ticketCountsByType: Record<string, number> = {}
     for (const t of data.tickets) {
-      ticketCountsByType[t.ticketType] = (ticketCountsByType[t.ticketType] || 0) + 1
+      ticketCountsByType[t.ticketType] = (ticketCountsByType[t.ticketType] || 0) + t.ticketCount
     }
 
     for (const [typeName, requestedCount] of Object.entries(ticketCountsByType)) {
@@ -421,7 +421,7 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
           
         if (eventTicketTypeRecord.length > 0 && eventTicketTypeRecord[0].maxQuantity !== null) {
           const existingTickets = await db
-            .select({ count: sql<number>`count(*)` })
+            .select({ count: sql<number>\`count(*)\` })
             .from(tickets)
             .where(
               and(
@@ -433,24 +433,67 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
             
           const currentCount = Number(existingTickets[0]?.count || 0)
           if (currentCount + requestedCount > eventTicketTypeRecord[0].maxQuantity) {
-            throw new Error(`Kan inte utfärda ${requestedCount} biljetter av typen "${typeName}". Endast ${eventTicketTypeRecord[0].maxQuantity - currentCount} biljetter finns kvar.`)
+            throw new Error(\`Kan inte utfärda \${requestedCount} biljetter av typen "\${typeName}". Endast \${eventTicketTypeRecord[0].maxQuantity - currentCount} biljetter finns kvar.\`)
           }
         }
       }
     }
 
-    const newTickets = data.tickets.map((t) => ({
-      ...t,
-      eventId: data.eventId,
-      ticketCode:
-        Math.random().toString(36).substring(2, 6).toUpperCase() +
-        '-' +
-        Math.random().toString(36).substring(2, 6).toUpperCase(),
-      status: 'valid' as const,
-      issuedBy: admin.id,
-    }))
+    const newTickets = []
+    for (const t of data.tickets) {
+      for (let i = 0; i < t.ticketCount; i++) {
+        const ticketCode =
+          Math.random().toString(36).substring(2, 6).toUpperCase() +
+          '-' +
+          Math.random().toString(36).substring(2, 6).toUpperCase()
+
+        newTickets.push({
+          eventId: data.eventId,
+          ticketType: t.ticketType,
+          participantName: t.participantName,
+          participantEmail: t.participantEmail,
+          pricePaid: Math.round(t.pricePaid / t.ticketCount),
+          ticketCode,
+          status: 'valid' as const,
+          issuedBy: admin.id,
+        })
+      }
+    }
 
     const result = await db.insert(tickets).values(newTickets).returning()
+
+    // Send emails
+    const event = await db.select({ title: events.title }).from(events).where(eq(events.id, data.eventId)).limit(1)
+    const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
+
+    for (const ticket of result) {
+      const ticketUrl = \`\${baseUrl}/biljett/\${ticket.ticketCode}\`
+      const emailHtml = \`
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+          <h2 style="color: #333;">Här är din biljett!</h2>
+          <p>Hej \${ticket.participantName},</p>
+          <p>Här är din biljett för <strong>\${event[0]?.title || 'Eventet'}</strong>.</p>
+          <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; border: 1px solid #ddd;">
+            <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">\${ticket.ticketCode}</p>
+          </div>
+          <p>Du kan visa din biljett och QR-kod genom att klicka på knappen nedan:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="\${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
+          </div>
+          <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>\${ticketUrl}</p>
+        </div>
+      \`
+      try {
+        await sendEmail({
+          to: ticket.participantEmail,
+          subject: \`Din biljett till \${event[0]?.title || 'Eventet'}\`,
+          text: \`Här är din biljettkod: \${ticket.ticketCode}. Visa din biljett här: \${ticketUrl}\`,
+          html: emailHtml,
+        })
+      } catch (e) {
+        console.error('Failed to send ticket email', e)
+      }
+    }
 
     await writeActivityLog({
       actorUserId: admin.id,
@@ -757,10 +800,6 @@ export const verifyTicketByCodeFn = createServerFn({ method: 'POST' })
         status: tickets.status,
         participantName: tickets.participantName,
         participantEmail: tickets.participantEmail,
-        participantPhone: tickets.participantPhone,
-        participantCompany: tickets.participantCompany,
-        participantDietary: tickets.participantDietary,
-        participantOther: tickets.participantOther,
         pricePaid: tickets.pricePaid,
         scannedAt: tickets.scannedAt,
         scannedBy: tickets.scannedBy,
@@ -833,28 +872,28 @@ export const resendTicketEmailFn = createServerFn({ method: 'POST' })
     const event = await db.select({ title: events.title }).from(events).where(eq(events.id, ticket.eventId)).limit(1)
 
     const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
-    const ticketUrl = `${baseUrl}/biljett/${ticket.ticketCode}`
+    const ticketUrl = \`\${baseUrl}/biljett/\${ticket.ticketCode}\`
 
-    const emailHtml = `
+    const emailHtml = \`
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
         <h2 style="color: #333;">Här är din biljett!</h2>
-        <p>Hej ${ticket.participantName},</p>
-        <p>Här är din biljett för <strong>${event[0]?.title || 'Eventet'}</strong>.</p>
+        <p>Hej \${ticket.participantName},</p>
+        <p>Här är din biljett för <strong>\${event[0]?.title || 'Eventet'}</strong>.</p>
         <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; border: 1px solid #ddd;">
-          <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">${ticket.ticketCode}</p>
+          <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">\${ticket.ticketCode}</p>
         </div>
         <p>Du kan visa din biljett och QR-kod genom att klicka på knappen nedan:</p>
         <div style="text-align: center; margin: 30px 0;">
-          <a href="${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
+          <a href="\${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
         </div>
-        <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>${ticketUrl}</p>
+        <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>\${ticketUrl}</p>
       </div>
-    `
+    \`
 
     const emailSent = await sendEmail({
       to: ticket.participantEmail,
-      subject: `Din biljett till ${event[0]?.title || 'Eventet'}`,
-      text: `Här är din biljettkod: ${ticket.ticketCode}. Visa din biljett här: ${ticketUrl}`,
+      subject: \`Din biljett till \${event[0]?.title || 'Eventet'}\`,
+      text: \`Här är din biljettkod: \${ticket.ticketCode}. Visa din biljett här: \${ticketUrl}\`,
       html: emailHtml,
     })
 

@@ -62,7 +62,7 @@ function TicketTypesAdmin() {
           <div>
             <h1 className="font-display text-4xl text-foreground flex items-center gap-3">
               <Tag className="w-8 h-8 text-primary" />
-              Biljetttyper
+              Biljettyper
             </h1>
             <p className="text-muted-foreground mt-2">Definiera typer av biljetter med standardpris.</p>
           </div>
@@ -159,7 +159,7 @@ function TicketTypesAdmin() {
                   </p>
                 </div>
               </div>
-              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-4">
+              <div className="flex gap-1 transition-opacity ml-4">
                 <button
                   onClick={() => handleDelete(tt.id, tt.name)}
                   className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
@@ -174,7 +174,7 @@ function TicketTypesAdmin() {
           {ticketTypes.length === 0 && (
             <div className="bg-card border border-dashed border-border p-12 text-center">
               <Tag className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground">Inga biljetttyper skapade än.</p>
+              <p className="text-muted-foreground">Inga biljettyper skapade än.</p>
               <p className="text-sm text-muted-foreground mt-1">
                 Använd formuläret till vänster för att skapa din första biljettyp.
               </p>

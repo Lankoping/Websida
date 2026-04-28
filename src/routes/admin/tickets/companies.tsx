@@ -327,7 +327,7 @@ function CompaniesAdmin() {
                       {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
                     </button>
 
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex gap-1 transition-opacity">
                       <button
                         onClick={() => handleEdit(company)}
                         className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"

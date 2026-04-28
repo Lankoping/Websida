@@ -76,13 +76,13 @@ function GuidesPage() {
               <p className="text-muted-foreground">
                 Klicka på ett företag i listan för att fälla ut prispanelen. Här kan du lägga till specifika priser för olika biljettyper. 
                 <br/><br/>
-                <em>Viktigt: Ett företag kan <strong>endast</strong> köpa de biljettyper som du har lagt in en prisregel för här. Om företaget saknar prisregler kommer inga biljettyper att visas när du försöker utfärda biljetter till dem.</em>
+                <em>Viktigt: Dessa prisregler fungerar som undantag. Företag kan köpa <strong>alla</strong> biljettyper som är aktiverade för ett event. Om en prisregel finns för företaget och biljettypen tillämpas det priset, annars används standardpriset.</em>
               </p>
             </div>
             <div className="space-y-1">
               <h3 className="font-medium text-primary">C. Utfärda företagsbiljett</h3>
               <p className="text-muted-foreground">
-                Gå till <strong>Utfärda biljett</strong>. Välj event och ändra utfärdande typ till <strong>Företag</strong>. Välj företaget i listan. Dropdown-menyn för biljettyper kommer nu att filtreras och endast visa de biljettyper som företaget har tillgång till, och priset uppdateras automatiskt.
+                Gå till <strong>Utfärda biljett</strong>. Välj event och ändra utfärdande typ till <strong>Företag</strong>. Välj företaget i listan. Dropdown-menyn för biljettyper kommer att visa alla tillgängliga biljetter för eventet, och priset uppdateras automatiskt baserat på företagets eventuella prisregler.
               </p>
             </div>
           </div>

@@ -10,7 +10,7 @@ const forSites = process.env?.FOR_SITES === 'true'
 
 const config = defineConfig({
   resolve: {
-    conditions: ['react-server', 'node', 'import', 'module', 'browser', 'default'],
+    conditions: ['node', 'import', 'module', 'browser', 'default'],
   },
   plugins: [
     tanstackStart({

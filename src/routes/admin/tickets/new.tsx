@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { getEventsFn, issueTicketFn } from '../../../server/functions/tickets'
-import { getTicketTypesForEventFn } from '../../../server/functions/tickets'
-import { useState, useEffect } from 'react'
+import { getEventsFn, issueTicketFn, getTicketTypesForEventFn } from '../../../server/functions/tickets'
+import { useState, useEffect, useMemo } from 'react'
 import {
   Ticket,
   Save,
@@ -89,24 +88,30 @@ function NewTicket() {
   const selectedCompany = companies.find((c) => c.id === parseInt(form.companyId))
 
   // Filter ticket types based on selected company
-  const availableTicketTypes = ticketTypes.filter((tt) => {
-    if (form.issuanceType === 'company' && form.companyId) {
-      // Only show ticket types that have a pricing rule for the selected company
-      return pricingRules.some(
-        (rule) => rule.companyId === parseInt(form.companyId) && rule.ticketTypeId === tt.ticketTypeId
-      )
-    }
-    return true // If private or no company selected, show all
-  })
+  const availableTicketTypes = useMemo(() => {
+    return ticketTypes.filter((tt) => {
+      if (form.issuanceType === 'company' && form.companyId) {
+        // Only show ticket types that have a pricing rule for the selected company
+        return pricingRules.some(
+          (rule) => rule.companyId === parseInt(form.companyId) && rule.ticketTypeId === tt.ticketTypeId
+        )
+      }
+      return true // If private or no company selected, show all
+    })
+  }, [ticketTypes, pricingRules, form.issuanceType, form.companyId])
 
   // Reset ticket type if it's no longer available after company change
   useEffect(() => {
-    if (form.ticketTypeId && !availableTicketTypes.find(tt => tt.ticketTypeId === parseInt(form.ticketTypeId))) {
-      setForm(prev => ({ ...prev, ticketTypeId: '', pricePaid: '' }))
+    if (form.ticketTypeId) {
+      const isAvailable = availableTicketTypes.some(tt => tt.ticketTypeId === parseInt(form.ticketTypeId))
+      if (!isAvailable) {
+        setForm(prev => ({ ...prev, ticketTypeId: '', pricePaid: '' }))
+      }
     }
-  }, [form.companyId, form.issuanceType, availableTicketTypes])
+  }, [availableTicketTypes, form.ticketTypeId])
 
   const calculatePrice = (typeId: string, compId: string, issuanceType: string) => {
+    if (!typeId) return ''
     const tt = ticketTypes.find((t) => t.ticketTypeId === parseInt(typeId))
     if (!tt) return ''
 
@@ -293,6 +298,7 @@ function NewTicket() {
             Event *
           </label>
           <select
+            name="eventId"
             value={form.eventId}
             onChange={(e) => handleEventChange(e.target.value)}
             className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
@@ -348,13 +354,16 @@ function NewTicket() {
                   Företag *
                 </label>
                 <select
+                  name="companyId"
                   value={form.companyId}
                   onChange={(e) => handleCompanyChange(e.target.value)}
                   className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
                   required
                   disabled={!form.eventId || isLoadingEventData || companies.length === 0}
                 >
-                  <option value="">Välj företag...</option>
+                  <option value="">
+                    {!form.eventId ? 'Välj event först...' : isLoadingEventData ? 'Laddar...' : companies.length === 0 ? 'Inga företag finns' : 'Välj företag...'}
+                  </option>
                   {companies.map((company) => (
                     <option key={company.id} value={company.id}>
                       {company.name}
@@ -366,6 +375,7 @@ function NewTicket() {
                 <label className="text-xs font-medium text-foreground">Antal biljetter</label>
                 <input
                   type="number"
+                  name="ticketCount"
                   min="1"
                   value={form.ticketCount}
                   onChange={(e) => setForm(prev => ({ ...prev, ticketCount: parseInt(e.target.value) || 1 }))}
@@ -382,6 +392,7 @@ function NewTicket() {
             Biljettyp *
           </label>
           <select
+            name="ticketTypeId"
             value={form.ticketTypeId}
             onChange={(e) => handleTypeChange(e.target.value)}
             className="w-full p-3 bg-background border border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
@@ -389,13 +400,15 @@ function NewTicket() {
             disabled={!form.eventId || isLoadingEventData || availableTicketTypes.length === 0 || (form.issuanceType === 'company' && !form.companyId)}
           >
             <option value="">
-              {isLoadingEventData 
-                ? 'Laddar...' 
-                : form.issuanceType === 'company' && !form.companyId 
-                  ? 'Välj företag först...' 
-                  : availableTicketTypes.length === 0 
-                    ? 'Inga biljettyper tillgängliga' 
-                    : 'Välj biljettyp...'}
+              {!form.eventId 
+                ? 'Välj event först...' 
+                : isLoadingEventData 
+                  ? 'Laddar...' 
+                  : form.issuanceType === 'company' && !form.companyId 
+                    ? 'Välj företag först...' 
+                    : availableTicketTypes.length === 0 
+                      ? 'Inga biljettyper tillgängliga' 
+                      : 'Välj biljettyp...'}
             </option>
             {availableTicketTypes.map((tt) => (
               <option key={tt.ticketTypeId} value={tt.ticketTypeId}>
@@ -424,6 +437,7 @@ function NewTicket() {
               </label>
               <input
                 type="text"
+                name="participantName"
                 placeholder="Anna Andersson"
                 value={form.participantName}
                 onChange={(e) => setForm((prev) => ({ ...prev, participantName: e.target.value }))}
@@ -439,6 +453,7 @@ function NewTicket() {
               </label>
               <input
                 type="email"
+                name="participantEmail"
                 placeholder="anna@example.se"
                 value={form.participantEmail}
                 onChange={(e) => setForm((prev) => ({ ...prev, participantEmail: e.target.value }))}
@@ -460,6 +475,7 @@ function NewTicket() {
             <div className="relative">
               <input
                 type="number"
+                name="pricePaid"
                 min="0"
                 placeholder={selectedType ? calculatePrice(String(selectedType.ticketTypeId), form.companyId, form.issuanceType) : '0'}
                 value={form.pricePaid}

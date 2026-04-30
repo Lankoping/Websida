@@ -26,6 +26,8 @@ type PricingRow = {
   companyId: number
   ticketTypeId: number
   price: number
+  threshold: number | null
+  discountPrice: number | null
   ticketTypeName: string
   ticketTypePrice: number
 }
@@ -33,9 +35,11 @@ type PricingRow = {
 type AddPricingForm = {
   ticketTypeId: string
   price: string
+  threshold: string
+  discountPrice: string
 }
 
-const emptyAddForm: AddPricingForm = { ticketTypeId: '', price: '' }
+const emptyAddForm: AddPricingForm = { ticketTypeId: '', price: '', threshold: '', discountPrice: '' }
 
 function CompaniesAdmin() {
   const { companies, ticketTypes } = Route.useLoaderData()
@@ -133,7 +137,7 @@ function CompaniesAdmin() {
 
   const handleAddPricing = async (companyId: number) => {
     if (!addForm.ticketTypeId || !addForm.price) {
-      alert('Fyll i alla fält.')
+      alert('Fyll i alla obligatoriska fält.')
       return
     }
     setSavingPricing(true)
@@ -143,6 +147,8 @@ function CompaniesAdmin() {
           companyId,
           ticketTypeId: parseInt(addForm.ticketTypeId),
           price: parseInt(addForm.price),
+          threshold: addForm.threshold ? parseInt(addForm.threshold) : null,
+          discountPrice: addForm.discountPrice ? parseInt(addForm.discountPrice) : null,
         },
       })
       await refreshPricing(companyId)
@@ -166,7 +172,6 @@ function CompaniesAdmin() {
     }
   }
 
-  // Filter ticket types not yet assigned to this company's pricing
   const getAvailableTicketTypes = (companyId: number) => {
     const usedIds = new Set((pricingCache[companyId] || []).map((p) => p.ticketTypeId))
     return ticketTypes.filter((tt) => !usedIds.has(tt.id))
@@ -182,9 +187,7 @@ function CompaniesAdmin() {
               <Building2 className="w-8 h-8 text-primary" />
               Företag & Rabatter
             </h1>
-            <p className="text-muted-foreground mt-2">
-              Hantera företag och deras specifika biljettpriser.
-            </p>
+            <p className="text-muted-foreground mt-2">Hantera företag och deras specifika biljettpriser.</p>
           </div>
           <button
             onClick={() => navigate({ to: '/admin/tickets' })}
@@ -266,17 +269,16 @@ function CompaniesAdmin() {
               disabled={isSubmitting}
               className="w-full px-4 py-3 bg-primary text-primary-foreground text-xs uppercase tracking-widest font-medium hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center gap-2 justify-center"
             >
-              <Save className="w-4 h-4" />
+              <Save className="w-3 h-3" />
               {editingCompanyId ? 'Uppdatera Företag' : 'Spara Företag'}
             </button>
 
-            {/* Pricing info */}
             <div className="pt-4 border-t border-border">
               <p className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase mb-2">
-                Hur företagspriser fungerar
+                Hur företagsspriser fungerar
               </p>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                När du har skapat ett företag kan du klicka på det i listan för att ställa in specifika priser för olika biljettyper.
+                När du har skapat ett företag kan du klicka på det i listan för att ställa in specifika priser för olika biljettstyper.
               </p>
             </div>
           </form>
@@ -292,13 +294,19 @@ function CompaniesAdmin() {
             return (
               <div
                 key={company.id}
-                className={`bg-card border transition-all ${editingCompanyId === company.id ? 'border-primary shadow-sm shadow-primary/10' : 'border-border hover:border-primary/30'}`}
+                className={`bg-card border transition-all ${
+                  editingCompanyId === company.id
+                    ? 'border-primary shadow-sm shadow-primary/10'
+                    : 'border-border hover:border-primary/30'
+                }`}
               >
                 {/* Company row */}
                 <div className="p-5 flex justify-between items-start group">
                   <div className="flex items-start gap-4 flex-1 min-w-0">
                     <div
-                      className={`p-3 flex-shrink-0 ${editingCompanyId === company.id ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'}`}
+                      className={`p-3 flex-shrink-0 ${
+                        editingCompanyId === company.id ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
+                      }`}
                     >
                       <Building2 className="w-5 h-5" />
                     </div>
@@ -319,7 +327,9 @@ function CompaniesAdmin() {
                     <button
                       onClick={() => handleTogglePricing(company.id)}
                       className={`p-2 transition-all flex items-center gap-1 text-xs uppercase tracking-wider font-medium ${
-                        isExpanded ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-primary hover:bg-primary/10'
+                        isExpanded
+                          ? 'text-primary bg-primary/10'
+                          : 'text-muted-foreground hover:text-primary hover:bg-primary/10'
                       }`}
                       title="Hantera priser"
                     >
@@ -379,24 +389,32 @@ function CompaniesAdmin() {
                         {pricing.length > 0 && (
                           <div className="space-y-2 mb-3">
                             {/* Header */}
-                            <div className="grid grid-cols-[1fr_auto_auto] gap-3 px-3 py-1">
+                            <div className="grid grid-cols-[1fr_auto_auto_auto] gap-3 px-3 py-1">
                               <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Biljettyp</span>
-                              <span className="text-[10px] uppercase tracking-widest text-muted-foreground text-center w-24">Företagspris</span>
+                              <span className="text-[10px] uppercase tracking-widest text-muted-foreground text-center w-24">Pris</span>
+                              <span className="text-[10px] uppercase tracking-widest text-muted-foreground text-center w-24">Tröskel</span>
+                              <span className="text-[10px] uppercase tracking-widest text-muted-foreground text-center w-24">Rabattpris</span>
                               <span className="w-7" />
                             </div>
 
                             {pricing.map((rule) => (
                               <div
                                 key={rule.id}
-                                className="grid grid-cols-[1fr_auto_auto] gap-3 items-center bg-background border border-border px-3 py-2.5"
+                                className="grid grid-cols-[1fr_auto_auto_auto] gap-3 items-center bg-background border border-border px-3 py-2.5"
                               >
                                 <div>
-                                  <span className="text-sm font-medium text-foreground">{rule.ticketTypeName}</span>
-                                  <span className="text-xs text-muted-foreground ml-2">{rule.ticketTypePrice} SEK standard</span>
+                                  <span className="text-sm font-medium text-foreground block">{rule.ticketTypeName}</span>
+                                  <span className="text-xs text-muted-foreground">{rule.ticketTypePrice} SEK standard</span>
                                 </div>
                                 <div className="text-center w-24">
                                   <span className="text-sm text-foreground font-mono">{rule.price}</span>
                                   <span className="text-[10px] text-muted-foreground block">kr/st</span>
+                                </div>
+                                <div className="text-center w-24">
+                                  <span className="text-sm text-foreground font-mono">{rule.threshold || '-'}</span>
+                                </div>
+                                <div className="text-center w-24">
+                                  <span className="text-sm text-foreground font-mono">{rule.discountPrice || '-'}</span>
                                 </div>
                                 <button
                                   onClick={() => handleDeletePricing(rule.id, company.id)}
@@ -413,14 +431,10 @@ function CompaniesAdmin() {
                         {/* Add pricing rule form */}
                         {showAddForm && availableTypes.length > 0 && (
                           <div className="border border-primary/30 bg-primary/5 p-4 space-y-3">
-                            <p className="text-[10px] font-medium tracking-widest text-primary uppercase">
-                              Nytt företagspris
-                            </p>
+                            <p className="text-[10px] font-medium tracking-widest text-primary uppercase">Nytt företagspris</p>
 
                             <div className="space-y-1.5">
-                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                                Biljettyp
-                              </label>
+                              <label className="text-[10px] uppercase tracking-widest text-muted-foreground">Biljettyp</label>
                               <select
                                 value={addForm.ticketTypeId}
                                 onChange={(e) => setAddForm((prev) => ({ ...prev, ticketTypeId: e.target.value }))}
@@ -435,25 +449,47 @@ function CompaniesAdmin() {
                               </select>
                             </div>
 
-                            <div className="space-y-1.5">
-                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                                Företagspris (kr)
-                              </label>
-                              <input
-                                type="number"
-                                min="0"
-                                placeholder="T.ex. 50"
-                                value={addForm.price}
-                                onChange={(e) => setAddForm((prev) => ({ ...prev, price: e.target.value }))}
-                                className="w-full p-2.5 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
-                              />
+                            <div className="grid grid-cols-3 gap-3">
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] uppercase tracking-widest text-muted-foreground">Pris (kr)</label>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  placeholder="50"
+                                  value={addForm.price}
+                                  onChange={(e) => setAddForm((prev) => ({ ...prev, price: e.target.value }))}
+                                  className="w-full p-2.5 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
+                                />
+                              </div>
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] uppercase tracking-widest text-muted-foreground">Tröskel (st)</label>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  placeholder="10"
+                                  value={addForm.threshold}
+                                  onChange={(e) => setAddForm((prev) => ({ ...prev, threshold: e.target.value }))}
+                                  className="w-full p-2.5 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
+                                />
+                              </div>
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] uppercase tracking-widest text-muted-foreground">Rabattpris (kr)</label>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  placeholder="40"
+                                  value={addForm.discountPrice}
+                                  onChange={(e) => setAddForm((prev) => ({ ...prev, discountPrice: e.target.value }))}
+                                  className="w-full p-2.5 bg-background border border-border focus:border-primary/50 outline-none text-foreground text-sm"
+                                />
+                              </div>
                             </div>
 
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleAddPricing(company.id)}
                                 disabled={savingPricing}
-                                className="flex-1 px-4 py-2.5 bg-primary text-primary-foreground text-xs uppercase tracking-widest font-medium hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center gap-2 justify-center"
+                                className="flex-1 px-4 py-2.5 bg-primary text-primary-foreground text-xs uppercase tracking-widest font-medium hover:bg-primary/90 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                               >
                                 <Save className="w-3 h-3" />
                                 {savingPricing ? 'Sparar...' : 'Spara pris'}
@@ -463,7 +499,7 @@ function CompaniesAdmin() {
                                   setShowAddForm(false)
                                   setAddForm(emptyAddForm)
                                 }}
-                                className="px-4 py-2.5 border border-border text-muted-foreground text-xs uppercase tracking-widest font-medium hover:text-foreground transition-all"
+                                className="px-4 py-2.5 border border-border text-muted-foreground text-xs uppercase tracking-widest hover:text-foreground transition-all"
                               >
                                 <X className="w-3 h-3" />
                               </button>
@@ -472,9 +508,7 @@ function CompaniesAdmin() {
                         )}
 
                         {availableTypes.length === 0 && pricing.length > 0 && (
-                          <p className="text-xs text-muted-foreground text-center mt-2">
-                            Alla biljettyper har priser inlagda.
-                          </p>
+                          <p className="text-xs text-muted-foreground text-center mt-2">Alla biljetttyper har redan priser.</p>
                         )}
                       </>
                     )}

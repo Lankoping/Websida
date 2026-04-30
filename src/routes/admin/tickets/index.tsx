@@ -1,4 +1,4 @@
-import { createServerFn, useRouter, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useRouter, useNavigate } from '@tanstack/react-router'
 import {
   getTicketsFn,
   deleteTicketFn,
@@ -7,7 +7,7 @@ import {
   verifyTicketByCodeFn,
   resendTicketEmailFn,
   getTicketSummaryFn,
-} from '../../server/functions/tickets'
+} from '../../../server/functions/tickets'
 import { useEffect, useState } from 'react'
 import {
   Plus,

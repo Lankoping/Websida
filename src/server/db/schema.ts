@@ -81,6 +81,8 @@ export const companyTicketPricing = pgTable('company_ticket_pricing', {
   companyId: integer('company_id').notNull().references(() => companies.id, { onDelete: 'cascade' }),
   ticketTypeId: integer('ticket_type_id').notNull().references(() => ticketTypes.id, { onDelete: 'cascade' }),
   price: integer('price').notNull(),
+  threshold: integer('threshold'),
+  discountPrice: integer('discount_price'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })

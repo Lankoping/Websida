@@ -249,7 +249,7 @@ export const updateTicketFn = createServerFn({ method: 'POST' })
     return result[0]
   })
 
-export const verifyTicketFn = createServerFn({ method: 'POST' })
+export const verifyTicketByCodeFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => z.object({ code: z.string(), markAsUsed: z.boolean().optional() }).parse(data))
   .handler(async ({ data }) => {
     let adminId: number | null = null
@@ -318,6 +318,105 @@ export const verifyTicketFn = createServerFn({ method: 'POST' })
     }
 
     return { success: true, message: 'Biljetten är giltig.', ticket, checkingIn: false }
+  })
+
+export const updateTicketStatusFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z.object({
+      ticketId: z.number(),
+      status: z.enum(['valid', 'used', 'cancelled']),
+    }).parse(data),
+  )
+  .handler(async ({ data }) => {
+    const admin = await requireStaffUser()
+    const db = await getDb()
+
+    if (isDemoTesterUser(admin)) {
+      throw new Error('Forbidden in demo mode')
+    }
+
+    const result = await db
+      .update(tickets)
+      .set({ status: data.status, updatedAt: new Date() })
+      .where(eq(tickets.id, data.ticketId))
+      .returning()
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.update_status',
+      entityType: 'ticket',
+      entityId: data.ticketId,
+      details: { status: data.status },
+    })
+
+    return result[0]
+  })
+
+export const resendTicketEmailFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => z.object({ ticketId: z.number() }).parse(data))
+  .handler(async ({ data }) => {
+    const admin = await requireStaffUser()
+    const db = await getDb()
+
+    const result = await db
+      .select({
+        id: tickets.id,
+        ticketCode: tickets.ticketCode,
+        participantName: tickets.participantName,
+        participantEmail: tickets.participantEmail,
+        eventId: tickets.eventId,
+      })
+      .from(tickets)
+      .where(eq(tickets.id, data.ticketId))
+      .limit(1)
+
+    if (result.length === 0) {
+      throw new Error('Biljetten hittades inte.')
+    }
+
+    const ticket = result[0]
+    const event = await db.select({ title: events.title }).from(events).where(eq(events.id, ticket.eventId)).limit(1)
+
+    const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
+    const ticketUrl = `${baseUrl}/biljett/${ticket.ticketCode}`
+
+    const emailHtml = `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+        <h2 style="color: #333;">Här är din biljett!</h2>
+        <p>Hej ${ticket.participantName},</p>
+        <p>Här är din biljett för <strong>${event[0]?.title || 'Eventet'}</strong>.</p>
+        <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; border: 1px solid #ddd;">
+          <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">${ticket.ticketCode}</p>
+        </div>
+        <p>Du kan visa din biljett och QR-kod genom att klicka på knappen nedan:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
+        </div>
+        <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>${ticketUrl}</p>
+      </div>
+    `
+
+    const emailSent = await sendEmail({
+      to: ticket.participantEmail,
+      subject: `Din biljett till ${event[0]?.title || 'Eventet'}`,
+      text: `Här är din biljettkod: ${ticket.ticketCode}. Visa din biljett här: ${ticketUrl}`,
+      html: emailHtml,
+    })
+
+    if (!emailSent) {
+      throw new Error('Kunde inte skicka e-post.')
+    }
+
+    await writeActivityLog({
+      actorUserId: admin.id,
+      actorRole: admin.role,
+      action: 'ticket.resend_email',
+      entityType: 'ticket',
+      entityId: ticket.id,
+    })
+
+    return { success: true }
   })
 
 export const cancelTicketFn = createServerFn({ method: 'POST' })

@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter, useNavigate } from '@tanstack/react-router'
+import { createServerFn, useRouter, useNavigate } from '@tanstack/react-router'
 import {
   getTicketsFn,
   deleteTicketFn,
@@ -6,7 +6,8 @@ import {
   getEventsForTicketsFn,
   verifyTicketByCodeFn,
   resendTicketEmailFn,
-} from '../../../server/functions/tickets'
+  getTicketSummaryFn,
+} from '../../server/functions/tickets'
 import { useEffect, useState } from 'react'
 import {
   Plus,
@@ -43,14 +44,14 @@ function formatStockholmTime(value: Date | string | null | undefined, fallback =
 
 export const Route = createFileRoute('/admin/tickets/')({
   loader: async () => {
-    const [tickets, events] = await Promise.all([getTicketsFn(), getEventsForTicketsFn()])
-    return { tickets, events }
+    const [tickets, events, summary] = await Promise.all([getTicketsFn(), getEventsForTicketsFn(), getTicketSummaryFn()])
+    return { tickets, events, summary }
   },
   component: TicketsAdmin,
 })
 
 function TicketsAdmin() {
-  const { tickets, events } = Route.useLoaderData()
+  const { tickets, events, summary } = Route.useLoaderData()
   const router = useRouter()
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
@@ -185,6 +186,23 @@ function TicketsAdmin() {
         </div>
       </div>
 
+      {summary && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-card p-4 border border-border">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">Totalt antal biljetter</p>
+            <p className="text-2xl font-bold text-foreground">{summary.totalTickets}</p>
+          </div>
+          <div className="bg-card p-4 border border-border">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">Aktiva biljetter</p>
+            <p className="text-2xl font-bold text-foreground">{summary.activeTickets}</p>
+          </div>
+          <div className="bg-card p-4 border border-border">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">Använda biljetter</p>
+            <p className="text-2xl font-bold text-foreground">{summary.usedTickets}</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-card border border-border">
         <div className="p-4 border-b border-border">
           <div className="relative">
@@ -318,7 +336,7 @@ function TicketsAdmin() {
               {filteredTickets.length === 0 && (
                 <tr>
                   <td colSpan={5} className="p-12 text-center text-muted-foreground italic">
-                    Inga biljetter hittades.
+                    Inga biljetter hittade.
                   </td>
                 </tr>
               )}

@@ -33,6 +33,19 @@ export const getTicketsFn = createServerFn({ method: 'GET' }).handler(async () =
     .orderBy(desc(tickets.createdAt))
 })
 
+export const getTicketSummaryFn = createServerFn({ method: 'GET' }).handler(async () => {
+  await requireStaffUser()
+  const db = await getDb()
+  const [total] = await db.select({ count: sql<number>`count(*)` }).from(tickets)
+  const [active] = await db.select({ count: sql<number>`count(*)` }).from(tickets).where(eq(tickets.status, 'valid'))
+  const [used] = await db.select({ count: sql<number>`count(*)` }).from(tickets).where(eq(tickets.status, 'used'))
+  return {
+    totalTickets: total.count,
+    activeTickets: active.count,
+    usedTickets: used.count,
+  }
+})
+
 export const getTicketDetailsFn = createServerFn({ method: 'GET' })
   .inputValidator((data: unknown) => z.number().parse(data))
   .handler(async ({ data: ticketId }) => {
@@ -105,8 +118,8 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
         .where(
           and(
             eq(eventTicketTypes.eventId, data.eventId),
-            eq(eventTicketTypes.ticketTypeId, ticketTypeRecord[0].id)
-          )
+            eq(eventTicketTypes.ticketTypeId, ticketTypeRecord[0].id),
+          ),
         )
         .limit(1)
         
@@ -119,7 +132,7 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
             and(
               eq(tickets.eventId, data.eventId),
               eq(tickets.ticketType, data.ticketType),
-              eq(tickets.status, 'valid')
+              eq(tickets.status, 'valid'),
             )
           )
           
@@ -204,13 +217,11 @@ export const issueTicketFn = createServerFn({ method: 'POST' })
 
 export const updateTicketFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
-    z
-      .object({
-        id: z.number(),
-        participantName: z.string().min(1),
-        participantEmail: z.string().email(),
-      })
-      .parse(data),
+    z.object({
+      id: z.number(),
+      participantName: z.string().min(1),
+      participantEmail: z.string().email(),
+    }).parse(data),
   )
   .handler(async ({ data }) => {
     const admin = await requireStaffUser()
@@ -239,7 +250,7 @@ export const updateTicketFn = createServerFn({ method: 'POST' })
   })
 
 export const verifyTicketFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) => z.object({ ticketCode: z.string() }).parse(data))
+  .inputValidator((data: unknown) => z.object({ code: z.string(), markAsUsed: z.boolean().optional() }).parse(data))
   .handler(async ({ data }) => {
     let adminId: number | null = null
     let adminRole: 'organizer' | 'volunteer' | null = null
@@ -266,40 +277,47 @@ export const verifyTicketFn = createServerFn({ method: 'POST' })
         scannedBy: tickets.scannedBy,
       })
       .from(tickets)
-      .where(eq(tickets.ticketCode, data.ticketCode))
+      .where(eq(tickets.ticketCode, data.code))
       .limit(1)
 
     if (result.length === 0) {
-      return { valid: false, message: 'Biljetten hittades inte.' }
+      return { success: false, message: 'Biljetten hittades inte.' }
     }
 
     const ticket = result[0]
 
     if (ticket.status === 'used') {
-      return { valid: false, message: 'Biljetten är redan använd.', ticket }
+      return { success: false, message: 'Biljetten är redan använd.', ticket }
     }
     if (ticket.status === 'cancelled') {
-      return { valid: false, message: 'Biljetten är makulerad.', ticket }
+      return { success: false, message: 'Biljetten är makulerad.', ticket }
     }
 
-    // Mark as used
-    const scanDate = new Date()
-    await db
-      .update(tickets)
-      .set({ status: 'used', scannedAt: scanDate, scannedBy: adminId, updatedAt: scanDate })
-      .where(eq(tickets.id, ticket.id))
+    if (data.markAsUsed) {
+      if (isDemoTesterUser({ id: adminId, role: adminRole } as any)) {
+        throw new Error('Forbidden in demo mode')
+      }
 
-    if (adminId && adminRole) {
-      await writeActivityLog({
-        actorUserId: adminId,
-        actorRole: adminRole,
-        action: 'ticket.verify.checkin',
-        entityType: 'ticket',
-        entityId: ticket.id,
-      })
+      const scanDate = new Date()
+      await db
+        .update(tickets)
+        .set({ status: 'used', scannedAt: scanDate, scannedBy: adminId, updatedAt: scanDate })
+        .where(eq(tickets.id, ticket.id))
+
+      if (adminId && adminRole) {
+        await writeActivityLog({
+          actorUserId: adminId,
+          actorRole: adminRole,
+          action: 'ticket.verify.checkin',
+          entityType: 'ticket',
+          entityId: ticket.id,
+        })
+      }
+
+      return { success: true, message: 'Biljetten är giltig och har nu markerats som använd.', ticket, checkingIn: true }
     }
 
-    return { valid: true, message: 'Biljetten är giltig och har nu markerats som använd.', ticket }
+    return { success: true, message: 'Biljetten är giltig.', ticket, checkingIn: false }
   })
 
 export const cancelTicketFn = createServerFn({ method: 'POST' })
@@ -414,7 +432,7 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
           .where(
             and(
               eq(eventTicketTypes.eventId, data.eventId),
-              eq(eventTicketTypes.ticketTypeId, ticketTypeRecord[0].id)
+              eq(eventTicketTypes.ticketTypeId, ticketTypeRecord[0].id),
             )
           )
           .limit(1)
@@ -427,7 +445,7 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
               and(
                 eq(tickets.eventId, data.eventId),
                 eq(tickets.ticketType, typeName),
-                eq(tickets.status, 'valid')
+                eq(tickets.status, 'valid'),
               )
             )
             
@@ -483,6 +501,7 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
           <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>${ticketUrl}</p>
         </div>
       `
+
       try {
         await sendEmail({
           to: ticket.participantEmail,
@@ -500,6 +519,7 @@ export const bulkIssueTicketsFn = createServerFn({ method: 'POST' })
       actorRole: admin.role,
       action: 'ticket.issue.bulk',
       entityType: 'ticket',
+      entityId: result[0].id,
       details: {
         count: result.length,
         eventId: data.eventId,
@@ -660,12 +680,10 @@ export const deleteEventFn = createServerFn({ method: 'POST' })
 
 export const updateEventStatusFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
-    z
-      .object({
-        eventId: z.number(),
-        finished: z.boolean(),
-      })
-      .parse(data),
+    z.object({
+      eventId: z.number(),
+      finished: z.boolean(),
+    }).parse(data),
   )
   .handler(async ({ data }) => {
     const admin = await requireStaffUser()
@@ -743,170 +761,6 @@ export const deleteTicketTypeFn = createServerFn({ method: 'POST' })
       action: 'ticketType.delete',
       entityType: 'ticketType',
       entityId: ticketTypeId,
-    })
-
-    return { success: true }
-  })
-
-export const updateTicketStatusFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) =>
-    z
-      .object({
-        ticketId: z.number(),
-        status: z.enum(['valid', 'used', 'cancelled']),
-      })
-      .parse(data),
-  )
-  .handler(async ({ data }) => {
-    const admin = await requireStaffUser()
-    const db = await getDb()
-
-    if (isDemoTesterUser(admin)) {
-      throw new Error('Forbidden in demo mode')
-    }
-
-    const result = await db
-      .update(tickets)
-      .set({ status: data.status, updatedAt: new Date() })
-      .where(eq(tickets.id, data.ticketId))
-      .returning()
-
-    await writeActivityLog({
-      actorUserId: admin.id,
-      actorRole: admin.role,
-      action: 'ticket.update_status',
-      entityType: 'ticket',
-      entityId: data.ticketId,
-      details: { status: data.status },
-    })
-
-    return result[0]
-  })
-
-export const verifyTicketByCodeFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) =>
-    z.object({ code: z.string(), markAsUsed: z.boolean().optional() }).parse(data),
-  )
-  .handler(async ({ data }) => {
-    const admin = await requireStaffUser()
-    const db = await getDb()
-
-    const result = await db
-      .select({
-        id: tickets.id,
-        ticketCode: tickets.ticketCode,
-        eventId: tickets.eventId,
-        ticketType: tickets.ticketType,
-        status: tickets.status,
-        participantName: tickets.participantName,
-        participantEmail: tickets.participantEmail,
-        pricePaid: tickets.pricePaid,
-        scannedAt: tickets.scannedAt,
-        scannedBy: tickets.scannedBy,
-      })
-      .from(tickets)
-      .where(eq(tickets.ticketCode, data.code))
-      .limit(1)
-
-    if (result.length === 0) {
-      return { success: false, message: 'Biljetten hittades inte.' }
-    }
-
-    const ticket = result[0]
-
-    if (ticket.status === 'used') {
-      return { success: false, message: 'Biljetten är redan använd.', ticket }
-    }
-    if (ticket.status === 'cancelled') {
-      return { success: false, message: 'Biljetten är makulerad.', ticket }
-    }
-
-    if (data.markAsUsed) {
-      if (isDemoTesterUser(admin)) {
-        throw new Error('Forbidden in demo mode')
-      }
-
-      const scanDate = new Date()
-      await db
-        .update(tickets)
-        .set({ status: 'used', scannedAt: scanDate, scannedBy: admin.id, updatedAt: scanDate })
-        .where(eq(tickets.id, ticket.id))
-
-      await writeActivityLog({
-        actorUserId: admin.id,
-        actorRole: admin.role,
-        action: 'ticket.verify.checkin',
-        entityType: 'ticket',
-        entityId: ticket.id,
-      })
-
-      return { success: true, message: 'Biljetten är giltig och har nu markerats som använd.', ticket, checkingIn: true }
-    }
-
-    return { success: true, message: 'Biljetten är giltig.', ticket, checkingIn: false }
-  })
-
-export const resendTicketEmailFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) => z.object({ ticketId: z.number() }).parse(data))
-  .handler(async ({ data }) => {
-    const admin = await requireStaffUser()
-    const db = await getDb()
-
-    const result = await db
-      .select({
-        id: tickets.id,
-        ticketCode: tickets.ticketCode,
-        participantName: tickets.participantName,
-        participantEmail: tickets.participantEmail,
-        eventId: tickets.eventId,
-      })
-      .from(tickets)
-      .where(eq(tickets.id, data.ticketId))
-      .limit(1)
-
-    if (result.length === 0) {
-      throw new Error('Biljetten hittades inte.')
-    }
-
-    const ticket = result[0]
-    const event = await db.select({ title: events.title }).from(events).where(eq(events.id, ticket.eventId)).limit(1)
-
-    const baseUrl = process.env.BASE_URL || 'https://lankoping.se'
-    const ticketUrl = `${baseUrl}/biljett/${ticket.ticketCode}`
-
-    const emailHtml = `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
-        <h2 style="color: #333;">Här är din biljett!</h2>
-        <p>Hej ${ticket.participantName},</p>
-        <p>Här är din biljett för <strong>${event[0]?.title || 'Eventet'}</strong>.</p>
-        <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; border: 1px solid #ddd;">
-          <p style="font-size: 24px; font-weight: bold; margin: 0; letter-spacing: 2px;">${ticket.ticketCode}</p>
-        </div>
-        <p>Du kan visa din biljett och QR-kod genom att klicka på knappen nedan:</p>
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="${ticketUrl}" style="background-color: #C04A2A; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Visa Biljett</a>
-        </div>
-        <p style="color: #666; font-size: 12px;">Om knappen inte fungerar, kopiera och klistra in denna länk i din webbläsare: <br>${ticketUrl}</p>
-      </div>
-    `
-
-    const emailSent = await sendEmail({
-      to: ticket.participantEmail,
-      subject: `Din biljett till ${event[0]?.title || 'Eventet'}`,
-      text: `Här är din biljettkod: ${ticket.ticketCode}. Visa din biljett här: ${ticketUrl}`,
-      html: emailHtml,
-    })
-
-    if (!emailSent) {
-      throw new Error('Kunde inte skicka e-post.')
-    }
-
-    await writeActivityLog({
-      actorUserId: admin.id,
-      actorRole: admin.role,
-      action: 'ticket.resend_email',
-      entityType: 'ticket',
-      entityId: ticket.id,
     })
 
     return { success: true }

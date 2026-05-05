@@ -11,41 +11,34 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SeRouteImport } from './routes/se'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as EnRouteImport } from './routes/en'
 import { Route as DatapolicyRouteImport } from './routes/datapolicy'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as ProtectedRouteImport } from './routes/_protected'
-import { Route as NyheterIndexRouteImport } from './routes/nyheter/index'
 import { Route as EnIndexRouteImport } from './routes/en/index'
 import { Route as BlogsIndexRouteImport } from './routes/blogs/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as VerifyCodeRouteImport } from './routes/verify/$code'
-import { Route as NyheterSlugRouteImport } from './routes/nyheter/$slug'
-import { Route as EnTeamRouteImport } from './routes/en/team'
-import { Route as EnRulesRouteImport } from './routes/en/rules'
-import { Route as EnPrivacyRouteImport } from './routes/en/privacy'
 import { Route as BlogsSlugRouteImport } from './routes/blogs/$slug'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as AdminNewRouteImport } from './routes/admin/new'
 import { Route as AdminLogsRouteImport } from './routes/admin/logs'
+import { Route as AdminGuidesRouteImport } from './routes/admin/guides'
 import { Route as AdminCmsRouteImport } from './routes/admin/cms'
 import { Route as PublicTeamRouteImport } from './routes/_public/team'
 import { Route as PublicRulesRouteImport } from './routes/_public/rules'
-import { Route as PublicPrivacyRouteImport } from './routes/_public/privacy'
 import { Route as ProtectedExampleProtectedRouteRouteImport } from './routes/_protected/example-protected-route'
 import { Route as ApiHelloRouteImport } from './routes/_api/hello'
-import { Route as EnNyheterIndexRouteImport } from './routes/en/nyheter/index'
 import { Route as EnBlogsIndexRouteImport } from './routes/en/blogs/index'
 import { Route as AdminTicketsIndexRouteImport } from './routes/admin/tickets/index'
-import { Route as EnNyheterSlugRouteImport } from './routes/en/nyheter/$slug'
-import { Route as EnBlogsSlugRouteImport } from './routes/en/blogs/$slug'
+import { Route as PublicDatapolicyIndexRouteImport } from './routes/_public/datapolicy/index'
 import { Route as AdminTicketsTypesRouteImport } from './routes/admin/tickets/types'
 import { Route as AdminTicketsScanRouteImport } from './routes/admin/tickets/scan'
 import { Route as AdminTicketsNewRouteImport } from './routes/admin/tickets/new'
 import { Route as AdminTicketsEventsRouteImport } from './routes/admin/tickets/events'
+import { Route as AdminTicketsCompaniesRouteImport } from './routes/admin/tickets/companies'
 import { Route as AdminEditIdRouteImport } from './routes/admin/edit/$id'
 import { Route as AdminCmsTeamRouteImport } from './routes/admin/cms/team'
 import { Route as AdminCmsSettingsRouteImport } from './routes/admin/cms/settings'
@@ -54,7 +47,6 @@ import { Route as AdminCmsPagesRouteImport } from './routes/admin/cms/pages'
 import { Route as AdminCmsNavigationRouteImport } from './routes/admin/cms/navigation'
 import { Route as AdminCmsHeroRouteImport } from './routes/admin/cms/hero'
 import { Route as PublicDatapolicySeRouteImport } from './routes/_public/datapolicy/se'
-import { Route as PublicDatapolicyEnRouteImport } from './routes/_public/datapolicy/en'
 import { Route as PublicBiljettCodeRouteImport } from './routes/_public/biljett/$code'
 
 const SeRoute = SeRouteImport.update({
@@ -65,11 +57,6 @@ const SeRoute = SeRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EnRoute = EnRouteImport.update({
-  id: '/en',
-  path: '/en',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DatapolicyRoute = DatapolicyRouteImport.update({
@@ -90,15 +77,10 @@ const ProtectedRoute = ProtectedRouteImport.update({
   id: '/_protected',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NyheterIndexRoute = NyheterIndexRouteImport.update({
-  id: '/nyheter/',
-  path: '/nyheter/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const EnIndexRoute = EnIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => EnRoute,
+  id: '/en/',
+  path: '/en/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const BlogsIndexRoute = BlogsIndexRouteImport.update({
   id: '/blogs/',
@@ -119,26 +101,6 @@ const VerifyCodeRoute = VerifyCodeRouteImport.update({
   id: '/verify/$code',
   path: '/verify/$code',
   getParentRoute: () => rootRouteImport,
-} as any)
-const NyheterSlugRoute = NyheterSlugRouteImport.update({
-  id: '/nyheter/$slug',
-  path: '/nyheter/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EnTeamRoute = EnTeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => EnRoute,
-} as any)
-const EnRulesRoute = EnRulesRouteImport.update({
-  id: '/rules',
-  path: '/rules',
-  getParentRoute: () => EnRoute,
-} as any)
-const EnPrivacyRoute = EnPrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => EnRoute,
 } as any)
 const BlogsSlugRoute = BlogsSlugRouteImport.update({
   id: '/blogs/$slug',
@@ -165,6 +127,11 @@ const AdminLogsRoute = AdminLogsRouteImport.update({
   path: '/logs',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminGuidesRoute = AdminGuidesRouteImport.update({
+  id: '/guides',
+  path: '/guides',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCmsRoute = AdminCmsRouteImport.update({
   id: '/cms',
   path: '/cms',
@@ -180,11 +147,6 @@ const PublicRulesRoute = PublicRulesRouteImport.update({
   path: '/rules',
   getParentRoute: () => PublicRoute,
 } as any)
-const PublicPrivacyRoute = PublicPrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => PublicRoute,
-} as any)
 const ProtectedExampleProtectedRouteRoute =
   ProtectedExampleProtectedRouteRouteImport.update({
     id: '/example-protected-route',
@@ -196,30 +158,20 @@ const ApiHelloRoute = ApiHelloRouteImport.update({
   path: '/hello',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EnNyheterIndexRoute = EnNyheterIndexRouteImport.update({
-  id: '/nyheter/',
-  path: '/nyheter/',
-  getParentRoute: () => EnRoute,
-} as any)
 const EnBlogsIndexRoute = EnBlogsIndexRouteImport.update({
-  id: '/blogs/',
-  path: '/blogs/',
-  getParentRoute: () => EnRoute,
+  id: '/en/blogs/',
+  path: '/en/blogs/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminTicketsIndexRoute = AdminTicketsIndexRouteImport.update({
   id: '/tickets/',
   path: '/tickets/',
   getParentRoute: () => AdminRoute,
 } as any)
-const EnNyheterSlugRoute = EnNyheterSlugRouteImport.update({
-  id: '/nyheter/$slug',
-  path: '/nyheter/$slug',
-  getParentRoute: () => EnRoute,
-} as any)
-const EnBlogsSlugRoute = EnBlogsSlugRouteImport.update({
-  id: '/blogs/$slug',
-  path: '/blogs/$slug',
-  getParentRoute: () => EnRoute,
+const PublicDatapolicyIndexRoute = PublicDatapolicyIndexRouteImport.update({
+  id: '/datapolicy/',
+  path: '/datapolicy/',
+  getParentRoute: () => PublicRoute,
 } as any)
 const AdminTicketsTypesRoute = AdminTicketsTypesRouteImport.update({
   id: '/tickets/types',
@@ -239,6 +191,11 @@ const AdminTicketsNewRoute = AdminTicketsNewRouteImport.update({
 const AdminTicketsEventsRoute = AdminTicketsEventsRouteImport.update({
   id: '/tickets/events',
   path: '/tickets/events',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTicketsCompaniesRoute = AdminTicketsCompaniesRouteImport.update({
+  id: '/tickets/companies',
+  path: '/tickets/companies',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEditIdRoute = AdminEditIdRouteImport.update({
@@ -281,11 +238,6 @@ const PublicDatapolicySeRoute = PublicDatapolicySeRouteImport.update({
   path: '/datapolicy/se',
   getParentRoute: () => PublicRoute,
 } as any)
-const PublicDatapolicyEnRoute = PublicDatapolicyEnRouteImport.update({
-  id: '/datapolicy/en',
-  path: '/datapolicy/en',
-  getParentRoute: () => PublicRoute,
-} as any)
 const PublicBiljettCodeRoute = PublicBiljettCodeRouteImport.update({
   id: '/biljett/$code',
   path: '/biljett/$code',
@@ -296,31 +248,24 @@ export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/datapolicy': typeof DatapolicyRoute
-  '/en': typeof EnRouteWithChildren
   '/login': typeof LoginRoute
   '/se': typeof SeRoute
   '/hello': typeof ApiHelloRoute
   '/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
-  '/privacy': typeof PublicPrivacyRoute
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
   '/admin/cms': typeof AdminCmsRouteWithChildren
+  '/admin/guides': typeof AdminGuidesRoute
   '/admin/logs': typeof AdminLogsRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
-  '/en/privacy': typeof EnPrivacyRoute
-  '/en/rules': typeof EnRulesRoute
-  '/en/team': typeof EnTeamRoute
-  '/nyheter/$slug': typeof NyheterSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/en/': typeof EnIndexRoute
-  '/nyheter/': typeof NyheterIndexRoute
   '/biljett/$code': typeof PublicBiljettCodeRoute
-  '/datapolicy/en': typeof PublicDatapolicyEnRoute
   '/datapolicy/se': typeof PublicDatapolicySeRoute
   '/admin/cms/hero': typeof AdminCmsHeroRoute
   '/admin/cms/navigation': typeof AdminCmsNavigationRoute
@@ -329,43 +274,36 @@ export interface FileRoutesByFullPath {
   '/admin/cms/settings': typeof AdminCmsSettingsRoute
   '/admin/cms/team': typeof AdminCmsTeamRoute
   '/admin/edit/$id': typeof AdminEditIdRoute
+  '/admin/tickets/companies': typeof AdminTicketsCompaniesRoute
   '/admin/tickets/events': typeof AdminTicketsEventsRoute
   '/admin/tickets/new': typeof AdminTicketsNewRoute
   '/admin/tickets/scan': typeof AdminTicketsScanRoute
   '/admin/tickets/types': typeof AdminTicketsTypesRoute
-  '/en/blogs/$slug': typeof EnBlogsSlugRoute
-  '/en/nyheter/$slug': typeof EnNyheterSlugRoute
+  '/datapolicy/': typeof PublicDatapolicyIndexRoute
   '/admin/tickets/': typeof AdminTicketsIndexRoute
   '/en/blogs/': typeof EnBlogsIndexRoute
-  '/en/nyheter/': typeof EnNyheterIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
-  '/datapolicy': typeof DatapolicyRoute
+  '/datapolicy': typeof PublicDatapolicyIndexRoute
   '/login': typeof LoginRoute
   '/se': typeof SeRoute
   '/hello': typeof ApiHelloRoute
   '/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
-  '/privacy': typeof PublicPrivacyRoute
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
   '/admin/cms': typeof AdminCmsRouteWithChildren
+  '/admin/guides': typeof AdminGuidesRoute
   '/admin/logs': typeof AdminLogsRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
-  '/en/privacy': typeof EnPrivacyRoute
-  '/en/rules': typeof EnRulesRoute
-  '/en/team': typeof EnTeamRoute
-  '/nyheter/$slug': typeof NyheterSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/admin': typeof AdminIndexRoute
   '/blogs': typeof BlogsIndexRoute
   '/en': typeof EnIndexRoute
-  '/nyheter': typeof NyheterIndexRoute
   '/biljett/$code': typeof PublicBiljettCodeRoute
-  '/datapolicy/en': typeof PublicDatapolicyEnRoute
   '/datapolicy/se': typeof PublicDatapolicySeRoute
   '/admin/cms/hero': typeof AdminCmsHeroRoute
   '/admin/cms/navigation': typeof AdminCmsNavigationRoute
@@ -374,15 +312,13 @@ export interface FileRoutesByTo {
   '/admin/cms/settings': typeof AdminCmsSettingsRoute
   '/admin/cms/team': typeof AdminCmsTeamRoute
   '/admin/edit/$id': typeof AdminEditIdRoute
+  '/admin/tickets/companies': typeof AdminTicketsCompaniesRoute
   '/admin/tickets/events': typeof AdminTicketsEventsRoute
   '/admin/tickets/new': typeof AdminTicketsNewRoute
   '/admin/tickets/scan': typeof AdminTicketsScanRoute
   '/admin/tickets/types': typeof AdminTicketsTypesRoute
-  '/en/blogs/$slug': typeof EnBlogsSlugRoute
-  '/en/nyheter/$slug': typeof EnNyheterSlugRoute
   '/admin/tickets': typeof AdminTicketsIndexRoute
   '/en/blogs': typeof EnBlogsIndexRoute
-  '/en/nyheter': typeof EnNyheterIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -390,32 +326,25 @@ export interface FileRoutesById {
   '/_public': typeof PublicRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/datapolicy': typeof DatapolicyRoute
-  '/en': typeof EnRouteWithChildren
   '/login': typeof LoginRoute
   '/se': typeof SeRoute
   '/_api/hello': typeof ApiHelloRoute
   '/_protected/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
-  '/_public/privacy': typeof PublicPrivacyRoute
   '/_public/rules': typeof PublicRulesRoute
   '/_public/team': typeof PublicTeamRoute
   '/admin/cms': typeof AdminCmsRouteWithChildren
+  '/admin/guides': typeof AdminGuidesRoute
   '/admin/logs': typeof AdminLogsRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
-  '/en/privacy': typeof EnPrivacyRoute
-  '/en/rules': typeof EnRulesRoute
-  '/en/team': typeof EnTeamRoute
-  '/nyheter/$slug': typeof NyheterSlugRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/en/': typeof EnIndexRoute
-  '/nyheter/': typeof NyheterIndexRoute
   '/_public/biljett/$code': typeof PublicBiljettCodeRoute
-  '/_public/datapolicy/en': typeof PublicDatapolicyEnRoute
   '/_public/datapolicy/se': typeof PublicDatapolicySeRoute
   '/admin/cms/hero': typeof AdminCmsHeroRoute
   '/admin/cms/navigation': typeof AdminCmsNavigationRoute
@@ -424,15 +353,14 @@ export interface FileRoutesById {
   '/admin/cms/settings': typeof AdminCmsSettingsRoute
   '/admin/cms/team': typeof AdminCmsTeamRoute
   '/admin/edit/$id': typeof AdminEditIdRoute
+  '/admin/tickets/companies': typeof AdminTicketsCompaniesRoute
   '/admin/tickets/events': typeof AdminTicketsEventsRoute
   '/admin/tickets/new': typeof AdminTicketsNewRoute
   '/admin/tickets/scan': typeof AdminTicketsScanRoute
   '/admin/tickets/types': typeof AdminTicketsTypesRoute
-  '/en/blogs/$slug': typeof EnBlogsSlugRoute
-  '/en/nyheter/$slug': typeof EnNyheterSlugRoute
+  '/_public/datapolicy/': typeof PublicDatapolicyIndexRoute
   '/admin/tickets/': typeof AdminTicketsIndexRoute
   '/en/blogs/': typeof EnBlogsIndexRoute
-  '/en/nyheter/': typeof EnNyheterIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -440,31 +368,24 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/datapolicy'
-    | '/en'
     | '/login'
     | '/se'
     | '/hello'
     | '/example-protected-route'
-    | '/privacy'
     | '/rules'
     | '/team'
     | '/admin/cms'
+    | '/admin/guides'
     | '/admin/logs'
     | '/admin/new'
     | '/admin/posts'
     | '/admin/users'
     | '/blogs/$slug'
-    | '/en/privacy'
-    | '/en/rules'
-    | '/en/team'
-    | '/nyheter/$slug'
     | '/verify/$code'
     | '/admin/'
     | '/blogs/'
     | '/en/'
-    | '/nyheter/'
     | '/biljett/$code'
-    | '/datapolicy/en'
     | '/datapolicy/se'
     | '/admin/cms/hero'
     | '/admin/cms/navigation'
@@ -473,15 +394,14 @@ export interface FileRouteTypes {
     | '/admin/cms/settings'
     | '/admin/cms/team'
     | '/admin/edit/$id'
+    | '/admin/tickets/companies'
     | '/admin/tickets/events'
     | '/admin/tickets/new'
     | '/admin/tickets/scan'
     | '/admin/tickets/types'
-    | '/en/blogs/$slug'
-    | '/en/nyheter/$slug'
+    | '/datapolicy/'
     | '/admin/tickets/'
     | '/en/blogs/'
-    | '/en/nyheter/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -490,26 +410,20 @@ export interface FileRouteTypes {
     | '/se'
     | '/hello'
     | '/example-protected-route'
-    | '/privacy'
     | '/rules'
     | '/team'
     | '/admin/cms'
+    | '/admin/guides'
     | '/admin/logs'
     | '/admin/new'
     | '/admin/posts'
     | '/admin/users'
     | '/blogs/$slug'
-    | '/en/privacy'
-    | '/en/rules'
-    | '/en/team'
-    | '/nyheter/$slug'
     | '/verify/$code'
     | '/admin'
     | '/blogs'
     | '/en'
-    | '/nyheter'
     | '/biljett/$code'
-    | '/datapolicy/en'
     | '/datapolicy/se'
     | '/admin/cms/hero'
     | '/admin/cms/navigation'
@@ -518,47 +432,38 @@ export interface FileRouteTypes {
     | '/admin/cms/settings'
     | '/admin/cms/team'
     | '/admin/edit/$id'
+    | '/admin/tickets/companies'
     | '/admin/tickets/events'
     | '/admin/tickets/new'
     | '/admin/tickets/scan'
     | '/admin/tickets/types'
-    | '/en/blogs/$slug'
-    | '/en/nyheter/$slug'
     | '/admin/tickets'
     | '/en/blogs'
-    | '/en/nyheter'
   id:
     | '__root__'
     | '/_protected'
     | '/_public'
     | '/admin'
     | '/datapolicy'
-    | '/en'
     | '/login'
     | '/se'
     | '/_api/hello'
     | '/_protected/example-protected-route'
-    | '/_public/privacy'
     | '/_public/rules'
     | '/_public/team'
     | '/admin/cms'
+    | '/admin/guides'
     | '/admin/logs'
     | '/admin/new'
     | '/admin/posts'
     | '/admin/users'
     | '/blogs/$slug'
-    | '/en/privacy'
-    | '/en/rules'
-    | '/en/team'
-    | '/nyheter/$slug'
     | '/verify/$code'
     | '/_public/'
     | '/admin/'
     | '/blogs/'
     | '/en/'
-    | '/nyheter/'
     | '/_public/biljett/$code'
-    | '/_public/datapolicy/en'
     | '/_public/datapolicy/se'
     | '/admin/cms/hero'
     | '/admin/cms/navigation'
@@ -567,15 +472,14 @@ export interface FileRouteTypes {
     | '/admin/cms/settings'
     | '/admin/cms/team'
     | '/admin/edit/$id'
+    | '/admin/tickets/companies'
     | '/admin/tickets/events'
     | '/admin/tickets/new'
     | '/admin/tickets/scan'
     | '/admin/tickets/types'
-    | '/en/blogs/$slug'
-    | '/en/nyheter/$slug'
+    | '/_public/datapolicy/'
     | '/admin/tickets/'
     | '/en/blogs/'
-    | '/en/nyheter/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -583,15 +487,14 @@ export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   DatapolicyRoute: typeof DatapolicyRoute
-  EnRoute: typeof EnRouteWithChildren
   LoginRoute: typeof LoginRoute
   SeRoute: typeof SeRoute
   ApiHelloRoute: typeof ApiHelloRoute
   BlogsSlugRoute: typeof BlogsSlugRoute
-  NyheterSlugRoute: typeof NyheterSlugRoute
   VerifyCodeRoute: typeof VerifyCodeRoute
   BlogsIndexRoute: typeof BlogsIndexRoute
-  NyheterIndexRoute: typeof NyheterIndexRoute
+  EnIndexRoute: typeof EnIndexRoute
+  EnBlogsIndexRoute: typeof EnBlogsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -608,13 +511,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/en': {
-      id: '/en'
-      path: '/en'
-      fullPath: '/en'
-      preLoaderRoute: typeof EnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/datapolicy': {
@@ -645,19 +541,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nyheter/': {
-      id: '/nyheter/'
-      path: '/nyheter'
-      fullPath: '/nyheter/'
-      preLoaderRoute: typeof NyheterIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/en/': {
       id: '/en/'
-      path: '/'
+      path: '/en'
       fullPath: '/en/'
       preLoaderRoute: typeof EnIndexRouteImport
-      parentRoute: typeof EnRoute
+      parentRoute: typeof rootRouteImport
     }
     '/blogs/': {
       id: '/blogs/'
@@ -686,34 +575,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/verify/$code'
       preLoaderRoute: typeof VerifyCodeRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/nyheter/$slug': {
-      id: '/nyheter/$slug'
-      path: '/nyheter/$slug'
-      fullPath: '/nyheter/$slug'
-      preLoaderRoute: typeof NyheterSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/en/team': {
-      id: '/en/team'
-      path: '/team'
-      fullPath: '/en/team'
-      preLoaderRoute: typeof EnTeamRouteImport
-      parentRoute: typeof EnRoute
-    }
-    '/en/rules': {
-      id: '/en/rules'
-      path: '/rules'
-      fullPath: '/en/rules'
-      preLoaderRoute: typeof EnRulesRouteImport
-      parentRoute: typeof EnRoute
-    }
-    '/en/privacy': {
-      id: '/en/privacy'
-      path: '/privacy'
-      fullPath: '/en/privacy'
-      preLoaderRoute: typeof EnPrivacyRouteImport
-      parentRoute: typeof EnRoute
     }
     '/blogs/$slug': {
       id: '/blogs/$slug'
@@ -750,6 +611,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLogsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/guides': {
+      id: '/admin/guides'
+      path: '/guides'
+      fullPath: '/admin/guides'
+      preLoaderRoute: typeof AdminGuidesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/cms': {
       id: '/admin/cms'
       path: '/cms'
@@ -771,13 +639,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicRulesRouteImport
       parentRoute: typeof PublicRoute
     }
-    '/_public/privacy': {
-      id: '/_public/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PublicPrivacyRouteImport
-      parentRoute: typeof PublicRoute
-    }
     '/_protected/example-protected-route': {
       id: '/_protected/example-protected-route'
       path: '/example-protected-route'
@@ -792,19 +653,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHelloRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/en/nyheter/': {
-      id: '/en/nyheter/'
-      path: '/nyheter'
-      fullPath: '/en/nyheter/'
-      preLoaderRoute: typeof EnNyheterIndexRouteImport
-      parentRoute: typeof EnRoute
-    }
     '/en/blogs/': {
       id: '/en/blogs/'
-      path: '/blogs'
+      path: '/en/blogs'
       fullPath: '/en/blogs/'
       preLoaderRoute: typeof EnBlogsIndexRouteImport
-      parentRoute: typeof EnRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/tickets/': {
       id: '/admin/tickets/'
@@ -813,19 +667,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTicketsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/en/nyheter/$slug': {
-      id: '/en/nyheter/$slug'
-      path: '/nyheter/$slug'
-      fullPath: '/en/nyheter/$slug'
-      preLoaderRoute: typeof EnNyheterSlugRouteImport
-      parentRoute: typeof EnRoute
-    }
-    '/en/blogs/$slug': {
-      id: '/en/blogs/$slug'
-      path: '/blogs/$slug'
-      fullPath: '/en/blogs/$slug'
-      preLoaderRoute: typeof EnBlogsSlugRouteImport
-      parentRoute: typeof EnRoute
+    '/_public/datapolicy/': {
+      id: '/_public/datapolicy/'
+      path: '/datapolicy'
+      fullPath: '/datapolicy/'
+      preLoaderRoute: typeof PublicDatapolicyIndexRouteImport
+      parentRoute: typeof PublicRoute
     }
     '/admin/tickets/types': {
       id: '/admin/tickets/types'
@@ -853,6 +700,13 @@ declare module '@tanstack/react-router' {
       path: '/tickets/events'
       fullPath: '/admin/tickets/events'
       preLoaderRoute: typeof AdminTicketsEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/tickets/companies': {
+      id: '/admin/tickets/companies'
+      path: '/tickets/companies'
+      fullPath: '/admin/tickets/companies'
+      preLoaderRoute: typeof AdminTicketsCompaniesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/edit/$id': {
@@ -911,13 +765,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicDatapolicySeRouteImport
       parentRoute: typeof PublicRoute
     }
-    '/_public/datapolicy/en': {
-      id: '/_public/datapolicy/en'
-      path: '/datapolicy/en'
-      fullPath: '/datapolicy/en'
-      preLoaderRoute: typeof PublicDatapolicyEnRouteImport
-      parentRoute: typeof PublicRoute
-    }
     '/_public/biljett/$code': {
       id: '/_public/biljett/$code'
       path: '/biljett/$code'
@@ -941,23 +788,21 @@ const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
 )
 
 interface PublicRouteChildren {
-  PublicPrivacyRoute: typeof PublicPrivacyRoute
   PublicRulesRoute: typeof PublicRulesRoute
   PublicTeamRoute: typeof PublicTeamRoute
   PublicIndexRoute: typeof PublicIndexRoute
   PublicBiljettCodeRoute: typeof PublicBiljettCodeRoute
-  PublicDatapolicyEnRoute: typeof PublicDatapolicyEnRoute
   PublicDatapolicySeRoute: typeof PublicDatapolicySeRoute
+  PublicDatapolicyIndexRoute: typeof PublicDatapolicyIndexRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
-  PublicPrivacyRoute: PublicPrivacyRoute,
   PublicRulesRoute: PublicRulesRoute,
   PublicTeamRoute: PublicTeamRoute,
   PublicIndexRoute: PublicIndexRoute,
   PublicBiljettCodeRoute: PublicBiljettCodeRoute,
-  PublicDatapolicyEnRoute: PublicDatapolicyEnRoute,
   PublicDatapolicySeRoute: PublicDatapolicySeRoute,
+  PublicDatapolicyIndexRoute: PublicDatapolicyIndexRoute,
 }
 
 const PublicRouteWithChildren =
@@ -987,12 +832,14 @@ const AdminCmsRouteWithChildren = AdminCmsRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminCmsRoute: typeof AdminCmsRouteWithChildren
+  AdminGuidesRoute: typeof AdminGuidesRoute
   AdminLogsRoute: typeof AdminLogsRoute
   AdminNewRoute: typeof AdminNewRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminEditIdRoute: typeof AdminEditIdRoute
+  AdminTicketsCompaniesRoute: typeof AdminTicketsCompaniesRoute
   AdminTicketsEventsRoute: typeof AdminTicketsEventsRoute
   AdminTicketsNewRoute: typeof AdminTicketsNewRoute
   AdminTicketsScanRoute: typeof AdminTicketsScanRoute
@@ -1002,12 +849,14 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminCmsRoute: AdminCmsRouteWithChildren,
+  AdminGuidesRoute: AdminGuidesRoute,
   AdminLogsRoute: AdminLogsRoute,
   AdminNewRoute: AdminNewRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminEditIdRoute: AdminEditIdRoute,
+  AdminTicketsCompaniesRoute: AdminTicketsCompaniesRoute,
   AdminTicketsEventsRoute: AdminTicketsEventsRoute,
   AdminTicketsNewRoute: AdminTicketsNewRoute,
   AdminTicketsScanRoute: AdminTicketsScanRoute,
@@ -1017,54 +866,20 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface EnRouteChildren {
-  EnPrivacyRoute: typeof EnPrivacyRoute
-  EnRulesRoute: typeof EnRulesRoute
-  EnTeamRoute: typeof EnTeamRoute
-  EnIndexRoute: typeof EnIndexRoute
-  EnBlogsSlugRoute: typeof EnBlogsSlugRoute
-  EnNyheterSlugRoute: typeof EnNyheterSlugRoute
-  EnBlogsIndexRoute: typeof EnBlogsIndexRoute
-  EnNyheterIndexRoute: typeof EnNyheterIndexRoute
-}
-
-const EnRouteChildren: EnRouteChildren = {
-  EnPrivacyRoute: EnPrivacyRoute,
-  EnRulesRoute: EnRulesRoute,
-  EnTeamRoute: EnTeamRoute,
-  EnIndexRoute: EnIndexRoute,
-  EnBlogsSlugRoute: EnBlogsSlugRoute,
-  EnNyheterSlugRoute: EnNyheterSlugRoute,
-  EnBlogsIndexRoute: EnBlogsIndexRoute,
-  EnNyheterIndexRoute: EnNyheterIndexRoute,
-}
-
-const EnRouteWithChildren = EnRoute._addFileChildren(EnRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   ProtectedRoute: ProtectedRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   DatapolicyRoute: DatapolicyRoute,
-  EnRoute: EnRouteWithChildren,
   LoginRoute: LoginRoute,
   SeRoute: SeRoute,
   ApiHelloRoute: ApiHelloRoute,
   BlogsSlugRoute: BlogsSlugRoute,
-  NyheterSlugRoute: NyheterSlugRoute,
   VerifyCodeRoute: VerifyCodeRoute,
   BlogsIndexRoute: BlogsIndexRoute,
-  NyheterIndexRoute: NyheterIndexRoute,
+  EnIndexRoute: EnIndexRoute,
+  EnBlogsIndexRoute: EnBlogsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

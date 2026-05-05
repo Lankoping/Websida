@@ -1,5 +1,5 @@
 
-import { organizations } from '../data/organizations';
+import { organizations } from '../../data/organizations';
 
 export function calculateTicketPrice(orgId: string, ticketCount: number): number {
   const org = organizations.find(o => o.id === orgId);

@@ -2,6 +2,7 @@
 
 import { Link } from '@tanstack/react-router'
 import * as Icons from 'lucide-react'
+import SponsorCalculator from './sponsor-calculator'
 
 const fallbackContent = {
   eyebrow: 'LAN-Event i Norrkoping',
@@ -100,6 +101,11 @@ export function ComingSoon() {
                 {content.secondaryButtonText}
               </a>
             )}
+
+            {/* Sponsor calculator - public visual tool */}
+            <div className="mt-12">
+              <SponsorCalculator />
+            </div>
           </div>
         </section>
       </main>

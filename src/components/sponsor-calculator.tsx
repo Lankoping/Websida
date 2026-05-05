@@ -45,14 +45,55 @@ export default function SponsorCalculator() {
         Använd skjutreglagen för att se hur en sponsorinsats påverkar priset per ungdom. Kalkylatorn är endast visuell — för en exakt offert, mejla oss så återkommer vi med detaljerad kostnad.
       </p>
 
+      {/* Explanation section */}
+      <div className="mb-8 bg-primary/5 border border-primary/20 p-6">
+        <h2 className="font-display text-lg mb-3">Anledningar till att sponsra</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Genom att sponsra kan vi <strong>sänka biljett priserna för ungdomarna</strong>! Sponsorns bidrag delas ut jämnt på alla deltagare, vilket gör att varje biljett blir billigare.
+        </p>
+        <div className="bg-background border border-border p-4 rounded">
+          <p className="text-xs text-muted-foreground mb-2 font-medium">EXEMPEL:</p>
+          <div className="space-y-1 text-sm">
+            <div className="flex justify-between">
+              <span>Sponsorbidrag:</span>
+              <span className="font-mono font-bold">1 000 kr</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Antal deltagare:</span>
+              <span className="font-mono font-bold">5 st</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Normalt biljett pris:</span>
+              <span className="font-mono font-bold">150 kr</span>
+            </div>
+            <div className="border-t border-border my-2" />
+            <div className="flex justify-between">
+              <span>Subvention per biljett:</span>
+              <span className="font-mono font-bold text-primary">200 kr</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Nytt pris per biljett:</span>
+              <span className="font-mono font-bold text-primary">-50 kr (gratis!)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="space-y-6 bg-card p-6 border border-border">
         <div>
           <label className="text-sm font-medium">Sponsrad summa (SEK)</label>
           <div className="flex items-center gap-4 mt-2">
             <div className="flex-1">
-              <Slider value={[sponsorAmount]} onValueChange={(v: number[]) => setSponsorAmount(v[0])} min={0} max={20000} />
+              <Slider value={[sponsorAmount]} onValueChange={(v) => setSponsorAmount(v[0])} min={0} max={20000} step={100} />
             </div>
-            <div className="w-28 text-right font-mono">{sponsorAmount} kr</div>
+            <input 
+              type="number" 
+              value={sponsorAmount} 
+              onChange={(e) => setSponsorAmount(Math.max(0, parseInt(e.target.value || '0')))} 
+              className="w-28 p-2 border border-border bg-background text-foreground text-right font-mono" 
+              min="0"
+              max="20000"
+            />
           </div>
         </div>
 
@@ -60,9 +101,16 @@ export default function SponsorCalculator() {
           <label className="text-sm font-medium">Antal deltagare</label>
           <div className="flex items-center gap-4 mt-2">
             <div className="flex-1">
-              <Slider value={[ticketCount]} onValueChange={(v: number[]) => setTicketCount(Math.max(1, Math.round(v[0])))} min={1} max={500} />
+              <Slider value={[ticketCount]} onValueChange={(v) => setTicketCount(Math.max(1, Math.round(v[0])))} min={1} max={500} step={1} />
             </div>
-            <div className="w-28 text-right font-mono">{ticketCount} st</div>
+            <input 
+              type="number" 
+              value={ticketCount} 
+              onChange={(e) => setTicketCount(Math.max(1, parseInt(e.target.value || '1')))} 
+              className="w-28 p-2 border border-border bg-background text-foreground text-right font-mono" 
+              min="1"
+              max="500"
+            />
           </div>
         </div>
 

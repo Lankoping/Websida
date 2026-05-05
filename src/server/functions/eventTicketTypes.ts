@@ -33,6 +33,12 @@ export const getAllEventTicketTypesFn = createServerFn({ method: 'GET' }).handle
     .innerJoin(ticketTypes, eq(eventTicketTypes.ticketTypeId, ticketTypes.id))
 })
 
+// Public endpoint: ticket types and their standard prices (no admin required)
+export const getPublicTicketTypesFn = createServerFn({ method: 'GET' }).handler(async () => {
+  const db = await getDb()
+  return await db.select({ id: ticketTypes.id, name: ticketTypes.name, price: ticketTypes.price }).from(ticketTypes).orderBy(ticketTypes.price)
+})
+
 export const setEventTicketTypeFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
     z

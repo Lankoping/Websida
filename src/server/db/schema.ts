@@ -95,3 +95,15 @@ export const activityLogs = pgTable('activity_logs', {
   details: text('details'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
+
+export const buyerProfiles = pgTable('buyer_profiles', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email'),
+  phone: text('phone'),
+  address: text('address'),
+  externalId: text('external_id'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})

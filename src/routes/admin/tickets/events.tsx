@@ -6,6 +6,7 @@ import {
   updateEventStatusFn,
   updateEventFn,
 } from '../../../server/functions/tickets'
+import { importEventToBuyerProfilesFn } from '../../../server/functions/buyerProfiles'
 import { getAllTicketTypesFn, getAllEventTicketTypesFn, setEventTicketTypeFn } from '../../../server/functions/eventTicketTypes'
 import { useState } from 'react'
 import {
@@ -47,6 +48,7 @@ function EventsAdmin() {
   const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
+  const [importingEventId, setImportingEventId] = useState<number | null>(null)
 
   // Ticket type config state
   const [ticketTypeEventId, setTicketTypeEventId] = useState<number | null>(null)
@@ -129,6 +131,21 @@ function EventsAdmin() {
     } catch (err) {
       console.error(err)
       alert('Kunde inte uppdatera eventets status.')
+    }
+  }
+
+  const handleImportBuyerProfiles = async (eventId: number) => {
+    if (!window.confirm('Importera alla deltagare från detta event till köparprofiler? Detta går inte att ångra.')) return
+    setImportingEventId(eventId)
+    try {
+      const res = await importEventToBuyerProfilesFn({ data: eventId })
+      alert(`Importerade ${res.createdCount} köparprofil(er)`)
+      await router.invalidate()
+    } catch (err) {
+      console.error(err)
+      alert('Kunde inte importera köparprofiler.')
+    } finally {
+      setImportingEventId(null)
     }
   }
 
@@ -391,6 +408,14 @@ function EventsAdmin() {
                   </button>
 
                   <div className="flex gap-1 transition-opacity">
+                    <button
+                      onClick={() => handleImportBuyerProfiles(event.id)}
+                      disabled={importingEventId === event.id}
+                      className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                      title="Importera köparprofiler från event"
+                    >
+                      {importingEventId === event.id ? 'Importerar...' : 'Importera'}
+                    </button>
                     <button
                       onClick={() => handleEdit(event)}
                       className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"

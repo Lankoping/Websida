@@ -180,10 +180,10 @@ function CompaniesAdmin() {
           <div>
             <h1 className="font-display text-4xl text-foreground flex items-center gap-3">
               <Building2 className="w-8 h-8 text-primary" />
-              Företag & Rabatter
+              Våra priser
             </h1>
             <p className="text-muted-foreground mt-2">
-              Hantera företag och deras specifika biljettpriser.
+              Medans att göra något 100% gratis är omöjligt så strävar vi efter att ha det så billigt som möjligt. Om du vill sponsra oss så det blir ännu billigare för deltagare så kan du använda sponsor-kalkylatorn.
             </p>
           </div>
           <button
@@ -276,7 +276,7 @@ function CompaniesAdmin() {
                 Hur företagspriser fungerar
               </p>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                När du har skapat ett företag kan du klicka på det i listan för att ställa in specifika priser för olika biljettyper.
+                Vill du se till att denna sponsor-summa går till en specifik grupp? Hör av dig till oss så löser vi detta. Annars delas rabatten ut av vårt team.
               </p>
             </div>
           </form>

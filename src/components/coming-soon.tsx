@@ -7,7 +7,7 @@ const fallbackContent = {
   eyebrow: 'LAN-Event i Norrkoping',
   headline: 'Lankoping',
   tagline: 'Gaming Community',
-  description: 'Vi bygger en gemenskap for gamers i Ostergotland. Snart oppnar vi dorrar till vart forsta event.',
+  description: 'Lanköping är en Förending / Icke vinst drivande orginisation som låter dig som ungdom lana, och skaffa kompisar',
   rulesLabel: 'Regler',
   teamLabel: 'Team',
   privacyLabel: 'Integritet',

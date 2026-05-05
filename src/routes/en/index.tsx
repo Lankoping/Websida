@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { ComingSoon } from '@/components/coming-soon'
 
 export const Route = createFileRoute('/en/')({
-  component: EnIndexStub,
+  component: EnIndex,
 })
 
-function EnIndexStub() {
-  if (typeof window !== 'undefined') window.location.href = '/'
-  return null
+function EnIndex() {
+  return <ComingSoon language="en" />
 }

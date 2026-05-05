@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router'
 import * as Icons from 'lucide-react'
 import SponsorCalculator from './sponsor-calculator'
 
-const fallbackContent = {
+const swedishContent = {
   eyebrow: 'LAN-Event i Norrkoping',
   headline: 'Lankoping',
   tagline: 'Gaming Community',
@@ -19,8 +19,27 @@ const fallbackContent = {
   secondaryButtonLink: 'https://www.youtube.com/@LANKPNG',
 }
 
-export function ComingSoon() {
-  const content = fallbackContent
+const englishContent = {
+  eyebrow: 'LAN-Event in Norrköping',
+  headline: 'Lankoping',
+  tagline: 'Gaming Community',
+  description: 'Lanköping is an association / non-profit organization hosting LAN events where you can compete, connect with gamers, and build a community',
+  rulesLabel: 'Rules',
+  teamLabel: 'Team',
+  privacyLabel: 'Privacy',
+  rights: 'All rights reserved',
+  primaryButtonText: 'Discord',
+  primaryButtonLink: 'https://discord.gg/h8wuaqyBwT',
+  secondaryButtonText: '',
+  secondaryButtonLink: 'https://www.youtube.com/@LANKPNG',
+}
+
+interface ComingSoonProps {
+  language?: 'sv' | 'en'
+}
+
+export function ComingSoon({ language = 'sv' }: ComingSoonProps) {
+  const content = language === 'en' ? englishContent : swedishContent
   
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -31,13 +50,13 @@ export function ComingSoon() {
             <span className="font-bold text-xl tracking-tight text-foreground">Lankoping</span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/rules" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link to={language === 'en' ? '/en/rules' : '/rules'} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {content.rulesLabel}
             </Link>
-            <Link to="/team" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link to={language === 'en' ? '/en/team' : '/team'} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {content.teamLabel}
             </Link>
-            <Link to="/datapolicy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link to={language === 'en' ? '/datapolicy/en' : '/datapolicy/se'} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               {content.privacyLabel}
             </Link>
           </nav>
@@ -119,13 +138,13 @@ export function ComingSoon() {
               <span className="text-muted-foreground text-sm">.se</span>
             </div>
             <nav className="flex items-center gap-6 md:hidden">
-              <Link to="/rules" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to={language === 'en' ? '/en/rules' : '/rules'} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {content.rulesLabel}
               </Link>
-              <Link to="/team" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to={language === 'en' ? '/en/team' : '/team'} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {content.teamLabel}
               </Link>
-              <Link to="/datapolicy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to={language === 'en' ? '/datapolicy/en' : '/datapolicy/se'} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 {content.privacyLabel}
               </Link>
             </nav>

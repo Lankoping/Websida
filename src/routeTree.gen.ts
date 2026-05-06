@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SponsorRouteImport } from './routes/sponsor'
 import { Route as SeRouteImport } from './routes/se'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DatapolicyRouteImport } from './routes/datapolicy'
@@ -20,13 +21,17 @@ import { Route as BlogsIndexRouteImport } from './routes/blogs/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as VerifyCodeRouteImport } from './routes/verify/$code'
+import { Route as EnTeamRouteImport } from './routes/en/team'
+import { Route as EnRulesRouteImport } from './routes/en/rules'
 import { Route as BlogsSlugRouteImport } from './routes/blogs/$slug'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as AdminNewRouteImport } from './routes/admin/new'
+import { Route as AdminMembersRouteImport } from './routes/admin/members'
 import { Route as AdminLogsRouteImport } from './routes/admin/logs'
 import { Route as AdminGuidesRouteImport } from './routes/admin/guides'
 import { Route as AdminCmsRouteImport } from './routes/admin/cms'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
 import { Route as PublicTeamRouteImport } from './routes/_public/team'
 import { Route as PublicRulesRouteImport } from './routes/_public/rules'
 import { Route as ProtectedExampleProtectedRouteRouteImport } from './routes/_protected/example-protected-route'
@@ -49,6 +54,11 @@ import { Route as AdminCmsHeroRouteImport } from './routes/admin/cms/hero'
 import { Route as PublicDatapolicySeRouteImport } from './routes/_public/datapolicy/se'
 import { Route as PublicBiljettCodeRouteImport } from './routes/_public/biljett/$code'
 
+const SponsorRoute = SponsorRouteImport.update({
+  id: '/sponsor',
+  path: '/sponsor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SeRoute = SeRouteImport.update({
   id: '/se',
   path: '/se',
@@ -102,6 +112,16 @@ const VerifyCodeRoute = VerifyCodeRouteImport.update({
   path: '/verify/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnTeamRoute = EnTeamRouteImport.update({
+  id: '/en/team',
+  path: '/en/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnRulesRoute = EnRulesRouteImport.update({
+  id: '/en/rules',
+  path: '/en/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogsSlugRoute = BlogsSlugRouteImport.update({
   id: '/blogs/$slug',
   path: '/blogs/$slug',
@@ -122,6 +142,11 @@ const AdminNewRoute = AdminNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMembersRoute = AdminMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLogsRoute = AdminLogsRouteImport.update({
   id: '/logs',
   path: '/logs',
@@ -135,6 +160,11 @@ const AdminGuidesRoute = AdminGuidesRouteImport.update({
 const AdminCmsRoute = AdminCmsRouteImport.update({
   id: '/cms',
   path: '/cms',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => AdminRoute,
 } as any)
 const PublicTeamRoute = PublicTeamRouteImport.update({
@@ -250,17 +280,22 @@ export interface FileRoutesByFullPath {
   '/datapolicy': typeof DatapolicyRoute
   '/login': typeof LoginRoute
   '/se': typeof SeRoute
+  '/sponsor': typeof SponsorRoute
   '/hello': typeof ApiHelloRoute
   '/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/cms': typeof AdminCmsRouteWithChildren
   '/admin/guides': typeof AdminGuidesRoute
   '/admin/logs': typeof AdminLogsRoute
+  '/admin/members': typeof AdminMembersRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
+  '/en/rules': typeof EnRulesRoute
+  '/en/team': typeof EnTeamRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
@@ -288,17 +323,22 @@ export interface FileRoutesByTo {
   '/datapolicy': typeof PublicDatapolicyIndexRoute
   '/login': typeof LoginRoute
   '/se': typeof SeRoute
+  '/sponsor': typeof SponsorRoute
   '/hello': typeof ApiHelloRoute
   '/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/cms': typeof AdminCmsRouteWithChildren
   '/admin/guides': typeof AdminGuidesRoute
   '/admin/logs': typeof AdminLogsRoute
+  '/admin/members': typeof AdminMembersRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
+  '/en/rules': typeof EnRulesRoute
+  '/en/team': typeof EnTeamRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/admin': typeof AdminIndexRoute
   '/blogs': typeof BlogsIndexRoute
@@ -328,17 +368,22 @@ export interface FileRoutesById {
   '/datapolicy': typeof DatapolicyRoute
   '/login': typeof LoginRoute
   '/se': typeof SeRoute
+  '/sponsor': typeof SponsorRoute
   '/_api/hello': typeof ApiHelloRoute
   '/_protected/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/_public/rules': typeof PublicRulesRoute
   '/_public/team': typeof PublicTeamRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/cms': typeof AdminCmsRouteWithChildren
   '/admin/guides': typeof AdminGuidesRoute
   '/admin/logs': typeof AdminLogsRoute
+  '/admin/members': typeof AdminMembersRoute
   '/admin/new': typeof AdminNewRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
+  '/en/rules': typeof EnRulesRoute
+  '/en/team': typeof EnTeamRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -370,17 +415,22 @@ export interface FileRouteTypes {
     | '/datapolicy'
     | '/login'
     | '/se'
+    | '/sponsor'
     | '/hello'
     | '/example-protected-route'
     | '/rules'
     | '/team'
+    | '/admin/analytics'
     | '/admin/cms'
     | '/admin/guides'
     | '/admin/logs'
+    | '/admin/members'
     | '/admin/new'
     | '/admin/posts'
     | '/admin/users'
     | '/blogs/$slug'
+    | '/en/rules'
+    | '/en/team'
     | '/verify/$code'
     | '/admin/'
     | '/blogs/'
@@ -408,17 +458,22 @@ export interface FileRouteTypes {
     | '/datapolicy'
     | '/login'
     | '/se'
+    | '/sponsor'
     | '/hello'
     | '/example-protected-route'
     | '/rules'
     | '/team'
+    | '/admin/analytics'
     | '/admin/cms'
     | '/admin/guides'
     | '/admin/logs'
+    | '/admin/members'
     | '/admin/new'
     | '/admin/posts'
     | '/admin/users'
     | '/blogs/$slug'
+    | '/en/rules'
+    | '/en/team'
     | '/verify/$code'
     | '/admin'
     | '/blogs'
@@ -447,17 +502,22 @@ export interface FileRouteTypes {
     | '/datapolicy'
     | '/login'
     | '/se'
+    | '/sponsor'
     | '/_api/hello'
     | '/_protected/example-protected-route'
     | '/_public/rules'
     | '/_public/team'
+    | '/admin/analytics'
     | '/admin/cms'
     | '/admin/guides'
     | '/admin/logs'
+    | '/admin/members'
     | '/admin/new'
     | '/admin/posts'
     | '/admin/users'
     | '/blogs/$slug'
+    | '/en/rules'
+    | '/en/team'
     | '/verify/$code'
     | '/_public/'
     | '/admin/'
@@ -489,8 +549,11 @@ export interface RootRouteChildren {
   DatapolicyRoute: typeof DatapolicyRoute
   LoginRoute: typeof LoginRoute
   SeRoute: typeof SeRoute
+  SponsorRoute: typeof SponsorRoute
   ApiHelloRoute: typeof ApiHelloRoute
   BlogsSlugRoute: typeof BlogsSlugRoute
+  EnRulesRoute: typeof EnRulesRoute
+  EnTeamRoute: typeof EnTeamRoute
   VerifyCodeRoute: typeof VerifyCodeRoute
   BlogsIndexRoute: typeof BlogsIndexRoute
   EnIndexRoute: typeof EnIndexRoute
@@ -499,6 +562,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sponsor': {
+      id: '/sponsor'
+      path: '/sponsor'
+      fullPath: '/sponsor'
+      preLoaderRoute: typeof SponsorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/se': {
       id: '/se'
       path: '/se'
@@ -576,6 +646,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/team': {
+      id: '/en/team'
+      path: '/en/team'
+      fullPath: '/en/team'
+      preLoaderRoute: typeof EnTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/en/rules': {
+      id: '/en/rules'
+      path: '/en/rules'
+      fullPath: '/en/rules'
+      preLoaderRoute: typeof EnRulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blogs/$slug': {
       id: '/blogs/$slug'
       path: '/blogs/$slug'
@@ -604,6 +688,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/members': {
+      id: '/admin/members'
+      path: '/members'
+      fullPath: '/admin/members'
+      preLoaderRoute: typeof AdminMembersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/logs': {
       id: '/admin/logs'
       path: '/logs'
@@ -623,6 +714,13 @@ declare module '@tanstack/react-router' {
       path: '/cms'
       fullPath: '/admin/cms'
       preLoaderRoute: typeof AdminCmsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_public/team': {
@@ -831,9 +929,11 @@ const AdminCmsRouteWithChildren = AdminCmsRoute._addFileChildren(
 )
 
 interface AdminRouteChildren {
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminCmsRoute: typeof AdminCmsRouteWithChildren
   AdminGuidesRoute: typeof AdminGuidesRoute
   AdminLogsRoute: typeof AdminLogsRoute
+  AdminMembersRoute: typeof AdminMembersRoute
   AdminNewRoute: typeof AdminNewRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -848,9 +948,11 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminCmsRoute: AdminCmsRouteWithChildren,
   AdminGuidesRoute: AdminGuidesRoute,
   AdminLogsRoute: AdminLogsRoute,
+  AdminMembersRoute: AdminMembersRoute,
   AdminNewRoute: AdminNewRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminUsersRoute: AdminUsersRoute,
@@ -873,8 +975,11 @@ const rootRouteChildren: RootRouteChildren = {
   DatapolicyRoute: DatapolicyRoute,
   LoginRoute: LoginRoute,
   SeRoute: SeRoute,
+  SponsorRoute: SponsorRoute,
   ApiHelloRoute: ApiHelloRoute,
   BlogsSlugRoute: BlogsSlugRoute,
+  EnRulesRoute: EnRulesRoute,
+  EnTeamRoute: EnTeamRoute,
   VerifyCodeRoute: VerifyCodeRoute,
   BlogsIndexRoute: BlogsIndexRoute,
   EnIndexRoute: EnIndexRoute,
@@ -883,3 +988,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

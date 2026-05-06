@@ -51,7 +51,7 @@ const iconMap = Object.entries(Icons).reduce((acc, [name, icon]) => {
 
 export function IconPicker({ value, onChange, icons = DEFAULT_ICONS }: IconPickerProps) {
   const [open, setOpen] = useState(false)
-  const selectedIcon = iconMap[value]
+  const SelectedIcon = iconMap[value]
 
   return (
     <div className="relative">
@@ -59,7 +59,7 @@ export function IconPicker({ value, onChange, icons = DEFAULT_ICONS }: IconPicke
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-2 px-3 py-2 bg-background border border-border rounded text-sm hover:border-primary/60 transition-colors"
       >
-        {selectedIcon && <selectedIcon className="w-4 h-4 text-primary" />}
+        {SelectedIcon && <SelectedIcon className="w-4 h-4 text-primary" />}
         <span className="flex-1 text-left">{value}</span>
         <ChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>

@@ -19,6 +19,82 @@ export const getBuyerProfilesFn = createServerFn({ method: 'GET' }).handler(asyn
   return await db.select().from(buyerProfiles).orderBy(buyerProfiles.name)
 })
 
+function normalizeEmail(email: string | null | undefined) {
+  return (email ?? '').trim().toLowerCase()
+}
+
+export const getMemberProfilesFn = createServerFn({ method: 'GET' }).handler(async () => {
+  await checkAdmin()
+  const db = await getDb()
+
+  const [profiles, ticketRows, eventRows] = await Promise.all([
+    db.select().from(buyerProfiles).orderBy(buyerProfiles.name),
+    db.select().from(tickets),
+    db.select().from(events),
+  ])
+
+  const eventsById = new Map(eventRows.map((event) => [event.id, event]))
+  const ticketsByEmail = new Map<string, typeof ticketRows>()
+
+  for (const ticket of ticketRows) {
+    const key = normalizeEmail(ticket.participantEmail)
+    if (!key) continue
+    const existing = ticketsByEmail.get(key) ?? []
+    existing.push(ticket)
+    ticketsByEmail.set(key, existing)
+  }
+
+  const enrichedProfiles = profiles.map((profile) => {
+    const linkedTickets = profile.email ? ticketsByEmail.get(normalizeEmail(profile.email)) ?? [] : []
+    const linkedEvents = new Map<number, (typeof eventRows)[number]>()
+    let totalSpent = 0
+    let attendedCount = 0
+
+    for (const ticket of linkedTickets) {
+      totalSpent += ticket.pricePaid ?? 0
+      if (ticket.status === 'used') attendedCount += 1
+      const event = eventsById.get(ticket.eventId)
+      if (event) linkedEvents.set(event.id, event)
+    }
+
+    const sortedTickets = linkedTickets
+      .slice()
+      .sort((left, right) => new Date(right.createdAt ?? 0).getTime() - new Date(left.createdAt ?? 0).getTime())
+
+    return {
+      ...profile,
+      linkedTickets: sortedTickets.map((ticket) => ({
+        ...ticket,
+        eventTitle: eventsById.get(ticket.eventId)?.title ?? 'Okänt event',
+        eventDate: eventsById.get(ticket.eventId)?.date ?? null,
+      })),
+      ticketCount: linkedTickets.length,
+      attendedCount,
+      eventCount: linkedEvents.size,
+      totalSpent,
+      lastActivityAt: sortedTickets[0]?.createdAt ?? profile.updatedAt ?? profile.createdAt ?? null,
+      lastEventTitle: sortedTickets[0] ? eventsById.get(sortedTickets[0].eventId)?.title ?? 'Okänt event' : null,
+    }
+  })
+
+  enrichedProfiles.sort((left, right) => {
+    const leftTime = new Date(left.lastActivityAt ?? 0).getTime()
+    const rightTime = new Date(right.lastActivityAt ?? 0).getTime()
+    if (leftTime !== rightTime) return rightTime - leftTime
+    return left.name.localeCompare(right.name, 'sv')
+  })
+
+  return {
+    profiles: enrichedProfiles,
+    totals: {
+      profiles: profiles.length,
+      linkedProfiles: enrichedProfiles.filter((profile) => profile.ticketCount > 0).length,
+      linkedTickets: enrichedProfiles.reduce((sum, profile) => sum + profile.ticketCount, 0),
+      totalSpent: enrichedProfiles.reduce((sum, profile) => sum + profile.totalSpent, 0),
+    },
+  }
+})
+
 export const createBuyerProfileFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
     z

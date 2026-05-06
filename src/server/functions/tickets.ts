@@ -12,6 +12,7 @@ import {
   users,
 } from '../db/schema'
 import { eq, and, inArray } from 'drizzle-orm'
+import { desc } from 'drizzle-orm'
 import { z } from 'zod'
 import { requireStaffUser } from '../lib/access'
 import { writeActivityLog } from './logs'
@@ -50,7 +51,7 @@ export const createEventFn = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const admin = await checkAdmin()
     const db = await getDb()
-    const result = await db.insert(events).values(data).returning()
+    const result = await db.insert(events).values({ ...data, date: new Date(data.date) }).returning()
     await writeActivityLog({
       actorUserId: admin.id,
       actorRole: admin.role,
@@ -83,7 +84,7 @@ export const updateEventFn = createServerFn({ method: 'POST' })
     const { id, ...rest } = data
     const result = await db
       .update(events)
-      .set({ ...rest, updatedAt: new Date() })
+      .set({ ...rest, date: new Date(rest.date), updatedAt: new Date() })
       .where(eq(events.id, id))
       .returning()
     await writeActivityLog({
@@ -215,7 +216,7 @@ export const getEventsForTicketsFn = createServerFn({ method: 'GET' }).handler(a
 export const getTicketsFn = createServerFn({ method: 'GET' }).handler(async () => {
   await checkAdmin()
   const db = await getDb()
-  return await db.select().from(tickets).orderBy(tickets.createdAt.desc)
+  return await db.select().from(tickets).orderBy(desc(tickets.createdAt))
 })
 
 export const getTicketSummaryFn = createServerFn({ method: 'GET' }).handler(async () => {
@@ -254,15 +255,22 @@ export const verifyTicketByCodeFn = createServerFn({ method: 'POST' })
     const found = await db.select().from(tickets).where(eq(tickets.ticketCode, data.code)).limit(1)
     if (!found[0]) throw new Error('Biljett hittades inte')
     const ticket = found[0]
+    let currentTicket = ticket
     if (data.markAsUsed) {
-      await db.update(tickets).set({ status: 'used', scannedAt: new Date(), scannedBy: admin.id }).where(eq(tickets.id, ticket.id))
+      const updated = await db
+        .update(tickets)
+        .set({ status: 'used', scannedAt: new Date(), scannedBy: admin.id, updatedAt: new Date() })
+        .where(eq(tickets.id, ticket.id))
+        .returning()
+      currentTicket = updated[0] ?? { ...ticket, status: 'used', scannedAt: new Date(), scannedBy: admin.id, updatedAt: new Date() }
     }
-    return { ...ticket }
+    const event = await db.select().from(events).where(eq(events.id, currentTicket.eventId)).limit(1)
+    return { success: true, ticket: currentTicket, event: event[0] ?? null, checkingIn: Boolean(data.markAsUsed) }
   })
 
 export const resendTicketEmailFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => z.object({ ticketId: z.number() }).parse(data))
-  .handler(async ({ data }) => {
+  .handler(async () => {
     await checkAdmin()
     // In this environment we don't actually send email; just simulate success
     return { success: true }

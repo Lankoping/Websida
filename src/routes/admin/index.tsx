@@ -101,7 +101,7 @@ function AdminDashboard() {
           </div>
           <div className="p-6">
             <div className="space-y-3">
-              {Object.entries(initialStats.tableStats || {}).map(([table, count]) => (
+              {(Object.entries(initialStats.tableStats || {}) as Array<[string, number]>).map(([table, count]) => (
                 <div key={table} className="flex justify-between items-center py-2 border-b border-border/50 last:border-0">
                   <span className="text-sm font-mono text-muted-foreground">{table}</span>
                   <span className="text-sm font-medium text-foreground">{count.toLocaleString('sv-SE')}</span>

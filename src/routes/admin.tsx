@@ -4,6 +4,7 @@ import { useState } from 'react'
 import {
   LayoutDashboard,
   Users,
+  UserRound,
   LogOut,
   Settings,
   Ticket,
@@ -15,6 +16,7 @@ import {
   ExternalLink,
   Building2,
   BookOpen,
+  BarChart3,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/admin')({
@@ -222,6 +224,7 @@ function AdminLayout() {
               {isOrganizer && (
                 <NavItem href="/admin/users" label="Användare" icon={<Users className="w-5 h-5" />} />
               )}
+              {isOrganizer && <NavItem href="/admin/members" label="Medlemsprofiler" icon={<UserRound className="w-5 h-5" />} />}
             </div>
 
             {/* Events & Tickets */}
@@ -242,6 +245,7 @@ function AdminLayout() {
                 <p className="px-5 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
                   System
                 </p>
+                <NavItem href="/admin/analytics" label="Analys" icon={<BarChart3 className="w-5 h-5" />} />
                 <NavItem href="/admin/logs" label="Aktivitetslogg" icon={<History className="w-5 h-5" />} />
                 <NavItem href="/admin/guides" label="Guider" icon={<BookOpen className="w-5 h-5" />} />
               </div>

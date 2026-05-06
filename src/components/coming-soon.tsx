@@ -123,7 +123,7 @@ export function ComingSoon({ language = 'sv' }: ComingSoonProps) {
 
             {/* Sponsor calculator - public visual tool */}
             <div className="mt-12">
-              <SponsorCalculator />
+              <SponsorCalculator language={language} />
             </div>
           </div>
         </section>

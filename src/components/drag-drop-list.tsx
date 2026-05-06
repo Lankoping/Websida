@@ -53,7 +53,7 @@ export function DragDropList<T extends DraggableItem>({
 
   return (
     <div className="space-y-2">
-      {items.map((item, index) => (
+      {items.map((item) => (
         <div
           key={item.id}
           draggable

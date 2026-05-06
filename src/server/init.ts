@@ -2,7 +2,7 @@
 import { purgeExpiredRequestMetadata } from './functions/logs'
 import { getDb } from './db/runtime'
 import { sql, lt, and, eq } from 'drizzle-orm'
-import { tickets, events } from './db/schema'
+import { events } from './db/schema'
 
 let initialized = false
 let purgeInterval: ReturnType<typeof setInterval> | null = null
@@ -42,9 +42,11 @@ async function runTicketCleanup() {
         AND participant_name != 'Anonymized'
         RETURNING id
       `)
-      
-      if (result.length > 0) {
-        console.log(`🧹 Anonymized ${result.length} old tickets (30 days post-event for finished events)`)
+
+      const rows = (result as unknown as { rows: Array<{ id: number }> }).rows ?? []
+
+      if (rows.length > 0) {
+        console.log(`🧹 Anonymized ${rows.length} old tickets (30 days post-event for finished events)`)
       }
     }
   } catch (error) {

@@ -151,9 +151,9 @@ export const createUserFn = createServerFn({ method: "POST" })
       })
       .returning()
 
-    let resetToken = null
+    let resetToken: string | null = null
     let emailSent = false
-    let emailError = null
+    let emailError: string | null = null
     if (!data.password) {
       // Generate a reset token
       resetToken = randomBytes(32).toString('hex')
@@ -274,7 +274,7 @@ export const sendResetLinkFn = createServerFn({ method: "POST" })
       </div>`
 
     let emailSent = false
-    let emailError = null
+    let emailError: string | null = null
 
     try {
       emailSent = await sendEmail({

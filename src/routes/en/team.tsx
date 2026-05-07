@@ -60,7 +60,7 @@ function TeamPage() {
           <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Who Are We</p>
           <h1 className="font-bold text-3xl md:text-5xl text-foreground mb-4">The Team</h1>
           <p className="text-lg text-muted-foreground">
-            Who are we that build Lankoping?
+            Who are we that build Länköping?
           </p>
         </div>
 
@@ -69,7 +69,7 @@ function TeamPage() {
           <div className="max-w-2xl">
             <h2 className="font-bold text-xl text-foreground mb-4">Two People's Passion</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Lankoping is run by a small but dedicated team that loves creating digital experiences and building community for gamers in Östergötland.
+              Länköping is run by a small but dedicated team that loves creating digital experiences and building community for gamers in Östergötland.
             </p>
           </div>
         </section>
@@ -105,7 +105,7 @@ function TeamPage() {
         {/* Footer */}
         <footer className="pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
-            © 2026 Lankoping.se — Created by el4s & nauticalis.
+            © 2026 Länköping.se — Created by el4s & nauticalis.
           </p>
         </footer>
       </main>

@@ -6,9 +6,9 @@ import { ShieldAlert, Users, MessageSquare, ArrowRight, Gamepad2, Info, Heart } 
 const swedishContent = {
   hero: {
     eyebrow: 'LAN-Event & Community',
-    headline: 'Lankoping.se',
+    headline: 'Länköping.se',
     tagline: 'Gaming för alla i Östergötland',
-    description: 'Lankoping är en ideell förening som skapar mötesplatser för gamers. Vi arrangerar LAN-event där du kan spela, tävla och träffa nya vänner i en trygg miljö.',
+    description: 'Länköping är en ideell förening som skapar mötesplatser för gamers. Vi arrangerar LAN-event där du kan spela, tävla och träffa nya vänner i en trygg miljö.',
     primaryButton: 'Gå med i Discord',
     secondaryButton: 'Våra Regler',
   },
@@ -22,14 +22,14 @@ const swedishContent = {
         text: 'En välkomnande gemenskap för alla oavsett spelnivå.'
       },
       {
-        icon: Heart,
-        title: 'Ideellt',
-        text: 'Drivs av passion, inte vinst. Allt går tillbaka till communityn.'
+        icon: Star,
+        title: 'Medlemskap',
+        text: 'För 85 kr/mån får du 25% rabatt på biljetter och förtur vid släpp.'
       },
       {
-        icon: ShieldAlert,
-        title: 'Trygghet',
-        text: 'Tydliga regler och närvarande vuxna/arrangörer.'
+        icon: ShieldCheck,
+        title: 'Fiscal Hosted',
+        text: 'Vi förvaltas av Hack Foundation (HCB), vilket garanterar transparens.'
       }
     ]
   },
@@ -40,7 +40,7 @@ const swedishContent = {
   },
   team: {
     title: 'Möt Teamet',
-    description: 'Människorna bakom Lankoping.se som gör allt möjligt.',
+    description: 'Människorna bakom Länköping.se som gör allt möjligt.',
     link: 'Se hela teamet',
   },
   footer: {
@@ -51,9 +51,9 @@ const swedishContent = {
 const englishContent = {
   hero: {
     eyebrow: 'LAN-Events & Community',
-    headline: 'Lankoping.se',
+    headline: 'Länköping.se',
     tagline: 'Gaming for everyone in Östergötland',
-    description: 'Lankoping is a non-profit organization creating meeting places for gamers. We host LAN events where you can play, compete, and meet new friends in a safe environment.',
+    description: 'Länköping is a non-profit organization creating meeting places for gamers. We host LAN events where you can play, compete, and meet new friends in a safe environment.',
     primaryButton: 'Join Discord',
     secondaryButton: 'Our Rules',
   },
@@ -85,7 +85,7 @@ const englishContent = {
   },
   team: {
     title: 'Meet the Team',
-    description: 'The people behind Lankoping.se making it all possible.',
+    description: 'The people behind Länköping.se making it all possible.',
     link: 'See the whole team',
   },
   footer: {
@@ -106,7 +106,7 @@ export function PublicHome({ language = 'sv' }: PublicHomeProps) {
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to={language === 'en' ? '/en' : '/'} className="flex items-center gap-2">
-            <span className="font-bold text-xl tracking-tighter text-foreground uppercase italic">Lankoping<span className="text-primary">.se</span></span>
+            <span className="font-bold text-xl tracking-tighter text-foreground uppercase italic">Länköping<span className="text-primary">.se</span></span>
           </Link>
           <nav className="hidden md:flex items-center gap-8">
             <Link to={language === 'en' ? '/en/rules' : '/rules'} className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
@@ -285,7 +285,7 @@ export function PublicHome({ language = 'sv' }: PublicHomeProps) {
         <div className="max-w-6xl mx-auto px-6 py-16">
           <div className="flex flex-col md:flex-row items-center justify-between gap-12">
             <div className="flex flex-col items-center md:items-start gap-4">
-              <span className="font-black text-2xl tracking-tighter uppercase italic">Lankoping<span className="text-primary">.se</span></span>
+              <span className="font-black text-2xl tracking-tighter uppercase italic">Länköping<span className="text-primary">.se</span></span>
               <p className="text-sm text-muted-foreground text-center md:text-left max-w-xs">
                 En ideell förening för gamers i Östergötland. Grundad med passion för gemenskap.
               </p>
@@ -313,7 +313,7 @@ export function PublicHome({ language = 'sv' }: PublicHomeProps) {
           
           <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-muted-foreground">
-              © 2026 Lankoping.se — {content.footer.rights}
+              © 2026 Länköping.se — {content.footer.rights}
             </p>
             <p className="text-xs text-muted-foreground">
               Skapad med ❤️ av el4s & nauticalis

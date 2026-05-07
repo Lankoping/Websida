@@ -52,7 +52,7 @@ function RulesPage() {
           </div>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic mb-4">Rules</h1>
           <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
-            For everyone's wellbeing and safety at Lankoping.se events and in our digital channels.
+            For everyone's wellbeing and safety at Länköping.se events and in our digital channels.
           </p>
         </div>
 
@@ -101,7 +101,7 @@ function RulesPage() {
         {/* Footer */}
         <footer className="pt-12 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-             <span className="font-black tracking-tighter uppercase italic">Lankoping<span className="text-primary">.se</span></span>
+             <span className="font-black tracking-tighter uppercase italic">Länköping<span className="text-primary">.se</span></span>
              <p className="text-sm text-muted-foreground font-bold uppercase italic">
               See you at the event!
             </p>

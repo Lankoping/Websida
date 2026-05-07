@@ -152,11 +152,12 @@ function MembersPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         <StatCard label="Profiler" value={totals.profiles} />
+        <StatCard label="Aktiva medlemmar" value={profiles.filter((p) => p.membershipStatus === 'active').length} />
         <StatCard label="Kopplade profiler" value={totals.linkedProfiles} />
         <StatCard label="Kopplade biljetter" value={totals.linkedTickets} />
-        <StatCard label="Omsättning" value={`${totals.totalSpent.toLocaleString('sv-SE')} SEK`} />
+        <StatCard label="Biljett-omsättning" value={`${totals.totalSpent.toLocaleString('sv-SE')} SEK`} />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
@@ -223,8 +224,8 @@ function MembersPage() {
                 <thead className="bg-secondary/30">
                   <tr>
                     <th className="p-4 text-[10px] uppercase tracking-widest font-medium text-muted-foreground">Profil</th>
+                    <th className="p-4 text-[10px] uppercase tracking-widest font-medium text-muted-foreground">Medlemskap</th>
                     <th className="p-4 text-[10px] uppercase tracking-widest font-medium text-muted-foreground">Biljetter</th>
-                    <th className="p-4 text-[10px] uppercase tracking-widest font-medium text-muted-foreground">Omsättning</th>
                     <th className="p-4 text-[10px] uppercase tracking-widest font-medium text-muted-foreground text-right">Åtgärder</th>
                   </tr>
                 </thead>
@@ -248,8 +249,24 @@ function MembersPage() {
                             <p className="text-xs text-muted-foreground">{profile.email || 'Ingen e-post'}</p>
                           </div>
                         </td>
+                        <td className="p-4">
+                          <span
+                            className={`text-[10px] font-bold uppercase tracking-tighter px-2 py-0.5 border ${
+                              profile.membershipStatus === 'active'
+                                ? 'bg-green-500/10 text-green-500 border-green-500/20'
+                                : profile.membershipStatus === 'expired'
+                                  ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                                  : 'bg-muted/10 text-muted-foreground border-muted/20'
+                            }`}
+                          >
+                            {profile.membershipStatus === 'active'
+                              ? 'Aktiv'
+                              : profile.membershipStatus === 'expired'
+                                ? 'Utgått'
+                                : 'Ingen'}
+                          </span>
+                        </td>
                         <td className="p-4 text-sm text-foreground">{profile.ticketCount}</td>
-                        <td className="p-4 text-sm text-foreground">{profile.totalSpent.toLocaleString('sv-SE')} SEK</td>
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
@@ -301,9 +318,25 @@ function MembersPage() {
                   <p className="text-sm text-muted-foreground">{selectedProfile.email || 'Ingen e-post'}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
+                  <InfoChip
+                    label="Status"
+                    value={
+                      <span
+                        className={selectedProfile.membershipStatus === 'active' ? 'text-green-500' : 'text-muted-foreground'}
+                      >
+                        {selectedProfile.membershipStatus === 'active' ? 'Aktiv Medlem' : 'Ej Medlem'}
+                      </span>
+                    }
+                  />
+                  <InfoChip
+                    label="Giltigt till"
+                    value={
+                      selectedProfile.membershipExpiresAt
+                        ? new Date(selectedProfile.membershipExpiresAt).toLocaleDateString('sv-SE')
+                        : 'N/A'
+                    }
+                  />
                   <InfoChip label="Biljetter" value={selectedProfile.ticketCount} />
-                  <InfoChip label="Deltagit" value={selectedProfile.attendedCount} />
-                  <InfoChip label="Event" value={selectedProfile.eventCount} />
                   <InfoChip label="Omsättning" value={`${selectedProfile.totalSpent.toLocaleString('sv-SE')} SEK`} />
                 </div>
               </div>

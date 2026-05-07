@@ -157,6 +157,101 @@ export const updateBuyerProfileFn = createServerFn({ method: 'POST' })
     return result[0]
   })
 
+export const registerMemberProfileFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        name: z.string().min(1, 'Namn krävs'),
+        email: z.string().email('Ogiltig e-postadress'),
+        phone: z.string().optional(),
+        address: z.string().optional(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const db = await getDb()
+
+    // Check if profile already exists
+    const existing = await db
+      .select()
+      .from(buyerProfiles)
+      .where(eq(buyerProfiles.email, data.email.toLowerCase()))
+      .limit(1)
+
+    if (existing[0]) {
+      return { success: false, error: 'En profil med denna e-post finns redan.' }
+    }
+
+    // In a real Stripe integration, we would create a Stripe customer here
+    // const stripeCustomer = await stripe.customers.create({
+    //   email: data.email,
+    //   name: data.name,
+    // })
+    const mockStripeCustomerId = `cus_mock_${Math.random().toString(36).substring(7)}`
+
+    const result = await db
+      .insert(buyerProfiles)
+      .values({
+        ...data,
+        email: data.email.toLowerCase(),
+        membershipStatus: 'none',
+        stripeCustomerId: mockStripeCustomerId,
+      })
+      .returning()
+
+    return { success: true, profile: result[0] }
+  })
+
+export const processMembershipPaymentFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        profileId: z.number(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const db = await getDb()
+
+    const profile = await db
+      .select()
+      .from(buyerProfiles)
+      .where(eq(buyerProfiles.id, data.profileId))
+      .limit(1)
+
+    if (!profile[0]) {
+      throw new Error('Profil hittades inte')
+    }
+
+    // SIMULERA STRIPE BETALNING
+    // Här skulle vi normalt anropa Stripe API för att skapa en PaymentIntent
+    // eller hantera en webhook efter en lyckad betalning.
+
+    console.log(`[MOCK PAYMENT] Behandlar betalning för ${profile[0].email}...`)
+
+    // Simulera en liten fördröjning
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // Uppdatera medlemskap vid "lyckad" betalning
+    const oneYearFromNow = new Date()
+    oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1)
+
+    await db
+      .update(buyerProfiles)
+      .set({
+        membershipStatus: 'active',
+        membershipExpiresAt: oneYearFromNow,
+        updatedAt: new Date(),
+      })
+      .where(eq(buyerProfiles.id, data.profileId))
+
+    return {
+      success: true,
+      expiresAt: oneYearFromNow,
+      message: 'Betalning genomförd (MOCK)',
+    }
+  })
+
 export const deleteBuyerProfileFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => z.number().parse(data))
   .handler(async ({ data: id }) => {

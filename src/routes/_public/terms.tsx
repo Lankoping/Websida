@@ -137,21 +137,20 @@ function TermsPage() {
               Detta avtal styrs av svensk lag. Tvister ska i första hand lösas genom förhandling och i andra hand av Norrköpings tingsrätt som första instans.
             </p>
           </section>
-        </div>
 
           {/* Final Notice */}
           <div className="p-8 border-2 border-primary bg-primary/5 italic flex gap-4">
-             <AlertCircle className="text-primary shrink-0" />
-             <p className="text-sm font-bold uppercase leading-tight">
-               Genom att genomföra ett biljettköp eller logga in på våra tjänster bekräftar du att du har läst, förstått och accepterat dessa villkor i sin helhet.
-             </p>
+            <AlertCircle className="text-primary shrink-0" />
+            <p className="text-sm font-bold uppercase leading-tight">
+              Genom att genomföra ett biljettköp eller logga in på våra tjänster bekräftar du att du har läst, förstått och accepterat dessa villkor i sin helhet.
+            </p>
           </div>
         </div>
 
         {/* Footer */}
         <footer className="mt-20 pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
-           <span className="font-black tracking-tighter uppercase italic">Lankoping.se<span className="text-primary">.se</span></span>
-           <p className="text-xs text-muted-foreground uppercase font-bold italic">
+          <span className="font-black tracking-tighter uppercase italic">Lankoping<span className="text-primary">.se</span></span>
+          <p className="text-xs text-muted-foreground uppercase font-bold italic">
             Dokument-ID: TOS-2026-V2 • Senast uppdaterad: 2026-05-07
           </p>
         </footer>

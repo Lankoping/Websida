@@ -213,8 +213,11 @@ function MembershipPage() {
               </Button>
             </div>
 
-            <div className="mt-8">
-              <Button variant="link" className="text-muted-foreground italic hover:text-primary transition-colors" onClick={() => setView('guest')}>
+            <div className="mt-4 flex flex-col items-center gap-2">
+              <Button variant="link" className="text-primary font-bold italic underline" onClick={() => setView('login')}>
+                Jag är redan medlem, ta mig till login-sidan!
+              </Button>
+              <Button variant="link" className="text-muted-foreground italic text-xs" onClick={() => setView('guest')}>
                 Har du redan en biljett? Hitta den här
               </Button>
             </div>
@@ -326,7 +329,7 @@ function MembershipPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-primary" />
-                  Skapa konto
+                  Registrera dig!
                 </CardTitle>
                 <CardDescription>Bli en del av Lankoping.se Communityn.</CardDescription>
               </CardHeader>
@@ -371,7 +374,7 @@ function MembershipPage() {
                 </CardContent>
                 <CardFooter className="flex flex-col gap-4">
                   <Button type="submit" className="w-full font-bold uppercase italic" disabled={loading}>
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : 'Skapa konto'}
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : 'Registrera dig!'}
                   </Button>
                   <Button variant="link" className="text-xs" onClick={() => setView('login')}>
                     Har du redan ett konto? Logga in

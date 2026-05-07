@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ArrowLeft, ShieldAlert, MessageSquareText } from 'lucide-react'
+import { ArrowLeft, ShieldAlert, MessageSquareText, ShieldCheck } from 'lucide-react'
 
 export const Route = createFileRoute('/en/rules')({
   component: RulesPage,
@@ -32,80 +32,80 @@ function RulesPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground font-sans">
       {/* Header */}
-      <header className="border-b border-border">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
         <div className="max-w-4xl mx-auto px-6 py-4">
-          <Link to="/en" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/en" className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors uppercase italic">
             <ArrowLeft size={16} />
             <span>Back</span>
           </Link>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-16">
+      <main className="max-w-4xl mx-auto px-6 pt-32 pb-24">
         {/* Page Header */}
-        <div className="mb-16">
-          <p className="text-sm font-medium tracking-widest text-primary uppercase mb-3">Guidelines</p>
-          <h1 className="font-bold text-3xl md:text-5xl text-foreground mb-4">Rules</h1>
-          <p className="text-lg text-muted-foreground">
-            For everyone's wellbeing and safety at Lankoping.se
+        <div className="mb-20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase italic mb-6">
+            <ShieldCheck size={14} />
+            Safety & Community
+          </div>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic mb-4">Rules</h1>
+          <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
+            For everyone's wellbeing and safety at Lankoping.se events and in our digital channels.
           </p>
         </div>
 
         {/* Event Rules Section */}
-        <section className="mb-16">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 flex items-center justify-center bg-secondary">
-              <ShieldAlert className="w-5 h-5 text-primary" />
-            </div>
-            <h2 className="font-bold text-xl text-foreground">Event Rules</h2>
+        <section className="mb-24">
+          <div className="flex items-center gap-3 mb-12 border-l-4 border-primary pl-6">
+            <h2 className="font-black text-2xl text-foreground uppercase italic tracking-tight">Event Rules</h2>
           </div>
           
-          <div className="space-y-4">
+          <div className="grid gap-4">
             {fallbackEventRules.map((rule, i) => (
               <div 
                 key={i} 
-                className="flex gap-4 p-4 border border-border bg-card hover:border-primary/20 transition-colors"
+                className="group flex gap-6 p-6 border border-border bg-card hover:border-primary/30 transition-all"
               >
-                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-primary text-primary-foreground text-sm font-medium">
+                <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-secondary text-primary font-black italic text-lg group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                   {i + 1}
                 </span>
-                <p className="text-foreground/90 leading-relaxed pt-1">{rule}</p>
+                <p className="text-foreground/90 leading-relaxed pt-1.5 font-medium">{rule}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* Discord Rules Section */}
-        <section className="mb-16">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 flex items-center justify-center bg-secondary">
-              <MessageSquareText className="w-5 h-5 text-primary" />
-            </div>
-            <h2 className="font-bold text-xl text-foreground">Discord Rules</h2>
+        <section className="mb-24">
+          <div className="flex items-center gap-3 mb-12 border-l-4 border-primary pl-6">
+            <h2 className="font-black text-2xl text-foreground uppercase italic tracking-tight">Discord Rules</h2>
           </div>
           
-          <div className="space-y-4">
+          <div className="grid gap-4">
             {fallbackDiscordRules.map((rule, i) => (
               <div 
                 key={i} 
-                className="flex gap-4 p-4 border border-border bg-card hover:border-primary/20 transition-colors"
+                className="group flex gap-6 p-6 border border-border bg-card hover:border-primary/30 transition-all"
               >
-                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-primary text-primary-foreground text-sm font-medium">
+                <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-secondary text-primary font-black italic text-lg group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                   {i + 1}
                 </span>
-                <p className="text-foreground/90 leading-relaxed pt-1">{rule}</p>
+                <p className="text-foreground/90 leading-relaxed pt-1.5 font-medium">{rule}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="pt-8 border-t border-border">
-          <p className="text-sm text-muted-foreground text-center">
-            © 2026 Lankoping.se — See you at the event!
-          </p>
+        <footer className="pt-12 border-t border-border">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+             <span className="font-black tracking-tighter uppercase italic">Lankoping<span className="text-primary">.se</span></span>
+             <p className="text-sm text-muted-foreground font-bold uppercase italic">
+              See you at the event!
+            </p>
+          </div>
         </footer>
       </main>
     </div>

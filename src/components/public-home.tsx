@@ -301,7 +301,7 @@ export function PublicHome({ language = 'sv' }: PublicHomeProps) {
               <div className="flex flex-col gap-4">
                 <span className="font-bold text-xs uppercase tracking-widest text-primary">Juridiskt</span>
                 <Link to="/datapolicy/se" className="text-sm text-muted-foreground hover:text-foreground">Integritet</Link>
-                <Link to="/rules" className="text-sm text-muted-foreground hover:text-foreground">Villkor</Link>
+                <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">Villkor</Link>
               </div>
               <div className="flex flex-col gap-4">
                 <span className="font-bold text-xs uppercase tracking-widest text-primary">Socialt</span>

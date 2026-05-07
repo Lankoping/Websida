@@ -107,6 +107,7 @@ export const buyerProfiles = pgTable('buyer_profiles', {
   membershipStatus: text('membership_status', { enum: ['none', 'active', 'expired'] }).default('none').notNull(),
   membershipExpiresAt: timestamp('membership_expires_at'),
   stripeCustomerId: text('stripe_customer_id'),
+  passwordHash: text('password_hash'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })

@@ -157,12 +157,16 @@ export const updateBuyerProfileFn = createServerFn({ method: 'POST' })
     return result[0]
   })
 
+import { hashPassword, verifyPassword } from '../lib/password'
+import { setCookie, getCookie, deleteCookie } from '@tanstack/react-start/server'
+
 export const registerMemberProfileFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
     z
       .object({
         name: z.string().min(1, 'Namn krävs'),
         email: z.string().email('Ogiltig e-postadress'),
+        password: z.string().min(6, 'Lösenordet måste vara minst 6 tecken'),
         phone: z.string().optional(),
         address: z.string().optional(),
       })
@@ -182,24 +186,168 @@ export const registerMemberProfileFn = createServerFn({ method: 'POST' })
       return { success: false, error: 'En profil med denna e-post finns redan.' }
     }
 
-    // In a real Stripe integration, we would create a Stripe customer here
-    // const stripeCustomer = await stripe.customers.create({
-    //   email: data.email,
-    //   name: data.name,
-    // })
+    const hashedPassword = hashPassword(data.password)
     const mockStripeCustomerId = `cus_mock_${Math.random().toString(36).substring(7)}`
 
+    const { password, ...insertData } = data
     const result = await db
       .insert(buyerProfiles)
       .values({
-        ...data,
+        ...insertData,
         email: data.email.toLowerCase(),
+        passwordHash: hashedPassword,
         membershipStatus: 'none',
         stripeCustomerId: mockStripeCustomerId,
       })
       .returning()
 
+    // Auto-login after registration
+    setCookie('member_session', result[0].id.toString(), {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    })
+
     return { success: true, profile: result[0] }
+  })
+
+export const loginMemberFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        email: z.string().email(),
+        password: z.string(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const db = await getDb()
+    const result = await db
+      .select()
+      .from(buyerProfiles)
+      .where(eq(buyerProfiles.email, data.email.toLowerCase()))
+      .limit(1)
+
+    const profile = result[0]
+    if (!profile || !profile.passwordHash || !verifyPassword(data.password, profile.passwordHash)) {
+      throw new Error('Fel e-post eller lösenord')
+    }
+
+    setCookie('member_session', profile.id.toString(), {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30,
+    })
+
+    return { success: true, profile }
+  })
+
+export const getMemberSessionFn = createServerFn({ method: 'GET' }).handler(async () => {
+  const memberId = getCookie('member_session')
+  if (!memberId) return null
+
+  const db = await getDb()
+  const result = await db
+    .select()
+    .from(buyerProfiles)
+    .where(eq(buyerProfiles.id, parseInt(memberId)))
+    .limit(1)
+
+  return result[0] ?? null
+})
+
+export const logoutMemberFn = createServerFn({ method: 'POST' }).handler(async () => {
+  deleteCookie('member_session')
+  return { success: true }
+})
+
+export const getMemberTicketsFn = createServerFn({ method: 'GET' }).handler(async () => {
+  const memberId = getCookie('member_session')
+  if (!memberId) return []
+
+  const db = await getDb()
+  const profile = await db
+    .select()
+    .from(buyerProfiles)
+    .where(eq(buyerProfiles.id, parseInt(memberId)))
+    .limit(1)
+
+  if (!profile[0] || !profile[0].email) return []
+
+  const memberTickets = await db
+    .select({
+      id: tickets.id,
+      ticketCode: tickets.ticketCode,
+      status: tickets.status,
+      participantName: tickets.participantName,
+      ticketType: tickets.ticketType,
+      createdAt: tickets.createdAt,
+      eventTitle: events.title,
+      eventDate: events.date,
+      eventLocation: events.location,
+    })
+    .from(tickets)
+    .innerJoin(events, eq(tickets.eventId, events.id))
+    .where(eq(tickets.participantEmail, profile[0].email))
+    .orderBy(tickets.createdAt)
+
+  return memberTickets
+})
+
+export const loginWithTicketFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        email: z.string().email(),
+        ticketCode: z.string().min(1),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const db = await getDb()
+    
+    // Find ticket
+    const ticketResult = await db
+      .select()
+      .from(tickets)
+      .where(eq(tickets.ticketCode, data.ticketCode))
+      .limit(1)
+    
+    const ticket = ticketResult[0]
+    if (!ticket || ticket.participantEmail?.toLowerCase() !== data.email.toLowerCase()) {
+      throw new Error('Ogiltig e-post eller biljettkod')
+    }
+
+    // Find or create profile
+    let profileResult = await db
+      .select()
+      .from(buyerProfiles)
+      .where(eq(buyerProfiles.email, data.email.toLowerCase()))
+      .limit(1)
+    
+    let profile = profileResult[0]
+    if (!profile) {
+      const created = await db
+        .insert(buyerProfiles)
+        .values({
+          name: ticket.participantName,
+          email: data.email.toLowerCase(),
+          membershipStatus: 'none',
+        })
+        .returning()
+      profile = created[0]
+    }
+
+    setCookie('member_session', profile.id.toString(), {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 1 week for guests
+    })
+
+    return { success: true, profile }
   })
 
 export const processMembershipPaymentFn = createServerFn({ method: 'POST' })

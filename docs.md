@@ -1,4 +1,4 @@
-# Länköping.se Documentation
+# Lankoping.se Documentation
 
 ## Database Management
 

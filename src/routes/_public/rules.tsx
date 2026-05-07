@@ -52,7 +52,7 @@ function RulesPage() {
           </div>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic mb-4">Regler</h1>
           <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
-            För allas trivsel och säkerhet under Länköping.se event och i våra digitala kanaler.
+            För allas trivsel och säkerhet under Lankoping.se event och i våra digitala kanaler.
           </p>
         </div>
 

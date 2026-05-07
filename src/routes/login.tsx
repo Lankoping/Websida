@@ -75,7 +75,7 @@ function Login() {
         <div className="w-full max-w-md p-8 bg-card border border-border rounded">
           <div className="text-center mb-8">
             <h1 className="font-display text-4xl tracking-wide text-foreground mb-2">Skapa lösenord</h1>
-            <p className="text-xs text-muted-foreground tracking-widest uppercase">Länköping Admin</p>
+            <p className="text-xs text-muted-foreground tracking-widest uppercase">Lankoping Admin</p>
           </div>
 
           {error && (

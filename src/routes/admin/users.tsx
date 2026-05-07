@@ -273,7 +273,7 @@ function AdminUsers() {
             )}
             <div className="p-3 bg-background border border-border rounded text-sm font-mono text-muted-foreground whitespace-pre-wrap">
               Hej {createdUserLink.name}!{'\n\n'}
-              {currentUser?.name || 'En administratör'} har begärt att du skapar ett Linköping-konto.{'\n\n'}
+              {currentUser?.name || 'En administratör'} har begärt att du skapar ett Lankoping-konto.{'\n\n'}
               Gå till följande länk för att skapa ditt lösenord:{'\n'}
               {createdUserLink.link}
             </div>
@@ -287,7 +287,7 @@ function AdminUsers() {
               </button>
               {!createdUserLink.emailSent && (
                 <a 
-                  href={`mailto:${createdUserLink.email}?subject=Ditt Linköping-konto&body=Hej ${createdUserLink.name}!%0D%0A%0D%0A${currentUser?.name || 'En administratör'} har begärt att du skapar ett Linköping-konto.%0D%0A%0D%0AGå till följande länk för att skapa ditt lösenord:%0D%0A${encodeURIComponent(createdUserLink.link)}`}
+                  href={`mailto:${createdUserLink.email}?subject=Ditt Lankoping-konto&body=Hej ${createdUserLink.name}!%0D%0A%0D%0A${currentUser?.name || 'En administratör'} har begärt att du skapar ett Lankoping-konto.%0D%0A%0D%0AGå till följande länk för att skapa ditt lösenord:%0D%0A${encodeURIComponent(createdUserLink.link)}`}
                   className="flex items-center gap-2 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-medium rounded hover:bg-primary/90 transition-colors"
                 >
                   <Mail className="w-3 h-3" />

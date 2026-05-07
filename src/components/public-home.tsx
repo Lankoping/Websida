@@ -1,7 +1,7 @@
 'use client'
 
 import { Link } from '@tanstack/react-router'
-import { ShieldAlert, Users, MessageSquare, ArrowRight, Gamepad2, Info, Heart } from 'lucide-react'
+import { ShieldAlert, Users, MessageSquare, ArrowRight, Gamepad2, Info, Heart, Star, ShieldCheck } from 'lucide-react'
 
 const swedishContent = {
   hero: {

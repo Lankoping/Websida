@@ -205,7 +205,7 @@ function MembershipPage() {
 
             <div className="flex flex-col sm:flex-row justify-center gap-4 mt-12">
               <Button size="lg" className="font-bold uppercase italic px-8 py-6 text-lg shadow-xl shadow-primary/20" onClick={() => setView('register')}>
-                Bli Medlem
+                Skapa Konto
               </Button>
               <Button size="lg" variant="outline" className="font-bold uppercase italic px-8 py-6 text-lg border-2" onClick={() => setView('login')}>
                 <LogIn className="w-5 h-5 mr-2" />
@@ -329,7 +329,7 @@ function MembershipPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-primary" />
-                  Registrera dig!
+                  Skapa konto
                 </CardTitle>
                 <CardDescription>Bli en del av Lankoping.se Communityn.</CardDescription>
               </CardHeader>
@@ -374,7 +374,7 @@ function MembershipPage() {
                 </CardContent>
                 <CardFooter className="flex flex-col gap-4">
                   <Button type="submit" className="w-full font-bold uppercase italic" disabled={loading}>
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : 'Registrera dig!'}
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : 'Skapa konto'}
                   </Button>
                   <Button variant="link" className="text-xs" onClick={() => setView('login')}>
                     Har du redan ett konto? Logga in

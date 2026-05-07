@@ -1,4 +1,4 @@
-import { ComingSoon } from '@/components/coming-soon'
+import { PublicHome } from '@/components/public-home'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_public/')({
@@ -8,7 +8,7 @@ export const Route = createFileRoute('/_public/')({
 function Index() {
   return (
     <>
-      <ComingSoon />
+      <PublicHome />
     </>
   )
 }

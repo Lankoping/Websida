@@ -5,6 +5,6 @@ export const Route = createFileRoute('/blogs/$slug')({
 })
 
 function BlogSlugStub() {
-  if (typeof window !== 'undefined') window.location.href = '/'
+  if (typeof window !== 'undefined') window.location.href = '/blogs'
   return null
 }

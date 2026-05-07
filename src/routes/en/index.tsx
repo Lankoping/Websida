@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ComingSoon } from '@/components/coming-soon'
+import { PublicHome } from '@/components/public-home'
 
 export const Route = createFileRoute('/en/')({
   component: EnIndex,
 })
 
 function EnIndex() {
-  return <ComingSoon language="en" />
+  return <PublicHome language="en" />
 }

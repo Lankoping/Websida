@@ -40,71 +40,59 @@ function PrivacyPage() {
           </div>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic mb-4">Integritet</h1>
           <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
-            Din trygghet är vår prioritet. Här förklarar vi hur vi hanterar dina personuppgifter för Länköping.se.
+            Din trygghet är vår prioritet. Här förklarar vi hur vi hanterar dina personuppgifter för Lankoping.se.
           </p>
         </div>
 
-        <section className="mb-20">
-          <div className="flex items-center gap-3 mb-10 border-l-4 border-primary pl-6">
-            <h2 className="font-black text-2xl text-foreground uppercase italic tracking-tight">Insamling av personuppgifter</h2>
-          </div>
-
-          <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-            För att vi ska kunna genomföra ett säkert och välorganiserat event samlar vi in och behandlar följande uppgifter från våra deltagare:
-          </p>
-          
-          <div className="grid gap-4">
-            {collectionItems.map((item) => (
-              <div 
-                key={item.title} 
-                className="group flex gap-6 p-6 border border-border bg-card hover:border-primary/30 transition-all"
-              >
-                <span className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-secondary text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <item.icon className="w-6 h-6" />
-                </span>
-                <div className="pt-1">
-                  <p className="text-primary font-black uppercase italic mb-1">{item.title}</p>
-                  <p className="text-foreground/80 leading-relaxed font-medium">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="mb-20 p-8 border-2 border-primary bg-primary/5 italic">
-          <h2 className="text-2xl font-black uppercase mb-4 tracking-tight">Varför samlar vi in detta?</h2>
-          <div className="space-y-4 text-foreground/80 leading-relaxed font-medium">
-            <p>Uppgifterna används uteslutande för administration av eventet, säkerhetsåtgärder och verifiering av din biljett.</p>
-            <p>Eftersom biljettköp hanteras manuellt lagras inga betalningsuppgifter på denna webbplats.</p>
-            <p>Vi delar aldrig dina uppgifter med tredje part i vinstdrivande syfte. Information kan dock komma att delas med myndigheter (t.ex. polis eller sjukvård) om en nödsituation uppstår.</p>
-          </div>
-        </section>
-
-        <section className="mb-24">
-          <div className="flex items-center gap-3 mb-10 border-l-4 border-primary pl-6">
-            <h2 className="font-black text-2xl text-foreground uppercase italic tracking-tight">Vad händer efter eventet?</h2>
-          </div>
-          
-          <div className="space-y-8 text-muted-foreground leading-relaxed font-medium">
-            <p className="text-lg">
-              För att följa GDPR och principen om lagringsminimering anonymiseras personuppgifter kopplade till biljetter (namn och e-post) automatiskt.
-              Det innebär att de lagras i <strong className="text-foreground">max 1 år</strong> efter att biljetten skapades, därefter tas de bort från våra servrar.
+        <div className="space-y-8">
+          <section className="p-8 border border-border bg-card">
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">1. Personuppgiftsansvarig</h2>
+            <p className="text-foreground/80 leading-relaxed font-medium text-sm">
+              Lankoping.se (ideell förening) är personuppgiftsansvarig för behandlingen av de personuppgifter du lämnar till oss. För frågor rörande din data, kontakta oss via våra officiella kanaler eller elias@lankoping.se.
             </p>
-            
-            <div className="p-8 border border-border bg-card group hover:border-destructive/30 transition-colors">
-              <h3 className="font-black text-xl text-destructive uppercase italic mb-4">Information som vi inte tar bort</h3>
-              <p className="text-foreground/80">
-                Vi tar bort all information som vi inte behöver behålla. Exempelvis om du har brutit mot eventets regler så sparar vi den informationen.
-                Detta betyder att du kan bli portad från framtida events för att bibehålla en trygg miljö för andra.
-              </p>
+          </section>
+
+          <section className="p-8 border border-border bg-card">
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">2. Vilken data samlar vi in?</h2>
+            <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
+              <p><strong>Identitetsdata:</strong> Namn, användarnamn och vid behov personnummer (för t.ex. bidragsansökningar till kommun/stat).</p>
+              <p><strong>Kontaktdata:</strong> E-postadress och i vissa fall telefonnummer.</p>
+              <p><strong>Transaktionsdata:</strong> Information om medlemskap, biljettköp och betalningshistorik (notera att betalningar hanteras via HCB, se TOS).</p>
+              <p><strong>Teknisk data:</strong> IP-adress, inloggningsuppgifter och webbläsarinformation för säkerhetssyften.</p>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <section className="p-8 border border-border bg-card">
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">3. Laglig grund för behandling</h2>
+            <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
+              <p><strong>Avtal:</strong> För att kunna leverera biljetter, hantera medlemskap och ge tillgång till våra tjänster.</p>
+              <p><strong>Rättslig förpliktelse:</strong> För bokföring och rapportering till myndigheter.</p>
+              <p><strong>Intresseavvägning:</strong> För att kunna skicka ut relevant information om kommande event och skydda våra system mot missbruk.</p>
+            </div>
+          </section>
+
+          <section className="p-8 border border-border bg-card">
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">4. Hur länge sparar vi din data?</h2>
+            <p className="text-foreground/80 leading-relaxed font-medium text-sm">
+              Data kopplad till event (biljetter) anonymiseras normalt 1 år efter avslutat event. Medlemsdata sparas så länge medlemskapet är aktivt och i upp till 2 år därefter för att underlätta förnyelse och historik, såvida inte radering begärs.
+            </p>
+          </section>
+
+          <section className="p-8 border border-border bg-card border-l-4 border-l-primary">
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">5. Dina rättigheter (GDPR)</h2>
+            <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
+              <p><strong>Rätt till tillgång:</strong> Du har rätt att få ett utdrag på all data vi har om dig.</p>
+              <p><strong>Rätt till rättelse:</strong> Du kan kräva att vi rättar felaktiga uppgifter.</p>
+              <p><strong>Rätt till radering:</strong> Du kan begära att vi tar bort din data ("rätten att bli bortglömd"), förutsatt att den inte krävs för att uppfylla rättsliga krav (t.ex. bokföringslagen).</p>
+              <p><strong>Rätt till invändning:</strong> Du kan invända mot att din data används för direktmarknadsföring.</p>
+            </div>
+          </section>
+        </div>
 
         {/* Footer */}
         <footer className="pt-12 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-             <span className="font-black tracking-tighter uppercase italic">Länköping<span className="text-primary">.se</span></span>
+             <span className="font-black tracking-tighter uppercase italic">Lankoping.se<span className="text-primary">.se</span></span>
              <p className="text-sm text-muted-foreground font-bold uppercase italic">
               Din integritet är viktig för oss.
             </p>

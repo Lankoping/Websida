@@ -30,14 +30,14 @@ function TeamPage() {
       id: 1,
       name: 'Elias',
       role: 'Grundare & Ägare',
-      description: 'Visionär och drivande kraft bakom Länköping.se. Brinner för att skapa en trygg och rolig miljö för alla gamers.',
+      description: 'Beskrivning saknas',
       icon: 'Crown'
     },
     {
       id: 2,
       name: 'Victor',
       role: 'Grundare & Ägare',
-      description: 'Tekniskt ansvarig och strateg. Ser till att allt flyter på bakom kulisserna, från servrar till nätverk.',
+      description: 'Beskrivning saknas',
       icon: 'Crown'
     }
   ]
@@ -63,7 +63,7 @@ function TeamPage() {
           </div>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic mb-4">Teamet</h1>
           <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
-            Länköping.se drivs av ett dedikerat team som älskar gaming och community-bygge.
+            Lankoping.se drivs av ett dedikerat team som älskar gaming och community-bygge.
           </p>
         </div>
 
@@ -108,7 +108,7 @@ function TeamPage() {
         {/* Footer */}
         <footer className="pt-12 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-             <span className="font-black tracking-tighter uppercase italic">Länköping<span className="text-primary">.se</span></span>
+             <span className="font-black tracking-tighter uppercase italic">Lankoping<span className="text-primary">.se</span></span>
              <p className="text-xs text-muted-foreground uppercase font-bold italic">
               Skapat med passion för gaming
             </p>

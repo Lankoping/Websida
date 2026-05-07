@@ -27,7 +27,7 @@ function DataPolicySwedish() {
           </div>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic mb-4">Datapolicy</h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Genom att använda Länköping.se och våra tjänster accepterar du denna policy och hur vi hanterar din data.
+            Genom att använda Lankoping.se och våra tjänster accepterar du denna policy och hur vi hanterar din data.
           </p>
         </div>
 
@@ -43,7 +43,7 @@ function DataPolicySwedish() {
           <section className="p-8 border border-border bg-card">
             <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">Lagringstid (Volontärer & Organisatörer)</h2>
             <p className="text-foreground/80 leading-relaxed font-medium">
-              För volontärer och organisatörer i Länköping lagras data tills vidare. Radering sker när du lämnar
+              För volontärer och organisatörer i Lankoping.se lagras data tills vidare. Radering sker när du lämnar
               föreningen och en signerad avgång/uppsägningshandling har registrerats.
             </p>
           </section>
@@ -72,7 +72,7 @@ function DataPolicySwedish() {
 
         {/* Footer */}
         <footer className="mt-20 pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
-           <span className="font-black tracking-tighter uppercase italic">Länköping<span className="text-primary">.se</span></span>
+           <span className="font-black tracking-tighter uppercase italic">Lankoping.se<span className="text-primary">.se</span></span>
            <p className="text-xs text-muted-foreground uppercase font-bold italic">
             Uppdaterad 2026-05-07
           </p>

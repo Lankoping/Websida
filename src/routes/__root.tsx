@@ -40,21 +40,21 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           content: 'width=device-width, initial-scale=1',
         },
         {
-          title: 'Länköping.se – Gaming Community & LAN Events',
+          title: 'Lankoping.se – Gaming Community & LAN Events',
         },
         {
           name: 'description',
           content:
-            'Länköping.se är en ideell förening som arrangerar LAN-event och skapar en community för gamers i Norrköping och Linköping.',
+            'Lankoping.se är en ideell förening som arrangerar LAN-event och skapar en community för gamers i Norrköping och Linköping.',
         },
         {
           property: 'og:title',
-          content: 'Länköping.se – Gaming Community & LAN Events',
+          content: 'Lankoping.se – Gaming Community & LAN Events',
         },
         {
           property: 'og:description',
           content:
-            'Häng med på nästa LAN, träffa nya kompisar och tävla i dina favoritspel med Länköping.se.',
+            'Häng med på nästa LAN, träffa nya kompisar och tävla i dina favoritspel med Lankoping.se.',
         },
         {
           property: 'og:type',

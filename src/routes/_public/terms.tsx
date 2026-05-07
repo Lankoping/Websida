@@ -27,124 +27,117 @@ function TermsPage() {
           </div>
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic mb-4">Allmänna Villkor</h1>
           <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
-            Dessa villkor utgör det fullständiga avtalet mellan dig som deltagare och föreningen Länköping.se.
+            Dessa villkor utgör det fullständiga avtalet mellan dig som deltagare och föreningen Lankoping.se.
           </p>
         </div>
 
         <div className="space-y-8">
           {/* Section 1 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">1. Inledning och Definitioner</h2>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">1. Avtalets omfattning</h2>
             <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
-              <p>1.1 Dessa allmänna villkor ("Villkoren") gäller för all användning av webbplatsen länköping.se samt för deltagande i event arrangerade av den ideella föreningen Länköping.se ("Föreningen").</p>
-              <p>1.2 Med "Deltagare" avses den person som köpt biljett, innehar en biljett eller på annat sätt deltar i Föreningens aktiviteter.</p>
+              <p>1.1 Dessa allmänna villkor ("Villkoren") utgör det fullständiga och juridiskt bindande avtalet mellan dig ("Deltagaren", "Användaren" eller "Medlemmen") och den ideella föreningen Lankoping.se ("Föreningen").</p>
+              <p>1.2 Genom att använda webbplatsen lankoping.se, logga in på våra tjänster, köpa en biljett eller teckna ett medlemskap godkänner du att vara bunden av dessa villkor i sin helhet. Om du inte godkänner dessa villkor äger du inte rätt att använda Föreningens tjänster.</p>
             </div>
           </section>
 
           {/* Section 2 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">2. Medlemskap och Deltagande</h2>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">2. Fiscal Hosting och Betalningar (HCB)</h2>
             <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
-              <p>2.1 Vid köp av biljett eller deltagande kan Deltagaren även komma att registreras som medlem i Föreningen i enlighet med Föreningens stadgar, för att uppfylla bidragskrav och administrativa behov.</p>
-              <p>2.2 Deltagare under 18 år kräver målsmans godkännande för deltagande. Genom att köpa en biljett intygar köparen att sådant godkännande finns.</p>
+              <p>2.1 Lankoping.se är ett projekt som är föremål för "Fiscal Hosting" via <strong>Hack Foundation (HCB)</strong>, en icke-vinstdrivande organisation med säte i USA.</p>
+              <p>2.2 Detta innebär att HCB juridiskt sett förvaltar Lankoping.se:s medel och ansvarar för transaktioner. Vid köp eller prenumeration kommer debiteringen på ditt kontoutdrag att visas som "HCB" eller "Hack Foundation" för Lankoping.se:s räkning.</p>
+              <p>2.3 Föreningen ansvarar för tjänstens innehåll, medan HCB agerar uteslutande som finansiell infrastruktur. Eventuella krav rörande tjänsten ska riktas mot Lankoping.se.</p>
             </div>
           </section>
 
           {/* Section 3 */}
           <section className="p-8 border border-border bg-card border-l-4 border-l-primary">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">3. Medlemskap och Prenumeration</h2>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">3. Premium-medlemskap och Prenumeration</h2>
             <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
-              <p>3.1 Deltagare har möjlighet att teckna ett premium-medlemskap i Länköping.se mot en månadsavgift om 85 SEK.</p>
-              <p>3.2 Medlemskapet ger Deltagaren förmåner såsom tidigare åtkomst vid biljettsläpp samt 25% rabatt på ordinarie biljettpriser.</p>
-              <p>3.3 Länköping.se är ett projekt som står under ekonomisk förvaltning (Fiscal Hosting) av <strong>Hack Foundation (HCB)</strong>. Genom att genomföra ett köp eller teckna en prenumeration godkänner du att HCB debiterar dig för det valda beloppet för Länköping.se:s räkning.</p>
-              <p>3.4 Prenumerationer löper månadsvis och kan sägas upp när som helst, varvid förmånerna upphör vid utgången av den innevarande betalperioden.</p>
+              <p>3.1 Deltagare kan teckna ett medlemskap mot en månadsavgift om 85 SEK inkl. eventuella avgifter.</p>
+              <p>3.2 Förmåner inkluderar: 25% rabatt på ordinarie biljettpriser vid Lankoping.se:s egna LAN-event, samt förtur (Early Access) vid biljettsläpp.</p>
+              <p>3.3 Medlemskapet förnyas automatiskt vid varje periodens slut (månadsvis) tills uppsägning sker. Uppsägning ska ske senast 24 timmar innan ny period påbörjas.</p>
+              <p>3.4 Lankoping.se förbehåller sig rätten att justera avgifter och förmåner med 30 dagars varsel via e-post eller publicering på webbplatsen.</p>
             </div>
           </section>
 
           {/* Section 4 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">4. Biljetter och Ångerrätt</h2>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">4. Kontosäkerhet</h2>
             <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
-              <p>4.1 Köp av biljetter till Föreningens event är bindande. Enligt Lag (2005:59) om distansavtal och avtal utanför affärslokaler 2 kap. 11 § punkt 12, gäller inte ångerrätt för idrottsevenemang, kulturmöten eller liknande fritidsaktiviteter som sker på en bestämd dag eller under en bestämd tidsperiod.</p>
-              <p>4.2 Återbetalning sker endast om Föreningen ställer in eventet i sin helhet och ingen ersättningsaktivitet erbjuds.</p>
+              <p>4.1 Du är personligt ansvarig för att hålla dina inloggningsuppgifter hemliga. All aktivitet som sker via ditt konto anses vara utförd av dig.</p>
+              <p>4.2 Lankoping.se ansvarar inte för skador som uppstår till följd av att obehöriga fått tillgång till ditt konto p.g.a. din oaktsamhet.</p>
             </div>
           </section>
 
           {/* Section 5 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">5. Deltagarens Ansvar och Egendom</h2>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">5. Eventbiljetter och Ångerrätt</h2>
             <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
-              <p>5.1 All utrustning (datorer, konsoler, kringutrustning etc.) medförs på Deltagarens egen risk. Föreningen tillhandahåller inget försäkringsskydd för Deltagarens egendom.</p>
-              <p>5.2 Deltagaren är personligt ansvarig för eventuella skador som denne orsakar på lokal, Föreningens utrustning eller annan Deltagares egendom.</p>
+              <p>5.1 Köp av biljetter till specifika event är bindande och definitiva. Enligt svensk lag (Distansavtalslagen 2 kap. 11 § punkt 12) gäller <strong>ingen ångerrätt</strong> för idrottsevenemang, kulturmöten eller liknande fritidsaktiviteter som sker på en bestämd dag.</p>
+              <p>5.2 Lankoping.se förbehåller sig rätten att kontrollera id-handling vid entré för att verifiera att biljetten används av rätt person.</p>
             </div>
           </section>
 
           {/* Section 6 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">6. Immateriella Rättigheter</h2>
-            <p className="text-foreground/80 leading-relaxed font-medium text-sm">
-              Allt innehåll på länköping.se, inklusive logotyper, design, text och källkod, tillhör Föreningen eller dess licensgivare och är skyddat av upphovsrättslagen.
-            </p>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">6. Uppförandekod och Avstängning</h2>
+            <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
+              <p>6.1 Deltagaren förbinder sig att följa Lankoping.se:s officiella <Link to="/rules" className="text-primary underline">regler</Link>. Detta inkluderar nolltolerans mot droger, alkohol, trakasserier och skadegörelse.</p>
+              <p>6.2 Lankoping.se äger rätten att utan förvarning eller kompensation stänga av Deltagare som bryter mot dessa villkor eller agerar på ett sätt som bedöms skadligt för Föreningen eller dess medlemmar.</p>
+            </div>
           </section>
 
           {/* Section 7 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">7. Media och Dokumentation</h2>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">7. Ansvar för Utrustning och Personskada</h2>
             <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
-              <p>7.1 Föreningen förbehåller sig rätten att fotografera och filma under sina event för publicering i marknadsföringssyfte, sociala medier och dokumentation.</p>
-              <p>7.2 Genom deltagande ger Deltagaren Föreningen en oåterkallelig rätt att använda Deltagarens bild och röst i sådant material utan ekonomisk kompensation.</p>
+              <p>7.1 Lankoping.se ansvarar inte under några omständigheter för skada, förlust eller stöld av utrustning som medförs av Deltagaren. Deltagaren ansvarar själv för bevakning av sin utrustning.</p>
+              <p>7.2 Lankoping.se ansvarar inte för personskador som uppstår under event, såvida inte skadan orsakats genom grov vårdslöshet av Föreningen.</p>
             </div>
           </section>
 
           {/* Section 8 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">8. Säkerhet och Kontroll</h2>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">8. Immateriella rättigheter</h2>
             <p className="text-foreground/80 leading-relaxed font-medium text-sm">
-              Föreningen och av Föreningen anlitad säkerhetspersonal har rätt att genomföra väskkontroller och neka tillträde till personer som medför förbjudna föremål (alkohol, droger, vapen etc.) eller som uppträder berusat eller aggressivt.
+              Allt material på lankoping.se (kod, design, logotyper, texter) ägs av Lankoping.se. Otillåten användning av Föreningens varumärke eller material kommer att beivras juridiskt.
             </p>
           </section>
 
           {/* Section 9 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">9. Personuppgifter (GDPR)</h2>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">9. Ansvarsbegränsning</h2>
             <p className="text-foreground/80 leading-relaxed font-medium text-sm">
-              Föreningen behandlar personuppgifter i enlighet med gällande dataskyddslagstiftning. För detaljerad information om hur vi hanterar din data, se vår <Link to="/datapolicy/se" className="text-primary underline">Datapolicy</Link>.
+              Lankoping.se:s ansvar gentemot dig är under alla omständigheter begränsat till det belopp du faktiskt betalat till Föreningen under de senaste 12 månaderna. Lankoping.se ansvarar aldrig för indirekta skador eller följdförluster.
             </p>
           </section>
 
           {/* Section 10 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">10. Ansvarsbegränsning</h2>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">10. Force Majeure</h2>
             <p className="text-foreground/80 leading-relaxed font-medium text-sm">
-              Föreningen ansvarar inte för indirekta skador, utebliven vinst eller följdskador. Föreningens totala ansvar gentemot Deltagaren är under alla omständigheter begränsat till ett belopp motsvarande den erlagda biljettavgiften.
+              Lankoping.se är befriat från ansvar för bristande fullgörande av avtalet som beror på hinder utanför vår kontroll, inklusive men inte begränsat till naturkatastrofer, krig, pandemi, strejk, elavbrott eller myndighetsbeslut.
             </p>
           </section>
 
           {/* Section 11 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">11. Force Majeure</h2>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">11. Ogiltighet (Severability)</h2>
             <p className="text-foreground/80 leading-relaxed font-medium text-sm">
-              Föreningen är befriad från påföljd för underlåtenhet att fullgöra viss förpliktelse enligt dessa Villkor om underlåtenheten har sin grund i omständighet utanför Föreningens kontroll, såsom krig, naturkatastrof, pandemi, elavbrott eller myndighetsbeslut.
+              Skulle någon del av dessa villkor bedömas vara ogiltig eller ogenomförbar av behörig domstol, ska detta inte påverka giltigheten av övriga villkor i avtalet.
             </p>
           </section>
 
           {/* Section 12 */}
           <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">12. Tvistelösning och Lagval</h2>
-            <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
-              <p>12.1 Dessa Villkor ska tolkas och tillämpas i enlighet med svensk lag.</p>
-              <p>12.2 Tvister som uppstår i anledning av dessa Villkor ska i första hand lösas genom förhandling. Om parterna inte kan enas ska tvisten avgöras av allmän domstol, med Norrköpings tingsrätt som första instans.</p>
-            </div>
+            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">12. Tvist och Lagval</h2>
+            <p className="text-foreground/80 leading-relaxed font-medium text-sm">
+              Detta avtal styrs av svensk lag. Tvister ska i första hand lösas genom förhandling och i andra hand av Norrköpings tingsrätt som första instans.
+            </p>
           </section>
-
-          {/* Section 13 */}
-          <section className="p-8 border border-border bg-card">
-            <h2 className="text-primary font-black uppercase italic tracking-wider text-sm mb-4">13. Ändringar och Ogiltighet</h2>
-            <div className="space-y-4 text-foreground/80 leading-relaxed font-medium text-sm">
-              <p>13.1 Föreningen förbehåller sig rätten att när som helst ändra dessa Villkor genom att publicera de uppdaterade villkoren på webbplatsen.</p>
-              <p>13.2 Om någon bestämmelse i dessa Villkor skulle befinnas vara ogiltig eller ogenomförbar av domstol, ska detta inte påverka giltigheten av övriga bestämmelser.</p>
-            </div>
-          </section>
+        </div>
 
           {/* Final Notice */}
           <div className="p-8 border-2 border-primary bg-primary/5 italic flex gap-4">
@@ -157,7 +150,7 @@ function TermsPage() {
 
         {/* Footer */}
         <footer className="mt-20 pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
-           <span className="font-black tracking-tighter uppercase italic">Länköping<span className="text-primary">.se</span></span>
+           <span className="font-black tracking-tighter uppercase italic">Lankoping.se<span className="text-primary">.se</span></span>
            <p className="text-xs text-muted-foreground uppercase font-bold italic">
             Dokument-ID: TOS-2026-V2 • Senast uppdaterad: 2026-05-07
           </p>

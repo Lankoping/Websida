@@ -32,6 +32,7 @@ import { Route as AdminLogsRouteImport } from './routes/admin/logs'
 import { Route as AdminGuidesRouteImport } from './routes/admin/guides'
 import { Route as AdminCmsRouteImport } from './routes/admin/cms'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
+import { Route as PublicTermsRouteImport } from './routes/_public/terms'
 import { Route as PublicTeamRouteImport } from './routes/_public/team'
 import { Route as PublicRulesRouteImport } from './routes/_public/rules'
 import { Route as ProtectedExampleProtectedRouteRouteImport } from './routes/_protected/example-protected-route'
@@ -167,6 +168,11 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AdminRoute,
 } as any)
+const PublicTermsRoute = PublicTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => PublicRoute,
+} as any)
 const PublicTeamRoute = PublicTeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -285,6 +291,7 @@ export interface FileRoutesByFullPath {
   '/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
+  '/terms': typeof PublicTermsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/cms': typeof AdminCmsRouteWithChildren
   '/admin/guides': typeof AdminGuidesRoute
@@ -328,6 +335,7 @@ export interface FileRoutesByTo {
   '/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/rules': typeof PublicRulesRoute
   '/team': typeof PublicTeamRoute
+  '/terms': typeof PublicTermsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/cms': typeof AdminCmsRouteWithChildren
   '/admin/guides': typeof AdminGuidesRoute
@@ -373,6 +381,7 @@ export interface FileRoutesById {
   '/_protected/example-protected-route': typeof ProtectedExampleProtectedRouteRoute
   '/_public/rules': typeof PublicRulesRoute
   '/_public/team': typeof PublicTeamRoute
+  '/_public/terms': typeof PublicTermsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/cms': typeof AdminCmsRouteWithChildren
   '/admin/guides': typeof AdminGuidesRoute
@@ -420,6 +429,7 @@ export interface FileRouteTypes {
     | '/example-protected-route'
     | '/rules'
     | '/team'
+    | '/terms'
     | '/admin/analytics'
     | '/admin/cms'
     | '/admin/guides'
@@ -463,6 +473,7 @@ export interface FileRouteTypes {
     | '/example-protected-route'
     | '/rules'
     | '/team'
+    | '/terms'
     | '/admin/analytics'
     | '/admin/cms'
     | '/admin/guides'
@@ -507,6 +518,7 @@ export interface FileRouteTypes {
     | '/_protected/example-protected-route'
     | '/_public/rules'
     | '/_public/team'
+    | '/_public/terms'
     | '/admin/analytics'
     | '/admin/cms'
     | '/admin/guides'
@@ -723,6 +735,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_public/terms': {
+      id: '/_public/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof PublicTermsRouteImport
+      parentRoute: typeof PublicRoute
+    }
     '/_public/team': {
       id: '/_public/team'
       path: '/team'
@@ -888,6 +907,7 @@ const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
 interface PublicRouteChildren {
   PublicRulesRoute: typeof PublicRulesRoute
   PublicTeamRoute: typeof PublicTeamRoute
+  PublicTermsRoute: typeof PublicTermsRoute
   PublicIndexRoute: typeof PublicIndexRoute
   PublicBiljettCodeRoute: typeof PublicBiljettCodeRoute
   PublicDatapolicySeRoute: typeof PublicDatapolicySeRoute
@@ -897,6 +917,7 @@ interface PublicRouteChildren {
 const PublicRouteChildren: PublicRouteChildren = {
   PublicRulesRoute: PublicRulesRoute,
   PublicTeamRoute: PublicTeamRoute,
+  PublicTermsRoute: PublicTermsRoute,
   PublicIndexRoute: PublicIndexRoute,
   PublicBiljettCodeRoute: PublicBiljettCodeRoute,
   PublicDatapolicySeRoute: PublicDatapolicySeRoute,

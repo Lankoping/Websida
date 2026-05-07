@@ -55,8 +55,8 @@ function BlogsIndex() {
 
       <footer className="mt-24 border-t border-border py-12 px-6">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-           <span className="font-black tracking-tighter uppercase italic">Länköping<span className="text-primary">.se</span></span>
-           <p className="text-xs text-muted-foreground">© 2026 Länköping.se</p>
+           <span className="font-black tracking-tighter uppercase italic">Lankoping<span className="text-primary">.se</span></span>
+           <p className="text-xs text-muted-foreground">© 2026 Lankoping.se</p>
         </div>
       </footer>
     </div>
